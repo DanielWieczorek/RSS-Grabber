@@ -1,0 +1,4 @@
+de\wieczorek\rss\core\RssReaderMain.class
+de\wieczorek\rss\core\CointelegraphMessageFilter.class
+de\wieczorek\rss\core\CointelegraphMessageTransformer.class
+de\wieczorek\rss\core\RssReaderConfigurationProvider.class
