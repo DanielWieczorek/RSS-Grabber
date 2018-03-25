@@ -4,7 +4,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
 @ApplicationScoped
-public class RssReaderConfigurationProvider {
+public class RssReaderConfigurationProvider implements RssConfig{
 
     @Produces
     @FeedUrl

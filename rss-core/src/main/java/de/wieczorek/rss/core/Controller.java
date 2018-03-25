@@ -5,19 +5,19 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 public class Controller {
-    // private boolean isStarted;
+	// private boolean isStarted;
 
-    @Inject
-    private RssReader reader;
+	@Inject
+	private RssReader reader;
 
-    public void start() {
-	System.out.println("started");
-	reader.start();
-    }
+	public void start() {
+		System.out.println("started");
+		reader.start();
+	}
 
-    public void stop() {
-	System.out.println("stopped");
-	reader.stop();
-    }
+	public void stop() {
+		System.out.println("stopped");
+		reader.stop();
+	}
 
 }

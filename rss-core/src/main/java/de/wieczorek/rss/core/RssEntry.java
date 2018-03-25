@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "rss_entries", schema = "rss@cassandra_pu")
+@Table(name = "rss_entries")
 public class RssEntry {
 
     private String feedUrl;

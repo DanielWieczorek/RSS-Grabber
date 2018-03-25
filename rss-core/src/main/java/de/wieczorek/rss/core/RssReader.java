@@ -46,14 +46,20 @@ public class RssReader {
 	try {
 	    feed = buildFeed(feed);
 
-	    List<RssEntry> entries = feed.getEntries().stream().map(this::buildBo).filter(filter).map(transformer)
+	    List<RssEntry> newEntries = feed.getEntries().stream().map(this::buildBo).filter(filter).map(transformer)
 		    .collect(Collectors.toList());
-	    dao.persist(entries);
+	    System.out.println(newEntries);
+	    List<String> existingEntryKeys = dao.findAll(newEntries.stream().map(RssEntry::getURI).collect(Collectors.toList())).stream().map(RssEntry::getURI).collect(Collectors.toList());
+	   newEntries.removeAll( newEntries.stream().filter(entry -> existingEntryKeys.contains(entry.getURI())).collect(Collectors.toList()));
+	    dao.persist(newEntries);
 
-	    executor.schedule(() -> readRssFeed(), 10, TimeUnit.MINUTES);
-	} catch (IOException e) {
+	    
+	} catch (Exception e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	}
+	finally {
+		executor.schedule(() -> readRssFeed(), 10, TimeUnit.MINUTES);
 	}
     }
 
