@@ -149,6 +149,7 @@ public class Updater {
 		appsToCopy.forEach(app -> {
 			PrintWriter writer;
 			try {
+				System.out.println("Starting app " + app.getName());
 				Process myProcess = new ProcessBuilder("java","-Xmx32m","-Xms1m","-XX:ParallelGCThreads=1", "-jar", app.getName()).directory(targetDir).start();
 				writer = new PrintWriter(new File(targetDir, app.getName()) + ".pid", "UTF-8");
 				writer.println("" + myProcess.pid());
