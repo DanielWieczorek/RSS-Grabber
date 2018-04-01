@@ -2,6 +2,7 @@ package de.wieczorek.rss.core;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -12,6 +13,7 @@ public class RssEntry {
 
     private String feedUrl;
     private String heading;
+    @Column(length = 1024)
     private String description;
     private Date publicationDate;
     @Id

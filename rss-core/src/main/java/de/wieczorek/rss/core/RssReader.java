@@ -49,9 +49,11 @@ public class RssReader {
 	    List<RssEntry> newEntries = feed.getEntries().stream().map(this::buildBo).filter(filter).map(transformer)
 		    .collect(Collectors.toList());
 	    System.out.println(newEntries);
+	    if(!newEntries.isEmpty()) {
 	    List<String> existingEntryKeys = dao.findAll(newEntries.stream().map(RssEntry::getURI).collect(Collectors.toList())).stream().map(RssEntry::getURI).collect(Collectors.toList());
 	   newEntries.removeAll( newEntries.stream().filter(entry -> existingEntryKeys.contains(entry.getURI())).collect(Collectors.toList()));
 	    dao.persist(newEntries);
+	    }
 
 	    
 	} catch (Exception e) {

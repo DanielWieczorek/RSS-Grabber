@@ -8,9 +8,15 @@
 
  <modules>
             <module>rss-core</module>
-            <module>rss-coindesk</module>
-            <module>rss-cointelegraph</module>
+            <module>rss-bitcoincom</module>
             <module>rss-bitcoinist</module>
+            <module>rss-bitcoinmagazine</module>
+            <module>rss-coindesk</module>
+            <module>rss-coinnewsasia</module>
+            <module>rss-cointelegraph</module>
+            <module>rss-cryptonewsnet</module>
+            <module>rss-cryptoquicknews</module>
+            <module>rss-newsbtc</module>
     </modules>
 </project>
  
