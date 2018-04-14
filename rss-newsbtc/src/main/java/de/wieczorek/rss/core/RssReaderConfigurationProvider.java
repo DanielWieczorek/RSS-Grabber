@@ -7,6 +7,10 @@ import javax.enterprise.inject.Produces;
 public class RssReaderConfigurationProvider implements RssConfig {
 
     @Produces
+    @ServiceName
+    private String serviceName = "rss-collector-newsbtc";
+
+    @Produces
     @FeedUrl
     private String feedUrl = "https://www.newsbtc.com/feed/";
 

@@ -4,7 +4,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
 @ApplicationScoped
-public class RssReaderConfigurationProvider implements RssConfig{
+public class RssReaderConfigurationProvider implements RssConfig {
+
+    @Produces
+    @ServiceName
+    private String serviceName = "rss-collector-coindesk";
 
     @Produces
     @FeedUrl

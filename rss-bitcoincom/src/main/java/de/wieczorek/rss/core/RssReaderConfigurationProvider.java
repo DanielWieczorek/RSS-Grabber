@@ -7,6 +7,10 @@ import javax.enterprise.inject.Produces;
 public class RssReaderConfigurationProvider implements RssConfig {
 
     @Produces
+    @ServiceName
+    private String serviceName = "rss-collector-bitcoincom";
+
+    @Produces
     @FeedUrl
     private String feedUrl = "https://news.bitcoin.com/feed/";
 
