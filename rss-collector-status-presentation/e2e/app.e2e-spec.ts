@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('collector-status-presentation App', () => {
+describe('rss-collector-status-presentation App', () => {
   let page: AppPage;
 
   beforeEach(() => {
