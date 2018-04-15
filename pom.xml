@@ -17,7 +17,7 @@
             <module>rss-cryptonewsnet</module>
             <module>rss-cryptoquicknews</module>
             <module>rss-newsbtc</module>
-            <module>rss-collector-status</module>
+            <module>rss-collectors-status</module>
     </modules>
 </project>
  
