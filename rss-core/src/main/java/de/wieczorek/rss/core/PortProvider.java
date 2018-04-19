@@ -2,15 +2,18 @@ package de.wieczorek.rss.core;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 @ApplicationScoped
-public class Configuration {
+public class PortProvider {
 
-    @Produces
+    @Inject
     @RestPort
-    private int restPort = 10000;
+    private int restPort;
 
     @Produces
     @JGroupsPort
-    private int jgroupsPort = restPort + 1;
+    public int getJGroupsPort() {
+	return restPort + 1;
+    }
 }

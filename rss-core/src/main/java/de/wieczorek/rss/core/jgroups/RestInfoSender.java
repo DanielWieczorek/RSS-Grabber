@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.wieczorek.rss.core.RestPort;
+import de.wieczorek.rss.core.JGroupsPort;
 import de.wieczorek.rss.core.ServiceName;
 
 @ApplicationScoped
@@ -23,7 +23,7 @@ public class RestInfoSender extends ReceiverAdapter {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Inject
-    @RestPort
+    @JGroupsPort
     private int bindPort;
 
     @Inject
