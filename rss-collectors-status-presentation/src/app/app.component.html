@@ -1,0 +1,17 @@
+
+    <div class="outer">
+      <mat-card *ngFor="let item of data" class="example-card">
+  <mat-card-header>
+    <mat-card-title>{{item.collectorName}}</mat-card-title>
+    <mat-card-subtitle>{{item.bindHostname}}:{{item.bindPort}}</mat-card-subtitle>
+  </mat-card-header>
+  <img mat-card-image  *ngIf="item.status == 'running'" src="assets/checkmark.svg" style="display: block;    margin: 0 auto;width:130px;height:130px;">
+   <img mat-card-image *ngIf="item.status == 'failed'" src="assets/xmark.png" style="display: block;    margin: 0 auto;width:130px;height:130px;">
+  <mat-card-content>
+    <p>
+     {{item.status}}
+    </p>
+  </mat-card-content>
+</mat-card>
+</div>
+
