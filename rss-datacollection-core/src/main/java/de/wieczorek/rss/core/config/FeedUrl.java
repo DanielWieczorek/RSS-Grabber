@@ -1,4 +1,4 @@
-package de.wieczorek.rss.core;
+package de.wieczorek.rss.core.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,6 +10,6 @@ import javax.inject.Qualifier;
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
-public @interface JGroupsPort {
+public @interface FeedUrl {
 
 }

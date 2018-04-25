@@ -1,4 +1,4 @@
-package de.wieczorek.rss.core;
+package de.wieczorek.rss.core.config.port;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

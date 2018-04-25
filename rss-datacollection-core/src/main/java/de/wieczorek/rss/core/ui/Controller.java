@@ -1,7 +1,9 @@
-package de.wieczorek.rss.core;
+package de.wieczorek.rss.core.ui;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import de.wieczorek.rss.core.business.RssReader;
 
 @ApplicationScoped
 public class Controller {

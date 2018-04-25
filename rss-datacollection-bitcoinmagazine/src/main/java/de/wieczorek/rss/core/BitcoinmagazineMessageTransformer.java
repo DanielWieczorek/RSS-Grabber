@@ -3,6 +3,9 @@ package de.wieczorek.rss.core;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.wieczorek.rss.core.business.MessageTransformer;
+import de.wieczorek.rss.core.business.RssEntry;
+
 public class BitcoinmagazineMessageTransformer implements MessageTransformer {
 
     @Override

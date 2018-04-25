@@ -1,4 +1,4 @@
-package de.wieczorek.rss.core;
+package de.wieczorek.rss.core.ui;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -7,6 +7,7 @@ import org.xnio.Options;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.wieczorek.rss.core.config.port.RestPort;
 import de.wieczorek.rss.core.jgroups.CollectorStatus;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;

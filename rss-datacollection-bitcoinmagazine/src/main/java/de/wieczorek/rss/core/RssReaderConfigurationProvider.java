@@ -3,6 +3,13 @@ package de.wieczorek.rss.core;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
+import de.wieczorek.rss.core.business.MessageFilter;
+import de.wieczorek.rss.core.business.MessageTransformer;
+import de.wieczorek.rss.core.config.FeedUrl;
+import de.wieczorek.rss.core.config.RssConfig;
+import de.wieczorek.rss.core.config.ServiceName;
+import de.wieczorek.rss.core.config.port.RestPort;
+
 @ApplicationScoped
 public class RssReaderConfigurationProvider implements RssConfig {
 

@@ -1,4 +1,4 @@
-package de.wieczorek.rss.core;
+package de.wieczorek.rss.core.business;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +19,9 @@ import org.xml.sax.InputSource;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
+
+import de.wieczorek.rss.core.config.FeedUrl;
+import de.wieczorek.rss.core.persistence.RssEntryDao;
 
 @ApplicationScoped
 public class RssReader {

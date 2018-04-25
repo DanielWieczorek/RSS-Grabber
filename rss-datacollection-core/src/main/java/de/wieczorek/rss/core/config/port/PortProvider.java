@@ -1,4 +1,4 @@
-package de.wieczorek.rss.core;
+package de.wieczorek.rss.core.config.port;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;

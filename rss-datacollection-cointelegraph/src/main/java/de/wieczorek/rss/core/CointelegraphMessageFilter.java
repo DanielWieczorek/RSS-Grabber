@@ -1,5 +1,8 @@
 package de.wieczorek.rss.core;
 
+import de.wieczorek.rss.core.business.MessageFilter;
+import de.wieczorek.rss.core.business.RssEntry;
+
 public class CointelegraphMessageFilter implements MessageFilter {
 
     @Override

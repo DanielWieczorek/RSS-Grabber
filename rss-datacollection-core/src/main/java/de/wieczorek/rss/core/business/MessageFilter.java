@@ -1,4 +1,4 @@
-package de.wieczorek.rss.core;
+package de.wieczorek.rss.core.business;
 
 import java.util.function.Predicate;
 

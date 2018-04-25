@@ -2,7 +2,10 @@ package de.wieczorek.rss.core;
 
 import java.io.IOException;
 
+import de.wieczorek.rss.core.config.RssConfig;
 import de.wieczorek.rss.core.jgroups.RestInfoSender;
+import de.wieczorek.rss.core.ui.RssReaderServer;
+import de.wieczorek.rss.core.weld.CdiContext;
 
 public class RssReaderMain {
 
