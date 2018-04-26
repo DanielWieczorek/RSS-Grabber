@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import org.xnio.Options;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.wieczorek.rss.core.jgroups.ServiceMetadata;
@@ -50,13 +51,28 @@ public class Server {
 		exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Methods"), "GET");
 
 		if (exchange.getRequestPath().equals("/status")) {
-		    List<ServiceMetadata> metadata = controller.status();
-		    String result = new ObjectMapper().writeValueAsString(metadata);
-		    exchange.getResponseSender().send(result);
+		    requestStatusAndPutItIntoRequest(exchange);
+		} else if (exchange.getRequestPath().startsWith("/start/")) {
+		    String collectorName = exchange.getRequestPath()
+			    .substring(exchange.getRequestPath().lastIndexOf('/') + 1);
+		    controller.startService(collectorName);
+		    requestStatusAndPutItIntoRequest(exchange);
+		} else if (exchange.getRequestPath().startsWith("/stop/")) {
+		    String collectorName = exchange.getRequestPath()
+			    .substring(exchange.getRequestPath().lastIndexOf('/') + 1);
+		    controller.stopService(collectorName);
+		    requestStatusAndPutItIntoRequest(exchange);
 		} else {
 		    exchange.setStatusCode(404);
 		}
 
+	    }
+
+	    private void requestStatusAndPutItIntoRequest(final HttpServerExchange exchange)
+		    throws JsonProcessingException {
+		List<ServiceMetadata> metadata = controller.status();
+		String result = new ObjectMapper().writeValueAsString(metadata);
+		exchange.getResponseSender().send(result);
 	    }
 	}).setWorkerOption(Options.WORKER_IO_THREADS, 1) //
 		.setWorkerOption(Options.WORKER_TASK_CORE_THREADS, 1) //

@@ -12,7 +12,7 @@ import de.wieczorek.rss.core.jgroups.RestInfoSender;
 @ApplicationScoped
 public class Controller {
     private static final Logger logger = LogManager.getLogger(RestInfoSender.class.getName());
-    // private boolean isStarted;
+    private boolean isStarted;
 
     @Inject
     private RssReader reader;
@@ -20,11 +20,17 @@ public class Controller {
     public void start() {
 	logger.info("started");
 	reader.start();
+	isStarted = true;
     }
 
     public void stop() {
 	logger.info("stopped");
 	reader.stop();
+	isStarted = false;
+    }
+
+    public boolean isStarted() {
+	return isStarted;
     }
 
 }

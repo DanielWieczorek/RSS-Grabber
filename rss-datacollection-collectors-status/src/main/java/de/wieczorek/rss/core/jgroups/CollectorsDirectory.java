@@ -16,7 +16,7 @@ public class CollectorsDirectory {
 	statusInfo = new HashMap<>();
     }
 
-    public void receiveStatusInfo(@Observes StatusResponse status) {
+    private void receiveStatusInfo(@Observes StatusResponse status) {
 	if (status.getBindHostname() != null) {
 	    System.out.println("received info from " + status.getCollectorName() + " at " + status.getBindHostname()
 		    + ":" + status.getBindPort());
@@ -33,6 +33,10 @@ public class CollectorsDirectory {
     public List<ServiceMetadata> getMetadata() {
 	return new ArrayList<>(statusInfo.values());
 
+    }
+
+    public ServiceMetadata getMetadataForService(String service) {
+	return statusInfo.get(service);
     }
 
 }

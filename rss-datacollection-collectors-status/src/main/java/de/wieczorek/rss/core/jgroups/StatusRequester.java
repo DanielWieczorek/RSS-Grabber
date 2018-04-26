@@ -17,7 +17,7 @@ public class StatusRequester {
     public List<ServiceMetadata> requestStates() {
 
 	List<ServiceMetadata> metadata = directory.getMetadata();
-	directory.getMetadata().stream().forEach(md -> {
+	directory.getMetadata().parallelStream().forEach(md -> {
 	    try {
 		md.setStatus(ClientBuilder.newClient().target("http://" + md.getBindHostname() + ":" + md.getBindPort())
 			.path("/status").request().accept("application/json").get(CollectorStatus.class).getStatus());
@@ -28,5 +28,21 @@ public class StatusRequester {
 	});
 
 	return metadata;
+    }
+
+    public void stop(String collectorName) {
+	ServiceMetadata metadata = directory.getMetadataForService(collectorName);
+
+	ClientBuilder.newClient().target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort())
+		.path("/stop").request().accept("application/json").get();
+
+    }
+
+    public void start(String collectorName) {
+	ServiceMetadata metadata = directory.getMetadataForService(collectorName);
+
+	ClientBuilder.newClient().target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort())
+		.path("/start").request().accept("application/json").get();
+
     }
 }

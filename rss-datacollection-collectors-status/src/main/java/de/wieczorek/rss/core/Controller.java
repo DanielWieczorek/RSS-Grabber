@@ -18,4 +18,14 @@ public class Controller {
 	return requester.requestStates();
     }
 
+    public List<ServiceMetadata> stopService(String collectorName) {
+	requester.stop(collectorName);
+	return requester.requestStates();
+    }
+
+    public List<ServiceMetadata> startService(String collectorName) {
+	requester.start(collectorName);
+	return requester.requestStates();
+    }
+
 }

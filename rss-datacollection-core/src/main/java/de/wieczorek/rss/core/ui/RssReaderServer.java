@@ -53,7 +53,7 @@ public class RssReaderServer {
 		    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, null);
 		    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
 		    CollectorStatus status = new CollectorStatus();
-		    status.setStatus("running");
+		    status.setStatus(controller.isStarted() ? "running" : "stopped");
 		    exchange.getResponseSender().send(new ObjectMapper().writeValueAsString(status));
 
 		} else {
