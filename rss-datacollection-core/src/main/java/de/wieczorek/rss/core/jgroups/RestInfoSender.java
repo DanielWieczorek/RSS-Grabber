@@ -1,16 +1,14 @@
 package de.wieczorek.rss.core.jgroups;
 
-import java.io.IOException;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.ReceiverAdapter;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.wieczorek.rss.core.config.ServiceName;
@@ -18,6 +16,7 @@ import de.wieczorek.rss.core.config.port.JGroupsPort;
 
 @ApplicationScoped
 public class RestInfoSender extends ReceiverAdapter {
+    private static final Logger logger = LogManager.getLogger(RestInfoSender.class.getName());
 
     private JChannel channel;
     ObjectMapper objectMapper = new ObjectMapper();
@@ -47,23 +46,10 @@ public class RestInfoSender extends ReceiverAdapter {
 	    response.setBindHostname("localhost");
 	    response.setBindPort(bindPort);
 	    channel.send(new Message(msg.getSrc(), objectMapper.writeValueAsBytes(response)));
-	} catch (
-
-	JsonParseException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (JsonMappingException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
 	} catch (Exception e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	    logger.error("error parsing message from " + msg.getSrc(), e);
 	}
-
-	System.out.println(msg.getSrc() + ": " + msg.getObject());
+	logger.info("Received message from " + msg.getSrc() + ": " + msg.getObject());
     }
 
 }

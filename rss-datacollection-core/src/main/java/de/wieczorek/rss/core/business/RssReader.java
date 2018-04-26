@@ -14,6 +14,8 @@ import java.util.zip.GZIPInputStream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.InputSource;
 
 import com.rometools.rome.feed.synd.SyndEntry;
@@ -25,7 +27,7 @@ import de.wieczorek.rss.core.persistence.RssEntryDao;
 
 @ApplicationScoped
 public class RssReader {
-
+    private static final Logger logger = LogManager.getLogger(RssReader.class.getName());
     @Inject
     @FeedUrl
     private String feedUrl = "";
@@ -51,20 +53,21 @@ public class RssReader {
 
 	    List<RssEntry> newEntries = feed.getEntries().stream().map(this::buildBo).filter(filter).map(transformer)
 		    .collect(Collectors.toList());
-	    System.out.println(newEntries);
-	    if(!newEntries.isEmpty()) {
-	    List<String> existingEntryKeys = dao.findAll(newEntries.stream().map(RssEntry::getURI).collect(Collectors.toList())).stream().map(RssEntry::getURI).collect(Collectors.toList());
-	   newEntries.removeAll( newEntries.stream().filter(entry -> existingEntryKeys.contains(entry.getURI())).collect(Collectors.toList()));
-	    dao.persist(newEntries);
+	    logger.info(newEntries);
+
+	    if (!newEntries.isEmpty()) {
+		List<String> existingEntryKeys = dao
+			.findAll(newEntries.stream().map(RssEntry::getURI).collect(Collectors.toList())).stream()
+			.map(RssEntry::getURI).collect(Collectors.toList());
+		newEntries.removeAll(newEntries.stream().filter(entry -> existingEntryKeys.contains(entry.getURI()))
+			.collect(Collectors.toList()));
+		dao.persist(newEntries);
 	    }
 
-	    
 	} catch (Exception e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	finally {
-		executor.schedule(() -> readRssFeed(), 10, TimeUnit.MINUTES);
+	    logger.error("error while retrieving rss feed entries: ", e);
+	} finally {
+	    executor.schedule(() -> readRssFeed(), 10, TimeUnit.MINUTES);
 	}
     }
 
@@ -84,7 +87,7 @@ public class RssReader {
 	    feed = input.build(source);
 
 	} catch (Exception e) {
-	    e.printStackTrace();
+	    logger.error("error while opening reading from feed: ", e);
 	} finally {
 	    if (is != null)
 		is.close();
@@ -115,8 +118,7 @@ public class RssReader {
 	try {
 	    executor.awaitTermination(30, TimeUnit.SECONDS);
 	} catch (InterruptedException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	    logger.error("error stopping rss reader: ", e);
 	}
     }
 }

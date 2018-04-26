@@ -3,10 +3,14 @@ package de.wieczorek.rss.core;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.wieczorek.rss.core.business.MessageTransformer;
 import de.wieczorek.rss.core.business.RssEntry;
 
 public class CoinnewsasiaMessageTransformer implements MessageTransformer {
+    private static final Logger logger = LogManager.getLogger(CoinnewsasiaMessageTransformer.class.getName());
 
     @Override
     public RssEntry apply(RssEntry t) {
@@ -20,10 +24,9 @@ public class CoinnewsasiaMessageTransformer implements MessageTransformer {
 	    description = matcher.group(1);
 
 	    t.setDescription(description);
-	    System.out.println(description);
+	    logger.info("extracted: " + description);
 	} catch (Exception e) {
-	    System.out.println(description);
-	    e.printStackTrace();
+	    logger.error("error extracting message from: " + description, e);
 	}
 	return t;
     }
