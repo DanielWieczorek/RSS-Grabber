@@ -275,8 +275,9 @@ public class Updater {
 		    data.jarFile = file;
 		    data.appName = m.getMainAttributes().getValue("Implementation-Title");
 		    data.version = m.getMainAttributes().getValue("Implementation-Version");
-
-		    newApps.put(m.getMainAttributes().getValue("Implementation-Title"), data);
+		    if (data.appName != null) {
+			newApps.put(m.getMainAttributes().getValue("Implementation-Title"), data);
+		    }
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}

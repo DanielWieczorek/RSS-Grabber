@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.wieczorek.rss.core.config.ServiceName;
 import de.wieczorek.rss.core.config.port.JGroupsPort;
+import de.wieczorek.rss.core.config.port.RestPort;
 
 @ApplicationScoped
 public class RestInfoSender extends ReceiverAdapter {
@@ -24,6 +25,10 @@ public class RestInfoSender extends ReceiverAdapter {
     @Inject
     @JGroupsPort
     private int bindPort;
+
+    @Inject
+    @RestPort
+    private int httpBindPort;
 
     @Inject
     @ServiceName
@@ -44,7 +49,7 @@ public class RestInfoSender extends ReceiverAdapter {
 	    StatusResponse response = new StatusResponse();
 	    response.setCollectorName(collectorName);
 	    response.setBindHostname("localhost");
-	    response.setBindPort(bindPort);
+	    response.setBindPort(httpBindPort);
 	    channel.send(new Message(msg.getSrc(), objectMapper.writeValueAsBytes(response)));
 	} catch (Exception e) {
 	    logger.error("error parsing message from " + msg.getSrc(), e);

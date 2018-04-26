@@ -23,6 +23,7 @@ public class StatusRequester {
 			.path("/status").request().accept("application/json").get(CollectorStatus.class).getStatus());
 	    } catch (WebApplicationException | ProcessingException e) {
 		md.setStatus("failed");
+		e.printStackTrace();
 	    }
 	});
 
