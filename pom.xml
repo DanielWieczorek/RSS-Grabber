@@ -7,17 +7,17 @@
 
 
  <modules>
-            <module>rss-core</module>
-            <module>rss-bitcoincom</module>
-            <module>rss-bitcoinist</module>
-            <module>rss-bitcoinmagazine</module>
-            <module>rss-coindesk</module>
-            <module>rss-coinnewsasia</module>
-            <module>rss-cointelegraph</module>
-            <module>rss-cryptonewsnet</module>
-            <module>rss-cryptoquicknews</module>
-            <module>rss-newsbtc</module>
-            <module>rss-collectors-status</module>
+            <module>rss-datacollection-core</module>
+            <module>rss-datacollection-bitcoincom</module>
+            <module>rss-datacollection-bitcoinist</module>
+            <module>rss-datacollection-bitcoinmagazine</module>
+            <module>rss-datacollection-coindesk</module>
+            <module>rss-datacollection-coinnewsasia</module>
+            <module>rss-datacollection-cointelegraph</module>
+            <module>rss-datacollection-cryptonewsnet</module>
+            <module>rss-datacollection-cryptoquicknews</module>
+            <module>rss-datacollection-newsbtc</module>
+            <module>rss-datacollection-collectors-status</module>
     </modules>
 </project>
  
