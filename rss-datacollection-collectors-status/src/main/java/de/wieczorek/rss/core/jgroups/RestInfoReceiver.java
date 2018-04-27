@@ -1,6 +1,7 @@
 package de.wieczorek.rss.core.jgroups;
 
 import java.io.IOException;
+import java.net.Inet4Address;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -49,6 +50,7 @@ public class RestInfoReceiver extends ReceiverAdapter {
 	objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
 	channel = new JChannel(new TCP() //
+		.setValue("bind_addr", Inet4Address.getLocalHost()) //
 		.setValue("bind_port", port) //
 		, new MPING() //
 		, new MERGE3() //

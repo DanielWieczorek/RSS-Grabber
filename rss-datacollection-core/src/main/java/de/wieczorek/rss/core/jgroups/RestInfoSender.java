@@ -1,5 +1,7 @@
 package de.wieczorek.rss.core.jgroups;
 
+import java.net.Inet4Address;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -50,6 +52,7 @@ public class RestInfoSender extends ReceiverAdapter {
     public void init() throws Exception {
 
 	channel = new JChannel(new TCP() //
+		.setValue("bind_addr", Inet4Address.getLocalHost()) //
 		.setValue("bind_port", bindPort) //
 		, new MPING() //
 		, new MERGE3() //
