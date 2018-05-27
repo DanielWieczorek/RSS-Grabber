@@ -1,0 +1,19 @@
+
+<mat-card *ngFor="let item of data" class="example-card">
+  <mat-card-header>
+  <div mat-card-avatar class="example-header-image"> </div>
+    <mat-card-title>{{ item.heading }}</mat-card-title>
+    <mat-card-subtitle>{{ item.publicationDate.toLocaleString() }}</mat-card-subtitle>
+    
+  </mat-card-header>
+  <mat-card-content flex>
+    <p>
+{{ item.description }}
+     </p>
+  </mat-card-content>
+  <mat-card-actions>
+    	 <button mat-button color="primary" (click)="classifyPositive(item)" enabled>positive</button>
+      <button mat-button color="accent" (click)="classifyNeutral(item)" enabled>neutral</button>
+     <button mat-button color="warn" (click)="classifyNegative(item)" enabled>negative</button>
+  </mat-card-actions>
+</mat-card>
