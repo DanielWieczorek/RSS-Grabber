@@ -55,38 +55,7 @@ public class Updater {
     private void updateLoop() {
 	try {
 	    updateApps();
-	} catch (WrongRepositoryStateException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (InvalidConfigurationException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (InvalidRemoteException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (CanceledException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (RefNotFoundException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (RefNotAdvertisedException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (NoHeadException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (TransportException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (GitAPIException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (MavenInvocationException e) {
-	    // TODO Auto-generated catch block
+	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 	executor.schedule(() -> updateLoop(), 60, TimeUnit.MINUTES);
@@ -207,14 +176,17 @@ public class Updater {
 			&& !name.equals("rss-deployment") && !name.endsWith("presentation");
 	    }
 	});
+
+	FilenameFilter filter = new FilenameFilter() {
+	    @Override
+	    public boolean accept(File dir, String name) {
+		return !name.startsWith("original") && name.endsWith(".jar");
+	    }
+	};
+
 	List<File> jars = new ArrayList<>();
 	Arrays.asList(filenames).stream().map(file -> new File(file, "target")).forEach(file -> {
-	    jars.addAll(Arrays.asList(file.listFiles(new FilenameFilter() {
-		@Override
-		public boolean accept(File dir, String name) {
-		    return !name.startsWith("original") && name.endsWith(".jar");
-		}
-	    })));
+	    jars.addAll(Arrays.asList(file.listFiles(filter) != null ? file.listFiles(filter) : new File[0]));
 	});
 	jars.forEach(file -> {
 	    try {

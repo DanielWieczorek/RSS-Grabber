@@ -1,5 +1,4 @@
-package de.wieczorek.rss.core.business;
-
+package de.wieczorek.rss.insight.business;
 import java.util.Date;
 
 import javax.persistence.Column;
