@@ -2,14 +2,13 @@ package de.wieczorek.rss.core.config.port;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class PortProvider {
 
-    @Inject
+    @Produces
     @RestPort
-    private int restPort;
+    private int restPort = 8020;
 
     @Produces
     @JGroupsPort

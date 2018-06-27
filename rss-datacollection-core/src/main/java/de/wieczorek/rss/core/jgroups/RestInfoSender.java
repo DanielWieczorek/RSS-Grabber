@@ -26,7 +26,6 @@ import org.jgroups.protocols.pbcast.STABLE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.wieczorek.rss.core.config.ServiceName;
 import de.wieczorek.rss.core.config.port.JGroupsPort;
 import de.wieczorek.rss.core.config.port.RestPort;
 
@@ -45,8 +44,7 @@ public class RestInfoSender extends ReceiverAdapter {
     @RestPort
     private int httpBindPort;
 
-    @Inject
-    @ServiceName
+    // TODO
     private String collectorName;
 
     public void init() throws Exception {

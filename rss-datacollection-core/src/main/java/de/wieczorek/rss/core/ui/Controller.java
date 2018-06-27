@@ -1,5 +1,7 @@
 package de.wieczorek.rss.core.ui;
 
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -15,17 +17,18 @@ public class Controller {
     private boolean isStarted;
 
     @Inject
-    private RssReader reader;
+    private List<RssReader> readers;
 
     public void start() {
+
 	logger.info("started");
-	reader.start();
+	readers.forEach(RssReader::start);
 	isStarted = true;
     }
 
     public void stop() {
 	logger.info("stopped");
-	reader.stop();
+	readers.forEach(RssReader::stop);
 	isStarted = false;
     }
 

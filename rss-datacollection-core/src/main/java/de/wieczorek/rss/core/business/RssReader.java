@@ -11,9 +11,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.InputSource;
@@ -22,23 +19,15 @@ import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 
-import de.wieczorek.rss.core.config.FeedUrl;
+import de.wieczorek.rss.core.config.RssConfig;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
 
-@ApplicationScoped
 public class RssReader {
     private static final Logger logger = LogManager.getLogger(RssReader.class.getName());
-    @Inject
-    @FeedUrl
-    private String feedUrl = "";
-    @Inject
+
     private RssEntryDao dao;
 
-    @Inject
-    private MessageFilter filter;
-
-    @Inject
-    private MessageTransformer transformer;
+    private RssConfig config;
 
     private ScheduledExecutorService executor;
 
@@ -46,14 +35,21 @@ public class RssReader {
 
     }
 
+    public RssReader(RssConfig config, RssEntryDao dao) {
+	this.config = config;
+	this.dao = dao;
+    }
+
     private void readRssFeed() {
+	logger.info("reading feed for " + config.getServiceName());
 	SyndFeed feed = null;
 	try {
 	    feed = buildFeed(feed);
 
-	    List<RssEntry> newEntries = feed.getEntries().stream().map(this::buildBo).filter(filter).map(transformer)
-		    .collect(Collectors.toList());
-	    logger.info(newEntries);
+	    List<RssEntry> newEntries = feed.getEntries().stream().map(this::buildBo).filter(config.getFilter())
+		    .map(config.getTransformer()).collect(Collectors.toList());
+	    logger.info("new entries from " + config.getServiceName() + ": "
+		    + newEntries.stream().map(RssEntry::getHeading).collect(Collectors.toList()));
 
 	    if (!newEntries.isEmpty()) {
 		List<String> existingEntryKeys = dao
@@ -75,7 +71,7 @@ public class RssReader {
 	InputStream is = null;
 	try {
 	    System.setProperty("http.agent", "");
-	    HttpURLConnection openConnection = (HttpURLConnection) new URL(feedUrl).openConnection();
+	    HttpURLConnection openConnection = (HttpURLConnection) new URL(config.getFeedUrl()).openConnection();
 	    openConnection.setRequestProperty("User-Agent",
 		    "Mozilla/5.0 (X11; U; CrOS i686 0.13.507) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.94 Safari/535.1");
 	    is = openConnection.getInputStream();
@@ -100,7 +96,7 @@ public class RssReader {
 	e.setDescription(entry.getDescription().getValue());
 	e.setHeading(entry.getTitle());
 	e.setURI(entry.getUri());
-	e.setFeedUrl(feedUrl);
+	e.setFeedUrl(config.getFeedUrl());
 	e.setPublicationDate(entry.getPublishedDate());
 	return e;
     }
