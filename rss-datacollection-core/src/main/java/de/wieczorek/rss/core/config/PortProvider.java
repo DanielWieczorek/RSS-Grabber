@@ -1,7 +1,10 @@
-package de.wieczorek.rss.core.config.port;
+package de.wieczorek.rss.core.config;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+
+import de.wieczorek.rss.core.config.port.JGroupsPort;
+import de.wieczorek.rss.core.config.port.RestPort;
 
 @ApplicationScoped
 public class PortProvider {

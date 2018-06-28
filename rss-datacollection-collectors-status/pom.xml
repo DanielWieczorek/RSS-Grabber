@@ -121,5 +121,11 @@
 			<artifactId>jersey-media-json-jackson</artifactId>
 			<version>2.26</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>de.wieczorek</groupId>
+			<artifactId>common-webservice-base</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>
