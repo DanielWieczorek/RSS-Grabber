@@ -1,21 +1,14 @@
 package de.wieczorek.rss.insight.business;
+
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "rss_entries")
 public class RssEntry {
 
     private String feedUrl;
     private String heading;
-    @Column(length = 1024)
     private String description;
     private Date publicationDate;
-    @Id
+    private Date createdAt;
     private String URI;
 
     private int classification;
@@ -66,6 +59,14 @@ public class RssEntry {
 
     public void setClassification(int classification) {
 	this.classification = classification;
+    }
+
+    public Date getCreatedAt() {
+	return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+	this.createdAt = createdAt;
     }
 
 }

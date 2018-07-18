@@ -19,6 +19,9 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.INDArrayIndex;
 import org.nd4j.linalg.indexing.NDArrayIndex;
 
+import opennlp.tools.stemmer.PorterStemmer;
+import opennlp.tools.stemmer.Stemmer;
+
 /**
  * This is a DataSetIterator that is specialized for the IMDB review dataset
  * used in the Word2VecSentimentRNN example It takes either the train or test
@@ -113,6 +116,9 @@ public class SentimentExampleIterator implements DataSetIterator {
 	int maxLength = 0;
 	for (String s : reviews) {
 	    List<String> tokens = tokenizerFactory.create(s).getTokens();
+	    Stemmer stemmer = new PorterStemmer();
+	    tokens = tokens.stream().map(stemmer::stem).map(CharSequence::toString).collect(Collectors.toList());
+
 	    List<String> tokensFiltered = new ArrayList<>();
 	    for (String t : tokens) {
 		if (wordVectors.hasWord(t))

@@ -16,10 +16,10 @@ public class RssEntry {
     @Column(length = 1024)
     private String description;
     private Date publicationDate;
+    @Column(name = "CREATEDAT")
+    private Date createdAt;
     @Id
     private String URI;
-
-    private int classification;
 
     public String getHeading() {
 	return heading;
@@ -61,12 +61,12 @@ public class RssEntry {
 	this.publicationDate = localDateTime;
     }
 
-    public int getClassification() {
-	return classification;
+    public Date getCreatedAt() {
+	return createdAt;
     }
 
-    public void setClassification(int classification) {
-	this.classification = classification;
+    public void setCreatedAt(Date createdAt) {
+	this.createdAt = createdAt;
     }
 
 }

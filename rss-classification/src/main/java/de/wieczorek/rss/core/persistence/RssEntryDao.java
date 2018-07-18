@@ -1,5 +1,6 @@
 package de.wieczorek.rss.core.persistence;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,15 +33,38 @@ public class RssEntryDao {
 	transaction.commit();
     }
 
+    public RssEntry find(RssEntry entry) {
+	return entityManager.createQuery("from RssEntry r where r.URI = :key", RssEntry.class) //
+		.setParameter("key", entry.getURI()) //
+		.getSingleResult();
+    }
+
+    public Date findNewestEntry() {
+	return entityManager.createQuery("select max(r.createdAt) from RssEntry r ", Date.class) //
+		.getSingleResult();
+    }
+
+    public List<RssEntry> findAll(List<String> collect) {
+
+	return entityManager.createQuery("from RssEntry r where r.URI in :keys", RssEntry.class)//
+		.setParameter("keys", collect).getResultList();
+    }
+
     public List<RssEntry> findAllUnclassified(int maxResult) {
 	return entityManager.createQuery("from RssEntry r where r.classification is null", RssEntry.class) //
 		.setMaxResults(maxResult) //
 		.getResultList();
     }
 
-    public RssEntry find(RssEntry entry) {
-	return entityManager.createQuery("from RssEntry r where r.URI = :key", RssEntry.class) //
-		.setParameter("key", entry.getURI()) //
-		.getSingleResult();
+    public synchronized void persist(List<RssEntry> entries) {
+	EntityTransaction transaction = entityManager.getTransaction();
+	transaction.begin();
+	entries.stream().forEach(entityManager::persist);
+	transaction.commit();
+    }
+
+    public List<RssEntry> findAllClassified() {
+	return entityManager.createQuery("select r from RssEntry r where r.classification is not null", RssEntry.class) //
+		.getResultList();
     }
 }

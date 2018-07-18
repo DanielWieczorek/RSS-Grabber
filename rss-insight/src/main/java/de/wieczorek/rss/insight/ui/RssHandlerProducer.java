@@ -4,6 +4,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.undertow.server.HttpHandler;
 import io.undertow.util.HttpString;
 
@@ -21,6 +23,8 @@ public class RssHandlerProducer {
 
 	if (exchange.getRequestPath().equals("/train")) {
 	    controller.trainNeuralNetwork();
+	} else if (exchange.getRequestPath().equals("/sentiment")) {
+	    exchange.getResponseSender().send(new ObjectMapper().writeValueAsString(controller.predict()));
 	}
     };
 

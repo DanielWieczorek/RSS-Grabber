@@ -1,6 +1,8 @@
 package de.wieczorek.rss.insight.business;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -17,9 +19,14 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.activations.Activation;
+import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.indexing.NDArrayIndex;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
+
+import opennlp.tools.stemmer.PorterStemmer;
+import opennlp.tools.stemmer.Stemmer;
 
 @ApplicationScoped
 public class RssSentimentNeuralNetwork {
@@ -27,7 +34,12 @@ public class RssSentimentNeuralNetwork {
     @Inject
     private RssWord2VecNetwork vec;
 
+    private MultiLayerNetwork net;
+
     public void train(List<RssEntry> findAllClassified) {
+	if (findAllClassified == null) {
+	    return;
+	}
 	vec.train(findAllClassified);
 	int batchSize = 64; // Number of examples in each minibatch
 	int vectorSize = vec.getLayerSize(); // Size of the word vectors. 300 in the Google News model
@@ -48,7 +60,7 @@ public class RssSentimentNeuralNetwork {
 				.lossFunction(LossFunctions.LossFunction.MCXENT).nIn(256).nOut(2).build())
 		.pretrain(false).backprop(true).build();
 
-	MultiLayerNetwork net = new MultiLayerNetwork(conf);
+	net = new MultiLayerNetwork(conf);
 	net.init();
 	net.setListeners(new ScoreIterationListener(1));
 
@@ -69,7 +81,26 @@ public class RssSentimentNeuralNetwork {
 	    Evaluation evaluation = net.evaluate(test);
 	    System.out.println(evaluation.stats());
 	}
-
     }
 
+    public RssEntrySentiment predict(RssEntry entry) {
+	vec.getWordVectors(Arrays.asList(entry.getDescription().split(" ")));
+	if (net != null) {
+	    Stemmer stemmer = new PorterStemmer();
+	    net.clear();
+	    INDArray outputRaw = net.output(vec.getWordVectors(Arrays.asList(entry.getDescription().split(" ")).stream()
+		    .map(stemmer::stem).map(CharSequence::toString).collect(Collectors.toList())));
+	    int timeSeriesLength = outputRaw.size(2);
+	    INDArray probabilitiesAtLastWord = outputRaw.get(NDArrayIndex.point(0), NDArrayIndex.all(),
+		    NDArrayIndex.point(timeSeriesLength - 1));
+	    RssEntrySentiment sentiment = new RssEntrySentiment();
+	    sentiment.setEntry(entry);
+
+	    sentiment.setPositiveProbability(probabilitiesAtLastWord.getDouble(0));
+	    sentiment.setNegativeProbability(probabilitiesAtLastWord.getDouble(1));
+
+	    return sentiment;
+	}
+	return null;
+    }
 }

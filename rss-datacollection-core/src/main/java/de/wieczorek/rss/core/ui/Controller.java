@@ -1,5 +1,6 @@
 package de.wieczorek.rss.core.ui;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -10,8 +11,10 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.wieczorek.rss.core.business.RssEntry;
 import de.wieczorek.rss.core.business.RssReader;
 import de.wieczorek.rss.core.jgroups.RestInfoSender;
+import de.wieczorek.rss.core.persistence.RssEntryDao;
 
 @ApplicationScoped
 public class Controller {
@@ -21,6 +24,9 @@ public class Controller {
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
 	start();
     }
+
+    @Inject
+    private RssEntryDao dao;
 
     @Inject
     private List<RssReader> readers;
@@ -39,6 +45,15 @@ public class Controller {
 
     public boolean isStarted() {
 	return isStarted;
+    }
+
+    public List<RssEntry> readEntriesAfter(Date before) {
+	logger.info("get all unclassified");
+	return dao.findAllAfter(before);
+    }
+
+    public List<RssEntry> readEntries24h() {
+	return dao.findAll24h();
     }
 
 }

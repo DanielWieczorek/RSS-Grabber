@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -29,7 +31,7 @@ public class RssReader {
 
     private RssConfig config;
 
-    private ScheduledExecutorService executor;
+    private static ScheduledExecutorService executor;
 
     public RssReader() {
 
@@ -52,11 +54,13 @@ public class RssReader {
 		    + newEntries.stream().map(RssEntry::getHeading).collect(Collectors.toList()));
 
 	    if (!newEntries.isEmpty()) {
+		List<String> newUris = newEntries.stream().map(RssEntry::getURI).collect(Collectors.toList());
 		List<String> existingEntryKeys = dao
 			.findAll(newEntries.stream().map(RssEntry::getURI).collect(Collectors.toList())).stream()
 			.map(RssEntry::getURI).collect(Collectors.toList());
 		newEntries.removeAll(newEntries.stream().filter(entry -> existingEntryKeys.contains(entry.getURI()))
 			.collect(Collectors.toList()));
+		logger.info("persisting " + newEntries.size() + " entries");
 		dao.persist(newEntries);
 	    }
 
@@ -98,6 +102,7 @@ public class RssReader {
 	e.setURI(entry.getUri());
 	e.setFeedUrl(config.getFeedUrl());
 	e.setPublicationDate(entry.getPublishedDate());
+	e.setCreatedAt(Date.from(Instant.now()));
 	return e;
     }
 

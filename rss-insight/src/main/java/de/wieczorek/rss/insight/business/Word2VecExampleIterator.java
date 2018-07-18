@@ -1,10 +1,15 @@
 package de.wieczorek.rss.insight.business;
+
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.deeplearning4j.text.sentenceiterator.SentenceIterator;
 import org.deeplearning4j.text.sentenceiterator.SentencePreProcessor;
+
+import opennlp.tools.stemmer.PorterStemmer;
+import opennlp.tools.stemmer.Stemmer;
 
 /**
  * This is a DataSetIterator that is specialized for the IMDB review dataset
@@ -45,7 +50,9 @@ public class Word2VecExampleIterator implements SentenceIterator {
 
     @Override
     public String nextSentence() {
-	return iter.next();
+	Stemmer stemmer = new PorterStemmer();
+
+	return Arrays.asList(iter.next().split(" ")).stream().map(stemmer::stem).collect(Collectors.joining(" "));
     }
 
     @Override
