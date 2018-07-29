@@ -18,6 +18,7 @@ public class RssHandlerProducer {
     @Produces
     private HttpHandler handler = (exchange) -> {
 	exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Origin"), "http://localhost:4200");
+	exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Origin"), "http://localhost:5200");
 	exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Methods"), "GET,POST");
 	exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Headers"), "Content-Type");
 
