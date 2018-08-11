@@ -1,32 +1,31 @@
 package de.wieczorek.rss.insight.ui;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import de.wieczorek.rss.core.ui.Resource;
+import de.wieczorek.rss.insight.business.SentimentEvaluationResult;
 
-import io.undertow.server.HttpHandler;
-import io.undertow.util.HttpString;
-
+@Resource
+@Path("/")
 @ApplicationScoped
 public class RssHandlerProducer {
 
     @Inject
     private Controller controller;
 
-    @Produces
-    private HttpHandler handler = (exchange) -> {
-	exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Origin"), "http://localhost:4200");
-	exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Origin"), "http://localhost:5200");
-	exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Methods"), "GET,POST");
-	exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Headers"), "Content-Type");
+    @GET
+    @Path("train")
+    public void train() {
+	controller.trainNeuralNetwork();
+    }
 
-	if (exchange.getRequestPath().equals("/train")) {
-	    controller.trainNeuralNetwork();
-	} else if (exchange.getRequestPath().equals("/sentiment")) {
-	    exchange.getResponseSender().send(new ObjectMapper().writeValueAsString(controller.predict()));
-	}
-    };
+    @GET
+    @Path("sentiment")
+    public SentimentEvaluationResult sentiment() {
+	return controller.predict();
+    }
 
 }

@@ -67,6 +67,7 @@ public class RssReader {
 	} catch (Exception e) {
 	    logger.error("error while retrieving rss feed entries: ", e);
 	} finally {
+	    logger.error("scheduling next run in 10 minutes ");
 	    executor.schedule(() -> readRssFeed(), 10, TimeUnit.MINUTES);
 	}
     }
