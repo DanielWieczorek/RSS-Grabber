@@ -12,9 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.wieczorek.rss.core.business.RssEntry;
-import de.wieczorek.rss.core.business.RssReader;
 import de.wieczorek.rss.core.jgroups.RestInfoSender;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
+import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 
 @ApplicationScoped
 public class Controller {
@@ -29,17 +29,17 @@ public class Controller {
     private RssEntryDao dao;
 
     @Inject
-    private List<RssReader> readers;
+    private RecurrentTaskManager taskManager;
 
     public void start() {
 	logger.info("started");
-	readers.forEach(RssReader::start);
+	taskManager.start();
 	isStarted = true;
     }
 
     public void stop() {
 	logger.info("stopped");
-	readers.forEach(RssReader::stop);
+	taskManager.stop();
 	isStarted = false;
     }
 

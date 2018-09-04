@@ -8,9 +8,8 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.wieczorek.chart.core.business.ChartReader;
-import de.wieczorek.chart.core.persistence.RssEntryDao;
 import de.wieczorek.rss.core.jgroups.RestInfoSender;
+import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 
 @ApplicationScoped
 public class Controller {
@@ -22,20 +21,17 @@ public class Controller {
     }
 
     @Inject
-    private RssEntryDao dao;
-
-    @Inject
-    private ChartReader reader;
+    private RecurrentTaskManager timer;
 
     public void start() {
 	logger.info("started");
-	reader.start();
+	timer.start();
 	isStarted = true;
     }
 
     public void stop() {
 	logger.info("stopped");
-	reader.stop();
+	timer.stop();
 	isStarted = false;
     }
 

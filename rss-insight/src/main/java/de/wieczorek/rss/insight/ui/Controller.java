@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
@@ -12,22 +14,26 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.insight.business.RssEntry;
 import de.wieczorek.rss.insight.business.RssEntrySentiment;
 import de.wieczorek.rss.insight.business.RssEntrySentimentSummary;
 import de.wieczorek.rss.insight.business.RssSentimentNeuralNetwork;
 import de.wieczorek.rss.insight.business.SentimentEvaluationResult;
-import de.wieczorek.rss.insight.persistence.RssEntryDao;
 
 @ApplicationScoped
 public class Controller {
     private static final Logger logger = LogManager.getLogger(Controller.class.getName());
 
     @Inject
-    private RssEntryDao dao;
+    private RssSentimentNeuralNetwork network;
 
     @Inject
-    private RssSentimentNeuralNetwork network;
+    private RecurrentTaskManager timer;
+
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
+	start();
+    }
 
     public void trainNeuralNetwork() {
 	logger.info("get all classified");
@@ -55,6 +61,11 @@ public class Controller {
 	result.setSummary(summary);
 	result.setSentiments(sentimentList);
 	return result;
+    }
+
+    public void start() {
+	trainNeuralNetwork();
+	timer.start();
     }
 
 }

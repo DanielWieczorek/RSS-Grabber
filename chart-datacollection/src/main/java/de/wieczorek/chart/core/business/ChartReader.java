@@ -4,8 +4,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -18,12 +16,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.wieczorek.chart.core.persistence.RssEntryDao;
+import de.wieczorek.rss.core.timer.RecurrentTask;
 
+@RecurrentTask(interval = 10, unit = TimeUnit.MINUTES)
 @ApplicationScoped
-public class ChartReader {
+public class ChartReader implements Runnable {
     private static final Logger logger = LogManager.getLogger(ChartReader.class.getName());
-
-    private static ScheduledExecutorService executor;
 
     @Inject
     private RssEntryDao dao;
@@ -32,7 +30,8 @@ public class ChartReader {
 
     }
 
-    private void readChartData() {
+    @Override
+    public void run() {
 	try {
 	    OhlcApiRequestResult result = ClientBuilder.newClient()
 		    .target("https://api.kraken.com/0/public/OHLC?pair=XBTEUR").request(MediaType.APPLICATION_JSON)
@@ -64,25 +63,6 @@ public class ChartReader {
 
 	} catch (Exception e) {
 	    logger.error("error while retrieving chart data: ", e);
-	} finally {
-	    executor.schedule(() -> readChartData(), 10, TimeUnit.MINUTES);
-	}
-    }
-
-    public void start() {
-	if (executor == null || executor.isShutdown()) {
-	    executor = Executors.newScheduledThreadPool(1);
-	}
-	executor.execute(() -> readChartData());
-
-    }
-
-    public void stop() {
-	executor.shutdownNow();
-	try {
-	    executor.awaitTermination(30, TimeUnit.SECONDS);
-	} catch (InterruptedException e) {
-	    logger.error("error stopping rss reader: ", e);
 	}
     }
 }

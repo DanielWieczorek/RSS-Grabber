@@ -7,11 +7,10 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
+
+import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,37 +23,27 @@ import com.rometools.rome.io.SyndFeedInput;
 import de.wieczorek.rss.core.config.RssConfig;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
 
-public class RssReader {
+public abstract class RssReader implements Runnable {
     private static final Logger logger = LogManager.getLogger(RssReader.class.getName());
 
+    @Inject
     private RssEntryDao dao;
 
-    private RssConfig config;
+    protected abstract RssConfig getRssConfig();
 
-    private static ScheduledExecutorService executor;
-
-    public RssReader() {
-
-    }
-
-    public RssReader(RssConfig config, RssEntryDao dao) {
-	this.config = config;
-	this.dao = dao;
-    }
-
-    private void readRssFeed() {
+    @Override
+    public void run() {
+	RssConfig config = getRssConfig();
 	logger.info("reading feed for " + config.getServiceName());
-	SyndFeed feed = null;
-	try {
-	    feed = buildFeed(feed);
 
+	try {
+	    SyndFeed feed = buildFeed();
 	    List<RssEntry> newEntries = feed.getEntries().stream().map(this::buildBo).filter(config.getFilter())
 		    .map(config.getTransformer()).collect(Collectors.toList());
 	    logger.info("new entries from " + config.getServiceName() + ": "
 		    + newEntries.stream().map(RssEntry::getHeading).collect(Collectors.toList()));
 
 	    if (!newEntries.isEmpty()) {
-		List<String> newUris = newEntries.stream().map(RssEntry::getURI).collect(Collectors.toList());
 		List<String> existingEntryKeys = dao
 			.findAll(newEntries.stream().map(RssEntry::getURI).collect(Collectors.toList())).stream()
 			.map(RssEntry::getURI).collect(Collectors.toList());
@@ -66,14 +55,13 @@ public class RssReader {
 
 	} catch (Exception e) {
 	    logger.error("error while retrieving rss feed entries: ", e);
-	} finally {
-	    logger.error("scheduling next run in 10 minutes ");
-	    executor.schedule(() -> readRssFeed(), 10, TimeUnit.MINUTES);
 	}
     }
 
-    private SyndFeed buildFeed(SyndFeed feed) throws IOException {
+    private SyndFeed buildFeed() throws IOException {
 	InputStream is = null;
+	SyndFeed feed = null;
+	RssConfig config = getRssConfig();
 	try {
 	    System.setProperty("http.agent", "");
 	    HttpURLConnection openConnection = (HttpURLConnection) new URL(config.getFeedUrl()).openConnection();
@@ -97,6 +85,7 @@ public class RssReader {
     }
 
     private RssEntry buildBo(SyndEntry entry) {
+	RssConfig config = getRssConfig();
 	RssEntry e = new RssEntry();
 	e.setDescription(entry.getDescription().getValue());
 	e.setHeading(entry.getTitle());
@@ -107,20 +96,4 @@ public class RssReader {
 	return e;
     }
 
-    public void start() {
-	if (executor == null || executor.isShutdown()) {
-	    executor = Executors.newScheduledThreadPool(1);
-	}
-	executor.execute(() -> readRssFeed());
-
-    }
-
-    public void stop() {
-	executor.shutdownNow();
-	try {
-	    executor.awaitTermination(30, TimeUnit.SECONDS);
-	} catch (InterruptedException e) {
-	    logger.error("error stopping rss reader: ", e);
-	}
-    }
 }
