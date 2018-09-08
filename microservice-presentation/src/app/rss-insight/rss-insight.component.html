@@ -1,0 +1,30 @@
+     
+<div *ngIf="data">
+
+    <div class="mat-h2"> <b>Positive Probability</b>: {{ data.summary.positiveProbability }}</div>
+     
+    <div class="mat-h2"> <b >Negative Probability</b>: {{ data.summary.negativeProbability }}</div>
+
+
+<mat-card *ngFor="let item of data.sentiments" class="example-card">
+  <mat-card-header>
+  <div mat-card-avatar class="example-header-image"> </div>
+    <mat-card-title>{{ item.entry.heading }}</mat-card-title>
+    <mat-card-subtitle>{{ item.entry.publicationDate.toLocaleString() }}</mat-card-subtitle>
+    
+  </mat-card-header>
+  <mat-card-content flex>
+    <p>
+{{ item.entry.description }}
+     </p>
+     
+         <p>
+     <b>Positive Probability</b>: {{ item.positiveProbability }}
+     </p>
+     
+     <p>
+     <b>Negative Probability</b>: {{ item.negativeProbability }}
+     </p>
+  </mat-card-content>
+</mat-card>
+</div>

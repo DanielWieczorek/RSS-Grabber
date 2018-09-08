@@ -1,4 +1,4 @@
-package de.wieczorek.rss.insight.config;
+package de.wieczorek.rss.core;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -12,7 +12,7 @@ public class Configuration {
 
     @Produces
     @RestPort
-    private int restPort = 11020;
+    private int restPort = 10000;
 
     @Produces
     @JGroupsPort
@@ -20,5 +20,5 @@ public class Configuration {
 
     @Produces
     @ServiceName
-    private String serviceName = "rss-insight";
+    private String serviceName = "microservice-status";
 }

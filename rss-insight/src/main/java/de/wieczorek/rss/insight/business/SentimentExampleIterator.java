@@ -103,7 +103,8 @@ public class SentimentExampleIterator implements DataSetIterator {
 	for (int i = 0; i < num && cursor < totalExamples(); i++) {
 	    // Load positive review
 	    int posReviewNumber = cursor / 2;
-	    String review = files.get(posReviewNumber).getDescription();
+	    String review = files.get(posReviewNumber).getHeading() + ". "
+		    + files.get(posReviewNumber).getDescription();
 	    reviews.add(review);
 	    positive[i] = files.get(posReviewNumber).getClassification() == 1;
 

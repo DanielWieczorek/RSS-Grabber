@@ -8,16 +8,11 @@
 
  <modules>
             <module>rss-datacollection-core</module>
-            <module>rss-datacollection-bitcoincom</module>
-            <module>rss-datacollection-bitcoinist</module>
-            <module>rss-datacollection-bitcoinmagazine</module>
-            <module>rss-datacollection-coindesk</module>
-            <module>rss-datacollection-coinnewsasia</module>
-            <module>rss-datacollection-cointelegraph</module>
-            <module>rss-datacollection-cryptonewsnet</module>
-            <module>rss-datacollection-cryptoquicknews</module>
-            <module>rss-datacollection-newsbtc</module>
-            <module>rss-datacollection-collectors-status</module>
+            <module>rss-datacollection</module>
+            <module>rss-classification</module>
+            <module>chart-datacollection</module>
+            <module>rss-insight</module>
+            <module>microservice-status</module>
     </modules>
 </project>
  

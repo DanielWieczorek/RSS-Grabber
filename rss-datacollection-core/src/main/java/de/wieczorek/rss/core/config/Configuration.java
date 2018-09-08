@@ -1,9 +1,8 @@
-package de.wieczorek.rss.insight.config;
+package de.wieczorek.rss.core.config;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
-import de.wieczorek.rss.core.config.ServiceName;
 import de.wieczorek.rss.core.config.port.JGroupsPort;
 import de.wieczorek.rss.core.config.port.RestPort;
 
@@ -12,13 +11,15 @@ public class Configuration {
 
     @Produces
     @RestPort
-    private int restPort = 11020;
+    private int restPort = 8020;
 
     @Produces
     @JGroupsPort
-    private int jgroupsPort = restPort + 1;
+    public int getJGroupsPort() {
+	return restPort + 1;
+    }
 
     @Produces
     @ServiceName
-    private String serviceName = "rss-insight";
+    private String serviceName = "rss-datacollection";
 }

@@ -43,7 +43,7 @@ public class Word2VecExampleIterator implements SentenceIterator {
      *            data.
      */
     public Word2VecExampleIterator(List<RssEntry> entry) {
-	entries = entry.stream().map(RssEntry::getDescription).collect(Collectors.toList());
+	entries = entry.stream().map(x -> x.getHeading() + ". " + x.getDescription()).collect(Collectors.toList());
 	iter = entries.iterator();
 
     }

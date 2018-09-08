@@ -19,4 +19,8 @@ public class Configuration {
 	return restPort + 1;
     }
 
+    @Produces
+    @ServiceName
+    private String serviceName = "rss-classification";
+
 }

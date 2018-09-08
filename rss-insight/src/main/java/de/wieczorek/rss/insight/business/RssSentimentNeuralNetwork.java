@@ -66,10 +66,12 @@ public class RssSentimentNeuralNetwork {
 
 	// DataSetIterators for training and testing respectively
 	WordVectors wordVectors = vec;
-	SentimentExampleIterator train = new SentimentExampleIterator(findAllClassified, wordVectors, batchSize,
-		truncateReviewsToLength, true);
-	SentimentExampleIterator test = new SentimentExampleIterator(findAllClassified, wordVectors, batchSize,
-		truncateReviewsToLength, false);
+	SentimentExampleIterator train = new SentimentExampleIterator(
+		findAllClassified.subList(0, findAllClassified.size()), wordVectors, batchSize, truncateReviewsToLength,
+		true);
+	SentimentExampleIterator test = new SentimentExampleIterator(
+		findAllClassified.subList(0, findAllClassified.size()), wordVectors, batchSize, truncateReviewsToLength,
+		false);
 
 	System.out.println("Starting training");
 	for (int i = 0; i < nEpochs; i++) {
@@ -84,12 +86,12 @@ public class RssSentimentNeuralNetwork {
     }
 
     public RssEntrySentiment predict(RssEntry entry) {
-	vec.getWordVectors(Arrays.asList(entry.getDescription().split(" ")));
 	if (net != null) {
 	    Stemmer stemmer = new PorterStemmer();
 	    net.clear();
-	    INDArray outputRaw = net.output(vec.getWordVectors(Arrays.asList(entry.getDescription().split(" ")).stream()
-		    .map(stemmer::stem).map(CharSequence::toString).collect(Collectors.toList())));
+	    INDArray outputRaw = net.output(
+		    vec.getWordVectors(Arrays.asList((entry.getHeading() + ". " + entry.getDescription()).split(" "))
+			    .stream().map(stemmer::stem).map(CharSequence::toString).collect(Collectors.toList())));
 	    int timeSeriesLength = outputRaw.size(2);
 	    INDArray probabilitiesAtLastWord = outputRaw.get(NDArrayIndex.point(0), NDArrayIndex.all(),
 		    NDArrayIndex.point(timeSeriesLength - 1));
