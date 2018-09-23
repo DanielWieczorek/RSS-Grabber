@@ -1,4 +1,4 @@
-package de.wieczorek.rss.insight.persistence;
+package de.wieczorek.rss.advisor.types.rss;
 
 import java.time.LocalDateTime;
 

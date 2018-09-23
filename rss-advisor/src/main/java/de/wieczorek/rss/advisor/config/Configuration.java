@@ -1,4 +1,4 @@
-package de.wieczorek.rss.insight.config;
+package de.wieczorek.rss.advisor.config;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;

@@ -1,4 +1,4 @@
-package de.wieczorek.rss.insight.ui;
+package de.wieczorek.rss.advisor.ui;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -7,9 +7,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import de.wieczorek.rss.advisor.business.EvaluationResult;
 import de.wieczorek.rss.core.jgroups.CollectorStatus;
 import de.wieczorek.rss.core.ui.Resource;
-import de.wieczorek.rss.insight.business.EvaluationResult;
 
 @Resource
 @Path("/")

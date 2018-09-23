@@ -1,10 +1,10 @@
-package de.wieczorek.rss.insight.business;
+package de.wieczorek.rss.advisor.business;
 
 import java.util.List;
 
-import de.wieczorek.rss.insight.persistence.SentimentAtTime;
+import de.wieczorek.rss.advisor.types.rss.SentimentAtTime;
 
-public class TrainingDataItem {
+public class NetInputItem {
     private List<DeltaChartEntry> inputChartEntry;
     private SentimentAtTime inputSentiment;
 

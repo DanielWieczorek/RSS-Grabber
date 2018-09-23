@@ -1,4 +1,4 @@
-package de.wieczorek.rss.insight.business;
+package de.wieczorek.rss.advisor.types.rss;
 
 import java.util.Date;
 

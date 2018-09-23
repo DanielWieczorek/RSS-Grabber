@@ -1,19 +1,8 @@
-package de.wieczorek.rss.insight.business;
+package de.wieczorek.rss.advisor.types.rss;
 
-public class RssEntrySentiment {
-
-    private RssEntry entry;
-
+public class RssEntrySentimentSummary {
     private double positiveProbability;
     private double negativeProbability;
-
-    public RssEntry getEntry() {
-	return entry;
-    }
-
-    public void setEntry(RssEntry entry) {
-	this.entry = entry;
-    }
 
     public double getPositiveProbability() {
 	return positiveProbability;

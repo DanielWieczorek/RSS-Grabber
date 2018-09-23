@@ -7,11 +7,13 @@
 
 
  <modules>
+            <module>common-webservice-base</module>
             <module>rss-datacollection-core</module>
             <module>rss-datacollection</module>
             <module>rss-classification</module>
             <module>chart-datacollection</module>
             <module>rss-insight</module>
+			<module>rss-advisor</module>
             <module>microservice-status</module>
     </modules>
 </project>

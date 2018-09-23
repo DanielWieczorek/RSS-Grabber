@@ -1,4 +1,4 @@
-package de.wieczorek.rss.insight.business;
+package de.wieczorek.rss.advisor.business;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +25,11 @@ import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 @ApplicationScoped
-public class RssSentimentNeuralNetwork {
+public class TradingNeuralNetwork {
 
     private MultiLayerNetwork net;
 
-    public void train(List<TrainingDataItem> findAllClassified) {
+    public void train(List<NetInputItem> findAllClassified) {
 	if (findAllClassified == null) {
 	    return;
 	}
@@ -63,11 +63,11 @@ public class RssSentimentNeuralNetwork {
 
 	for (int i = 0; i < nEpochs; i++) {
 
-	    List<TrainingDataItem> trainingSet = new ArrayList<>(findAllClassified);
-	    List<TrainingDataItem> testSet = new ArrayList<>();
+	    List<NetInputItem> trainingSet = new ArrayList<>(findAllClassified);
+	    List<NetInputItem> testSet = new ArrayList<>();
 
 	    for (int j = 0; j < trainingSetSize; j++) {
-		TrainingDataItem entry = trainingSet.get(random.nextInt(trainingSet.size()));
+		NetInputItem entry = trainingSet.get(random.nextInt(trainingSet.size()));
 		testSet.add(entry);
 		trainingSet.remove(entry);
 	    }
@@ -89,7 +89,7 @@ public class RssSentimentNeuralNetwork {
 	}
     }
 
-    public EvaluationResult predict(TrainingDataItem item) {
+    public EvaluationResult predict(NetInputItem item) {
 	if (item == null) {
 	    EvaluationResult result = new EvaluationResult();
 	    result.setPositiveProbability(0.5);

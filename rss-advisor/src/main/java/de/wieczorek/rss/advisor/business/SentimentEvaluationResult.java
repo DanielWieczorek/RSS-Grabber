@@ -1,6 +1,9 @@
-package de.wieczorek.rss.insight.business;
+package de.wieczorek.rss.advisor.business;
 
 import java.util.List;
+
+import de.wieczorek.rss.advisor.types.rss.RssEntrySentiment;
+import de.wieczorek.rss.advisor.types.rss.RssEntrySentimentSummary;
 
 public class SentimentEvaluationResult {
     private List<RssEntrySentiment> sentiments;

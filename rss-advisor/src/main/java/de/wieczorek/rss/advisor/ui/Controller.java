@@ -1,4 +1,4 @@
-package de.wieczorek.rss.insight.ui;
+package de.wieczorek.rss.advisor.ui;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,13 +12,13 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.wieczorek.rss.advisor.business.DataPreparator;
+import de.wieczorek.rss.advisor.business.EvaluationResult;
+import de.wieczorek.rss.advisor.business.TradingNeuralNetwork;
+import de.wieczorek.rss.advisor.business.SentimentEvaluationResult;
+import de.wieczorek.rss.advisor.types.chart.ChartEntry;
+import de.wieczorek.rss.advisor.types.rss.SentimentAtTime;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
-import de.wieczorek.rss.insight.business.DataPreparator;
-import de.wieczorek.rss.insight.business.EvaluationResult;
-import de.wieczorek.rss.insight.business.RssSentimentNeuralNetwork;
-import de.wieczorek.rss.insight.business.SentimentEvaluationResult;
-import de.wieczorek.rss.insight.persistence.ChartEntry;
-import de.wieczorek.rss.insight.persistence.SentimentAtTime;
 
 @ApplicationScoped
 public class Controller {
@@ -26,7 +26,7 @@ public class Controller {
 
     private boolean isStarted = false;
     @Inject
-    private RssSentimentNeuralNetwork nn;
+    private TradingNeuralNetwork nn;
 
     public void trainNeuralNetwork() {
 	logger.fatal("foo");

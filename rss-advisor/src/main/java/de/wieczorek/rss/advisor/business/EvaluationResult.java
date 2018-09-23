@@ -1,6 +1,7 @@
-package de.wieczorek.rss.insight.business;
+package de.wieczorek.rss.advisor.business;
 
-public class RssEntrySentimentSummary {
+public class EvaluationResult {
+
     private double positiveProbability;
     private double negativeProbability;
 

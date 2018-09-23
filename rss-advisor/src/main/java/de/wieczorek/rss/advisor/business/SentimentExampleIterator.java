@@ -1,4 +1,4 @@
-package de.wieczorek.rss.insight.business;
+package de.wieczorek.rss.advisor.business;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,14 +19,14 @@ public class SentimentExampleIterator implements DataSetIterator {
     private final int batchSize;
 
     private int cursor = 0;
-    private final List<TrainingDataItem> files;
+    private final List<NetInputItem> files;
 
-    public SentimentExampleIterator(List<TrainingDataItem> entries, int batchSize, boolean train) {
+    public SentimentExampleIterator(List<NetInputItem> entries, int batchSize, boolean train) {
 	this.batchSize = batchSize;
 
-	List<TrainingDataItem> positiveFiles = entries.stream().filter((item) -> item.getOutputSentiment() == 1)
+	List<NetInputItem> positiveFiles = entries.stream().filter((item) -> item.getOutputSentiment() == 1)
 		.collect(Collectors.toList());
-	List<TrainingDataItem> negativeFiles = entries.stream().filter((item) -> item.getOutputSentiment() == -1)
+	List<NetInputItem> negativeFiles = entries.stream().filter((item) -> item.getOutputSentiment() == -1)
 		.collect(Collectors.toList());
 
 	files = new ArrayList<>();
@@ -55,7 +55,7 @@ public class SentimentExampleIterator implements DataSetIterator {
 
     private DataSet nextDataSet(int num) throws IOException {
 	// First: load reviews to String. Alternate positive and negative reviews
-	List<TrainingDataItem> reviews = new ArrayList<>(num);
+	List<NetInputItem> reviews = new ArrayList<>(num);
 	boolean[] positive = new boolean[num];
 	for (int i = 0; i < num && cursor < totalExamples(); i++) {
 	    // Load positive review
@@ -83,7 +83,7 @@ public class SentimentExampleIterator implements DataSetIterator {
 	INDArray labelsMask = Nd4j.zeros(reviews.size(), maxLength);
 
 	for (int i = 0; i < reviews.size(); i++) {
-	    TrainingDataItem item = reviews.get(i);
+	    NetInputItem item = reviews.get(i);
 
 	    double[][] itemVectors = new double[maxLength][vectorSize];
 	    int index = 0;

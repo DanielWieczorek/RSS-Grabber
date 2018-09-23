@@ -1,4 +1,4 @@
-package de.wieczorek.rss.insight.business;
+package de.wieczorek.rss.advisor.business;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import de.wieczorek.rss.insight.persistence.ChartEntry;
-import de.wieczorek.rss.insight.persistence.SentimentAtTime;
+import de.wieczorek.rss.advisor.types.chart.ChartEntry;
+import de.wieczorek.rss.advisor.types.rss.SentimentAtTime;
 
 public class DataPreparator {
 
@@ -28,14 +28,14 @@ public class DataPreparator {
 	return this;
     }
 
-    public List<TrainingDataItem> getData() {
+    public List<NetInputItem> getData() {
 	Map<LocalDateTime, SentimentAtTime> sentimentDateMappings = sentiments.stream()
 		.collect(Collectors.toMap(SentimentAtTime::getSentimentTime, Function.identity(), (v1, v2) -> v2));
 
 	Map<LocalDateTime, ChartEntry> chartEntryMappings = chartEntries.stream()
 		.collect(Collectors.toMap(ChartEntry::getDate, Function.identity(), (v1, v2) -> v2));
 
-	List<TrainingDataItem> result = new ArrayList<>();
+	List<NetInputItem> result = new ArrayList<>();
 
 	chartEntryMappings.keySet().forEach(date -> {
 	    ChartEntry inputChartEntry = chartEntryMappings.get(date);
@@ -80,7 +80,7 @@ public class DataPreparator {
 
 		int outputSentiment = outputChartEntry.getClose() - inputChartEntry.getClose() > 0.0 ? 1 : -1;
 
-		TrainingDataItem item = new TrainingDataItem();
+		NetInputItem item = new NetInputItem();
 		item.setInputChartEntry(inputChartEntries);
 		item.setInputSentiment(inputSentiment);
 		item.setOutputSentiment(outputSentiment);
@@ -91,7 +91,7 @@ public class DataPreparator {
 	return result;
     }
 
-    public TrainingDataItem getDataForSentiment(SentimentAtTime sentiment) {
+    public NetInputItem getDataForSentiment(SentimentAtTime sentiment) {
 
 	Map<LocalDateTime, ChartEntry> chartEntryMappings = chartEntries.stream()
 		.peek(e -> System.out.println(e.getDate()))
@@ -101,7 +101,7 @@ public class DataPreparator {
 	LocalDateTime currentDate = startTime;
 
 	ChartEntry inputChartEntry = chartEntryMappings.get(currentDate);
-	while (inputChartEntry == null) {
+	while (inputChartEntry == null && currentDate.isBefore(sentiment.getSentimentTime())) {
 	    inputChartEntry = chartEntryMappings.get(currentDate);
 	    currentDate = currentDate.plusMinutes(1);
 	}
@@ -141,7 +141,7 @@ public class DataPreparator {
 		return null;
 	    }).collect(Collectors.toList());
 
-	    TrainingDataItem item = new TrainingDataItem();
+	    NetInputItem item = new NetInputItem();
 	    item.setInputChartEntry(inputChartEntries);
 	    item.setInputSentiment(sentiment);
 	    return item;
