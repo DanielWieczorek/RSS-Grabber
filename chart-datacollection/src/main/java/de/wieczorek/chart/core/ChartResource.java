@@ -1,5 +1,7 @@
 package de.wieczorek.chart.core;
 
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -7,7 +9,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.ui.Controller;
+import de.wieczorek.rss.core.jgroups.CollectorStatus;
 import de.wieczorek.rss.core.ui.Resource;
 
 @Resource
@@ -33,8 +37,17 @@ public class ChartResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("status")
-    public void status() {
-	controller.stop();
+    public CollectorStatus status() {
+	CollectorStatus status = new CollectorStatus();
+	status.setStatus(controller.isStarted() ? "running" : "stopped");
+	return status;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("ohlcv")
+    public List<ChartEntry> ohlcv() {
+	return controller.getAll();
     }
 
 }

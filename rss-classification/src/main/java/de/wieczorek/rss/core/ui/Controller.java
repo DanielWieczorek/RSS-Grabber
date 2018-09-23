@@ -20,6 +20,8 @@ import de.wieczorek.rss.core.persistence.RssEntryDao;
 public class Controller {
     private static final Logger logger = LogManager.getLogger(Controller.class.getName());
 
+    private boolean isStarted = false;
+
     @Inject
     private RssEntryDao dao;
 
@@ -56,5 +58,17 @@ public class Controller {
 
     public List<RssEntry> readClassfiedEntries() {
 	return dao.findAllClassified();
+    }
+
+    public void start() {
+	isStarted = true;
+    }
+
+    public void stop() {
+	isStarted = false;
+    }
+
+    public boolean isStarted() {
+	return isStarted;
     }
 }

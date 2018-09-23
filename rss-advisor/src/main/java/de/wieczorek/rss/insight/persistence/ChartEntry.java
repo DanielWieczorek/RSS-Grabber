@@ -1,4 +1,4 @@
-package de.wieczorek.chart.core.business;
+package de.wieczorek.rss.insight.persistence;
 
 import java.time.LocalDateTime;
 

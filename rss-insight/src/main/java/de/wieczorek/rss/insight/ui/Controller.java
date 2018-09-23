@@ -20,16 +20,22 @@ import de.wieczorek.rss.insight.business.RssEntrySentiment;
 import de.wieczorek.rss.insight.business.RssEntrySentimentSummary;
 import de.wieczorek.rss.insight.business.RssSentimentNeuralNetwork;
 import de.wieczorek.rss.insight.business.SentimentEvaluationResult;
+import de.wieczorek.rss.insight.persistence.SentimentAtTime;
+import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
 
 @ApplicationScoped
 public class Controller {
     private static final Logger logger = LogManager.getLogger(Controller.class.getName());
 
+    private boolean isStarted = false;
     @Inject
     private RssSentimentNeuralNetwork network;
 
     @Inject
     private RecurrentTaskManager timer;
+
+    @Inject
+    private SentimentAtTimeDao dao;
 
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
 	start();
@@ -37,10 +43,13 @@ public class Controller {
 
     public void trainNeuralNetwork() {
 	logger.info("get all classified");
+	timer.stop();
 
 	network.train(ClientBuilder.newClient().target("http://localhost:10020/classified")
 		.request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
 		}));
+	timer.start();
+
     }
 
     public SentimentEvaluationResult predict() {
@@ -66,6 +75,20 @@ public class Controller {
     public void start() {
 	trainNeuralNetwork();
 	timer.start();
+	isStarted = true;
+    }
+
+    public List<SentimentAtTime> getAllSentimentAtTime() {
+	return dao.findAll();
+    }
+
+    public void stop() {
+	timer.stop();
+	isStarted = false;
+    }
+
+    public boolean isStarted() {
+	return isStarted;
     }
 
 }

@@ -12,6 +12,7 @@ export class RssClassificationComponent implements OnInit {
     data : RssEntry[];
 
     constructor(private http: HttpClient){
+        
     }
     
     classifyPositive(data: RssEntry) : void {
@@ -48,4 +49,5 @@ export class RssClassificationComponent implements OnInit {
         this.data = data as RssEntry[];
       });
     }
+    
 }

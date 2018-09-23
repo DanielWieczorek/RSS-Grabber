@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.ClientBuilder;
 
 @ApplicationScoped
@@ -21,7 +19,7 @@ public class StatusRequester {
 	    try {
 		md.setStatus(ClientBuilder.newClient().target("http://" + md.getBindHostname() + ":" + md.getBindPort())
 			.path("/status").request().accept("application/json").get(CollectorStatus.class).getStatus());
-	    } catch (WebApplicationException | ProcessingException e) {
+	    } catch (Exception e) {
 		md.setStatus("failed");
 		e.printStackTrace();
 	    }

@@ -2,6 +2,7 @@ package de.wieczorek.rss.core.timer;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
@@ -9,13 +10,15 @@ import org.apache.logging.log4j.Logger;
 
 public class RecurrentTaskRunner {
 
-    private ScheduledExecutorService executor;
+    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
     private static final Logger logger = LogManager.getLogger(RecurrentTaskRunner.class.getName());
 
     private Runnable task;
     private int interval;
     private TimeUnit unit;
+
+    private ScheduledFuture<?> nextInvocation;
 
     RecurrentTaskRunner(Runnable task, int interval, TimeUnit unit) {
 	this.task = task;
@@ -24,6 +27,7 @@ public class RecurrentTaskRunner {
     }
 
     public void start() {
+	stop();
 	if (executor == null || executor.isShutdown()) {
 	    executor = Executors.newScheduledThreadPool(1);
 	}
@@ -37,17 +41,25 @@ public class RecurrentTaskRunner {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	} finally {
-	    executor.schedule(this::run, interval, unit);
+	    nextInvocation = executor.schedule(this::run, interval, unit);
 	    logger.debug("scheduling again in " + interval + " " + unit);
 	}
     }
 
     public void stop() {
-	executor.shutdownNow();
-	try {
-	    executor.awaitTermination(2, TimeUnit.MINUTES);
-	} catch (InterruptedException e) {
-	    logger.error("error stopping rss reader: ", e);
+	if (executor != null) {
+	    executor.shutdownNow();
+	    try {
+
+		executor.shutdown();
+		if (nextInvocation != null) {
+		    nextInvocation.cancel(false);
+		}
+		executor.awaitTermination(10, TimeUnit.SECONDS);
+
+	    } catch (InterruptedException e) {
+		logger.error("error stopping rss reader: ", e);
+	    }
 	}
     }
 

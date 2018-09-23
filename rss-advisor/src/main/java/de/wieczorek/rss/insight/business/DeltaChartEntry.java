@@ -1,37 +1,15 @@
-package de.wieczorek.chart.core.business;
+package de.wieczorek.rss.insight.business;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-
-@Entity
-@Table(name = "ohlc")
-public class ChartEntry {
-
-    @Id
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+public class DeltaChartEntry {
     private LocalDateTime date;
-
     private double open;
-
     private double high;
-
     private double low;
-
     private double close;
-
     private double volumeWeightedAverage;
-
     private double volume;
-
     private double transactions;
 
     public LocalDateTime getDate() {
@@ -66,6 +44,14 @@ public class ChartEntry {
 	this.low = low;
     }
 
+    public double getClose() {
+	return close;
+    }
+
+    public void setClose(double close) {
+	this.close = close;
+    }
+
     public double getVolumeWeightedAverage() {
 	return volumeWeightedAverage;
     }
@@ -80,14 +66,6 @@ public class ChartEntry {
 
     public void setVolume(double volume) {
 	this.volume = volume;
-    }
-
-    public double getClose() {
-	return close;
-    }
-
-    public void setClose(double close) {
-	this.close = close;
     }
 
     public double getTransactions() {

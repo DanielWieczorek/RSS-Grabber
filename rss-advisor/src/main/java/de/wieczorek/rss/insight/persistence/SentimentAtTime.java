@@ -3,7 +3,6 @@ package de.wieczorek.rss.insight.persistence;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -13,14 +12,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
-import de.wieczorek.rss.core.db.LocalDateTimeConverter;
-
 @Entity
 @Table(name = "sentimentAtTime")
 public class SentimentAtTime {
     @Id
     @Column(name = "time")
-    @Convert(converter = LocalDateTimeConverter.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime sentimentTime;

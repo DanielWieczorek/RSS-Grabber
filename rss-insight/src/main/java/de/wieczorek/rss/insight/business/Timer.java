@@ -38,7 +38,9 @@ public class Timer implements Runnable {
 	    entity.setPositiveProbability(result.getSummary().getPositiveProbability());
 	    entity.setNegativeProbability(result.getSummary().getNegativeProbability());
 	    entity.setSentimentTime(LocalDateTime.now().withSecond(0).withNano(0));
-	    dao.persist(entity);
+	    if (dao.findById(entity.getSentimentTime()) == null) {
+		dao.persist(entity);
+	    }
 
 	} catch (Exception e) {
 	    logger.error("error while retrieving chart data: ", e);

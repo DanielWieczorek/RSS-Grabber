@@ -1,32 +1,28 @@
-package de.wieczorek.rss.core.ui;
-
-import java.util.List;
+package de.wieczorek.rss.insight.ui;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import de.wieczorek.rss.core.business.RssEntry;
 import de.wieczorek.rss.core.jgroups.CollectorStatus;
+import de.wieczorek.rss.core.ui.Resource;
+import de.wieczorek.rss.insight.business.EvaluationResult;
 
-@Path("/")
 @Resource
+@Path("/")
 @ApplicationScoped
 public class RssHandler {
+
     @Inject
     private Controller controller;
 
-    @Produces(MediaType.APPLICATION_JSON)
     @GET
-    @Path("find")
-    public List<RssEntry> find() {
-	return controller.readUnclassifiedEntries();
-
+    @Path("train")
+    public void train() {
+	controller.trainNeuralNetwork();
     }
 
     @GET
@@ -42,27 +38,19 @@ public class RssHandler {
     }
 
     @GET
+    @Path("sentiment")
+    @Produces(MediaType.APPLICATION_JSON)
+    public EvaluationResult predict() {
+	return controller.predict();
+    }
+
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("status")
     public CollectorStatus status() {
 	CollectorStatus status = new CollectorStatus();
 	status.setStatus(controller.isStarted() ? "running" : "stopped");
 	return status;
-    }
-
-    @Produces(MediaType.APPLICATION_JSON)
-    @GET
-    @Path("classified")
-    public List<RssEntry> classified() {
-	return controller.readClassfiedEntries();
-    }
-
-    @Consumes("application/json")
-    @Produces(MediaType.APPLICATION_JSON)
-    @POST
-    @Path("classify")
-    public void classify(RssEntry classifiedEntry) {
-	controller.updateClassification(classifiedEntry);
     }
 
 }

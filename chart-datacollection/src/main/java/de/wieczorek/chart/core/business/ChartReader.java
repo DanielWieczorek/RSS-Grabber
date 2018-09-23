@@ -1,8 +1,9 @@
 package de.wieczorek.chart.core.business;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 import de.wieczorek.chart.core.persistence.RssEntryDao;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 
-@RecurrentTask(interval = 10, unit = TimeUnit.MINUTES)
+@RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class ChartReader implements Runnable {
     private static final Logger logger = LogManager.getLogger(ChartReader.class.getName());
@@ -42,7 +43,9 @@ public class ChartReader implements Runnable {
 	    if (result.getErrors().isEmpty()) {
 		((List<List<?>>) result.getResults().get("XXBTZEUR")).forEach((List<?> item) -> {
 		    ChartEntry entry = new ChartEntry();
-		    entry.setDate(Date.from(Instant.ofEpochSecond((Integer) item.get(0))));
+		    entry.setDate(LocalDateTime
+			    .ofInstant(Instant.ofEpochSecond((Integer) item.get(0)), ZoneId.systemDefault())
+			    .withSecond(0).withNano(0));
 		    entry.setOpen(Double.valueOf((String) item.get(1)));
 		    entry.setHigh(Double.valueOf((String) item.get(2)));
 		    entry.setLow(Double.valueOf((String) item.get(3)));
