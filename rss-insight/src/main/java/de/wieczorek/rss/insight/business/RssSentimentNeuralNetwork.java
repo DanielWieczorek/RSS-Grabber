@@ -27,6 +27,8 @@ import org.nd4j.linalg.indexing.NDArrayIndex;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
+import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.insight.types.RssEntrySentiment;
 import opennlp.tools.stemmer.PorterStemmer;
 import opennlp.tools.stemmer.Stemmer;
 

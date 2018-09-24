@@ -11,7 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import de.wieczorek.rss.core.business.RssEntry;
+import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.jgroups.CollectorStatus;
 
 @Path("/")

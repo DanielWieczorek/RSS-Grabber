@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import de.wieczorek.rss.advisor.types.chart.ChartEntry;
-import de.wieczorek.rss.advisor.types.rss.SentimentAtTime;
+import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.rss.insight.types.SentimentAtTime;
 
 public class DataPreparator {
 

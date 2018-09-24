@@ -11,10 +11,10 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.wieczorek.rss.core.business.RssEntry;
 import de.wieczorek.rss.core.jgroups.RestInfoSender;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
+import de.wieczorek.rss.types.RssEntry;
 
 @ApplicationScoped
 public class Controller {

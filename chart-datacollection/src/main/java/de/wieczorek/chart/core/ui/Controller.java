@@ -50,4 +50,9 @@ public class Controller {
 	return dao.findAll();
     }
 
+    public List<ChartEntry> get24h() {
+
+	return dao.find24h();
+    }
+
 }

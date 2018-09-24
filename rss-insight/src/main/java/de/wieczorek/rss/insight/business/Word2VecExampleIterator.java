@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.deeplearning4j.text.sentenceiterator.SentenceIterator;
 import org.deeplearning4j.text.sentenceiterator.SentencePreProcessor;
 
+import de.wieczorek.rss.classification.types.RssEntry;
 import opennlp.tools.stemmer.PorterStemmer;
 import opennlp.tools.stemmer.Stemmer;
 

@@ -11,10 +11,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import de.wieczorek.rss.core.business.RssEntry;
 import de.wieczorek.rss.core.jgroups.CollectorStatus;
 import de.wieczorek.rss.core.ui.Controller;
 import de.wieczorek.rss.core.ui.Resource;
+import de.wieczorek.rss.types.RssEntry;
 
 @Resource
 @ApplicationScoped

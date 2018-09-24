@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.wieczorek.rss.core.business.RssEntry;
+import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
 
 @ApplicationScoped

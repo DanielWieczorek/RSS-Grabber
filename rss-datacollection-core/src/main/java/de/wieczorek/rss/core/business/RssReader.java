@@ -22,6 +22,7 @@ import com.rometools.rome.io.SyndFeedInput;
 
 import de.wieczorek.rss.core.config.RssConfig;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
+import de.wieczorek.rss.types.RssEntry;
 
 public abstract class RssReader implements Runnable {
     private static final Logger logger = LogManager.getLogger(RssReader.class.getName());

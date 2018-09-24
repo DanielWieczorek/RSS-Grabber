@@ -16,9 +16,15 @@
 	<artifactId>rss-classification</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
-	<dependency>
+		<dependency>
 			<groupId>de.wieczorek</groupId>
 			<artifactId>common-webservice-base</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>de.wieczorek</groupId>
+			<artifactId>rss-classification-types</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

@@ -10,8 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.wieczorek.rss.core.timer.RecurrentTask;
-import de.wieczorek.rss.insight.persistence.SentimentAtTime;
 import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
+import de.wieczorek.rss.insight.types.SentimentAtTime;
+import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
 import de.wieczorek.rss.insight.ui.Controller;
 
 @RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)

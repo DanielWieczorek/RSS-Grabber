@@ -14,14 +14,14 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
-import de.wieczorek.rss.insight.business.RssEntry;
-import de.wieczorek.rss.insight.business.RssEntrySentiment;
-import de.wieczorek.rss.insight.business.RssEntrySentimentSummary;
 import de.wieczorek.rss.insight.business.RssSentimentNeuralNetwork;
-import de.wieczorek.rss.insight.business.SentimentEvaluationResult;
-import de.wieczorek.rss.insight.persistence.SentimentAtTime;
 import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
+import de.wieczorek.rss.insight.types.RssEntrySentiment;
+import de.wieczorek.rss.insight.types.RssEntrySentimentSummary;
+import de.wieczorek.rss.insight.types.SentimentAtTime;
+import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
 
 @ApplicationScoped
 public class Controller {

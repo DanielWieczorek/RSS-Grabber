@@ -2,7 +2,7 @@ package de.wieczorek.rss.advisor.business;
 
 import java.util.List;
 
-import de.wieczorek.rss.advisor.types.rss.SentimentAtTime;
+import de.wieczorek.rss.insight.types.SentimentAtTime;
 
 public class NetInputItem {
     private List<DeltaChartEntry> inputChartEntry;

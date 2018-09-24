@@ -17,6 +17,8 @@ import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFac
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
+import de.wieczorek.rss.classification.types.RssEntry;
+
 @ApplicationScoped
 public class RssWord2VecNetwork implements WordVectors {
     /**

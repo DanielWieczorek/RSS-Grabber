@@ -49,4 +49,12 @@ public class RssEntryDao {
 	return allQuery.getResultList();
     }
 
+    public List<ChartEntry> find24h() {
+	LocalDateTime date = LocalDateTime.now().withSecond(0).withNano(0).minusHours(24);
+	TypedQuery<ChartEntry> query = entityManager
+		.createQuery("SELECT s FROM ChartEntry s WHERE s.date >= :time", ChartEntry.class)
+		.setParameter("time", date);
+	return query.getResultList();
+    }
+
 }

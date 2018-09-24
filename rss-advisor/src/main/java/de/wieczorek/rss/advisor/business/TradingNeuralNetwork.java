@@ -36,11 +36,8 @@ public class TradingNeuralNetwork {
 	int batchSize = 128; // Number of examples in each minibatch
 	int vectorSize = 9; // Size of the word vectors. 300 in the Google News model
 	int nEpochs = 25; // Number of epochs (full passes of training data) to train on
-	int truncateReviewsToLength = 128; // Truncate reviews with length (# words) greater than this
 	final int seed = 0; // Seed for reproducibility
 
-	// Nd4j.getMemoryManager().setAutoGcWindow(20000); //
-	// https://deeplearning4j.org/workspaces
 	Nd4j.getMemoryManager().togglePeriodicGc(false);
 	// Set up network configuration
 	MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed).updater(new Adam(2e-2)).l2(1e-5)

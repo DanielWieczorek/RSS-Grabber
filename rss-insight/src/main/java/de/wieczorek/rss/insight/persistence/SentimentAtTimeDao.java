@@ -17,6 +17,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import de.wieczorek.rss.insight.types.SentimentAtTime;
+
 @ApplicationScoped
 public class SentimentAtTimeDao {
     private EntityManager entityManager;

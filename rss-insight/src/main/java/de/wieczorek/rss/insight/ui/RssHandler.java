@@ -11,8 +11,8 @@ import javax.ws.rs.core.MediaType;
 
 import de.wieczorek.rss.core.jgroups.CollectorStatus;
 import de.wieczorek.rss.core.ui.Resource;
-import de.wieczorek.rss.insight.business.SentimentEvaluationResult;
-import de.wieczorek.rss.insight.persistence.SentimentAtTime;
+import de.wieczorek.rss.insight.types.SentimentAtTime;
+import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
 
 @Resource
 @Path("/")

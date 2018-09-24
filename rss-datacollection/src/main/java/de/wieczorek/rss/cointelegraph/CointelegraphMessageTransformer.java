@@ -7,7 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.wieczorek.rss.core.business.MessageTransformer;
-import de.wieczorek.rss.core.business.RssEntry;
+import de.wieczorek.rss.types.RssEntry;
 
 public class CointelegraphMessageTransformer implements MessageTransformer {
     private static final Logger logger = LogManager.getLogger(CointelegraphMessageTransformer.class.getName());

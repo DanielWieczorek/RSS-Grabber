@@ -13,7 +13,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-import de.wieczorek.rss.core.business.RssEntry;
+import de.wieczorek.rss.types.RssEntry;
 
 @ApplicationScoped
 public class RssEntryDao {

@@ -1,7 +1,7 @@
 package de.wieczorek.rss.cointelegraph;
 
 import de.wieczorek.rss.core.business.MessageFilter;
-import de.wieczorek.rss.core.business.RssEntry;
+import de.wieczorek.rss.types.RssEntry;
 
 public class CointelegraphMessageFilter implements MessageFilter {
 
