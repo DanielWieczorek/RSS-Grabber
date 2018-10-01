@@ -16,31 +16,11 @@
 	<artifactId>rss-insight</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
-		<!-- ND4J backend. You need one in every DL4J project. Normally define 
-			artifactId as either "nd4j-native-platform" or "nd4j-cuda-7.5-platform" -->
-		<dependency>
-			<groupId>org.nd4j</groupId>
-			<artifactId>nd4j-native-platform</artifactId>
-			<version>1.0.0-beta</version>
-		</dependency>
-
-		<!-- Core DL4J functionality -->
-		<dependency>
-			<groupId>org.deeplearning4j</groupId>
-			<artifactId>deeplearning4j-core</artifactId>
-			<version>1.0.0-beta</version>
-		</dependency>
 
 		<dependency>
-			<groupId>org.deeplearning4j</groupId>
-			<artifactId>deeplearning4j-nlp</artifactId>
-			<version>1.0.0-beta</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.opennlp</groupId>
-			<artifactId>opennlp-tools</artifactId>
-			<version>1.9.0</version>
+			<groupId>de.wieczorek</groupId>
+			<artifactId>common-neuralnetwork</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

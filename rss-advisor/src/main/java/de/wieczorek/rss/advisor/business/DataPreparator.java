@@ -2,6 +2,7 @@ package de.wieczorek.rss.advisor.business;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -16,7 +17,10 @@ public class DataPreparator {
 
     private List<ChartEntry> chartEntries;
 
-    private int offsetMinutes = 60;
+    private int offsetMinutes = 15;
+
+    private static Map<LocalDateTime, ChartEntry> chartEntryMappings;
+    private static Map<LocalDateTime, SentimentAtTime> sentimentDateMappings;
 
     public DataPreparator withSentiments(List<SentimentAtTime> sentiments) {
 	this.sentiments = sentiments;
@@ -34,6 +38,8 @@ public class DataPreparator {
 
 	Map<LocalDateTime, ChartEntry> chartEntryMappings = chartEntries.stream()
 		.collect(Collectors.toMap(ChartEntry::getDate, Function.identity(), (v1, v2) -> v2));
+
+	Map<DeltaChartEntry, DeltaChartEntry> deltaEntryCache = new HashMap<>();
 
 	List<NetInputItem> result = new ArrayList<>();
 
@@ -72,18 +78,21 @@ public class DataPreparator {
 			    delta.setVolumeWeightedAverage(
 				    current.getVolumeWeightedAverage() - previous.getVolumeWeightedAverage());
 
+			    DeltaChartEntry cached = deltaEntryCache.putIfAbsent(delta, delta);
+			    if (cached != null) {
+				return cached;
+			    }
+
 			    return delta;
 			}
 		    }
 		    return null;
 		}).collect(Collectors.toList());
 
-		int outputSentiment = outputChartEntry.getClose() - inputChartEntry.getClose() > 0.0 ? 1 : -1;
-
 		NetInputItem item = new NetInputItem();
 		item.setInputChartEntry(inputChartEntries);
 		item.setInputSentiment(inputSentiment);
-		item.setOutputSentiment(outputSentiment);
+		item.setOutputDelta(outputChartEntry.getClose() - inputChartEntry.getClose());
 
 		result.add(item);
 	    }
@@ -147,6 +156,10 @@ public class DataPreparator {
 	    return item;
 	}
 	return null;
+    }
+
+    public int getOffsetMinutes() {
+	return offsetMinutes;
     }
 
 }

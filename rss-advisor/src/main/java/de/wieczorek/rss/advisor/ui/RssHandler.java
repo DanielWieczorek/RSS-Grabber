@@ -7,7 +7,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import de.wieczorek.rss.advisor.business.EvaluationResult;
+import de.wieczorek.rss.advisor.persistence.TradingEvaluationResult;
 import de.wieczorek.rss.core.jgroups.CollectorStatus;
 import de.wieczorek.rss.core.ui.Resource;
 
@@ -40,7 +40,7 @@ public class RssHandler {
     @GET
     @Path("sentiment")
     @Produces(MediaType.APPLICATION_JSON)
-    public EvaluationResult predict() {
+    public TradingEvaluationResult predict() {
 	return controller.predict();
     }
 

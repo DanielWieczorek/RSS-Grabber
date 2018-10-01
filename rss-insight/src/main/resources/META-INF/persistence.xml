@@ -7,7 +7,7 @@
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 
-		<class>de.wieczorek.rss.insight.persistence.SentimentAtTime</class>
+		<class>de.wieczorek.rss.insight.types.SentimentAtTime</class>
 		 <class>de.wieczorek.rss.core.db.LocalDateTimeConverter</class>
 
 		<properties>

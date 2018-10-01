@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.insight.business.RssSentimentNeuralNetwork;
+import de.wieczorek.rss.insight.business.RssWord2VecNetwork;
 import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
 import de.wieczorek.rss.insight.types.RssEntrySentiment;
 import de.wieczorek.rss.insight.types.RssEntrySentimentSummary;
@@ -32,6 +33,9 @@ public class Controller {
     private RssSentimentNeuralNetwork network;
 
     @Inject
+    private RssWord2VecNetwork vec;
+
+    @Inject
     private RecurrentTaskManager timer;
 
     @Inject
@@ -45,18 +49,24 @@ public class Controller {
 	logger.info("get all classified");
 	timer.stop();
 
-	network.train(ClientBuilder.newClient().target("http://localhost:10020/classified")
+	List<RssEntry> data = ClientBuilder.newClient().target("http://localhost:10020/classified")
 		.request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
-		}));
+		});
+
+	vec.train(data);
+	network.train(data, 25);
+
 	timer.start();
 
     }
 
     public SentimentEvaluationResult predict() {
-	List<RssEntrySentiment> sentimentList = ClientBuilder.newClient()
-		.target("http://localhost:8020/rss-entries/24h").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<RssEntry>>() {
-		}).stream().map(network::predict).collect(Collectors.toList());
+	List<RssEntry> input = ClientBuilder.newClient().target("http://localhost:8020/rss-entries/24h")
+		.request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
+		});
+
+	vec.train(input);
+	List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).collect(Collectors.toList());
 
 	double positiveSum = sentimentList.stream().mapToDouble(RssEntrySentiment::getPositiveProbability).sum()
 		/ sentimentList.size();

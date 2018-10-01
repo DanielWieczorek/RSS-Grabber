@@ -17,8 +17,8 @@ import de.wieczorek.rss.insight.ui.Controller;
 
 @RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
 @ApplicationScoped
-public class Timer implements Runnable {
-    private static final Logger logger = LogManager.getLogger(Timer.class.getName());
+public class PredictionTimer implements Runnable {
+    private static final Logger logger = LogManager.getLogger(PredictionTimer.class.getName());
 
     @Inject
     private SentimentAtTimeDao dao;
@@ -26,7 +26,7 @@ public class Timer implements Runnable {
     @Inject
     private Controller controller;
 
-    public Timer() {
+    public PredictionTimer() {
 
     }
 

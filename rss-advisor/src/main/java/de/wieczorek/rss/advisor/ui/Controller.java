@@ -16,9 +16,10 @@ import org.apache.logging.log4j.Logger;
 
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.rss.advisor.business.DataPreparator;
-import de.wieczorek.rss.advisor.business.EvaluationResult;
 import de.wieczorek.rss.advisor.business.TradingNeuralNetwork;
+import de.wieczorek.rss.advisor.persistence.TradingEvaluationResult;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
+import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
 
@@ -29,6 +30,9 @@ public class Controller {
     private boolean isStarted = false;
     @Inject
     private TradingNeuralNetwork nn;
+
+    @Inject
+    private RecurrentTaskManager timer;
 
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
 	start();
@@ -48,12 +52,12 @@ public class Controller {
 
 	if (sentiments != null && chartEntries != null) {
 
-	    nn.train(new DataPreparator().withChartData(chartEntries).withSentiments(sentiments).getData());
+	    nn.train(new DataPreparator().withChartData(chartEntries).withSentiments(sentiments).getData(), 1);
 	}
 
     }
 
-    public EvaluationResult predict() {
+    public TradingEvaluationResult predict() {
 	LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
 	SentimentEvaluationResult currentSentiment = ClientBuilder.newClient()
 		.register(new ObjectMapperContextResolver()).target("http://localhost:11020/sentiment")
@@ -69,7 +73,12 @@ public class Controller {
 	    sentiment.setPositiveProbability(currentSentiment.getSummary().getPositiveProbability());
 	    sentiment.setNegativeProbability(currentSentiment.getSummary().getNegativeProbability());
 	    sentiment.setSentimentTime(currentTime);
-	    return nn.predict(new DataPreparator().withChartData(chartEntries).getDataForSentiment(sentiment));
+	    DataPreparator preparator = new DataPreparator().withChartData(chartEntries);
+	    TradingEvaluationResult result = nn.predict(preparator.getDataForSentiment(sentiment));
+	    result.setCurrentTime(currentTime);
+	    result.setTargetTime(currentTime.plusMinutes(preparator.getOffsetMinutes()));
+
+	    return result;
 	}
 	return null;
 
@@ -78,10 +87,13 @@ public class Controller {
     public void start() {
 	trainNeuralNetwork();
 	isStarted = true;
+	timer.start();
     }
 
     public void stop() {
 	isStarted = false;
+	timer.stop();
+
     }
 
     public boolean isStarted() {

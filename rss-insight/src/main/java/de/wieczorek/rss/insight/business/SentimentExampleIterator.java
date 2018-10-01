@@ -101,7 +101,7 @@ public class SentimentExampleIterator implements DataSetIterator {
 	// First: load reviews to String. Alternate positive and negative reviews
 	List<String> reviews = new ArrayList<>(num);
 	boolean[] positive = new boolean[num];
-	for (int i = 0; i < num && cursor < totalExamples(); i++) {
+	for (int i = 0; i < num && cursor < files.size(); i++) {
 	    // Load positive review
 	    int posReviewNumber = cursor;
 	    String review = files.get(posReviewNumber).getHeading() + ". "
@@ -185,11 +185,6 @@ public class SentimentExampleIterator implements DataSetIterator {
     }
 
     @Override
-    public int totalExamples() {
-	return files.size();
-    }
-
-    @Override
     public int inputColumns() {
 	return vectorSize;
     }
@@ -220,16 +215,6 @@ public class SentimentExampleIterator implements DataSetIterator {
     }
 
     @Override
-    public int cursor() {
-	return cursor;
-    }
-
-    @Override
-    public int numExamples() {
-	return totalExamples();
-    }
-
-    @Override
     public void setPreProcessor(DataSetPreProcessor preProcessor) {
 	throw new UnsupportedOperationException();
     }
@@ -241,7 +226,7 @@ public class SentimentExampleIterator implements DataSetIterator {
 
     @Override
     public boolean hasNext() {
-	return cursor < numExamples();
+	return cursor < files.size();
     }
 
     @Override

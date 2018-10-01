@@ -24,9 +24,9 @@ public class SentimentExampleIterator implements DataSetIterator {
     public SentimentExampleIterator(List<NetInputItem> entries, int batchSize, boolean train) {
 	this.batchSize = batchSize;
 
-	List<NetInputItem> positiveFiles = entries.stream().filter((item) -> item.getOutputSentiment() == 1)
+	List<NetInputItem> positiveFiles = entries.stream().filter((item) -> item.getOutputDelta() > 0)
 		.collect(Collectors.toList());
-	List<NetInputItem> negativeFiles = entries.stream().filter((item) -> item.getOutputSentiment() == -1)
+	List<NetInputItem> negativeFiles = entries.stream().filter((item) -> item.getOutputDelta() <= 0)
 		.collect(Collectors.toList());
 
 	files = new ArrayList<>();
@@ -56,13 +56,10 @@ public class SentimentExampleIterator implements DataSetIterator {
     private DataSet nextDataSet(int num) throws IOException {
 	// First: load reviews to String. Alternate positive and negative reviews
 	List<NetInputItem> reviews = new ArrayList<>(num);
-	boolean[] positive = new boolean[num];
 	for (int i = 0; i < num && cursor < totalExamples(); i++) {
-	    // Load positive review
 	    int posReviewNumber = cursor;
 
 	    reviews.add(files.get(posReviewNumber));
-	    positive[i] = files.get(posReviewNumber).getOutputSentiment() == 1;
 
 	    cursor++;
 	}
@@ -73,7 +70,7 @@ public class SentimentExampleIterator implements DataSetIterator {
 	// Create data for training
 	// Here: we have reviews.size() examples of varying lengths
 	INDArray features = Nd4j.create(new int[] { reviews.size(), vectorSize, maxLength }, 'f');
-	INDArray labels = Nd4j.create(new int[] { reviews.size(), 2, maxLength }, 'f'); // Two labels: positive or
+	INDArray labels = Nd4j.create(new int[] { reviews.size(), 1, maxLength }, 'f'); // Two labels: positive or
 											// negative
 	// Because we are dealing with reviews of different lengths and only one output
 	// at the final time step: use padding arrays
@@ -129,15 +126,16 @@ public class SentimentExampleIterator implements DataSetIterator {
 	    featuresMask.get(new INDArrayIndex[] { NDArrayIndex.point(i), NDArrayIndex.interval(0, maxLength) })
 		    .assign(1);
 
-	    int idx = (positive[i] ? 0 : 1);
-	    labels.putScalar(new int[] { i, idx, maxLength - 1 }, 1.0); // Set label: [0,1] for negative, [1,0] for
-									// positive
+	    labels.putScalar(new int[] { i, 0, maxLength - 1 }, item.getOutputDelta()); // Set label: [0,1] for
+											// negative, [1,0] for
+	    // positive
 	    labelsMask.putScalar(new int[] { i, maxLength - 1 }, 1.0); // Specify that an output exists at the final
 								       // time
 								       // step for this example
 	}
 
-	return new DataSet(features, labels, featuresMask, labelsMask);
+	DataSet result = new DataSet(features, labels, featuresMask, labelsMask);
+	return result;
     }
 
     public int totalExamples() {
@@ -151,7 +149,7 @@ public class SentimentExampleIterator implements DataSetIterator {
 
     @Override
     public int totalOutcomes() {
-	return 2;
+	return 1;
     }
 
     @Override
@@ -181,7 +179,7 @@ public class SentimentExampleIterator implements DataSetIterator {
 
     @Override
     public List<String> getLabels() {
-	return Arrays.asList("positive", "negative");
+	return Arrays.asList("diff");
     }
 
     @Override
