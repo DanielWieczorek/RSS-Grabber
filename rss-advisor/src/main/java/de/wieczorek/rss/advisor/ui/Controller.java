@@ -85,7 +85,6 @@ public class Controller {
     }
 
     public void start() {
-	trainNeuralNetwork();
 	isStarted = true;
 	timer.start();
     }
