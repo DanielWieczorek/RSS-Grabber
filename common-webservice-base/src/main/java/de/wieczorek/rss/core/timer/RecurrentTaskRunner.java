@@ -36,13 +36,12 @@ public class RecurrentTaskRunner {
     }
 
     private void run() {
+	nextInvocation = executor.schedule(this::run, interval, unit);
+	logger.debug("scheduling again in " + interval + " " + unit);
 	try {
 	    task.run();
 	} catch (Exception e) {
 	    e.printStackTrace();
-	} finally {
-	    nextInvocation = executor.schedule(this::run, interval, unit);
-	    logger.debug("scheduling again in " + interval + " " + unit);
 	}
     }
 
