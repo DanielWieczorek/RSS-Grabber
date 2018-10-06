@@ -11,7 +11,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import de.wieczorek.rss.core.jgroups.CollectorStatus;
 import de.wieczorek.rss.core.ui.Controller;
 import de.wieczorek.rss.core.ui.Resource;
 import de.wieczorek.rss.types.RssEntry;
@@ -23,27 +22,6 @@ public class RssHandler {
 
     @Inject
     private Controller controller;
-
-    @GET
-    @Path("start")
-    public void start() {
-	controller.start();
-    }
-
-    @GET
-    @Path("stop")
-    public void stop() {
-	controller.stop();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("status")
-    public CollectorStatus status() {
-	CollectorStatus status = new CollectorStatus();
-	status.setStatus(controller.isStarted() ? "running" : "stopped");
-	return status;
-    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

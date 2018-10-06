@@ -17,9 +17,8 @@ import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.types.RssEntry;
 
 @ApplicationScoped
-public class Controller {
+public class Controller extends ControllerBase {
     private static final Logger logger = LogManager.getLogger(RestInfoSender.class.getName());
-    private boolean isStarted;
 
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
 	start();
@@ -31,20 +30,16 @@ public class Controller {
     @Inject
     private RecurrentTaskManager taskManager;
 
+    @Override
     public void start() {
 	logger.info("started");
 	taskManager.start();
-	isStarted = true;
     }
 
+    @Override
     public void stop() {
 	logger.info("stopped");
 	taskManager.stop();
-	isStarted = false;
-    }
-
-    public boolean isStarted() {
-	return isStarted;
     }
 
     public List<RssEntry> readEntriesAfter(Date before) {

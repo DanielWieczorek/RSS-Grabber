@@ -28,7 +28,7 @@ export class MicroserviceStatusComponent implements OnInit {
     }
 
     ngOnInit(): void {
-      this.http.get('http://localhost:10000/status').subscribe(data => {
+      this.http.get('http://localhost:10000/getstatus').subscribe(data => {
         this.data = data;
       });
     }

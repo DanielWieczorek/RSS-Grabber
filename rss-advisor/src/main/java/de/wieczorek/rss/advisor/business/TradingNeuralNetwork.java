@@ -55,7 +55,8 @@ public class TradingNeuralNetwork extends AbstractNeuralNetwork<NetInputItem, Tr
 
 	double[][] itemVectors = new double[item.getInputChartEntry().size()][vectorSize];
 	int index = 0;
-	INDArray features = Nd4j.create(new int[] { item.getInputChartEntry().size(), vectorSize, maxLength }, 'f');
+	INDArray features = Nd4j.create(
+		new int[] { item.getInputChartEntry().size(), vectorSize, item.getInputChartEntry().size() }, 'f');
 
 	for (DeltaChartEntry entry : item.getInputChartEntry()) {
 	    if (entry != null) {
@@ -85,9 +86,8 @@ public class TradingNeuralNetwork extends AbstractNeuralNetwork<NetInputItem, Tr
 	}
 	final INDArray vectors = Nd4j.create(itemVectors);
 
-	features.put(
-		new INDArrayIndex[] { NDArrayIndex.point(0), NDArrayIndex.all(), NDArrayIndex.interval(0, maxLength) },
-		vectors);
+	features.put(new INDArrayIndex[] { NDArrayIndex.point(0), NDArrayIndex.all(),
+		NDArrayIndex.interval(0, item.getInputChartEntry().size()) }, vectors);
 	return features;
     }
 

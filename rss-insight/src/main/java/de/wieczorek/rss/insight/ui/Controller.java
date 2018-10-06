@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
+import de.wieczorek.rss.core.ui.ControllerBase;
 import de.wieczorek.rss.insight.business.RssSentimentNeuralNetwork;
 import de.wieczorek.rss.insight.business.RssWord2VecNetwork;
 import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
@@ -25,10 +26,9 @@ import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
 
 @ApplicationScoped
-public class Controller {
+public class Controller extends ControllerBase {
     private static final Logger logger = LogManager.getLogger(Controller.class.getName());
 
-    private boolean isStarted = false;
     @Inject
     private RssSentimentNeuralNetwork network;
 
@@ -84,7 +84,6 @@ public class Controller {
 
     public void start() {
 	timer.start();
-	isStarted = true;
     }
 
     public List<SentimentAtTime> getAllSentimentAtTime() {
@@ -93,11 +92,5 @@ public class Controller {
 
     public void stop() {
 	timer.stop();
-	isStarted = false;
     }
-
-    public boolean isStarted() {
-	return isStarted;
-    }
-
 }

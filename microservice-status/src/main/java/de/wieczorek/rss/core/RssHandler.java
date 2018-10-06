@@ -21,7 +21,7 @@ public class RssHandler {
     private Controller controller;
 
     @GET
-    @Path("status")
+    @Path("getstatus")
     public List<ServiceMetadata> status() {
 	return controller.status();
     }

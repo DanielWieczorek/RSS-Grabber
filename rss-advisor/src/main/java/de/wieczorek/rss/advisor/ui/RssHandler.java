@@ -8,7 +8,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import de.wieczorek.rss.advisor.persistence.TradingEvaluationResult;
-import de.wieczorek.rss.core.jgroups.CollectorStatus;
 import de.wieczorek.rss.core.ui.Resource;
 
 @Resource
@@ -26,31 +25,10 @@ public class RssHandler {
     }
 
     @GET
-    @Path("start")
-    public void start() {
-	controller.start();
-    }
-
-    @GET
-    @Path("stop")
-    public void stop() {
-	controller.stop();
-    }
-
-    @GET
     @Path("sentiment")
     @Produces(MediaType.APPLICATION_JSON)
     public TradingEvaluationResult predict() {
 	return controller.predict();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("status")
-    public CollectorStatus status() {
-	CollectorStatus status = new CollectorStatus();
-	status.setStatus(controller.isStarted() ? "running" : "stopped");
-	return status;
     }
 
 }

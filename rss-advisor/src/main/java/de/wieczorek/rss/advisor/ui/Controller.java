@@ -20,14 +20,14 @@ import de.wieczorek.rss.advisor.business.TradingNeuralNetwork;
 import de.wieczorek.rss.advisor.persistence.TradingEvaluationResult;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
+import de.wieczorek.rss.core.ui.ControllerBase;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
 
 @ApplicationScoped
-public class Controller {
+public class Controller extends ControllerBase {
     private static final Logger logger = LogManager.getLogger(Controller.class.getName());
 
-    private boolean isStarted = false;
     @Inject
     private TradingNeuralNetwork nn;
 
@@ -84,19 +84,14 @@ public class Controller {
 
     }
 
-    public void start() {
-	isStarted = true;
+    @Override
+    protected void start() {
 	timer.start();
     }
 
-    public void stop() {
-	isStarted = false;
+    @Override
+    protected void stop() {
 	timer.stop();
-
-    }
-
-    public boolean isStarted() {
-	return isStarted;
     }
 
 }

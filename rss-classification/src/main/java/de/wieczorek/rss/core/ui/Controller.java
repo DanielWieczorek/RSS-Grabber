@@ -1,5 +1,6 @@
 package de.wieczorek.rss.core.ui;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +18,7 @@ import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
 
 @ApplicationScoped
-public class Controller {
+public class Controller extends ControllerBase {
     private static final Logger logger = LogManager.getLogger(Controller.class.getName());
 
     private boolean isStarted = false;
@@ -32,10 +33,15 @@ public class Controller {
 	    newest = new Date(0);
 	}
 
-	List<RssEntry> newEntries = ClientBuilder.newClient()
-		.target("http://localhost:8020/rss-entries/" + newest.toInstant().getEpochSecond())
-		.request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
-		});
+	List<RssEntry> newEntries = new ArrayList<>();
+	try {
+	    newEntries.addAll(ClientBuilder.newClient()
+		    .target("http://localhost:8020/rss-entries/" + newest.toInstant().getEpochSecond())
+		    .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
+		    }));
+	} catch (Exception e) {
+	    e.printStackTrace(); // TODO
+	}
 
 	if (!newEntries.isEmpty()) {
 	    List<String> existingEntryKeys = dao
@@ -58,17 +64,5 @@ public class Controller {
 
     public List<RssEntry> readClassfiedEntries() {
 	return dao.findAllClassified();
-    }
-
-    public void start() {
-	isStarted = true;
-    }
-
-    public void stop() {
-	isStarted = false;
-    }
-
-    public boolean isStarted() {
-	return isStarted;
     }
 }
