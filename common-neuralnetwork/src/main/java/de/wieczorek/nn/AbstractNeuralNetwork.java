@@ -47,7 +47,6 @@ public abstract class AbstractNeuralNetwork<T, R> {
 		testSet.add(entry);
 		filteredTrainingSet.remove(entry);
 	    }
-
 	    Collections.shuffle(filteredTrainingSet);
 
 	    // DataSetIterators for training and testing respectively
@@ -74,8 +73,7 @@ public abstract class AbstractNeuralNetwork<T, R> {
     private void writeModel(MultiLayerNetwork net) {
 	lock.lock();
 	try {
-	    ModelSerializer.writeModel(net, getFileName(), false);
-
+	    ModelSerializer.writeModel(net, buildPath(), false);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	} finally {
@@ -83,10 +81,14 @@ public abstract class AbstractNeuralNetwork<T, R> {
 	}
     }
 
+    private String buildPath() {
+	return System.getProperty("user.home") + "/neural-networks/" + getFileName();
+    }
+
     protected MultiLayerNetwork readModel() {
 	lock.lock();
 	try {
-	    return ModelSerializer.restoreMultiLayerNetwork(getFileName());
+	    return ModelSerializer.restoreMultiLayerNetwork(buildPath());
 	} catch (IOException e) {
 	    e.printStackTrace();
 	} finally {

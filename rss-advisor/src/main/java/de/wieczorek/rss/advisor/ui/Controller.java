@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
@@ -17,7 +15,8 @@ import org.apache.logging.log4j.Logger;
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.rss.advisor.business.DataPreparator;
 import de.wieczorek.rss.advisor.business.TradingNeuralNetwork;
-import de.wieczorek.rss.advisor.persistence.TradingEvaluationResult;
+import de.wieczorek.rss.advisor.persistence.TradingEvaluationResultDao;
+import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;
@@ -34,9 +33,8 @@ public class Controller extends ControllerBase {
     @Inject
     private RecurrentTaskManager timer;
 
-    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
-	start();
-    }
+    @Inject
+    private TradingEvaluationResultDao dao;
 
     public void trainNeuralNetwork() {
 	logger.fatal("foo");
@@ -92,6 +90,11 @@ public class Controller extends ControllerBase {
     @Override
     protected void stop() {
 	timer.stop();
+    }
+
+    public List<TradingEvaluationResult> get24hPrediction() {
+	LocalDateTime.now().minusHours(24);
+	return dao.findAfterDate(LocalDateTime.now().minusHours(24));
     }
 
 }

@@ -17,6 +17,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
+
 @ApplicationScoped
 public class TradingEvaluationResultDao {
     private EntityManager entityManager;
@@ -53,6 +55,13 @@ public class TradingEvaluationResultDao {
 	} catch (NoResultException e) {
 	    return null;
 	}
+    }
+
+    public List<TradingEvaluationResult> findAfterDate(LocalDateTime currentTime) {
+	TypedQuery<TradingEvaluationResult> query = entityManager.createQuery(
+		"SELECT s FROM TradingEvaluationResult s WHERE s.currentTime > :current order by s.currentTime asc",
+		TradingEvaluationResult.class).setParameter("current", currentTime);
+	return query.getResultList();
     }
 
 }

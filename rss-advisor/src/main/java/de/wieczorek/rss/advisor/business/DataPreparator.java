@@ -9,6 +9,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.rss.advisor.types.DeltaChartEntry;
+import de.wieczorek.rss.advisor.types.NetInputItem;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 
 public class DataPreparator {
@@ -103,7 +105,6 @@ public class DataPreparator {
     public NetInputItem getDataForSentiment(SentimentAtTime sentiment) {
 
 	Map<LocalDateTime, ChartEntry> chartEntryMappings = chartEntries.stream()
-		.peek(e -> System.out.println(e.getDate()))
 		.collect(Collectors.toMap(ChartEntry::getDate, Function.identity(), (v1, v2) -> v2));
 
 	LocalDateTime startTime = sentiment.getSentimentTime().minusHours(24);

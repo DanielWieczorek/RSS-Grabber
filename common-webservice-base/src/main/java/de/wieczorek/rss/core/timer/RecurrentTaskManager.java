@@ -30,6 +30,7 @@ public class RecurrentTaskManager {
     }
 
     public void start() {
+	System.out.println("triggered start");
 	runners.forEach(RecurrentTaskRunner::start);
 
     }

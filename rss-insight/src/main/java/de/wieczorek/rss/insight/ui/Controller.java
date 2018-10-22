@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
@@ -40,10 +38,6 @@ public class Controller extends ControllerBase {
 
     @Inject
     private SentimentAtTimeDao dao;
-
-    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
-	start();
-    }
 
     public void trainNeuralNetwork() {
 	logger.info("get all classified");
@@ -82,6 +76,7 @@ public class Controller extends ControllerBase {
 	return result;
     }
 
+    @Override
     public void start() {
 	timer.start();
     }
@@ -90,6 +85,7 @@ public class Controller extends ControllerBase {
 	return dao.findAll();
     }
 
+    @Override
     public void stop() {
 	timer.stop();
     }

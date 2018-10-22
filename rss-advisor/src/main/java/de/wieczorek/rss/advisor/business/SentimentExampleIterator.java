@@ -15,6 +15,9 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.INDArrayIndex;
 import org.nd4j.linalg.indexing.NDArrayIndex;
 
+import de.wieczorek.rss.advisor.types.DeltaChartEntry;
+import de.wieczorek.rss.advisor.types.NetInputItem;
+
 public class SentimentExampleIterator implements DataSetIterator {
     private final int batchSize;
 

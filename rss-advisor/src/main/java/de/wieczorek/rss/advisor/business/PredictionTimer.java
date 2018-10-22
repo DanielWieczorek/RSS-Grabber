@@ -1,19 +1,16 @@
 package de.wieczorek.rss.advisor.business;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.wieczorek.rss.advisor.persistence.TradingEvaluationResult;
 import de.wieczorek.rss.advisor.persistence.TradingEvaluationResultDao;
+import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.advisor.ui.Controller;
-import de.wieczorek.rss.core.timer.RecurrentTask;
 
-@RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
+//@RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class PredictionTimer implements Runnable {
     private static final Logger logger = LogManager.getLogger(PredictionTimer.class.getName());
