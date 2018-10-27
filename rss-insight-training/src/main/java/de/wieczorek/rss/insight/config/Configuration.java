@@ -13,7 +13,7 @@ public class Configuration {
 
     @Produces
     @RestPort
-    private int restPort = 11020;
+    private int restPort = 11120;
 
     @Produces
     @JGroupsPort

@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 
-@RecurrentTask(interval = 30, unit = TimeUnit.MINUTES)
+@RecurrentTask(interval = 5, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class TrainingTimer implements Runnable {
     private static final Logger logger = LogManager.getLogger(TrainingTimer.class.getName());
