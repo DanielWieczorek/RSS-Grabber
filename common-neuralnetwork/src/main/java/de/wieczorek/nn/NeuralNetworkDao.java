@@ -35,7 +35,7 @@ public class NeuralNetworkDao {
     public MultiLayerNetwork readModel() {
 	lock.lock();
 	try {
-	    return ModelSerializer.restoreMultiLayerNetwork(buildPath());
+	    return ModelSerializer.restoreMultiLayerNetwork(buildPath(), false);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	} finally {

@@ -33,7 +33,7 @@ public class PredictionTimer implements Runnable {
     @Override
     public void run() {
 	try {
-
+	    logger.info("predicting");
 	    SentimentEvaluationResult result = controller.predict();
 	    SentimentAtTime entity = new SentimentAtTime();
 	    entity.setPositiveProbability(result.getSummary().getPositiveProbability());

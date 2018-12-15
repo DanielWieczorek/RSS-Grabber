@@ -11,6 +11,7 @@ import org.deeplearning4j.nn.conf.GradientNormalization;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.WorkspaceMode;
+import org.deeplearning4j.nn.conf.inputs.InputType;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.LSTM;
 import org.deeplearning4j.nn.conf.layers.RnnOutputLayer;
@@ -51,13 +52,13 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Ne
 	MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed).updater(new Adam(2e-2)).l2(1e-5)
 		.weightInit(WeightInit.XAVIER).gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
 		.gradientNormalizationThreshold(1.0).trainingWorkspaceMode(WorkspaceMode.ENABLED)
-		.inferenceWorkspaceMode(WorkspaceMode.ENABLED) // https://deeplearning4j.org/workspaces
-		.list().layer(0, new LSTM.Builder().nIn(vectorSize).nOut(128).activation(Activation.TANH).build())
-		.layer(1, new LSTM.Builder().nIn(128).nOut(512).activation(Activation.TANH).build())
-		.layer(2, new DenseLayer.Builder().nIn(512).nOut(512).activation(Activation.RELU).build())
+		.inferenceWorkspaceMode(WorkspaceMode.ENABLED).list()
+		.layer(0, new LSTM.Builder().nIn(vectorSize).nOut(128).activation(Activation.TANH).build())
+		.layer(1, new LSTM.Builder().nOut(512).activation(Activation.TANH).build())
+		.layer(2, new DenseLayer.Builder().nOut(512).activation(Activation.RELU).build())
 		.layer(3,
 			new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(Activation.IDENTITY)
-				.l2(0.0001).weightInit(WeightInit.XAVIER).nIn(512).nOut(1).build())
+				.l2(0.0001).weightInit(WeightInit.XAVIER).nOut(1).build())
 		.pretrain(false).backprop(true).backpropType(BackpropType.TruncatedBPTT).tBPTTBackwardLength(60)
 		.tBPTTForwardLength(60).build();
 
@@ -76,6 +77,8 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Ne
 
     @Override
     protected BaseEvaluation<?> buildEvaluation(DataSetIterator test, MultiLayerNetwork net) {
+	System.out.println(net.memoryInfo(getBatchSize(), InputType.recurrent(9, 1441)));
+
 	return net.evaluateRegression(test);
     }
 }

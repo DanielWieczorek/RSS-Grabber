@@ -14,9 +14,12 @@ public abstract class AbstractNeuralNetworkPredictor<T, R> {
 
     public R predict(T item) {
 	MultiLayerNetwork net = dao.readModel();
+
 	if (net == null) {
 	    throw new RuntimeException(); // TODO
 	}
+	net.setCacheMode(null);
+	Nd4j.getMemoryManager().setAutoGcWindow(500);
 	INDArray outputRaw = net.output(buildPredictionFeatures(item));
 	long timeSeriesLength = outputRaw.size(2); // TODO
 	INDArray probabilitiesAtLastWord = outputRaw.get(NDArrayIndex.point(0), NDArrayIndex.all(),

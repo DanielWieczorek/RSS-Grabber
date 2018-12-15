@@ -70,8 +70,4 @@ public class Controller extends ControllerBase {
 	return dao.findAll();
     }
 
-    @Override
-    public void stop() {
-	timer.stop();
-    }
 }

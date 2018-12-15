@@ -23,8 +23,7 @@ public class TradingNeuralNetworkPredictor
 
 	double[][] itemVectors = new double[item.getInputChartEntry().size()][vectorSize];
 	int index = 0;
-	INDArray features = Nd4j.create(
-		new int[] { item.getInputChartEntry().size(), vectorSize, item.getInputChartEntry().size() }, 'f');
+	INDArray features = Nd4j.create(new int[] { 1, vectorSize, item.getInputChartEntry().size() }, 'f');
 
 	for (DeltaChartEntry entry : item.getInputChartEntry()) {
 	    if (entry != null) {

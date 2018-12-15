@@ -26,26 +26,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.bytedeco.javacpp-presets</groupId>
-			<artifactId>cuda</artifactId>
-			<version>9.2-7.1-1.4.2</version>
-			<classifier>linux-x86_64-redist</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.bytedeco.javacpp-presets</groupId>
-			<artifactId>cuda</artifactId>
-			<version>9.2-7.1-1.4.2</version>
-			<classifier>linux-ppc64le-redist</classifier>
-		</dependency>
-
-		<dependency>
-			<groupId>org.bytedeco.javacpp-presets</groupId>
-			<artifactId>cuda</artifactId>
-			<version>9.2-7.1-1.4.2</version>
-			<classifier>windows-x86_64-redist</classifier>
-		</dependency>
-
-		<dependency>
 			<groupId>de.wieczorek</groupId>
 			<artifactId>common-neuralnetwork</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
