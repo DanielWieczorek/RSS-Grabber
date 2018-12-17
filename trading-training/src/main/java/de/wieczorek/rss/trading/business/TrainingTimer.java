@@ -25,9 +25,7 @@ public class TrainingTimer implements Runnable {
     @Override
     public void run() {
 	try {
-
 	    trainer.train();
-
 	} catch (Exception e) {
 	    logger.error("error while retrieving chart data: ", e);
 	}

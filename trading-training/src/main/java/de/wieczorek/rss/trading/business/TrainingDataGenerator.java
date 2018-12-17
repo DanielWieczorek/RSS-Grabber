@@ -18,14 +18,17 @@ import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.rss.advisor.types.DeltaChartEntry;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
-import de.wieczorek.rss.trading.ui.Account;
-import de.wieczorek.rss.trading.ui.ActionVertex;
-import de.wieczorek.rss.trading.ui.ActionVertexType;
-import de.wieczorek.rss.trading.ui.StateEdge;
-import de.wieczorek.rss.trading.ui.StateEdgePart;
+import de.wieczorek.rss.trading.business.data.Account;
+import de.wieczorek.rss.trading.business.data.ActionVertex;
+import de.wieczorek.rss.trading.business.data.ActionVertexType;
+import de.wieczorek.rss.trading.business.data.StateEdge;
+import de.wieczorek.rss.trading.business.data.StateEdgePart;
 
 @ApplicationScoped
 public class TrainingDataGenerator {
+    private static final int STEPPING = 10;
+    private static final int SEQ_LENGTH = 120;
+    private static final int DEPTH = 20;
 
     public StateEdge generateTrainingData() {
 	List<TradingEvaluationResult> currentSentiment = loadSentiments();
@@ -37,21 +40,16 @@ public class TrainingDataGenerator {
 
 	List<StateEdgePart> stateParts = buildStateParts(chartEntries, currentSentiment);
 
-	int stepping = 10;
-	int seqLenght = 120;
-	int depth = 20;
-
-	int i = 0;
-	System.out.println("starting iteration"); // TODO o
+	System.out.println("starting iteration"); // TODO logging
 
 	Account startAcc = new Account();
 	startAcc.setBtc(0);
 	startAcc.setEur(1000);
 	startAcc.setEurEquivalent(1000);
 
-	int endIndex = Math.min(i + seqLenght + stepping * depth, stateParts.size());
+	int endIndex = Math.min(SEQ_LENGTH + STEPPING * DEPTH, stateParts.size());
 
-	StateEdge rootState = buildState(stateParts, chartEntries, i, i + seqLenght, ActionVertexType.BUY, startAcc,
+	StateEdge rootState = buildState(stateParts, chartEntries, 0, SEQ_LENGTH, ActionVertexType.BUY, startAcc,
 		endIndex);
 	rootState.setId(0);
 
@@ -64,13 +62,13 @@ public class TrainingDataGenerator {
 
 	    ActionVertex buy = new ActionVertex();
 	    buy.setType(ActionVertexType.BUY);
-	    buy.setTargetState(buildState(stateParts, chartEntries, currentState.getPartsStartIndex() + stepping,
-		    currentState.getPartsEndIndex() + stepping, buy.getType(), currentState.getAccount(), endIndex));
+	    buy.setTargetState(buildState(stateParts, chartEntries, currentState.getPartsStartIndex() + STEPPING,
+		    currentState.getPartsEndIndex() + STEPPING, buy.getType(), currentState.getAccount(), endIndex));
 
 	    ActionVertex sell = new ActionVertex();
 	    sell.setType(ActionVertexType.SELL);
-	    sell.setTargetState(buildState(stateParts, chartEntries, currentState.getPartsStartIndex() + stepping,
-		    currentState.getPartsEndIndex() + stepping, sell.getType(), currentState.getAccount(), endIndex));
+	    sell.setTargetState(buildState(stateParts, chartEntries, currentState.getPartsStartIndex() + STEPPING,
+		    currentState.getPartsEndIndex() + STEPPING, sell.getType(), currentState.getAccount(), endIndex));
 
 	    if (buy.getTargetState() != null) {
 		statesToWorkOn.add(buy.getTargetState());

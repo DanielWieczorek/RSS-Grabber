@@ -7,21 +7,21 @@ import org.deeplearning4j.rl4j.space.DiscreteSpace;
 import org.deeplearning4j.rl4j.space.ObservationSpace;
 import org.json.JSONObject;
 
-import de.wieczorek.rss.trading.ui.StateEdge;
+import de.wieczorek.rss.trading.business.data.StateEdge;
 
 public class NeuralNetworkActor implements MDP<NeuralNetworkState, Integer, DiscreteSpace> {
 
     final private int maxStep;
 
     private DiscreteSpace actionSpace = new DiscreteSpace(2); // 0 Buy, 1 Sell
-    private ObservationSpace<NeuralNetworkState> observationSpace = new ArrayObservationSpace<>(new int[] { 1200 });
+    private ObservationSpace<NeuralNetworkState> observationSpace = new ArrayObservationSpace<>(new int[] { 480 });
     private NeuralNetworkState currentState;
     private IndexedStateGraph stateGraph;
 
     public NeuralNetworkActor(int maxStep, IndexedStateGraph stateGraph) {
 	this.maxStep = maxStep;
 	this.stateGraph = stateGraph;
-	currentState = new NeuralNetworkState(stateGraph.getStateEdge(0), 0);
+	currentState = new NeuralNetworkState(stateGraph.getRootEdge(), 0);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class NeuralNetworkActor implements MDP<NeuralNetworkState, Integer, Disc
 
     @Override
     public NeuralNetworkState reset() {
-	currentState = new NeuralNetworkState(stateGraph.getStateEdge(0), 0);
+	currentState = new NeuralNetworkState(stateGraph.getRootEdge(), 0);
 	return currentState;
     }
 

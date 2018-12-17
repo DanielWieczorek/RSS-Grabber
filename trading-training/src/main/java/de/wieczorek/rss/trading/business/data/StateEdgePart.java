@@ -1,4 +1,4 @@
-package de.wieczorek.rss.trading.ui;
+package de.wieczorek.rss.trading.business.data;
 
 import de.wieczorek.rss.advisor.types.DeltaChartEntry;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;

@@ -19,7 +19,7 @@ import org.deeplearning4j.rl4j.util.DataManager;
 import org.nd4j.linalg.learning.config.Adam;
 
 import de.wieczorek.nn.PolicyDao;
-import de.wieczorek.rss.trading.ui.StateEdge;
+import de.wieczorek.rss.trading.business.data.StateEdge;
 
 @ApplicationScoped
 public class Trainer {
@@ -33,8 +33,8 @@ public class Trainer {
     private static final QLearning.QLConfiguration TRADE_QL = new QLearning.QLConfiguration(123, // Random seed
 	    100000, // Max step By epoch
 	    20000, // Max step
-	    10000, // Max size of experience replay
-	    32, // size of batches
+	    100000, // Max size of experience replay
+	    256, // size of batches
 	    100, // target update (hard)
 	    0, // num step noop warmup
 	    0.05, // reward scaling
@@ -46,7 +46,7 @@ public class Trainer {
     );
 
     private static final DQNFactoryStdDense.Configuration TRADE_NET = DQNFactoryStdDense.Configuration.builder()
-	    .l2(0.00).updater(new Adam(1e-2)).numLayer(5).numHiddenNodes(128).build();
+	    .l2(0.01).updater(new Adam(1e-2)).numLayer(8).numHiddenNodes(128).build();
 
     private DataManager manager;
     private MDP<NeuralNetworkState, Integer, DiscreteSpace> mdp;
@@ -59,7 +59,7 @@ public class Trainer {
 	    mdp = new NeuralNetworkActor(19, new IndexedStateGraph(dataGenerator.generateTrainingData()));
 	    dql = new QLearningDiscreteDense<NeuralNetworkState>(mdp, TRADE_NET, TRADE_QL, manager);
 	} catch (Exception e) {
-	    throw new RuntimeException(e);
+	    throw new RuntimeException(e); // TODO error handling
 	}
     }
 
@@ -79,6 +79,13 @@ public class Trainer {
 	dql.setEpochCounter(0);
 	dql.setStepCounter(0);
 
+	printOptimumResult(graph);
+    }
+
+    private void printOptimumResult(IndexedStateGraph graph) {
+	StateEdge bestTerminalState = graph.getTerminalStateWithHighestValue();
+	System.out.println("the optimum is: " + (bestTerminalState.getAccount().getEurEquivalent()
+		- graph.getRootEdge().getAccount().getEurEquivalent()));
     }
 
     @PreDestroy

@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.deeplearning4j.rl4j.space.Encodable;
 
-import de.wieczorek.rss.trading.ui.StateEdge;
-import de.wieczorek.rss.trading.ui.StateEdgePart;
+import de.wieczorek.rss.trading.business.data.StateEdge;
+import de.wieczorek.rss.trading.business.data.StateEdgePart;
 
 public class NeuralNetworkState implements Encodable {
 
@@ -23,23 +23,18 @@ public class NeuralNetworkState implements Encodable {
 
 	List<StateEdgePart> parts = state.getAllStateParts().subList(state.getPartsStartIndex(),
 		state.getPartsEndIndex());
-	double[] result = new double[10 * parts.size()];
+	double[] result = new double[4 * parts.size()];
 
 	// Check if at least 2 parts
 	for (int i = 0; i < parts.size(); i++) {
 	    StateEdgePart currentPart = parts.get(i);
-	    result[8 * i + 0] = 0.0;// currentPart.getSentiment().getPredictedDelta();
+	    result[4 * i + 0] = currentPart.getSentiment() != null ? currentPart.getSentiment().getPredictedDelta()
+		    : 0.0;
 
-	    result[8 * i + 1] = currentPart.getChartEntry().getOpen();
-	    result[8 * i + 2] = currentPart.getChartEntry().getHigh();
-	    result[8 * i + 3] = currentPart.getChartEntry().getLow();
-	    result[8 * i + 4] = currentPart.getChartEntry().getClose();
-	    result[8 * i + 5] = currentPart.getChartEntry().getVolume();
-	    result[8 * i + 6] = currentPart.getChartEntry().getVolumeWeightedAverage();
-	    result[8 * i + 7] = currentPart.getChartEntry().getTransactions();
+	    result[4 * i + 1] = currentPart.getChartEntry().getOpen();
 
-	    result[8 * i + 8] = state.getAccount().getBtc() > 0.0 ? 1.0 : 0.0;
-	    result[8 * i + 9] = state.getAccount().getEur() > 0.0 ? 1.0 : 0.0;
+	    result[4 * i + 2] = state.getAccount().getBtc() > 0.0 ? 1.0 : 0.0;
+	    result[4 * i + 3] = state.getAccount().getEur() > 0.0 ? 1.0 : 0.0;
 	}
 	return result;
     }
