@@ -26,7 +26,7 @@ public class RssSentimentNeuralNetworkPredictor extends AbstractNeuralNetworkPre
 	Stemmer stemmer = new PorterStemmer();
 	INDArray vectors = vec
 		.getWordVectors(Arrays.asList((item.getHeading() + ". " + item.getDescription()).split(" ")).stream()
-			.map(stemmer::stem).map(CharSequence::toString).collect(Collectors.toList()));
+			.map(stemmer::stem).map(CharSequence::toString).map(String::toLowerCase).collect(Collectors.toList()));
 
 	return Nd4j.expandDims(vectors, 2);
 

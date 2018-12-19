@@ -51,4 +51,7 @@ public class Controller extends ControllerBase {
 	return dao.findAll24h();
     }
 
+    public List<RssEntry> readAllEntries() {
+	return dao.findAll();
+    }
 }

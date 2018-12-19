@@ -12,6 +12,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import de.wieczorek.rss.types.RssEntry;
 
@@ -43,6 +47,15 @@ public class RssEntryDao {
 	return entityManager.createQuery("from RssEntry r where r.createdAt > :after", RssEntry.class) //
 		.setParameter("after", timestamp) //
 		.getResultList();
+    }
+
+    public List<RssEntry> findAll() {
+	CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+	CriteriaQuery<RssEntry> cq = cb.createQuery(RssEntry.class);
+	Root<RssEntry> rootEntry = cq.from(RssEntry.class);
+	CriteriaQuery<RssEntry> all = cq.select(rootEntry);
+	TypedQuery<RssEntry> allQuery = entityManager.createQuery(all);
+	return allQuery.getResultList();
     }
 
     public List<RssEntry> findAll24h() {

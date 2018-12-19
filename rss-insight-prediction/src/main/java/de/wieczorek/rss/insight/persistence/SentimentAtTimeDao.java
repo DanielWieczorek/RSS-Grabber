@@ -37,6 +37,13 @@ public class SentimentAtTimeDao {
 	transaction.commit();
     }
 
+    public void update(SentimentAtTime sat) {
+	EntityTransaction transaction = entityManager.getTransaction();
+	transaction.begin();
+	entityManager.merge(sat);
+	transaction.commit();
+    }
+
     public SentimentAtTime findById(LocalDateTime sentimentTime) {
 	TypedQuery<SentimentAtTime> query = entityManager
 		.createQuery("SELECT s FROM SentimentAtTime s WHERE s.sentimentTime = :time", SentimentAtTime.class)

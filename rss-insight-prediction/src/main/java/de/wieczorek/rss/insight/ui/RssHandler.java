@@ -35,4 +35,11 @@ public class RssHandler {
 	return controller.getAllSentimentAtTime();
     }
 
+    @GET
+    @Path("recompute")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void recalculate() {
+	controller.recalculate();
+    }
+
 }

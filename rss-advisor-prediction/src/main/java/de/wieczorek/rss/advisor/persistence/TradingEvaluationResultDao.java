@@ -37,6 +37,13 @@ public class TradingEvaluationResultDao {
 	transaction.commit();
     }
 
+    public void update(TradingEvaluationResult sat) {
+	EntityTransaction transaction = entityManager.getTransaction();
+	transaction.begin();
+	entityManager.merge(sat);
+	transaction.commit();
+    }
+
     public List<TradingEvaluationResult> findAll() {
 	CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 	CriteriaQuery<TradingEvaluationResult> cq = cb.createQuery(TradingEvaluationResult.class);

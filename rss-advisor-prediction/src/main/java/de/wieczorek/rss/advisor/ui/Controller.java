@@ -16,6 +16,7 @@ import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.rss.advisor.business.DataPreparator;
 import de.wieczorek.rss.advisor.business.TradingNeuralNetworkPredictor;
 import de.wieczorek.rss.advisor.persistence.TradingEvaluationResultDao;
+import de.wieczorek.rss.advisor.types.NetInputItem;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
@@ -61,6 +62,31 @@ public class Controller extends ControllerBase {
 	}
 	return null;
 
+    }
+
+    public void recompute() {
+	List<SentimentAtTime> sentiments = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+		.target("http://localhost:11020/sentiment-at-time").request(MediaType.APPLICATION_JSON)
+		.get(new GenericType<List<SentimentAtTime>>() {
+		});
+
+	List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+		.target("http://localhost:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
+		.get(new GenericType<List<ChartEntry>>() {
+		});
+
+	int i = 0;
+	DataPreparator preparator = new DataPreparator().withChartData(chartEntries);
+	for (SentimentAtTime sentiment : sentiments) {
+	    NetInputItem networkInput = preparator.getDataForSentiment(sentiment);
+	    if (networkInput != null) {
+		TradingEvaluationResult result = nn.predict(networkInput);
+		result.setCurrentTime(sentiment.getSentimentTime());
+		result.setTargetTime(sentiment.getSentimentTime().plusMinutes(preparator.getOffsetMinutes()));
+
+		dao.update(result);
+	    }
+	}
     }
 
     @Override

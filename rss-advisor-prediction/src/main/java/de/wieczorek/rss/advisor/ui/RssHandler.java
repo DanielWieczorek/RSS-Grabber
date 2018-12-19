@@ -34,4 +34,11 @@ public class RssHandler {
 	return controller.get24hPrediction();
     }
 
+    @GET
+    @Path("recompute")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void recompute() {
+	controller.recompute();
+    }
+
 }

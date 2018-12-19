@@ -37,4 +37,12 @@ public class RssHandler {
 	return controller.readEntriesAfter(new Date(unixTimestamp));
 
     }
+
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    @Path("rss-entries")
+    public List<RssEntry> allEntries() {
+	return controller.readAllEntries();
+
+    }
 }
