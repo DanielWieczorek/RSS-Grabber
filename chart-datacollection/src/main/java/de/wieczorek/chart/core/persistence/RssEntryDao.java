@@ -10,6 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -30,7 +31,14 @@ public class RssEntryDao {
     }
 
     public ChartEntry findById(LocalDateTime date) {
-	return entityManager.find(ChartEntry.class, date);
+	TypedQuery<ChartEntry> query = entityManager
+		.createQuery("SELECT s FROM ChartEntry s WHERE s.date = :time", ChartEntry.class)
+		.setParameter("time", date);
+	try {
+	    return query.getSingleResult();
+	} catch (NoResultException e) {
+	    return null;
+	}
     }
 
     public void persistAll(Collection<ChartEntry> entries) {

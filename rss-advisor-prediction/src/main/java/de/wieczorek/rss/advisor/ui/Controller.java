@@ -71,9 +71,11 @@ public class Controller extends ControllerBase {
 		});
 
 	List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
+		.target("http://localhost:12000/ohlcv/").request(MediaType.APPLICATION_JSON)
 		.get(new GenericType<List<ChartEntry>>() {
 		});
+
+	System.out.println(LocalDateTime.now() + "calculating for " + chartEntries.size() + "entries");
 
 	int i = 0;
 	DataPreparator preparator = new DataPreparator().withChartData(chartEntries);
@@ -84,7 +86,8 @@ public class Controller extends ControllerBase {
 		result.setCurrentTime(sentiment.getSentimentTime());
 		result.setTargetTime(sentiment.getSentimentTime().plusMinutes(preparator.getOffsetMinutes()));
 
-		dao.update(result);
+		dao.upsert(result);
+		System.out.println(LocalDateTime.now() + "calculating for date " + sentiment.getSentimentTime());
 	    }
 	}
     }
@@ -104,4 +107,7 @@ public class Controller extends ControllerBase {
 	return dao.findAfterDate(LocalDateTime.now().minusHours(24));
     }
 
+    public List<TradingEvaluationResult> getAllPredictions() {
+	return dao.findAll();
+    }
 }

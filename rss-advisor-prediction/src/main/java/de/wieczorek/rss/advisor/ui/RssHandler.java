@@ -35,8 +35,14 @@ public class RssHandler {
     }
 
     @GET
-    @Path("recompute")
+    @Path("sentiment/all")
     @Produces(MediaType.APPLICATION_JSON)
+    public List<TradingEvaluationResult> getAllSentiments() {
+	return controller.getAllPredictions();
+    }
+
+    @GET
+    @Path("recompute")
     public void recompute() {
 	controller.recompute();
     }

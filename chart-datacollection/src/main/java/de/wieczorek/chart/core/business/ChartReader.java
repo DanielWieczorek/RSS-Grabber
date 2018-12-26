@@ -4,13 +4,16 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.logging.log4j.LogManager;
@@ -34,6 +37,7 @@ public class ChartReader implements Runnable {
     @Override
     public void run() {
 	try {
+	    System.out.println("triggered reading chart entries at " + LocalDateTime.now());
 	    OhlcApiRequestResult result = ClientBuilder.newClient()
 		    .target("https://api.kraken.com/0/public/OHLC?pair=XBTEUR").request(MediaType.APPLICATION_JSON)
 		    .get(OhlcApiRequestResult.class);
@@ -55,15 +59,21 @@ public class ChartReader implements Runnable {
 		    entry.setTransactions((Integer) item.get(7));
 
 		    entries.add(entry);
+
 		});
 
 	    }
 
 	    entries.retainAll(entries.stream().filter((item) -> dao.findById(item.getDate()) == null)
 		    .collect(Collectors.toList()));
+	    Map<LocalDateTime, ChartEntry> map = new HashMap<>();
 
-	    dao.persistAll(entries);
+	    entries.forEach(item -> map.put(item.getDate(), item));
 
+	    dao.persistAll(map.values());
+
+	} catch (ResponseProcessingException e) {
+	    logger.error("error while retrieving chart data: ", e.getResponse().readEntity(String.class));
 	} catch (Exception e) {
 	    logger.error("error while retrieving chart data: ", e);
 	}

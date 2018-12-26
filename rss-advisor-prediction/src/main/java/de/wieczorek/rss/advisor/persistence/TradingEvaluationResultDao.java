@@ -44,6 +44,15 @@ public class TradingEvaluationResultDao {
 	transaction.commit();
     }
 
+    public void upsert(TradingEvaluationResult sat) {
+	TradingEvaluationResult found = findById(sat.getCurrentTime(), sat.getTargetTime());
+	if (found == null) {
+	    persist(sat);
+	} else {
+	    update(sat);
+	}
+    }
+
     public List<TradingEvaluationResult> findAll() {
 	CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 	CriteriaQuery<TradingEvaluationResult> cq = cb.createQuery(TradingEvaluationResult.class);

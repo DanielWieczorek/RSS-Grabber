@@ -7,9 +7,9 @@ import java.util.Random;
 
 import javax.inject.Inject;
 
-import org.deeplearning4j.eval.BaseEvaluation;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.listeners.PerformanceListener;
+import org.nd4j.evaluation.BaseEvaluation;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -51,7 +51,6 @@ public abstract class AbstractNeuralNetworkTrainer<T, R> {
 	    DataSetIterator test = buildTestSetIterator(testSet);
 
 	    System.out.println("Starting training");
-
 	    net.fit(train);
 	    train.reset();
 	    System.out.println("Epoch " + net.getEpochCount() + " complete. Starting evaluation:");
@@ -60,8 +59,9 @@ public abstract class AbstractNeuralNetworkTrainer<T, R> {
 	    BaseEvaluation<?> evaluation = buildEvaluation(test, net);
 	    test.reset();
 	    System.out.println(evaluation.stats());
+	    dao.writeModel(net);
 	}
-	dao.writeModel(net);
+
 	Nd4j.getWorkspaceManager().destroyAllWorkspacesForCurrentThread();
     }
 

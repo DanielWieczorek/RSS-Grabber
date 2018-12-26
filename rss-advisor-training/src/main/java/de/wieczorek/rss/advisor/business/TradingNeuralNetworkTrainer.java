@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.deeplearning4j.eval.BaseEvaluation;
 import org.deeplearning4j.nn.conf.BackpropType;
 import org.deeplearning4j.nn.conf.CacheMode;
 import org.deeplearning4j.nn.conf.GradientNormalization;
@@ -18,6 +17,7 @@ import org.deeplearning4j.nn.conf.layers.RnnOutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.PerformanceListener;
+import org.nd4j.evaluation.BaseEvaluation;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.learning.config.Adam;
@@ -51,22 +51,21 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Ne
 
 	MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed).updater(new Adam(2e-2)).l2(1e-5)
 		.weightInit(WeightInit.XAVIER).gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
-		.gradientNormalizationThreshold(1.0).trainingWorkspaceMode(WorkspaceMode.ENABLED)
-		.inferenceWorkspaceMode(WorkspaceMode.ENABLED).list()
+		.gradientNormalizationThreshold(1.0).trainingWorkspaceMode(WorkspaceMode.ENABLED).list()
 		.layer(0, new LSTM.Builder().nIn(vectorSize).nOut(128).activation(Activation.TANH).build())
-		.layer(1, new LSTM.Builder().nOut(512).activation(Activation.TANH).build())
-		.layer(2, new DenseLayer.Builder().nOut(512).activation(Activation.RELU).build())
+		.layer(1, new LSTM.Builder().nOut(128).activation(Activation.TANH).build())
+		.layer(2, new DenseLayer.Builder().nOut(128).activation(Activation.RELU).build())
 		.layer(3,
 			new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(Activation.IDENTITY)
 				.l2(0.0001).weightInit(WeightInit.XAVIER).nOut(1).build())
-		.pretrain(false).backprop(true).backpropType(BackpropType.TruncatedBPTT).tBPTTBackwardLength(60)
-		.tBPTTForwardLength(60).build();
+
+		.backpropType(BackpropType.TruncatedBPTT).tBPTTBackwardLength(120).tBPTTForwardLength(120).build();
+	conf.setIterationCount(1);
 
 	MultiLayerNetwork net = new MultiLayerNetwork(conf);
 	net.setListeners(new PerformanceListener(1, true));
 	net.setCacheMode(CacheMode.DEVICE);
 	net.init();
-
 	return net;
     }
 

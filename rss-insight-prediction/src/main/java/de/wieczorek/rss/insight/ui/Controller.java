@@ -66,8 +66,6 @@ public class Controller extends ControllerBase {
     }
 
     public void recalculate() {
-	stop();
-	int numberOfRecalculations = 120;
 	List<RssEntry> input = ClientBuilder.newClient().target("http://localhost:8020/rss-entries")
 		.request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
 		});
@@ -100,11 +98,10 @@ public class Controller extends ControllerBase {
 	    entity.setSentimentTime(
 		    LocalDateTime.ofInstant(partition.get(partition.size() - 1).getPublicationDate().toInstant(),
 			    ZoneId.of(TimeZone.getDefault().getID())));
-	    dao.update(entity);
+	    dao.upsert(entity);
 
 	    System.out.println(i);
 	}
-	start();
     }
 
     @Override

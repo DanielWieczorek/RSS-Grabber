@@ -1,0 +1,125 @@
+Deeplearning4j OOM Exception Encountered for MultiLayerNetwork
+Timestamp:                              2018-12-25 03:33:53.599
+Thread ID                               30
+Thread Name                             pool-3-thread-1
+
+
+Stack Trace:
+java.lang.OutOfMemoryError: Failed to allocate memory within limits: totalBytes (2895M + 2400M) > maxBytes (4068M)
+	at org.bytedeco.javacpp.Pointer.deallocator(Pointer.java:580)
+	at org.deeplearning4j.nn.layers.BaseCudnnHelper$DataCache.<init>(BaseCudnnHelper.java:121)
+	at org.deeplearning4j.nn.layers.recurrent.CudnnLSTMHelper.activate(CudnnLSTMHelper.java:509)
+	at org.deeplearning4j.nn.layers.recurrent.LSTMHelpers.activateHelper(LSTMHelpers.java:205)
+	at org.deeplearning4j.nn.layers.recurrent.LSTM.activateHelper(LSTM.java:163)
+	at org.deeplearning4j.nn.layers.recurrent.LSTM.rnnActivateUsingStoredState(LSTM.java:217)
+	at org.deeplearning4j.nn.multilayer.MultiLayerNetwork.ffToLayerActivationsInWs(MultiLayerNetwork.java:1060)
+	at org.deeplearning4j.nn.multilayer.MultiLayerNetwork.computeGradientAndScore(MultiLayerNetwork.java:2629)
+	at org.deeplearning4j.nn.multilayer.MultiLayerNetwork.computeGradientAndScore(MultiLayerNetwork.java:2587)
+	at org.deeplearning4j.optimize.solvers.BaseOptimizer.gradientAndScore(BaseOptimizer.java:160)
+	at org.deeplearning4j.optimize.solvers.StochasticGradientDescent.optimize(StochasticGradientDescent.java:63)
+	at org.deeplearning4j.optimize.Solver.optimize(Solver.java:52)
+	at org.deeplearning4j.nn.multilayer.MultiLayerNetwork.doTruncatedBPTT(MultiLayerNetwork.java:1947)
+	at org.deeplearning4j.nn.multilayer.MultiLayerNetwork.fitHelper(MultiLayerNetwork.java:1585)
+	at org.deeplearning4j.nn.multilayer.MultiLayerNetwork.fit(MultiLayerNetwork.java:1521)
+	at de.wieczorek.nn.AbstractNeuralNetworkTrainer.train(AbstractNeuralNetworkTrainer.java:55)
+	at de.wieczorek.rss.advisor.business.TradingNeuralNetworkTrainer$Proxy$_$$_WeldClientProxy.train(Unknown Source)
+	at de.wieczorek.rss.advisor.business.TrainingTimer.run(TrainingTimer.java:47)
+	at de.wieczorek.rss.advisor.business.TrainingTimer$Proxy$_$$_WeldClientProxy.run(Unknown Source)
+	at de.wieczorek.rss.core.timer.RecurrentTaskRunner.run(RecurrentTaskRunner.java:42)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:514)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:299)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+	at java.base/java.lang.Thread.run(Thread.java:844)
+
+
+========== Memory Information ==========
+----- Version Information -----
+Deeplearning4j Version                  1.0.0-beta3
+Deeplearning4j CUDA                     deeplearning4j-cuda-9.2
+
+----- System Information -----
+Operating System                        Microsoft Windows 10
+CPU                                     Intel(R) Core(TM) i7-4770K CPU @ 3.50GHz
+CPU Cores - Physical                    4
+CPU Cores - Logical                     8
+Total System Memory                       15.89 GB (17061289984)
+Number of GPUs Detected                 1
+  Name                           CC                Total Memory              Used Memory              Free Memory
+  GeForce GTX 1080 Ti            6.1        11 GB (11811160064)     5.03 GB (5403954381)     5.97 GB (6407205683)
+
+----- ND4J Environment Information -----
+Data Type                               FLOAT
+blas.vendor                             CUBLAS
+os                                      Windows 10
+backend                                 CUDA
+
+----- Memory Configuration -----
+JVM Memory: XMX                            3.97 GB (4265607168)
+JVM Memory: current                         444 MB (465567744)
+JavaCPP Memory: Max Bytes                  3.97 GB (4265607168)
+JavaCPP Memory: Max Physical               7.95 GB (8531214336)
+JavaCPP Memory: Current Bytes              2.83 GB (3036363657)
+JavaCPP Memory: Current Physical           3.90 GB (4189270016)
+Periodic GC Enabled                     true
+Periodic GC Frequency                   100 ms
+
+----- Workspace Information -----
+Workspaces: # for current thread        2
+Current thread workspaces:
+  Name                      State       Size                          # Cycles            
+  WS_LAYER_WORKING_MEM      CLOSED             0 B                    2                   
+  WS_ALL_LAYERS_ACT         CLOSED          252 MB (264241152)        1                   
+Workspaces total size                       252 MB (264241152)
+Helper Workspaces
+  CUDNN_WORKSPACE                           58.50 MB (61341696)
+
+----- Network Information -----
+Network # Parameters                    218881
+Parameter Memory                         855.00 KB (875524)
+Parameter Gradients Memory              <not allocated>
+Updater Number of Elements              437762
+Updater Memory                             1.67 MB (1751048)
+Updater Classes:
+  org.nd4j.linalg.learning.AdamUpdater
+Params + Gradient + Updater Memory         1.67 MB (1751048)
+Iteration Count                         0
+Epoch Count                             0
+Backprop Type                           TruncatedBPTT
+TBPTT Length                            60/60
+Workspace Mode: Training                ENABLED
+Workspace Mode: Inference               ENABLED
+Number of Layers                        4
+Layer Counts
+  DenseLayer                              1
+  LSTM                                    2
+  RnnOutputLayer                          1
+Layer Parameter Breakdown
+  Idx Name                 Layer Type           Layer # Parameters   Layer Parameter Memory
+  0   layer0               LSTM                 70656                    276 KB (282624) 
+  1   layer1               LSTM                 131584                   514 KB (526336) 
+  2   layer2               DenseLayer           16512                  64.50 KB (66048)  
+  3   layer3               RnnOutputLayer       129                       516 B          
+
+----- Layer Helpers - Memory Use -----
+Total Helper Count                      0
+Helper Count w/ Memory                  0
+Total Helper Persistent Memory Use             0 B
+
+----- Network Activations: Inferred Activation Shapes -----
+Current Minibatch Size                  2048
+Input Shape                             [2048, 9, 60]
+Idx Name                 Layer Type           Activations Type                           Activations Shape    # Elements   Memory      
+0   layer0               LSTM                 InputTypeRecurrent(128,timeSeriesLength=60) [2048, 128, 60]      15728640          60 MB (62914560)
+1   layer1               LSTM                 InputTypeRecurrent(128,timeSeriesLength=60) [2048, 128, 60]      15728640          60 MB (62914560)
+2   layer2               DenseLayer           InputTypeFeedForward(128)                  [2048, 128]          262144             1 MB (1048576)
+3   layer3               RnnOutputLayer       InputTypeRecurrent(1)                      [2048, 1, -1]        -2048             -8 KB  
+Total Activations Memory                 120.99 MB (126869504)
+Total Activations Memory (per ex)         60.50 KB (61948)
+Total Activation Gradient Mem.           125.22 MB (131301376)
+Total Activation Gradient Mem. (per ex)   62.61 KB (64112)
+
+----- Network Training Listeners -----
+Number of Listeners                     1
+Listener 0                              org.deeplearning4j.optimize.listeners.PerformanceListener@5b1b8d49

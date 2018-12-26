@@ -6,7 +6,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.deeplearning4j.rl4j.policy.DQNPolicy;
-import org.deeplearning4j.rl4j.space.Encodable;
 
 @ApplicationScoped
 public class PolicyDao {
@@ -27,7 +26,7 @@ public class PolicyDao {
 	return System.getProperty("user.home") + "/neural-networks/" + fileName;
     }
 
-    public DQNPolicy<Encodable> readPolicy() {
+    public DQNPolicy<?> readPolicy() {
 	try {
 	    return DQNPolicy.load(buildPath());
 	} catch (IOException e) {
