@@ -30,7 +30,7 @@ public class TrainingDataGenerator {
     private static final int SEQ_LENGTH = 120;
     private static final int DEPTH = 20;
 
-    public StateEdge generateTrainingData() {
+    public StateEdge generateTrainingData(int offset) {
 	List<TradingEvaluationResult> currentSentiment = loadSentiments();
 
 	List<ChartEntry> chartEntries = loadChartEntries();
@@ -47,10 +47,10 @@ public class TrainingDataGenerator {
 	startAcc.setEur(1000);
 	startAcc.setEurEquivalent(1000);
 
-	int endIndex = Math.min(SEQ_LENGTH + STEPPING * DEPTH, stateParts.size());
+	int endIndex = Math.min(offset + SEQ_LENGTH + STEPPING * DEPTH, stateParts.size());
 
-	StateEdge rootState = buildState(stateParts, chartEntries, 0, SEQ_LENGTH, ActionVertexType.BUY, startAcc,
-		endIndex);
+	StateEdge rootState = buildState(stateParts, chartEntries, offset, offset + SEQ_LENGTH, ActionVertexType.BUY,
+		startAcc, endIndex);
 	rootState.setId(0);
 
 	Deque<StateEdge> statesToWorkOn = new LinkedList<>();
@@ -124,16 +124,23 @@ public class TrainingDataGenerator {
 
     private List<ChartEntry> loadChartEntries() {
 	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
+		.target("http://localhost:12000/ohlcv").request(MediaType.APPLICATION_JSON)
 		.get(new GenericType<List<ChartEntry>>() {
 		});
     }
 
     private List<TradingEvaluationResult> loadSentiments() {
 	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:12020/sentiment/24h").request(MediaType.APPLICATION_JSON)
+		.target("http://localhost:12020/sentiment/all").request(MediaType.APPLICATION_JSON)
 		.get(new GenericType<List<TradingEvaluationResult>>() {
 		});
+    }
+
+    public int getMaxIndex() {
+	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+		.target("http://localhost:12000/ohlcv").request(MediaType.APPLICATION_JSON)
+		.get(new GenericType<List<ChartEntry>>() {
+		}).size();
     }
 
     private StateEdge buildState(List<StateEdgePart> stateParts, List<ChartEntry> chartEntries, int partStartIndex,

@@ -14,7 +14,7 @@ public class NeuralNetworkActor implements MDP<NeuralNetworkState, Integer, Disc
     final private int maxStep;
 
     private DiscreteSpace actionSpace = new DiscreteSpace(2); // 0 Buy, 1 Sell
-    private ObservationSpace<NeuralNetworkState> observationSpace = new ArrayObservationSpace<>(new int[] { 480 });
+    private ObservationSpace<NeuralNetworkState> observationSpace = new ArrayObservationSpace<>(new int[] { 242 });
     private NeuralNetworkState currentState;
     private IndexedStateGraph stateGraph;
 

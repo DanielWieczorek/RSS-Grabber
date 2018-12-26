@@ -13,7 +13,7 @@ public class Configuration {
 
     @Produces
     @RestPort
-    private int restPort = 21020;
+    private int restPort = 22020;
 
     @Produces
     @JGroupsPort
@@ -21,7 +21,7 @@ public class Configuration {
 
     @Produces
     @ServiceName
-    private String serviceName = "trader-training";
+    private String serviceName = "trader-simulation";
 
     @Produces
     @NeuralNetworkName
