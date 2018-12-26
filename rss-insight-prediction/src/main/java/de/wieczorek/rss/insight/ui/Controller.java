@@ -1,10 +1,7 @@
 package de.wieczorek.rss.insight.ui;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
-import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -17,6 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.core.recalculation.Recalculation;
+import de.wieczorek.rss.core.recalculation.RecalculationStatusDao;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;
 import de.wieczorek.rss.insight.business.RssSentimentNeuralNetworkPredictor;
@@ -43,6 +42,9 @@ public class Controller extends ControllerBase {
     @Inject
     private SentimentAtTimeDao dao;
 
+    @Inject
+    private RecalculationStatusDao recalculationDao;
+
     public SentimentEvaluationResult predict() {
 	List<RssEntry> input = ClientBuilder.newClient().target("http://localhost:8020/rss-entries/24h")
 		.request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
@@ -66,42 +68,10 @@ public class Controller extends ControllerBase {
     }
 
     public void recalculate() {
-	List<RssEntry> input = ClientBuilder.newClient().target("http://localhost:8020/rss-entries")
-		.request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
-		});
-
-	vec.train(input);
-	AtomicInteger j = new AtomicInteger(0);
-	List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).peek(x -> {
-	    System.out.println(j.incrementAndGet());
-	}).collect(Collectors.toList());
-
-	for (int i = 0; i < input.size() - 24 * 60; i++) {
-	    List<RssEntry> partition = input.subList(i, i + 24 * 60);
-	    List<RssEntrySentiment> sentimentSubList = sentimentList.subList(i, i + 24 * 60);
-
-	    double positiveSum = sentimentSubList.stream().mapToDouble(RssEntrySentiment::getPositiveProbability).sum()
-		    / sentimentList.size();
-	    double negativeSum = sentimentSubList.stream().mapToDouble(RssEntrySentiment::getNegativeProbability).sum()
-		    / sentimentList.size();
-
-	    SentimentEvaluationResult result = new SentimentEvaluationResult();
-	    RssEntrySentimentSummary summary = new RssEntrySentimentSummary();
-	    summary.setPositiveProbability(positiveSum);
-	    summary.setNegativeProbability(negativeSum);
-	    result.setSummary(summary);
-	    result.setSentiments(sentimentList);
-
-	    SentimentAtTime entity = new SentimentAtTime();
-	    entity.setPositiveProbability(positiveSum);
-	    entity.setNegativeProbability(negativeSum);
-	    entity.setSentimentTime(
-		    LocalDateTime.ofInstant(partition.get(partition.size() - 1).getPublicationDate().toInstant(),
-			    ZoneId.of(TimeZone.getDefault().getID())));
-	    dao.upsert(entity);
-
-	    System.out.println(i);
-	}
+	Recalculation recalculation = new Recalculation();
+	recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
+	recalculationDao.deleteAll();
+	recalculationDao.create(recalculation);
     }
 
     @Override

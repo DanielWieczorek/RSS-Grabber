@@ -21,32 +21,32 @@ public class TradingNeuralNetworkPredictor
 	int maxLength = 24 * 60 + 1;
 	int vectorSize = 9;
 
-	double[][] itemVectors = new double[item.getInputChartEntry().size()][vectorSize];
+	double[][] itemVectors = new double[vectorSize][item.getInputChartEntry().size()];
 	int index = 0;
 	INDArray features = Nd4j.create(new int[] { 1, vectorSize, item.getInputChartEntry().size() }, 'f');
 
 	for (DeltaChartEntry entry : item.getInputChartEntry()) {
 	    if (entry != null) {
-		itemVectors[index][0] = entry.getOpen();
-		itemVectors[index][1] = entry.getHigh();
-		itemVectors[index][2] = entry.getLow();
-		itemVectors[index][3] = entry.getClose();
-		itemVectors[index][4] = entry.getVolume();
-		itemVectors[index][5] = entry.getVolumeWeightedAverage();
-		itemVectors[index][6] = entry.getTransactions();
-		itemVectors[index][7] = item.getInputSentiment().getPositiveProbability();
-		itemVectors[index][8] = item.getInputSentiment().getNegativeProbability();
+		itemVectors[0][index] = entry.getOpen();
+		itemVectors[1][index] = entry.getHigh();
+		itemVectors[2][index] = entry.getLow();
+		itemVectors[3][index] = entry.getClose();
+		itemVectors[4][index] = entry.getVolume();
+		itemVectors[5][index] = entry.getVolumeWeightedAverage();
+		itemVectors[6][index] = entry.getTransactions();
+		itemVectors[7][index] = item.getInputSentiment().getPositiveProbability();
+		itemVectors[8][index] = item.getInputSentiment().getNegativeProbability();
 
 	    } else {
-		itemVectors[index][0] = 0;
-		itemVectors[index][1] = 0;
-		itemVectors[index][2] = 0;
-		itemVectors[index][3] = 0;
-		itemVectors[index][4] = 0;
-		itemVectors[index][5] = 0;
-		itemVectors[index][6] = 0;
-		itemVectors[index][7] = item.getInputSentiment().getPositiveProbability();
-		itemVectors[index][8] = item.getInputSentiment().getNegativeProbability();
+		itemVectors[0][index] = 0;
+		itemVectors[1][index] = 0;
+		itemVectors[2][index] = 0;
+		itemVectors[3][index] = 0;
+		itemVectors[4][index] = 0;
+		itemVectors[5][index] = 0;
+		itemVectors[6][index] = 0;
+		itemVectors[7][index] = item.getInputSentiment().getPositiveProbability();
+		itemVectors[8][index] = item.getInputSentiment().getNegativeProbability();
 	    }
 	    index++;
 

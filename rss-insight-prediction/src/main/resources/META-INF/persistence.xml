@@ -8,7 +8,9 @@
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 
 		<class>de.wieczorek.rss.insight.types.SentimentAtTime</class>
-		 <class>de.wieczorek.rss.core.db.LocalDateTimeConverter</class>
+		<class>de.wieczorek.rss.core.db.LocalDateTimeConverter</class>
+		<class>de.wieczorek.rss.core.recalculation.Recalculation</class>
+		 
 
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" /> <!-- DB Driver -->
@@ -26,6 +28,7 @@
 				value="1" />
 			<property name="eclipselink.cache.type.default" value="NONE" />
 			<property name="eclipselink.flush-clear.cache" value="Drop" />
+						<property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
 			
 		</properties>
 

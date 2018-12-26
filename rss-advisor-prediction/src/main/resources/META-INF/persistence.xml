@@ -9,8 +9,8 @@
 
 		 <class>de.wieczorek.rss.core.db.LocalDateTimeConverter</class>
 		 <class>de.wieczorek.rss.advisor.types.TradingEvaluationResult</class>
-		 		 <class>de.wieczorek.rss.advisor.types.TradingEvaluationResultId</class>
-		 
+		 <class>de.wieczorek.rss.advisor.types.TradingEvaluationResultId</class>
+		 <class>de.wieczorek.rss.core.recalculation.Recalculation</class>
 
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" /> <!-- DB Driver -->

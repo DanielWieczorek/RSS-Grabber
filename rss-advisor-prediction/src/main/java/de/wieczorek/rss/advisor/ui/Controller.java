@@ -16,9 +16,10 @@ import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.rss.advisor.business.DataPreparator;
 import de.wieczorek.rss.advisor.business.TradingNeuralNetworkPredictor;
 import de.wieczorek.rss.advisor.persistence.TradingEvaluationResultDao;
-import de.wieczorek.rss.advisor.types.NetInputItem;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
+import de.wieczorek.rss.core.recalculation.Recalculation;
+import de.wieczorek.rss.core.recalculation.RecalculationStatusDao;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
@@ -36,6 +37,9 @@ public class Controller extends ControllerBase {
 
     @Inject
     private TradingEvaluationResultDao dao;
+
+    @Inject
+    private RecalculationStatusDao recalculationDao;
 
     public TradingEvaluationResult predict() {
 	LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
@@ -65,31 +69,11 @@ public class Controller extends ControllerBase {
     }
 
     public void recompute() {
-	List<SentimentAtTime> sentiments = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:11020/sentiment-at-time").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<SentimentAtTime>>() {
-		});
 
-	List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:12000/ohlcv/").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		});
-
-	System.out.println(LocalDateTime.now() + "calculating for " + chartEntries.size() + "entries");
-
-	int i = 0;
-	DataPreparator preparator = new DataPreparator().withChartData(chartEntries);
-	for (SentimentAtTime sentiment : sentiments) {
-	    NetInputItem networkInput = preparator.getDataForSentiment(sentiment);
-	    if (networkInput != null) {
-		TradingEvaluationResult result = nn.predict(networkInput);
-		result.setCurrentTime(sentiment.getSentimentTime());
-		result.setTargetTime(sentiment.getSentimentTime().plusMinutes(preparator.getOffsetMinutes()));
-
-		dao.upsert(result);
-		System.out.println(LocalDateTime.now() + "calculating for date " + sentiment.getSentimentTime());
-	    }
-	}
+	Recalculation recalculation = new Recalculation();
+	recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
+	recalculationDao.deleteAll();
+	recalculationDao.create(recalculation);
     }
 
     @Override
