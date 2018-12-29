@@ -1,5 +1,7 @@
 package de.wieczorek.rss.trading.business.data;
 
+import de.wieczorek.rss.trading.types.ActionVertexType;
+
 public class ActionVertex {
     private StateEdge targetState;
     private ActionVertexType type;

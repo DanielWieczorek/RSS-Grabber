@@ -1,4 +1,4 @@
-package de.wieczorek.rss.trading.business.data;
+package de.wieczorek.rss.trading.types;
 
 public class Account {
     private double btc;

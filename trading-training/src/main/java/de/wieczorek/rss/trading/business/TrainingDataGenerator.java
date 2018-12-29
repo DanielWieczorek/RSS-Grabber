@@ -1,28 +1,22 @@
 package de.wieczorek.rss.trading.business;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
+import javax.inject.Inject;
 
 import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.rss.advisor.types.DeltaChartEntry;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
-import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
-import de.wieczorek.rss.trading.business.data.Account;
 import de.wieczorek.rss.trading.business.data.ActionVertex;
-import de.wieczorek.rss.trading.business.data.ActionVertexType;
 import de.wieczorek.rss.trading.business.data.StateEdge;
-import de.wieczorek.rss.trading.business.data.StateEdgePart;
+import de.wieczorek.rss.trading.common.BuySellHelper;
+import de.wieczorek.rss.trading.common.DataLoader;
+import de.wieczorek.rss.trading.common.StatePartBuilder;
+import de.wieczorek.rss.trading.types.Account;
+import de.wieczorek.rss.trading.types.ActionVertexType;
+import de.wieczorek.rss.trading.types.StateEdgePart;
 
 @ApplicationScoped
 public class TrainingDataGenerator {
@@ -30,15 +24,18 @@ public class TrainingDataGenerator {
     private static final int SEQ_LENGTH = 120;
     private static final int DEPTH = 20;
 
-    public StateEdge generateTrainingData(int offset) {
-	List<TradingEvaluationResult> currentSentiment = loadSentiments();
+    @Inject
+    private DataLoader dataLoader;
 
-	List<ChartEntry> chartEntries = loadChartEntries();
+    public StateEdge generateTrainingData(int offset) {
+	List<TradingEvaluationResult> currentSentiment = dataLoader.loadAllSentiments();
+
+	List<ChartEntry> chartEntries = dataLoader.loadAllChartEntries();
 
 	System.out.println("found " + chartEntries.size() + " entries. first at " + chartEntries.get(0).getDate()
 		+ " and last at " + chartEntries.get(chartEntries.size() - 1).getDate()); // TODO Logging
 
-	List<StateEdgePart> stateParts = buildStateParts(chartEntries, currentSentiment);
+	List<StateEdgePart> stateParts = StatePartBuilder.buildStateParts(chartEntries, currentSentiment);
 
 	System.out.println("starting iteration"); // TODO logging
 
@@ -91,56 +88,8 @@ public class TrainingDataGenerator {
 
     }
 
-    private List<StateEdgePart> buildStateParts(List<ChartEntry> chartEntries,
-	    List<TradingEvaluationResult> currentSentiment) {
-	Map<LocalDateTime, TradingEvaluationResult> sentimentDateMappings = currentSentiment.stream().collect(
-		Collectors.toMap(TradingEvaluationResult::getCurrentTime, Function.identity(), (v1, v2) -> v2));
-
-	List<StateEdgePart> stateParts = new ArrayList<>();
-
-	for (int i = 1; i < chartEntries.size(); i++) {
-	    StateEdgePart part = new StateEdgePart();
-	    ChartEntry previousEntry = chartEntries.get(i - 1);
-	    ChartEntry currentEntry = chartEntries.get(i);
-
-	    DeltaChartEntry entry = new DeltaChartEntry();
-	    entry.setDate(currentEntry.getDate());
-	    entry.setHigh(currentEntry.getHigh() - previousEntry.getHigh());
-	    entry.setLow(currentEntry.getLow() - previousEntry.getLow());
-	    entry.setOpen(currentEntry.getOpen() - previousEntry.getOpen());
-	    entry.setClose(currentEntry.getClose() - previousEntry.getClose());
-	    entry.setTransactions(currentEntry.getTransactions() - previousEntry.getTransactions());
-	    entry.setVolume(currentEntry.getVolume() - previousEntry.getVolume());
-	    entry.setVolumeWeightedAverage(
-		    currentEntry.getVolumeWeightedAverage() - previousEntry.getVolumeWeightedAverage());
-
-	    part.setChartEntry(entry);
-	    part.setSentiment(sentimentDateMappings.get(entry.getDate()));
-
-	    stateParts.add(part);
-	}
-	return stateParts;
-    }
-
-    private List<ChartEntry> loadChartEntries() {
-	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:12000/ohlcv").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		});
-    }
-
-    private List<TradingEvaluationResult> loadSentiments() {
-	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:12020/sentiment/all").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<TradingEvaluationResult>>() {
-		});
-    }
-
     public int getMaxIndex() {
-	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:12000/ohlcv").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		}).size();
+	return dataLoader.loadAllChartEntries().size();
     }
 
     private StateEdge buildState(List<StateEdgePart> stateParts, List<ChartEntry> chartEntries, int partStartIndex,
@@ -152,27 +101,11 @@ public class TrainingDataGenerator {
 	}
 
 	Account newAcc = new Account();
+	double currentPrice = chartEntries.get(partEndIndex).getClose();
 	if (action == ActionVertexType.BUY) {
-	    if (acc.getBtc() > 0.0) {
-		newAcc.setBtc(acc.getBtc());
-		newAcc.setEur(0);
-		newAcc.setEurEquivalent(newAcc.getBtc() * chartEntries.get(partEndIndex).getClose());
-	    } else {
-		newAcc.setBtc((acc.getEur() / chartEntries.get(partEndIndex).getClose()) * ((100 - 0.2) / 100));
-		newAcc.setEur(0);
-		newAcc.setEurEquivalent(newAcc.getBtc() * chartEntries.get(partEndIndex).getClose());
-	    }
-
+	    newAcc = BuySellHelper.processBuy(currentPrice, acc);
 	} else {
-	    if (acc.getBtc() > 0.0) {
-		newAcc.setBtc(0);
-		newAcc.setEur(acc.getBtc() * chartEntries.get(partEndIndex).getClose() * ((100 - 0.2) / 100));
-		newAcc.setEurEquivalent(newAcc.getEur());
-	    } else {
-		newAcc.setBtc(0);
-		newAcc.setEur(acc.getEur());
-		newAcc.setEurEquivalent(newAcc.getEur());
-	    }
+	    newAcc = BuySellHelper.processSell(currentPrice, acc);
 	}
 
 	currentState.setAccount(newAcc);

@@ -13,19 +13,19 @@
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>trading-simulation</artifactId>
+	<artifactId>trading-common</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
 
 		<dependency>
 			<groupId>de.wieczorek</groupId>
-			<artifactId>common-neuralnetwork-prediction</artifactId>
+			<artifactId>common-webservice-base</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>de.wieczorek</groupId>
-			<artifactId>trading-common</artifactId>
+			<artifactId>trading-types</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

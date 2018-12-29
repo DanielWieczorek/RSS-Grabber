@@ -1,36 +1,24 @@
 package de.wieczorek.rss.trading.business.data;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import de.wieczorek.rss.trading.types.Account;
+import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.rss.trading.types.IStateHistoryHolder;
 import de.wieczorek.rss.trading.types.StateEdgePart;
 
-public class StateEdge implements IStateHistoryHolder {
+public class InputDataSnapshot implements IStateHistoryHolder {
+    private ChartEntry currentRate;
     private long id;
     private int partsStartIndex = 0;
     private int partsEndIndex = 0;
-    private Account account;
-    private StateEdge previous;
     private List<StateEdgePart> allStateParts;
 
-    private List<ActionVertex> actions = new ArrayList<>();
-
-    public Account getAccount() {
-	return account;
+    public long getId() {
+	return id;
     }
 
-    public void setAccount(Account account) {
-	this.account = account;
-    }
-
-    public List<ActionVertex> getActions() {
-	return actions;
-    }
-
-    public void setActions(List<ActionVertex> actions) {
-	this.actions = actions;
+    public void setId(long id) {
+	this.id = id;
     }
 
     @Override
@@ -51,22 +39,6 @@ public class StateEdge implements IStateHistoryHolder {
 	this.partsEndIndex = partsEndIndex;
     }
 
-    public StateEdge getPrevious() {
-	return previous;
-    }
-
-    public void setPrevious(StateEdge previous) {
-	this.previous = previous;
-    }
-
-    public long getId() {
-	return id;
-    }
-
-    public void setId(long id) {
-	this.id = id;
-    }
-
     @Override
     public List<StateEdgePart> getAllStateParts() {
 	return allStateParts;
@@ -74,6 +46,14 @@ public class StateEdge implements IStateHistoryHolder {
 
     public void setAllStateParts(List<StateEdgePart> allStateParts) {
 	this.allStateParts = allStateParts;
+    }
+
+    public ChartEntry getCurrentRate() {
+	return currentRate;
+    }
+
+    public void setCurrentRate(ChartEntry currentRate) {
+	this.currentRate = currentRate;
     }
 
 }
