@@ -10,15 +10,28 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RssClassificationComponent } from './rss-classification/rss-classification.component';
 import { RssInsightComponent } from './rss-insight/rss-insight.component';
 import { MicroserviceStatusComponent } from './microservice-status/microservice-status.component';
+import { TradingSimulationComponent } from './trading-simulation/trading-simulation.component';
+import { RouterModule, Routes } from '@angular/router';
+import { ChartsModule } from 'ng2-charts';
+
+const appRoutes: Routes = [
+                           { path: 'microservice-status', component: MicroserviceStatusComponent },
+                           { path: 'rss-classification', component: RssClassificationComponent },
+                           { path: 'rss-insight', component: RssInsightComponent},
+                           { path: 'trading-simulation', component: TradingSimulationComponent}
+                           ];
+
 
 @NgModule({
   declarations: [
     AppComponent,
     RssClassificationComponent,
     RssInsightComponent,
-    MicroserviceStatusComponent
+    MicroserviceStatusComponent,
+    TradingSimulationComponent
   ],
   imports: [
+    ChartsModule,
     BrowserModule,
     HttpClientModule,
     MatCardModule,
@@ -28,7 +41,11 @@ import { MicroserviceStatusComponent } from './microservice-status/microservice-
     MatExpansionModule,
     MatTabsModule,
     BrowserAnimationsModule,
-    NgDragDropModule.forRoot()
+    NgDragDropModule.forRoot(),
+        RouterModule.forRoot(
+      appRoutes,
+      { enableTracing: true } // <-- debugging purposes only
+    )
   ],
   providers: [],
   bootstrap: [AppComponent]

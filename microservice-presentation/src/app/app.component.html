@@ -1,6 +1,9 @@
-<mat-tab-group> <mat-tab label="RSS Classification">
+<ul>
+  <li><a routerLink="/microservice-status" routerLinkActive="active">Microservice Status</a></li>
+  <li><a routerLink="/rss-classification" routerLinkActive="active">RSS Classification</a></li>
+  <li><a routerLink="/rss-insight" routerLinkActive="active">RSS Insight</a></li>
+  <li><a routerLink="/trading-simulation" routerLinkActive="active">Trading Simulation</a></li>
+</ul>
+  
 
-<app-rss-classification></app-rss-classification> </mat-tab> <mat-tab
-	label="RSS Insight"> <app-rss-insight></app-rss-insight> </mat-tab> <mat-tab
-	label="Microservice Status"> <app-microservice-status></app-microservice-status>
-</mat-tab> </mat-tab-group>
+<router-outlet></router-outlet>

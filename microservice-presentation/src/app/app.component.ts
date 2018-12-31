@@ -1,15 +1,20 @@
 import { Component } from '@angular/core';
+import { Chart } from 'chart.js';
+import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-})
+
+@Component( {
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+} )
 export class AppComponent {
 
-  constructor(){
-  }
-  
-  ngOnInit(): void {
-  }
+
+    constructor( private http: HttpClient ) {
+    }
+
+    
 }
