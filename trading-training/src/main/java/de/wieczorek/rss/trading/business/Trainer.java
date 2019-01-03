@@ -80,7 +80,7 @@ public class Trainer {
     }
 
     public void train() throws IOException {
-	int numberOfRounds = 20;
+	int numberOfRounds = 100;
 	int rangeMax = dataGenerator.getMaxIndex() - 1440;
 	Random random = new Random(System.currentTimeMillis());
 	for (int i = 0; i < numberOfRounds; i++) {

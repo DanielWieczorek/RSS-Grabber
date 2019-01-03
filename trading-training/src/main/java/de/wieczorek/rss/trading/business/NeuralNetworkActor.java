@@ -30,7 +30,7 @@ public class NeuralNetworkActor implements MDP<NeuralNetworkState, Integer, Disc
 
     @Override
     public boolean isDone() {
-	return currentState.getStep() == maxStep;
+	return currentState.getStep() == maxStep || currentState.getState().getActions().isEmpty();
     }
 
     @Override

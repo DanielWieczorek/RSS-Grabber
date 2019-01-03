@@ -88,24 +88,29 @@ export class TradingSimulationComponent implements AfterViewInit {
 
                             {
                                 data: sellData,
-                                borderColor: "#ff0000",
-                                backgroundColor: "#ff0000",
+                                borderColor: "red",
+                                backgroundColor: "#ef5350",
                                 pointRadius: 5,
+                                pointHoverRadius: 8,
                                 fill: false,
                                 showLine: false
                             },
                             {
                                 data: buyData,
-                                borderColor: "#00ff00",
-                                backgroundColor: "#00ff00",
+                                borderColor: "teal",
+                                backgroundColor: "#26a69a",
                                 pointRadius: 5,
+                                pointHoverRadius: 8,
                                 fill: false,
                                 showLine: false
                             },
                             {
                                 data: close,
-                                borderColor: "#AAAAAA",
-                                fill: false
+                                borderColor: "#bdbdbd",
+                                pointRadius: 0,
+
+                                fill: false,
+                                showPoints: false
                             }
                         ]
                     },

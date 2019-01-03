@@ -1,9 +1,17 @@
-<ul>
-  <li><a routerLink="/microservice-status" routerLinkActive="active">Microservice Status</a></li>
-  <li><a routerLink="/rss-classification" routerLinkActive="active">RSS Classification</a></li>
-  <li><a routerLink="/rss-insight" routerLinkActive="active">RSS Insight</a></li>
-  <li><a routerLink="/trading-simulation" routerLinkActive="active">Trading Simulation</a></li>
-</ul>
-  
+<nav>
+	<div class="nav-wrapper indigo">
+		
+		<ul id="nav-mobile" class="left hide-on-med-and-down">
+			<li><a routerLink="/microservice-status"
+				routerLinkActive="active">Microservice Status</a></li>
+			<li><a routerLink="/rss-classification"
+				routerLinkActive="active">RSS Classification</a></li>
+			<li><a routerLink="/rss-insight" routerLinkActive="active">RSS
+					Insight</a></li>
+			<li><a routerLink="/trading-simulation"
+				routerLinkActive="active">Trading Simulation</a></li>
+		</ul>
+	</div>
+</nav>
 
 <router-outlet></router-outlet>

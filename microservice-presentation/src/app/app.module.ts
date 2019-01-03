@@ -33,6 +33,7 @@ const appRoutes: Routes = [
   imports: [
     ChartsModule,
     BrowserModule,
+   
     HttpClientModule,
     MatCardModule,
     MatButtonModule,
@@ -45,7 +46,7 @@ const appRoutes: Routes = [
         RouterModule.forRoot(
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only
-    )
+    ),
   ],
   providers: [],
   bootstrap: [AppComponent]
