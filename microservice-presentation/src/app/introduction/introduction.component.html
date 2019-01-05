@@ -1,0 +1,366 @@
+<div class="section white-text blue ">
+	<div class="container ">
+		<div class="row">
+
+			<h2>What is this?</h2>
+			<p>Hi there,</p>
+			<p class="caption">
+				this is my current project which serves as playground to improve my
+				software development skills. <br> Since, I am a big fan of
+				Software Architecture, Deep Learning and finances, I decided to
+				build an set of application for daytrading.
+			</p>
+			<p>The following up to now I could learn about the following
+				aspects:</p>
+			<div class=" col l3  blue darken-1">
+				<div class="valign-wrapper">
+					<i class="material-icons "
+						style="font-size: 2.28rem; margin: 1.52rem 0 0.912rem 0">business</i>
+					<h4>Architecture</h4>
+				</div>
+				<ul class="">
+
+					<li class="collection-item transparent">Designing a
+						microservice architecture</li>
+					<li class="collection-item transparent">basic cluster
+						management</li>
+					<li class="collection-item transparent">some cool Java 8 and
+						Weld stuff</li>
+				</ul>
+			</div>
+			<div class=" col l3 offset-l1 blue darken-1">
+				<div class="valign-wrapper">
+					<i class="material-icons "
+						style="font-size: 2.28rem; margin: 1.52rem 0 0.912rem 0">android</i>
+					<h4>AI</h4>
+				</div>
+				<ul class="">
+					<li class="collection-item transparent">sentiment analysis</li>
+					<li class="collection-item transparent">reenforcement learning</li>
+					<li class="collection-item transparent">n-step Q-Learning</li>
+				</ul>
+			</div>
+			<div class=" col l3 offset-l1 blue darken-1">
+				<div class="valign-wrapper">
+
+					<i class="material-icons "
+						style="font-size: 2.28rem; margin: 1.52rem 0 0.912rem 0">desktop_windows</i>
+					<h4>Frontend</h4>
+				</div>
+				<ul class="">
+					<li class="collection-item transparent">using Angular 5</li>
+					<li class="collection-item transparent">UI design with
+						materialize-css</li>
+					<li class="collection-item transparent">drawing graphs with
+						Chart.js</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="section white-text blue lighten-1 ">
+	<div class="container ">
+		<h2>Overall Architecture by Section</h2>
+		<p>
+			The overall structure can be seen in the diagram below. The
+			microservices can be categorized into the following sections:
+			<code class=" language-markup">GUI</code>
+			,
+			<code class=" language-markup">Data Collection</code>
+			,
+			<code class=" language-markup">Data Processing</code>
+			and
+			<code class=" language-markup">Trading</code>
+		</p>
+
+
+		<p>
+			Each service may only perform REST calls on microservices in the same
+			or an earlier section. E.g. "rss-insight" may use any service from
+			the sections
+			<code class=" language-markup">Data Processing</code>
+			and
+			<code class=" language-markup">Data Collection</code>
+			. This enforces an information flow from
+			<code class=" language-markup">Data Collection</code>
+			over
+			<code class=" language-markup">Data Processing</code>
+			to the
+			<code class=" language-markup">Trading</code>
+			services.
+		</p>
+		<p>The GUI sections is an exception from this. It has access to
+			all microservices to visualize them.</p>
+		<div class="white z-depth-1"
+			style="overflow: hidden; padding: 11.25px;">
+			<div class="row">
+				<div class="col l12 blue white-text center">
+					<h4>GUI</h4>
+					<div class="card">
+						<div class="card-content black-text">
+							<h5>microservice-presentation</h5>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col l4 white-text center">
+					<div class="teal"
+						style="height: 100%; overflow: hidden; padding-left: 11.25px; padding-right: 11.25px">
+						<h4>Data Collection</h4>
+						<div class="card">
+							<div class="card-content black-text">
+								<h5>rss-datacollection</h5>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-content black-text">
+								<h5>chart-datacollection</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col l4  white-text center">
+					<div class="red"
+						style="height: 100%; overflow: hidden; padding-left: 11.25px; padding-right: 11.25px">
+
+						<h4>Data Processing</h4>
+						<div class="card">
+							<div class="card-content black-text">
+								<h5>rss-classification</h5>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-content black-text">
+								<h5>rss-insight</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col l4  white-text center">
+					<div class="yellow"
+						style="height: 100%; overflow: hidden; padding-left: 11.25px; padding-right: 11.25px">
+
+						<h4>Trading</h4>
+						<div class="card">
+							<div class="card-content black-text">
+								<h5>trader</h5>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-content black-text">
+								<h5>rss-advisor</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<h2>Overall Architecture by Streams</h2>
+		<p>You can see the architecture from a functional perspective as
+			well. From this perspective the architeture is organized in streams.
+			Each stream is concerned with reading and processing the data from a
+			particular type of source e.g. RSS feeds or chart data.</p>
+		<div class="white z-depth-1"
+			style="overflow: hidden; padding: 11.25px;">
+			<div class="row">
+				<div class="col l12 deep-orange white-text center">
+					<h4>RSS</h4>
+					<div class="col l4 white-text center">
+						<div class="card">
+							<div class="card-content black-text">
+								<h5>rss-datacollection</h5>
+							</div>
+						</div>
+					</div>
+
+					<div class="col l4 white-text center">
+						<div class="card">
+							<div class="card-content black-text">
+								<h5>rss-classification</h5>
+							</div>
+						</div>
+					</div>
+					<div class="col l4  white-text center">
+						<div class="card">
+							<div class="card-content black-text">
+								<h5>rss-insight</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col l12 cyan white-text center">
+					<h4>Chart</h4>
+					<div class="card">
+						<div class="card-content black-text">
+							<h5>chart-datacollection</h5>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="section white-text blue lighten-2 ">
+	<div class="container ">
+		<h3>Data Collection</h3>
+		<div class="row" style="vertical-align: bottom">
+			<div class="valign-wrapper">
+				<div class="col l3 right-align">
+					<h4>rss-reader</h4>
+				</div>
+				<div class="col l9 left-align">
+					<p>Reads the RSS feeds from various crypto coin news sites and
+						stores them in its DB. The entries are made availables via a REST
+						API. Special effort was made to ensure that adding new sites is as
+						simple as possible and the corresponding classes are detected
+						automatically via Weld mechanisms.</p>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="vertical-align: bottom">
+			<div class="valign-wrapper">
+				<div class="col l3 right-align">
+					<h4>chart-reader</h4>
+
+				</div>
+				<div class="col l9 left-align">
+					<p>Reads the OHLCV data from Kraken and stores them in its DB.
+						The data is made availables via a REST API.</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<div class="section white-text blue lighten-2 ">
+	<div class="container ">
+		<h3>Processing</h3>
+
+		<div class="row" style="vertical-align: bottom">
+			<div class="valign-wrapper">
+				<div class="col l3 right-align">
+					<h4>rss-classification</h4>
+				</div>
+				<div class="col l9 left-align">
+					<p>Loads the RSS entries from rss-datacollection and stores
+						them in its DB. It offers REST services such that a user can
+						classify the entries. this service basically generates the
+						training data for other services.</p>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="vertical-align: bottom">
+			<div class="valign-wrapper">
+				<div class="col l3 right-align">
+					<h4>rss-insight</h4>
+
+				</div>
+				<div class="col l9 left-align">
+					<p>Automatically classifies the entries read by rss-reader and
+						stores the classified entries in its DB. For this one Word2Vec
+						network is used to generate word vectors and then an RNN is
+						applied to classify whole sentences. The training data is
+						requested from rss-classification.</p>
+				</div>
+			</div>
+		</div>
+
+		<h4></h4>
+
+		<h4></h4>
+
+	</div>
+</div>
+<div class="section white-text blue lighten-2 ">
+	<div class="container ">
+		<h3>Trading</h3>
+
+		<div class="row" style="vertical-align: bottom">
+			<div class="valign-wrapper">
+				<div class="col l3 right-align">
+					<h4>rss-advisor</h4>
+				</div>
+				<div class="col l9 left-align">
+					<p>Creates a prediction by how much the exchange rate between
+						BTC and EUR will move up or down in the next 15 minutes. For this
+						the chart data of the last 24 hours and the classified rss-entries
+						are read by an RNN which then generates a prediction. In the
+						training all points in time are used where we have the actual
+						exchange rate of this point in time + 15 minutes.</p>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="vertical-align: bottom">
+			<div class="valign-wrapper">
+				<div class="col l3 right-align">
+					<h4>trader</h4>
+
+				</div>
+				<div class="col l9 left-align">
+					<p>The trading service uses the predictions of the advisors of
+						the last 2 hours and makes a decision to buy or sell every 10
+						minutes. N-step Q-learing is used to learn the best 19 consecutive
+						trade decisions for a time period. This is used to avoid bad
+						decisions, just because the exchange rate is fluctuating. For this
+						a tree with the observation (current account value, exchange rates
+						of the last two hours, predictions of advisors) as vertices and
+						the decisions as edges is created.</p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<div class="section">
+	<div class="container ">
+		<h2>Technologies</h2>
+		<div class="row">
+			<div class="valign-wrapper ">
+
+				<div class="col l1 hoverable">
+					<img class="responsive-img" src="assets/technologies/angular.svg"
+						width=100% />
+
+				</div>
+				<div class="col l1 hoverable">
+					<img class="responsive-img"
+						src="assets/technologies/materialize.svg" width=100% />
+				</div>
+
+				<div class="col l1 hoverable">
+					<img class="responsive-img"
+						src="assets/technologies/jetty-header-logo.png" width=100% />
+				</div>
+				<div class="col l1 hoverable">
+					<img class="responsive-img"
+						src="assets/technologies/jersey_logo.png" width=100% />
+				</div>
+
+				<div class="col l1 hoverable">
+					<img class="responsive-img"
+						src="assets/technologies/weld_logo_450x.png" width=100% />
+				</div>
+				<div class="col l1 hoverable">
+					<img class="responsive-img"
+						src="assets/technologies/jgroups_logo.svg" width=100% />
+				</div>
+				<div class="col l1 hoverable">
+					<img class="responsive-img"
+						src="assets/technologies/PostgreSQL_logo.3colors.svg" width=100% />
+				</div>
+				<div class="col l1 hoverable">
+					<img class="responsive-img"
+						src="assets/technologies/maven-logo-black-on-white.png" width=100% />
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>

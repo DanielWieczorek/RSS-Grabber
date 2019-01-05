@@ -13,12 +13,15 @@ import { MicroserviceStatusComponent } from './microservice-status/microservice-
 import { TradingSimulationComponent } from './trading-simulation/trading-simulation.component';
 import { RouterModule, Routes } from '@angular/router';
 import { ChartsModule } from 'ng2-charts';
+import { IntroductionComponent } from './introduction/introduction.component';
 
 const appRoutes: Routes = [
+                           { path: '', redirectTo: '/introduction', pathMatch: 'full' },
                            { path: 'microservice-status', component: MicroserviceStatusComponent },
                            { path: 'rss-classification', component: RssClassificationComponent },
                            { path: 'rss-insight', component: RssInsightComponent},
                            { path: 'trading-simulation', component: TradingSimulationComponent}
+                           { path: 'introduction', component: IntroductionComponent}
                            ];
 
 
@@ -28,7 +31,8 @@ const appRoutes: Routes = [
     RssClassificationComponent,
     RssInsightComponent,
     MicroserviceStatusComponent,
-    TradingSimulationComponent
+    TradingSimulationComponent,
+    IntroductionComponent
   ],
   imports: [
     ChartsModule,
