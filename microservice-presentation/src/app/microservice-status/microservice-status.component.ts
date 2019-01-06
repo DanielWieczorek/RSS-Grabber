@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { MicroserviceStatusService } from '../shared/microservice-status/microservice-status.service'
 
 
 @Component({
@@ -12,23 +12,24 @@ export class MicroserviceStatusComponent implements OnInit {
     title = 'app';
     data : Object;
 
-    constructor(private http: HttpClient){
+    constructor(private microserviceStatus: MicroserviceStatusService){
     }
     
-    start(name : String){
-      this.http.get('http://localhost:10000/start/'+name).subscribe(data => {
+    start(name : string){    
+      this.microserviceStatus.start(name).subscribe(data => {
         this.data = data;
       });
     }
     
-    stop(name : String){
-      this.http.get('http://localhost:10000/stop/'+name).subscribe(data => {
+    stop(name : string){
+        this.microserviceStatus.stop(name).subscribe(data => {
+            console.log(data);
         this.data = data;
       });
     }
 
     ngOnInit(): void {
-      this.http.get('http://localhost:10000/getstatus').subscribe(data => {
+        this.microserviceStatus.status().subscribe(data => {
         this.data = data;
       });
     }

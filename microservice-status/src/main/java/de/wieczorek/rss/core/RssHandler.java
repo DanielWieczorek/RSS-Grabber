@@ -28,14 +28,14 @@ public class RssHandler {
 
     @POST
     @Path("start/{service}")
-    public void start(@PathParam("service") String service) {
-	controller.startService(service);
+    public List<ServiceMetadata> start(@PathParam("service") String service) {
+	return controller.startService(service);
     }
 
     @POST
     @Path("stop/{service}")
-    public void stop(@PathParam("service") String service) {
-	controller.stopService(service);
+    public List<ServiceMetadata> stop(@PathParam("service") String service) {
+	return controller.stopService(service);
 
     }
 }

@@ -8,6 +8,13 @@ import { MicroserviceStatusComponent } from './microservice-status/microservice-
 import { TradingSimulationComponent } from './trading-simulation/trading-simulation.component';
 import { RouterModule, Routes } from '@angular/router';
 import { IntroductionComponent } from './introduction/introduction.component';
+import { ChartReaderService } from './shared/chart-reader/chart-reader.service'
+import { TraderSimulationService } from './shared/trader-simulation/trader-simulation.service'
+import { RssInsightService } from './shared/rss-insight/rss-insight.service'
+import { RssClassificationService } from './shared/rss-classification/rss-classification.service'
+import { MicroserviceStatusService } from './shared/microservice-status/microservice-status.service'
+
+
 
 const appRoutes: Routes = [
                            { path: '', redirectTo: '/introduction', pathMatch: 'full' },
@@ -36,7 +43,13 @@ const appRoutes: Routes = [
       { enableTracing: true } // <-- debugging purposes only
     ),
   ],
-  providers: [],
+  providers: [
+      ChartReaderService,
+      TraderSimulationService,
+      RssInsightService,
+      RssClassificationService,
+      MicroserviceStatusService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

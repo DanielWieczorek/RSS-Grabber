@@ -1,10 +1,11 @@
 import { Component, OnInit,AfterViewInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Chart } from 'chart.js';
 import 'rxjs/add/operator/map';
 import {Observable} from 'rxjs';
-import { ChartEntry } from './chart-entry';
-import { Trade } from './trade';
+import { ChartEntry } from '../shared/chart-reader/chart-entry';
+import { Trade } from '../shared/trader-simulation/trade';
+import { ChartReaderService } from '../shared/chart-reader/chart-reader.service'
+import { TraderSimulationService } from '../shared/trader-simulation/trader-simulation.service'
 
 
 @Component({
@@ -16,7 +17,9 @@ export class TradingSimulationComponent implements AfterViewInit {
 
     title = 'app';
 
-    constructor(private http: HttpClient){
+    constructor(
+            private chartReader : ChartReaderService, 
+            private traderSimulation : TraderSimulationService){
         
     }
     
@@ -27,11 +30,11 @@ export class TradingSimulationComponent implements AfterViewInit {
 
   
     ngAfterViewInit(): void {
-        this.http.get( 'http://localhost:12000/ohlcv/24h' ).subscribe( res => {
+        this.chartReader.get24hOhlcv().subscribe( res => {
             console.log( res )
             this.data = res as ChartEntry[];
 
-            this.http.get( 'http://localhost:22020/simulate' ).subscribe( trades => {
+            this.traderSimulation.simulate().subscribe( trades => {
                 this.trades = trades as Trade[];
 
 

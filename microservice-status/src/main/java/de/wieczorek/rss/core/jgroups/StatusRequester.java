@@ -32,7 +32,7 @@ public class StatusRequester {
 	ServiceMetadata metadata = directory.getMetadataForService(collectorName);
 
 	ClientBuilder.newClient().target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort())
-		.path("/stop").request().accept("application/json").get();
+		.path("/status/stop").request().accept("application/json").get();
 
     }
 
@@ -40,7 +40,7 @@ public class StatusRequester {
 	ServiceMetadata metadata = directory.getMetadataForService(collectorName);
 
 	ClientBuilder.newClient().target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort())
-		.path("/start").request().accept("application/json").get();
+		.path("/status/start").request().accept("application/json").get();
 
     }
 }

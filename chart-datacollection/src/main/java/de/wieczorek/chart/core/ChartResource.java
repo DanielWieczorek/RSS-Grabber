@@ -11,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.ui.Controller;
-import de.wieczorek.rss.core.jgroups.CollectorStatus;
 import de.wieczorek.rss.core.ui.Resource;
 
 @Resource
@@ -21,27 +20,6 @@ public class ChartResource {
 
     @Inject
     private Controller controller;
-
-    @GET
-    @Path("start")
-    public void start() {
-	controller.start();
-    }
-
-    @GET
-    @Path("stop")
-    public void stop() {
-	controller.stop();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("status")
-    public CollectorStatus status() {
-	CollectorStatus status = new CollectorStatus();
-	status.setStatus(controller.isStarted() ? "running" : "stopped");
-	return status;
-    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

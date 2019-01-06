@@ -3,8 +3,6 @@ package de.wieczorek.chart.core.ui;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,15 +12,11 @@ import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.persistence.RssEntryDao;
 import de.wieczorek.rss.core.jgroups.RestInfoSender;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
+import de.wieczorek.rss.core.ui.ControllerBase;
 
 @ApplicationScoped
-public class Controller {
+public class Controller extends ControllerBase {
     private static final Logger logger = LogManager.getLogger(RestInfoSender.class.getName());
-    private boolean isStarted;
-
-    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
-	start();
-    }
 
     @Inject
     private RecurrentTaskManager timer;
@@ -30,20 +24,16 @@ public class Controller {
     @Inject
     private RssEntryDao dao;
 
+    @Override
     public void start() {
 	logger.info("started");
 	timer.start();
-	isStarted = true;
     }
 
+    @Override
     public void stop() {
 	logger.info("stopped");
 	timer.stop();
-	isStarted = false;
-    }
-
-    public boolean isStarted() {
-	return isStarted;
     }
 
     public List<ChartEntry> getAll() {

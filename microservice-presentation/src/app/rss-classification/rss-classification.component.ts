@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { RssEntry } from './rss-entry';
-import { HttpClient } from '@angular/common/http';
+import { RssClassificationService } from '../shared/rss-classification/rss-classification.service'
+import { RssEntry } from '../shared/rss-classification/rss-entry'
 
 
 @Component({
@@ -13,7 +13,7 @@ export class RssClassificationComponent implements OnInit {
     title = 'app';
     data : RssEntry[];
 
-    constructor(private http: HttpClient){
+    constructor(private rssClassification: RssClassificationService){
         
     }
     
@@ -39,14 +39,14 @@ export class RssClassificationComponent implements OnInit {
     }
     
     sendClassificationRequest(data: RssEntry ) : void {
-        this.http.post<RssEntry>('http://localhost:10020/classify',data).subscribe(d => {
+        this.rssClassification.classify(data).subscribe(d => {
             console.log(data)
             this.removeItem(data);
           });
     }
     
     ngOnInit(): void {
-      this.http.get('http://localhost:10020/find').subscribe(data => {
+        this.rssClassification.find().subscribe(data => {
           console.log(data)
         this.data = data as RssEntry[];
       });

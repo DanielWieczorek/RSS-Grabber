@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { RssEntry,RssEntrySentiment,RssEntrySentimentSummary,SentimentEvaluationResult } from './rss-entry';
-import { HttpClient } from '@angular/common/http';
+import { RssEntry,RssEntrySentiment,RssEntrySentimentSummary,SentimentEvaluationResult } from '../shared/rss-insight/rss-entry';
+import { RssInsightService } from '../shared/rss-insight/rss-insight.service'
+
 
 @Component({
   selector: 'app-rss-insight',
@@ -14,13 +15,11 @@ export class RssInsightComponent implements OnInit {
   data : SentimentEvaluationResult;
   chart = [];
 
-  constructor(private http: HttpClient){
+  constructor(private rssInsight: RssInsightService){
   }
   
-  
-  
   request24HourSentiment() : void {
-      this.http.get<SentimentEvaluationResult>('http://localhost:11020/sentiment').subscribe(data => {
+      this.rssInsight.sentiment().subscribe(data => {
           console.log("test",data);
           this.data = data as SentimentEvaluationResult;
       });
