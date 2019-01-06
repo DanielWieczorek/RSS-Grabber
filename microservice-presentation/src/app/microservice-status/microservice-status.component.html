@@ -64,15 +64,17 @@
 			<div class="card">
 				<div class="card-content">
 					<span class="card-title ">{{item.collectorName}}</span>
-					{{item.bindHostname}}:{{item.bindPort}} <img mat-card-image
-						*ngIf="item.status == 'running'" src="assets/checkmark.svg"
-						style="display: block; margin: 0 auto; width: 130px; height: 130px;">
-					<img  *ngIf="item.status == 'stopped'"
-						src="assets/pause.png"
-						style="display: block; margin: 0 auto; width: 130px; height: 130px;">
-					<img  *ngIf="item.status == 'failed'"
-						src="assets/xmark.png"
-						style="display: block; margin: 0 auto; width: 130px; height: 130px;">
+					{{item.bindHostname}}:{{item.bindPort}} 
+					
+					
+					<i class="material-icons teal-text center-align" style="font-size: 12rem; width:100%"
+						*ngIf="item.status == 'running'">check</i>
+						
+					<i class="material-icons yellow-text center-align" style="font-size: 12rem; width:100%"
+						*ngIf="item.status == 'stopped'">pause</i>
+						
+					<i class="material-icons red-text center-align" style="font-size: 12rem; width:100%"
+						*ngIf="item.status == 'failed'">clear</i>
 				</div>
 				<div class="card-action center">
 					<a class="waves-effect waves-teal btn-flat teal-text"
