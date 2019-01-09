@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class AuthenticationService {
@@ -7,17 +8,25 @@ export class AuthenticationService {
     desiredUsername="admin";
     desiredPassword="123";
     
-  constructor() { }
+  constructor() { 
+      
+      
+  }
     
-    public login(username : string, password : string) : boolean {
+    public login(username : string, password : string) : boolean    {
         if(username === this.desiredUsername && password === this.desiredPassword){
             localStorage.setItem('isLoggedIn',"true");
+           
         }
+        
         return localStorage.getItem('isLoggedIn') === "true";
     }
     
     public isLoggedIn() : boolean {
-        console.log("isLoggedIn: ", localStorage.getItem('isLoggedIn'))
-        return localStorage.getItem('isLoggedIn')=== "true";
+        return localStorage.getItem('isLoggedIn') === "true";
+    }
+    
+    public logout() {
+        localStorage.removeItem('isLoggedIn');
     }
 }

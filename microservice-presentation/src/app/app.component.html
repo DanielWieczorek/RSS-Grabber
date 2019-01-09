@@ -1,7 +1,12 @@
+
+
 <nav>
-	<div class="nav-wrapper indigo">
-		
+
+	<div class="nav-wrapper indigo" >
+				<ul class="right"><li><a href="#" (click)="logout()"  *ngIf="authentication.isLoggedIn()">logout</a></li></ul>
+	
 		<ul id="nav-mobile" class="left hide-on-med-and-down">
+      
 
 			<li><a routerLink="/microservice-status"
 				routerLinkActive="active">Microservice Status</a></li>
