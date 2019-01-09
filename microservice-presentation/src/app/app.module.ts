@@ -13,16 +13,21 @@ import { TraderSimulationService } from './shared/trader-simulation/trader-simul
 import { RssInsightService } from './shared/rss-insight/rss-insight.service'
 import { RssClassificationService } from './shared/rss-classification/rss-classification.service'
 import { MicroserviceStatusService } from './shared/microservice-status/microservice-status.service'
+import { AuthenticationGuard } from './common/authentication/authentication.guard';
+import { AuthenticationService } from './common/authentication/authentication.service';
 
+import { LoginComponent } from './login/login.component'
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 const appRoutes: Routes = [
-                           { path: '', redirectTo: '/introduction', pathMatch: 'full' },
-                           { path: 'microservice-status', component: MicroserviceStatusComponent },
-                           { path: 'rss-classification', component: RssClassificationComponent },
-                           { path: 'rss-insight', component: RssInsightComponent},
-                           { path: 'trading-simulation', component: TradingSimulationComponent},
-                           { path: 'introduction', component: IntroductionComponent}
+                           { path: '', redirectTo: '/introduction', pathMatch: 'full'},
+                           { path: 'microservice-status', component: MicroserviceStatusComponent,canActivate: [AuthenticationGuard] },
+                           { path: 'rss-classification', component: RssClassificationComponent,canActivate: [AuthenticationGuard] },
+                           { path: 'rss-insight', component: RssInsightComponent,canActivate: [AuthenticationGuard]},
+                           { path: 'trading-simulation', component: TradingSimulationComponent,canActivate: [AuthenticationGuard]},
+                           { path: 'introduction', component: IntroductionComponent,canActivate: [AuthenticationGuard]},
+                           { path: 'login', component: LoginComponent}
                            ];
 
 
@@ -33,11 +38,13 @@ const appRoutes: Routes = [
     RssInsightComponent,
     MicroserviceStatusComponent,
     TradingSimulationComponent,
-    IntroductionComponent
+    IntroductionComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
+    ReactiveFormsModule,
         RouterModule.forRoot(
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only
@@ -48,7 +55,9 @@ const appRoutes: Routes = [
       TraderSimulationService,
       RssInsightService,
       RssClassificationService,
-      MicroserviceStatusService
+      MicroserviceStatusService,
+      AuthenticationService,
+      AuthenticationGuard
   ],
   bootstrap: [AppComponent]
 })

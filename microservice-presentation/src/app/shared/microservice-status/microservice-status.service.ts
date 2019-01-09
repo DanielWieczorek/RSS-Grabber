@@ -15,11 +15,11 @@ export class MicroserviceStatusService {
         return this.http.get<Object>( this.buildPath( '/getstatus' ) );
     }
 
-    start( serviceName: string ): Observable {
+    start( serviceName: string ): Observable<Object> {
         return this.http.post( this.buildPath( `/start/${serviceName}`) ,{});
     }
 
-    stop( serviceName: string ): Observable{
+    stop( serviceName: string ): Observable<Object>{
         return this.http.post( this.buildPath( `/stop/${serviceName}`),{});
     }
 

@@ -13,8 +13,8 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
 
 
-    constructor( private http: HttpClient ) {
+    constructor( private http: HttpClient) {
     }
-
+    
     
 }
