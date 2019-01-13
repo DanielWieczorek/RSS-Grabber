@@ -15,6 +15,8 @@ import { RssClassificationService } from './shared/rss-classification/rss-classi
 import { MicroserviceStatusService } from './shared/microservice-status/microservice-status.service'
 import { AuthenticationGuard } from './common/authentication/authentication.guard';
 import { AuthenticationService } from './common/authentication/authentication.service';
+import { MicroserviceAuthenticationService } from './shared/microservice-authentication/microservice-authentication.service'
+
 
 import { LoginComponent } from './login/login.component'
 import { ReactiveFormsModule } from '@angular/forms';
@@ -57,7 +59,8 @@ const appRoutes: Routes = [
       RssClassificationService,
       MicroserviceStatusService,
       AuthenticationService,
-      AuthenticationGuard
+      AuthenticationGuard,
+      MicroserviceAuthenticationService
   ],
   bootstrap: [AppComponent]
 })

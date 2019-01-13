@@ -13,6 +13,7 @@ import { AuthenticationService } from './common/authentication/authentication.se
 } )
 export class AppComponent{
 
+    isLoggedIn = false;
 
     constructor( private http: HttpClient, private authentication: AuthenticationService ) {
     }
@@ -22,4 +23,9 @@ export class AppComponent{
         window.location.reload();
 
     } 
+    
+    ngOnInit() {
+        this.authentication.isLoggedIn().subscribe(result => this.isLoggedIn = result);
+    }
+    
 }
