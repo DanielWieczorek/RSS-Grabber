@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.chart.core.persistence.RssEntryDao;
+import de.wieczorek.chart.core.persistence.ChartEntryDao;
 import de.wieczorek.rss.core.jgroups.RestInfoSender;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;
@@ -22,7 +22,7 @@ public class Controller extends ControllerBase {
     private RecurrentTaskManager timer;
 
     @Inject
-    private RssEntryDao dao;
+    private ChartEntryDao dao;
 
     @Override
     public void start() {

@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.wieczorek.chart.core.persistence.RssEntryDao;
+import de.wieczorek.chart.core.persistence.ChartEntryDao;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 
 @RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
@@ -28,7 +28,7 @@ public class ChartReader implements Runnable {
     private static final Logger logger = LogManager.getLogger(ChartReader.class.getName());
 
     @Inject
-    private RssEntryDao dao;
+    private ChartEntryDao dao;
 
     public ChartReader() {
 

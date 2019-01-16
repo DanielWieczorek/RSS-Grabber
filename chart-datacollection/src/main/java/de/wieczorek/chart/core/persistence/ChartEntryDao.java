@@ -18,12 +18,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.importexport.db.ExportDao;
+import de.wieczorek.importexport.db.ImportDao;
 
 @ApplicationScoped
-public class RssEntryDao {
+public class ChartEntryDao implements ImportDao<ChartEntry>, ExportDao {
     private EntityManager entityManager;
 
-    public RssEntryDao() {
+    public ChartEntryDao() {
 	final Map<String, String> props = new HashMap<>();
 	EntityManagerFactory emf = Persistence.createEntityManagerFactory("chart", props);
 	entityManager = emf.createEntityManager();
@@ -41,6 +43,7 @@ public class RssEntryDao {
 	}
     }
 
+    @Override
     public void persistAll(Collection<ChartEntry> entries) {
 	EntityTransaction transaction = entityManager.getTransaction();
 	transaction.begin();
@@ -48,6 +51,7 @@ public class RssEntryDao {
 	transaction.commit();
     }
 
+    @Override
     public List<ChartEntry> findAll() {
 	CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 	CriteriaQuery<ChartEntry> cq = cb.createQuery(ChartEntry.class);
@@ -63,6 +67,11 @@ public class RssEntryDao {
 		.createQuery("SELECT s FROM ChartEntry s WHERE s.date >= :time", ChartEntry.class)
 		.setParameter("time", date);
 	return query.getResultList();
+    }
+
+    @Override
+    public Class<ChartEntry> getEntityType() {
+	return ChartEntry.class;
     }
 
 }
