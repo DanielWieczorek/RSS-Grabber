@@ -5,6 +5,9 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.GenericType;
+
+import de.wieczorek.rss.core.feature.FeatureDescriptor;
 
 @ApplicationScoped
 public class StatusRequester {
@@ -19,8 +22,18 @@ public class StatusRequester {
 	    try {
 		md.setStatus(ClientBuilder.newClient().target("http://" + md.getBindHostname() + ":" + md.getBindPort())
 			.path("/status").request().accept("application/json").get(CollectorStatus.class).getStatus());
+
 	    } catch (Exception e) {
 		md.setStatus("failed");
+		e.printStackTrace();
+	    }
+
+	    try {
+		md.setFeatures(ClientBuilder.newClient()
+			.target("http://" + md.getBindHostname() + ":" + md.getBindPort()).path("/feature/info")
+			.request().accept("application/json").get(new GenericType<List<FeatureDescriptor>>() {
+			}));
+	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
 	});

@@ -24,7 +24,7 @@ public class CollectorsDirectory {
 	    ServiceMetadata metadata = new ServiceMetadata();
 	    metadata.setBindHostname(status.getBindHostname());
 	    metadata.setBindPort(status.getBindPort());
-	    metadata.setCollectorName(status.getCollectorName());
+	    metadata.setName(status.getCollectorName());
 
 	    statusInfo.put(status.getCollectorName(), metadata);
 	}

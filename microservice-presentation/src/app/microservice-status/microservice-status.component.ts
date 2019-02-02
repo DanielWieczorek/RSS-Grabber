@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MicroserviceStatusService } from '../shared/microservice-status/microservice-status.service'
+import { MicroserviceStatus } from '../shared/microservice-status/microservice-status'
+
 
 
 @Component({
@@ -10,7 +12,7 @@ import { MicroserviceStatusService } from '../shared/microservice-status/microse
 export class MicroserviceStatusComponent implements OnInit {
 
     title = 'app';
-    data : Object;
+    data : MicroserviceStatus[];
 
     constructor(private microserviceStatus: MicroserviceStatusService){
     }
@@ -30,6 +32,7 @@ export class MicroserviceStatusComponent implements OnInit {
 
     ngOnInit(): void {
         this.microserviceStatus.status().subscribe(data => {
+            console.log("data arrived",data)
         this.data = data;
       });
     }

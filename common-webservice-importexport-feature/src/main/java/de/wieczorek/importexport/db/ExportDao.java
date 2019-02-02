@@ -1,6 +1,6 @@
 package de.wieczorek.importexport.db;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -8,5 +8,5 @@ import javax.enterprise.context.ApplicationScoped;
 public interface ExportDao {
     Class<?> getEntityType();
 
-    Collection<? extends Object> findAll();
+    List<Object> findAll();
 }

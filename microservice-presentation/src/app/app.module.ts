@@ -20,11 +20,13 @@ import { MicroserviceAuthenticationService } from './shared/microservice-authent
 
 import { LoginComponent } from './login/login.component'
 import { ReactiveFormsModule } from '@angular/forms';
+import { MicroserviceStatusDetailComponent } from './microservice-status-detail/microservice-status-detail.component';
 
 
 const appRoutes: Routes = [
                            { path: '', redirectTo: '/introduction', pathMatch: 'full'},
                            { path: 'microservice-status', component: MicroserviceStatusComponent,canActivate: [AuthenticationGuard] },
+                           { path: 'microservice-status/:name', component: MicroserviceStatusDetailComponent,canActivate: [AuthenticationGuard] },
                            { path: 'rss-classification', component: RssClassificationComponent,canActivate: [AuthenticationGuard] },
                            { path: 'rss-insight', component: RssInsightComponent,canActivate: [AuthenticationGuard]},
                            { path: 'trading-simulation', component: TradingSimulationComponent,canActivate: [AuthenticationGuard]},
@@ -41,7 +43,8 @@ const appRoutes: Routes = [
     MicroserviceStatusComponent,
     TradingSimulationComponent,
     IntroductionComponent,
-    LoginComponent
+    LoginComponent,
+    MicroserviceStatusDetailComponent
   ],
   imports: [
     BrowserModule,

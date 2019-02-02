@@ -15,7 +15,7 @@ import de.wieczorek.rss.core.ui.Resource;
 
 @Resource
 @ApplicationScoped
-@Path("/")
+@Path("ohlcv")
 public class ChartResource {
 
     @Inject
@@ -23,14 +23,14 @@ public class ChartResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("ohlcv")
+    @Path("/")
     public List<ChartEntry> ohlcv() {
 	return controller.getAll();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("ohlcv/24h")
+    @Path("24h")
     public List<ChartEntry> ohlcv24h() {
 	return controller.get24h();
     }

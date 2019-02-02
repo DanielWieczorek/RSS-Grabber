@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.jboss.weld.inject.WeldInstance;
 
-import de.wieczorek.importexport.db.ExportDao;
+import de.wieczorek.importexport.db.ImportExportDao;
 import de.wieczorek.importexport.type.ImportExportData;
 import de.wieczorek.rss.core.ui.Resource;
 
@@ -25,7 +25,7 @@ public class ExportResource {
 
     @Inject
     @Any
-    private WeldInstance<ExportDao> exportDaos;
+    private WeldInstance<ImportExportDao<?>> exportDaos;
 
     @Inject
     @Resource

@@ -63,7 +63,7 @@
 		<div class="col l3" *ngFor="let item of data">
 			<div class="card">
 				<div class="card-content">
-					<span class="card-title ">{{item.collectorName}}</span>
+					<a routerLink="/microservice-status/{{item.name}}" routerLinkActive="active"><span class="card-title ">{{item.name}}</span></a>
 					{{item.bindHostname}}:{{item.bindPort}} 
 					
 					

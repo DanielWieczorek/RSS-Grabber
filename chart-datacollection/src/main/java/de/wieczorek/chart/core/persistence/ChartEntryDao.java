@@ -18,11 +18,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.importexport.db.ExportDao;
-import de.wieczorek.importexport.db.ImportDao;
+import de.wieczorek.importexport.db.ImportExportDao;
 
 @ApplicationScoped
-public class ChartEntryDao implements ImportDao<ChartEntry>, ExportDao {
+public class ChartEntryDao extends ImportExportDao<ChartEntry> {
     private EntityManager entityManager;
 
     public ChartEntryDao() {

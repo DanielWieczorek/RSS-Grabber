@@ -17,7 +17,7 @@ import de.wieczorek.rss.types.RssEntry;
 
 @Resource
 @ApplicationScoped
-@Path("/")
+@Path("rss-entries")
 public class RssHandler {
 
     @Inject
@@ -25,14 +25,14 @@ public class RssHandler {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("rss-entries/24h")
+    @Path("24h")
     public List<RssEntry> entriesFromLast24h() {
 	return controller.readEntries24h();
     }
 
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    @Path("rss-entries/{unixTimestamp}")
+    @Path("{unixTimestamp}")
     public List<RssEntry> entriesAfter(@PathParam("unixTimestamp") long unixTimestamp) {
 	return controller.readEntriesAfter(new Date(unixTimestamp));
 
@@ -40,7 +40,7 @@ public class RssHandler {
 
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    @Path("rss-entries")
+    @Path("/")
     public List<RssEntry> allEntries() {
 	return controller.readAllEntries();
 

@@ -91,5 +91,12 @@
 			<artifactId>rss-classification-types</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>de.wieczorek</groupId>
+			<artifactId>common-webservice-importexport-feature</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
+	
+
 </project>

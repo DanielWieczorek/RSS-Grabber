@@ -5,5 +5,5 @@ import java.util.Collection;
 public interface ImportDao {
     Class<?> getEntityType();
 
-    void persistAll(Collection<Object> data);
+    void persistAll(Collection<Object> entries);
 }

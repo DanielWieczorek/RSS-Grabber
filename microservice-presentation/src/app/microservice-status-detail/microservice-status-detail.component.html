@@ -1,0 +1,116 @@
+
+<div class="container">
+
+	<div *ngIf="!data">
+		<div class="preloader-background">
+			<div class="preloader-wrapper big active">
+				<div class="spinner-layer spinner-blue">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="gap-patch">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
+
+				<div class="spinner-layer spinner-red">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="gap-patch">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
+
+				<div class="spinner-layer spinner-yellow">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="gap-patch">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
+
+				<div class="spinner-layer spinner-green">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="gap-patch">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<div *ngIf="data">
+	<div class="section">
+	<h4>{{data.name}}</h4>
+	</div>
+	<div class="section">
+	<h5>Features</h5>
+		<div class="row">
+			<div class="col l3" *ngFor="let feature of data.features">
+				<div *ngIf="feature.type === 'IMPORT_EXPORT'">
+					<div class="card">
+						<div class="card-content">
+							<span class="card-title  grey-text text-darken-4">Import</span>
+							{{feature.description}}
+					 <div class="file-field input-field">
+      <div class="btn">
+        <span>File</span>
+        <input #importInput  type="file">
+      </div>
+      <div class="file-path-wrapper">
+        <input class="file-path validate" type="text" placeholder="Upload one or more files">
+      </div>
+    </div>
+						</div>
+						<div class="card-action center">
+							<a class="waves-effect waves-teal btn-flat teal-text"
+								(click)="performImport(importInput.files)">Import</a>
+						</div>
+
+					</div>
+					
+					
+					<div class="card">
+						<div class="card-content">
+							<span class="card-title  grey-text text-darken-4">Export</span>
+							{{feature.description}}
+							
+							      <div class="file-path-wrapper">
+      
+						</div>
+						<div class="card-action center">
+							<a class="waves-effect waves-teal btn-flat teal-text"
+								(click)="performExport(action)">Export</a>
+						</div>
+
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		</div>
+	</div>
+	<div class="section">
+	<h5>Recent Logs</h5>
+		coming soon
+	</div>
+
+</div>

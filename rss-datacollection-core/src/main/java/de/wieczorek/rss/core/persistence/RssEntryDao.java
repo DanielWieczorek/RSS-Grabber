@@ -2,6 +2,7 @@ package de.wieczorek.rss.core.persistence;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,10 +18,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import de.wieczorek.importexport.db.ImportExportDao;
 import de.wieczorek.rss.types.RssEntry;
 
 @ApplicationScoped
-public class RssEntryDao {
+public class RssEntryDao extends ImportExportDao<RssEntry> {
     private EntityManager entityManager;
 
     public RssEntryDao() {
@@ -49,6 +51,7 @@ public class RssEntryDao {
 		.getResultList();
     }
 
+    @Override
     public List<RssEntry> findAll() {
 	CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 	CriteriaQuery<RssEntry> cq = cb.createQuery(RssEntry.class);
@@ -64,6 +67,19 @@ public class RssEntryDao {
 		.setParameter("startDate", Date.from(LocalDateTime.now().minusHours(24).toInstant(ZoneOffset.UTC)))
 		.getResultList();
 
+    }
+
+    @Override
+    public Class<RssEntry> getEntityType() {
+	return RssEntry.class;
+    }
+
+    @Override
+    public void persistAll(Collection<RssEntry> entries) {
+	EntityTransaction transaction = entityManager.getTransaction();
+	transaction.begin();
+	entries.forEach(entityManager::persist);
+	transaction.commit();
     }
 
 }

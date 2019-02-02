@@ -1,14 +1,20 @@
 package de.wieczorek.rss.core.jgroups;
 
+import java.util.List;
+
+import de.wieczorek.rss.core.feature.FeatureDescriptor;
+
 public class ServiceMetadata {
 
-    private String collectorName;
+    private String name;
 
     private String bindHostname;
 
     private int bindPort;
 
     private String status;
+
+    private List<FeatureDescriptor> features;
 
     public String getBindHostname() {
 	return bindHostname;
@@ -26,12 +32,12 @@ public class ServiceMetadata {
 	this.bindPort = bindPort;
     }
 
-    public String getCollectorName() {
-	return collectorName;
+    public String getName() {
+	return name;
     }
 
-    public void setCollectorName(String collectorName) {
-	this.collectorName = collectorName;
+    public void setName(String collectorName) {
+	this.name = collectorName;
     }
 
     public String getStatus() {
@@ -41,4 +47,13 @@ public class ServiceMetadata {
     public void setStatus(String status) {
 	this.status = status;
     }
+
+    public List<FeatureDescriptor> getFeatures() {
+	return features;
+    }
+
+    public void setFeatures(List<FeatureDescriptor> features) {
+	this.features = features;
+    }
+
 }
