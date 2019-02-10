@@ -1,6 +1,6 @@
 CREATE TABLE public.ohlc
 (
-    date character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    date timestamp without time zone NOT NULL,
     close double precision,
     high double precision,
     low double precision,
