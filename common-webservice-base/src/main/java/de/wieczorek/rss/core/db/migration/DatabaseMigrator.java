@@ -23,7 +23,11 @@ public class DatabaseMigrator {
 	if (!configuration.isUnsatisfied()) {
 	    Map<String, String> config = configuration.get();
 	    Flyway flyway = Flyway.configure().configuration(config).load();
-	    flyway.migrate();
+	    try {
+		flyway.migrate();
+	    } catch (Exception e) {
+		e.printStackTrace(); // TODO
+	    }
 	}
     }
 }
