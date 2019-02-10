@@ -1,5 +1,6 @@
+
+import {of as observableOf,  Observable, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
 import { MicroserviceAuthenticationService } from '../../shared/microservice-authentication/microservice-authentication.service'
 
 
@@ -31,7 +32,7 @@ export class AuthenticationService {
     public isLoggedIn() : Observable<boolean> {
         console.log("isLoggedIn? token=",localStorage.getItem('token'));
         if( localStorage.getItem('username') === null && localStorage.getItem('token') === null){
-            return Observable.of(false);
+            return observableOf(false);
         }
 
         return this.microserviceAuthentication.validate(localStorage.getItem('username'),localStorage.getItem('token'));

@@ -69,12 +69,12 @@ export class MicroserviceStatusDetailComponent implements OnInit {
   
   performGetAction(path : string) : any {
       const url: string = `${this.protocol}://${this.data.bindHostname}:${this.data.bindPort}${path}`;
-      return this.http.get( url ));
+      return this.http.get( url );
   }
   
   performPostAction(path : string, data: string) : any {
       const url: string = `${this.protocol}://${this.data.bindHostname}:${this.data.bindPort}${path}`;
-      return this.http.post( url ,data, {headers:{'Content-Type': 'application/json'}}));
+      return this.http.post( url ,data, {headers:{'Content-Type': 'application/json'}});
   }
 
 }

@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -35,9 +37,9 @@ export class MicroserviceAuthenticationService {
         info.username = username;
         info.token = token;
        
-        return this.http.post( this.buildPath( '/validate' ), info ,{ responseType: 'text'}).map (resp =>  {
+        return this.http.post( this.buildPath( '/validate' ), info ,{ responseType: 'text'}).pipe(map (resp =>  {
             console.log("validate ",resp=== 'true');
-            return resp === 'true'});
+            return resp === 'true'}));
     }
  
     private buildPath( path: string ): string {

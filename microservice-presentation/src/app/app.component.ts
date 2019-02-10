@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Chart } from 'chart.js';
-import 'rxjs/add/operator/map';
+
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from './common/authentication/authentication.service';

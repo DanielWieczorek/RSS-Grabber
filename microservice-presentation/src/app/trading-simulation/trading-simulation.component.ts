@@ -1,6 +1,6 @@
 import { Component, OnInit,AfterViewInit } from '@angular/core';
 import { Chart } from 'chart.js';
-import 'rxjs/add/operator/map';
+
 import {Observable} from 'rxjs';
 import { ChartEntry } from '../shared/chart-reader/chart-entry';
 import { Trade } from '../shared/trader-simulation/trade';
