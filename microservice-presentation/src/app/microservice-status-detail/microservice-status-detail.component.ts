@@ -26,13 +26,6 @@ export class MicroserviceStatusDetailComponent implements OnInit {
               .subscribe(data => {this.data = data.find(item => item.name === params['name'] ); console.log(this.data)}));
   }
   
-  performAction(action : MicroserviceAction) {
-      if(action.name === "export"){
-          this.performExportAction(action);
-      }else if(action.name === "import"){
-          this.performImportAction(action);
-      }
-  }
   
   performExport() {
       const dataObservable = this.performGetAction('/feature/export');
@@ -44,7 +37,6 @@ export class MicroserviceStatusDetailComponent implements OnInit {
       // Browsers that support HTML5 download attribute
       if (link.download !== undefined) 
       {
-          var url = URL.createObjectURL(blob);
           link.setAttribute('href', url);
           link.setAttribute('download', `${this.data.name}-export.json`);
           link.style.visibility = 'hidden';
@@ -59,10 +51,12 @@ export class MicroserviceStatusDetailComponent implements OnInit {
    let fileReader = new FileReader();
    fileReader.onload = (e) => {
        console.log(fileReader.result);
-       this.performPostAction('/feature/import',fileReader.result).subscribe(x => {
+       this.performPostAction('/feature/import',fileReader.result as string)
+       .subscribe(x => {
            console.log(x);
        });
      }
+   console.log(files[0]);
      fileReader.readAsText(files[0]);
       
       }
