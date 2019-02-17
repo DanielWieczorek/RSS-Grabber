@@ -60,20 +60,19 @@
     <h5>Running Services</h5>
     <p>Below you can see all backend services currently running (or not).</p>
 	<div class="row">
-		<div class="col l3" *ngFor="let item of data">
-			<div class="card">
+		<div class="col l4" *ngFor="let item of data">
+			<div class="card small">
 				<div class="card-content">
 					<a routerLink="/microservice-status/{{item.name}}" routerLinkActive="active"><span class="card-title ">{{item.name}}</span></a>
 					{{item.bindHostname}}:{{item.bindPort}} 
 					
-					
-					<i class="material-icons teal-text center-align" style="font-size: 12rem; width:100%"
+					<i class="material-icons teal-text center-align " style="font-size: 10rem; width:100%"
 						*ngIf="item.status == 'running'">check</i>
 						
-					<i class="material-icons yellow-text center-align" style="font-size: 12rem; width:100%"
+					<i class="material-icons yellow-text center-align" style="font-size: 10rem; width:100%"
 						*ngIf="item.status == 'stopped'">pause</i>
 						
-					<i class="material-icons red-text center-align" style="font-size: 12rem; width:100%"
+					<i class="material-icons red-text center-align" style="font-size: 10rem; width:100%"
 						*ngIf="item.status == 'failed'">clear</i>
 				</div>
 				<div class="card-action center">
