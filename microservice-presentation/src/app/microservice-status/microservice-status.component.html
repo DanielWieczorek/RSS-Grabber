@@ -78,11 +78,11 @@
 				<div class="card-action center">
 					<a class="waves-effect waves-teal btn-flat teal-text"
 						*ngIf="item.status != 'running'"
-						(click)="start(item.collectorName)">start</a> <a
+						(click)="start(item.name)">start</a> <a
 						class="waves-effect waves-teal btn-flat disabled teal-text"
 						*ngIf="item.status == 'running'">start</a> <a
 						class="waves-effect btn-flat red-text"
-						*ngIf="item.status != 'stopped'" (click)="stop(item.collectorName)">stop</a> <a
+						*ngIf="item.status != 'stopped'" (click)="stop(item.name)">stop</a> <a
 						class="waves-effect waves-red btn-flat disabled red-text"
 						*ngIf="item.status == 'stopped'">stop</a>
 				</div>
