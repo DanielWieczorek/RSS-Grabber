@@ -13,8 +13,6 @@ public class BootupListener {
     private Event<StatusUpdate> event;
 
     public void observeBootup(@Observes @Initialized(ApplicationScoped.class) Object init) {
-	StatusUpdate update = new StatusUpdate();
-	update.setStatus(ServiceState.STARTED);
-	event.fire(update);
+	event.fire(StatusUpdate.started());
     }
 }

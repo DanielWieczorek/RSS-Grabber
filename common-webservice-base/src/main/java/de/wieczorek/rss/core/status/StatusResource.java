@@ -25,17 +25,13 @@ public class StatusResource {
     @GET
     @Path("start")
     public void start() {
-	StatusUpdate update = new StatusUpdate();
-	update.setStatus(ServiceState.STARTED);
-	updateEvent.fire(update);
+	updateEvent.fire(StatusUpdate.started());
     }
 
     @GET
     @Path("stop")
     public void stop() {
-	StatusUpdate update = new StatusUpdate();
-	update.setStatus(ServiceState.STOPPED);
-	updateEvent.fire(update);
+	updateEvent.fire(StatusUpdate.stopped());
     }
 
     @GET

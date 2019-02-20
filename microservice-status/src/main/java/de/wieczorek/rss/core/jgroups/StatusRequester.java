@@ -13,7 +13,7 @@ import de.wieczorek.rss.core.feature.FeatureDescriptor;
 public class StatusRequester {
 
     @Inject
-    private CollectorsDirectory directory;
+    private MicroserviceDirectory directory;
 
     public List<ServiceMetadata> requestStates() {
 
@@ -21,7 +21,7 @@ public class StatusRequester {
 	directory.getMetadata().parallelStream().forEach(md -> {
 	    try {
 		md.setStatus(ClientBuilder.newClient().target("http://" + md.getBindHostname() + ":" + md.getBindPort())
-			.path("/status").request().accept("application/json").get(CollectorStatus.class).getStatus());
+			.path("/status").request().accept("application/json").get(MicroserviceStatus.class).getStatus());
 
 	    } catch (Exception e) {
 		md.setStatus("failed");

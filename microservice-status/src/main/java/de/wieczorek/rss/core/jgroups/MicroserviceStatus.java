@@ -1,6 +1,6 @@
 package de.wieczorek.rss.core.jgroups;
 
-public class CollectorStatus {
+public class MicroserviceStatus {
     private String status;
 
     public String getStatus() {

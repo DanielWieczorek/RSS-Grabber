@@ -15,7 +15,7 @@ import de.wieczorek.rss.core.ui.Resource;
 @Resource
 @ApplicationScoped
 @Path("/")
-public class RssHandler {
+public class StatusResource {
 
     @Inject
     private Controller controller;
