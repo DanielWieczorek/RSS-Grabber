@@ -15,7 +15,7 @@
 
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>chart-datacollection</artifactId>
+	<artifactId>microservice-authentication</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	
 	
@@ -90,10 +90,5 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
-			<groupId>de.wieczorek</groupId>
-			<artifactId>chart-datacollection-types</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 </project>

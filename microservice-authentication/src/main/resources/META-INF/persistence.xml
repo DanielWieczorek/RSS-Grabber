@@ -5,10 +5,14 @@
 	version="2.0">
 	<persistence-unit name="authentication" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		
+		<class>de.wieczorek.chart.core.persistence.Session</class>
+		<class>de.wieczorek.chart.core.persistence.Credentials</class>
+			<class>java.time.LocalDateTime</class>
+		
 
 		<properties>
-		
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" /> <!-- DB Driver -->
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/MICROSERVICE_AUTHENTICATION" /> <!-- BD Mane -->
 			<property name="javax.persistence.jdbc.user" value="postgres" /> <!-- DB User -->
@@ -22,10 +26,8 @@
 				value="1" />
 			<property name="eclipselink.connection-pool.node2.max"
 				value="1" />
-			<property name="eclipselink.cache.type.default" value="NONE" />
-			<property name="eclipselink.ddl-generation" value="create-tables"/>
 		</properties>
 
-		<shared-cache-mode>NONE</shared-cache-mode>
+		
 	</persistence-unit>
 </persistence>

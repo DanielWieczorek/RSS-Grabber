@@ -39,6 +39,7 @@
 			<module>trading-training</module>
 			
             <module>microservice-status</module>
+            <module>microservice-authentication</module>
     </modules>
 </project>
  
