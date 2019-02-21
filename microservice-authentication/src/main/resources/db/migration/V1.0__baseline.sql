@@ -18,7 +18,7 @@ ALTER TABLE public.credentials
 CREATE TABLE public.session
 (
     username character varying(255) COLLATE pg_catalog."default" NOT NULL,
-    expirationdate character varying(255) COLLATE pg_catalog."default",
+    expirationdate timestamp without time zone,
     token character varying(255) COLLATE pg_catalog."default",
     CONSTRAINT session_pkey PRIMARY KEY (username)
 )

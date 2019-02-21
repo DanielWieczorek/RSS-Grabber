@@ -34,7 +34,7 @@ public class ChannelProducer {
     @Produces
     private JChannel buildInfoChannel() throws UnknownHostException, Exception {
 	return new JChannel(new TCP() //
-		.setValue("bind_addr", Inet4Address.getLocalHost()) //
+		.setValue("bind_addr", Inet4Address.getLoopbackAddress()) //
 		.setValue("bind_port", bindPort) //
 		, new MPING() //
 		, new MERGE3() //
