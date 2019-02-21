@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MicroserviceStatus} from './microservice-status'
+import {environment} from '../../../environments/environment';
+
 
 @Injectable()
 export class MicroserviceStatusService {
@@ -37,7 +39,7 @@ export class MicroserviceStatusService {
     }
 
     private buildPath( path: string ): string {
-        return `${this.protocol}://${this.hostname}:${this.port}${path}`
+        return `${this.protocol}://${environment.backendHostname}:${this.port}${path}`
     }
 
 }

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RssEntry } from './rss-entry';
+import {environment} from '../../../environments/environment';
+
 
 @Injectable()
 export class RssClassificationService {
@@ -21,7 +23,7 @@ export class RssClassificationService {
     }
 
     private buildPath( path: string ): string {
-        return `${this.protocol}://${this.hostname}:${this.port}${path}`
+        return `${this.protocol}://${environment.backendHostname}:${this.port}${path}`
     }
 
 }

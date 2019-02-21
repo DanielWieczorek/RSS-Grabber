@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SessionInfo } from './session-info';
+import {environment} from '../../../environments/environment';
 
 
 @Injectable()
@@ -43,7 +44,7 @@ export class MicroserviceAuthenticationService {
     }
  
     private buildPath( path: string ): string {
-        let result = `${this.protocol}://${this.hostname}:${this.port}${path}`;
+        let result = `${this.protocol}://${environment.backendHostname}:${this.port}${path}`;
         return result;
     }
 }

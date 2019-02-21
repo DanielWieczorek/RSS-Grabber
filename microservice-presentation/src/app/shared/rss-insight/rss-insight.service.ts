@@ -17,7 +17,7 @@ export class RssInsightService {
     }
 
     private buildPath( path: string ): string {
-        return `${this.protocol}://${this.hostname}:${this.port}${path}`
+        return `${this.protocol}://${environment.backendHostname}:${this.port}${path}`
     }
 
 }

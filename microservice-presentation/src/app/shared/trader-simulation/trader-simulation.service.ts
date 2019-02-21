@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Account } from './account';
 import { Trade } from './trade';
+import {environment} from '../../../environments/environment';
+
 
 @Injectable()
 export class TraderSimulationService {
@@ -18,7 +20,7 @@ export class TraderSimulationService {
     }
 
     private buildPath( path: string ): string {
-        return `${this.protocol}://${this.hostname}:${this.port}${path}`
+        return `${this.protocol}://${environment.backendHostname}:${this.port}${path}`
     }
 
 }
