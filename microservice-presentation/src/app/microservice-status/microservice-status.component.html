@@ -1,7 +1,7 @@
 
 <div class="container">
 
-	<div *ngIf="!data">
+	<div *ngIf="!data && !error">
 		<div class="preloader-background">
 			<div class="preloader-wrapper big active">
 				<div class="spinner-layer spinner-blue">
@@ -56,10 +56,11 @@
 
 	</div>
 
-<div *ngIf="data" class="section">
+<div *ngIf="data || error" class="section">
     <h5>Running Services</h5>
     <p>Below you can see all backend services currently running (or not).</p>
 	<div class="row">
+	<div *ngIf="!error; else errorHappened">
 		<div class="col l4" *ngFor="let item of data">
 			<div class="card small">
 				<div class="card-content">
@@ -90,6 +91,14 @@
 
 			</div>
 		</div>
+	</div>
+	<ng-template #errorHappened>
+
+  <div class="row">
+        <b><span class="red-text"> {{ error }}
+        </span></b>
+  </div>
+</ng-template>
 	</div>
 </div>
 

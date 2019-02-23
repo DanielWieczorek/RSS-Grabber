@@ -1,5 +1,5 @@
 <div class="container">
-	<div *ngIf="!data">
+	<div *ngIf="!data && !error">
 		<div class="preloader-background">
 			<div class="preloader-wrapper big active">
 				<div class="spinner-layer spinner-blue">
@@ -54,65 +54,83 @@
 
 	</div>
 
-	<div *ngIf="data">
-<div class="section">
-    <h5>Overall Classification of Last 24 Hours</h5>
-    
-    <div class="valign-wrapper" style="font-size: 45px; font-weight:lighter;margin-top: 20">
-    <i class="material-icons teal-text" style="font-size: 45px">arrow_upward</i>{{data.summary.positiveProbability
-						| number:'1.0-2'}} <i class="material-icons red-text font-size"
-							style="font-size: 40px">arrow_downward</i>{{data.summary.negativeProbability|number:'1.0-2'
-						}}
-						
-					
-    </div>
-      the values above show the averaged sentiment the news of the last 24 hours as estimated by the neural network.
-    
-</div>
-<div class="divider"></div>
-<div class="section">
-    <h5>Classifications per News Article</h5>
-    <p>Below you can see the sentiment per news article as estimated by the neural network.
-    </p>
-		<div class="row">
-			<div class="col l4" *ngFor="let item of data.sentiments">
-				<div class="card small">
-					<div class="card-content">
-						<span class="card-title activator grey-text text-darken-4">{{item.entry.heading
-							}}<i class="material-icons right">more_vert</i>
-						</span> {{ item.entry.publicationDate | date }}
-						<div *ngIf="item.entry.heading.length <= 60">
-							<div *ngIf="item.entry.description.length > 180">{{
-								item.entry.description | slice:0:180 }} ...</div>
-							<div *ngIf="item.entry.description.length <= 180">{{
-								item.entry.description }}</div>
-						</div>
+	<div *ngIf="data || error">
+		<div class="section">
+			<h5>Overall Classification of Last 24 Hours</h5>
+			<div *ngIf="!error; else errorHappened">
 
-						<div *ngIf="item.entry.heading.length > 60">
-							<div *ngIf="item.entry.description.length > 145">{{
-								item.entry.description | slice:0:145 }} ...</div>
-							<div *ngIf="item.entry.description.length <= 145">{{
-								item.entry.description }}</div>
-						</div>
-					</div>
-
-					<div class="card-action valign-wrapper">
-						<i class="material-icons teal-text" style="font-size: 15px">arrow_upward</i>{{item.positiveProbability
-						| number:'1.0-2'}} <i class="material-icons red-text font-size"
-							style="font-size: 15px">arrow_downward</i>{{item.negativeProbability|number:'1.0-2'
-						}}
-					</div>
-
-					<div class="card-reveal">
-						<span class="card-title grey-text text-darken-4">{{
-							item.entry.heading }}<i class="material-icons right">close</i>
-						</span>
-						<p>{{item.entry.description }}</p>
-					</div>
+				<div class="valign-wrapper"
+					style="font-size: 45px; font-weight: lighter; margin-top: 20">
+					<i class="material-icons teal-text" style="font-size: 45px">arrow_upward</i>{{data.summary.positiveProbability
+					| number:'1.0-2'}} <i class="material-icons red-text font-size"
+						style="font-size: 40px">arrow_downward</i>{{data.summary.negativeProbability|number:'1.0-2'
+					}}
 
 				</div>
+				the values above show the averaged sentiment the news of the last 24
+				hours as estimated by the neural network.
+			</div>
+			<ng-template #errorHappened>
+
+			<div class="row">
+				<b><span class="red-text"> {{ error }} </span></b>
+			</div>
+			</ng-template>
+
+		</div>
+		<div class="divider"></div>
+		<div class="section">
+			<h5>Classifications per News Article</h5>
+			<p>Below you can see the sentiment per news article as estimated
+				by the neural network.</p>
+			<div class="row">
+				<div *ngIf="!error; else errorHappened">
+
+					<div class="col l4" *ngFor="let item of data.sentiments">
+						<div class="card small">
+							<div class="card-content">
+								<span class="card-title activator grey-text text-darken-4">{{item.entry.heading
+									}}<i class="material-icons right">more_vert</i>
+								</span> {{ item.entry.publicationDate | date }}
+								<div *ngIf="item.entry.heading.length <= 60">
+									<div *ngIf="item.entry.description.length > 180">{{
+										item.entry.description | slice:0:180 }} ...</div>
+									<div *ngIf="item.entry.description.length <= 180">{{
+										item.entry.description }}</div>
+								</div>
+
+								<div *ngIf="item.entry.heading.length > 60">
+									<div *ngIf="item.entry.description.length > 145">{{
+										item.entry.description | slice:0:145 }} ...</div>
+									<div *ngIf="item.entry.description.length <= 145">{{
+										item.entry.description }}</div>
+								</div>
+							</div>
+
+							<div class="card-action valign-wrapper">
+								<i class="material-icons teal-text" style="font-size: 15px">arrow_upward</i>{{item.positiveProbability
+								| number:'1.0-2'}} <i class="material-icons red-text font-size"
+									style="font-size: 15px">arrow_downward</i>{{item.negativeProbability|number:'1.0-2'
+								}}
+							</div>
+
+							<div class="card-reveal">
+								<span class="card-title grey-text text-darken-4">{{
+									item.entry.heading }}<i class="material-icons right">close</i>
+								</span>
+								<p>{{item.entry.description }}</p>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<ng-template #errorHappened>
+
+			<div class="row">
+				<b><span class="red-text"> {{ error }} </span></b>
+			</div>
+			</ng-template>
 			</div>
 		</div>
 	</div>
-</div>
 </div>

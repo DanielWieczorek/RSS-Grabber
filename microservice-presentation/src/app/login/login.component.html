@@ -1,6 +1,8 @@
 
 <div class="section">
  <div class="container ">
+ <div *ngIf='!isLoggedInError; else error' >
+ {{ isLoggedInError }}
  <form class="form-horizontal" [formGroup]="form">
  <div class="row ">
  <div class="col push-l3">
@@ -27,5 +29,16 @@
   </div>
   </div>
   </form>
+  </div>
+<ng-template #error>
+
+  <h4> Sorry.</h4>
+  <div class="row"> 
+  {{ isLoggedInError }}
+  </div>
+</ng-template>
 </div>
 </div>
+
+
+

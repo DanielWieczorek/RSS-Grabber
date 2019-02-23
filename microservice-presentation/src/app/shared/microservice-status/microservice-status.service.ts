@@ -3,18 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MicroserviceStatus} from './microservice-status'
 import {environment} from '../../../environments/environment';
-
+import {HttpHelperService} from '../../common/http-helper/http-helper.service';
+import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class MicroserviceStatusService {
 
-    private protocol = "http"
-    private hostname = "localhost";
     private port = 10000;
     
     private cache: Observable<MicroserviceStatus[]>;
 
-    constructor( private http: HttpClient ) { }
+    constructor( private http: HttpClient, private helper: HttpHelperService ) { }
     
     getCachedData() : Observable<MicroserviceStatus[]>{
         if(!this.cache) {
@@ -25,21 +24,19 @@ export class MicroserviceStatusService {
 
     status(): Observable<MicroserviceStatus[]> {
 
-        const result: Observable<MicroserviceStatus[]> = this.http.get<MicroserviceStatus[]>( this.buildPath( '/getstatus' ) )
+        const result: Observable<MicroserviceStatus[]> = this.http.get<MicroserviceStatus[]>( this.helper.buildPath( '/getstatus',this.port ) )
+         .pipe(catchError(this.helper.handleError));
         this.cache = result;
         return result;
     } 
 
     start( serviceName: string ): Observable<MicroserviceStatus[]> {
-        return this.http.post<MicroserviceStatus[]>( this.buildPath( `/start/${serviceName}`) ,{});
+        return this.http.post<MicroserviceStatus[]>( this.helper.buildPath( `/start/${serviceName}`, this.port) ,{})
+         .pipe(catchError(this.helper.handleError));
     }
 
     stop( serviceName: string ): Observable<MicroserviceStatus[]>{
-        return this.http.post<MicroserviceStatus[]>( this.buildPath( `/stop/${serviceName}`),{});
+        return this.http.post<MicroserviceStatus[]>( this.helper.buildPath( `/stop/${serviceName}`, this.port),{})
+        .pipe(catchError(this.helper.handleError));
     }
-
-    private buildPath( path: string ): string {
-        return `${this.protocol}://${environment.backendHostname}:${this.port}${path}`
-    }
-
 }

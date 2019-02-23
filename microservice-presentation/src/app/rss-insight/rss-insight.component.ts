@@ -13,7 +13,7 @@ export class RssInsightComponent implements OnInit {
 
   title = 'app';
   data : SentimentEvaluationResult;
-  chart = [];
+  error: string;
 
   constructor(private rssInsight: RssInsightService){
   }
@@ -22,7 +22,8 @@ export class RssInsightComponent implements OnInit {
       this.rssInsight.sentiment().subscribe(data => {
           console.log("test",data);
           this.data = data as SentimentEvaluationResult;
-      });
+      },
+      err => this.error = err);
   }
   
   ngOnInit(): void {

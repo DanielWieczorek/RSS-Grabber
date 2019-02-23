@@ -12,6 +12,7 @@ export class RssClassificationComponent implements OnInit {
 
     title = 'app';
     data : RssEntry[];
+    error: string;
 
     constructor(private rssClassification: RssClassificationService){
         
@@ -49,7 +50,8 @@ export class RssClassificationComponent implements OnInit {
         this.rssClassification.find().subscribe(data => {
           console.log(data)
         this.data = data as RssEntry[];
-      });
+      },
+      err => this.error = err);
     }
     
 }

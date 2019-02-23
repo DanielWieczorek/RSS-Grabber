@@ -2,11 +2,20 @@
 
 
 
-<div *ngIf="chart" class="section">
-    <h5>Trading Simulation</h5>
-    <p>The diagram below shows a trading simulation of the last 24 hours.</p>
-<div  class="z-depth-1" style="padding: 16px">
-  <canvas id="canvas">{{ chart }}</canvas>
-</div>
-</div>
+	<div *ngIf="chart" class="section">
+		<h5>Trading Simulation</h5>
+		<p>The diagram below shows a trading simulation of the last 24
+			hours.</p>
+
+		<div *ngIf="!error; else errorHappened">
+			<div class="z-depth-1" style="padding: 16px">
+				<canvas id="canvas">{{ chart }}</canvas>
+			</div>
+		</div>
+		<ng-template #errorHappened>
+		<div class="row">
+			<b><span class="red-text"> {{ error }} </span></b>
+		</div>
+		</ng-template>
+	</div>
 </div>

@@ -13,6 +13,7 @@ export class MicroserviceStatusComponent implements OnInit {
 
     title = 'app';
     data : MicroserviceStatus[];
+    error: string;
 
     constructor(private microserviceStatus: MicroserviceStatusService){
     }
@@ -34,6 +35,7 @@ export class MicroserviceStatusComponent implements OnInit {
         this.microserviceStatus.status().subscribe(data => {
             console.log("data arrived",data)
         this.data = data;
-      });
+      },
+      err => {console.log(err);this.error = err;});
     }
 }

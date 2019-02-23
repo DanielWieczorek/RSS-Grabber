@@ -14,6 +14,8 @@ export class LoginComponent implements OnInit {
 
     form: FormGroup;
 
+    isLoggedInError: string = undefined;
+
     constructor( private formBuilder: FormBuilder,
         private authentication: AuthenticationService,
         private router: Router ) { }
@@ -28,7 +30,8 @@ export class LoginComponent implements OnInit {
         console.log("is logged in ",isIn);
         if ( isIn ) {
             this.router.navigate( ['/introduction'] );
-        }});
+        }},
+        err => this.isLoggedInError = err);
     }
 
     submit() {

@@ -27,6 +27,7 @@ export class TradingSimulationComponent implements AfterViewInit {
     chart = []; // This will hold our chart info
     data: ChartEntry[];
     trades: Trade[];
+    error: string;
 
   
     ngAfterViewInit(): void {
@@ -131,8 +132,10 @@ export class TradingSimulationComponent implements AfterViewInit {
                         }
                     }
                 } );
-            } )
-        } )
+            },
+            err => this.error = err)
+        },
+        err => this.error = err)
     }
     
 }

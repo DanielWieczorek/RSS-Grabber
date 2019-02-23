@@ -8,8 +8,6 @@ import { MicroserviceAuthenticationService } from '../../shared/microservice-aut
 export class AuthenticationService {
 
   constructor(private microserviceAuthentication : MicroserviceAuthenticationService) { 
-      
-      
   }
       
     public login(username : string, password : string) : Observable<boolean>    {
@@ -34,7 +32,6 @@ export class AuthenticationService {
         if( localStorage.getItem('username') === null && localStorage.getItem('token') === null){
             return observableOf(false);
         }
-
         return this.microserviceAuthentication.validate(localStorage.getItem('username'),localStorage.getItem('token'));
     }
     

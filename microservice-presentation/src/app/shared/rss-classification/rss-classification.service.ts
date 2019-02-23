@@ -3,27 +3,24 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RssEntry } from './rss-entry';
 import {environment} from '../../../environments/environment';
+import {HttpHelperService} from '../../common/http-helper/http-helper.service';
+import { catchError } from 'rxjs/operators';
 
 
 @Injectable()
 export class RssClassificationService {
   
-    private protocol = "http"
-    private hostname = "localhost";
     private port = 10020;
 
-    constructor( private http: HttpClient ) { }
+    constructor( private http: HttpClient, private helper: HttpHelperService) { }
 
     find(): Observable<RssEntry[]> {
-        return this.http.get<RssEntry[]>( this.buildPath( '/find' ) );
+        return this.http.get<RssEntry[]>( this.helper.buildPath( '/find',this.port ) )
+                 .pipe(catchError(this.helper.handleError));
     }
 
     classify( entry: RssEntry ): Observable<RssEntry> {
-        return this.http.post<RssEntry>( this.buildPath( '/classify' ), entry );
+        return this.http.post<RssEntry>( this.helper.buildPath( '/classify', this.port), entry )
+                 .pipe(catchError(this.helper.handleError));
     }
-
-    private buildPath( path: string ): string {
-        return `${this.protocol}://${environment.backendHostname}:${this.port}${path}`
-    }
-
 }

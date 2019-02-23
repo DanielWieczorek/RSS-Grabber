@@ -1,5 +1,5 @@
 <div class="container">
-	<div *ngIf="!data">
+	<div *ngIf="!data && !error">
 		<div class="preloader-background">
 			<div class="preloader-wrapper big active">
 				<div class="spinner-layer spinner-blue">
@@ -55,10 +55,11 @@
 	</div>
 
 
-<div *ngIf="data" class="section">
+<div *ngIf="data || error" class="section">
     <h5>Classify News</h5>
     <p>The news articles have to be classified by hand to generate training data for the neural network which performs the classification.</p>
 	<div class="row">
+		<div *ngIf="!error; else errorHappened">
 		<div class="col l4" *ngFor="let item of data">
 			<div class="card small">
 				<div class="card-content">
@@ -98,6 +99,13 @@
 
 			</div>
 		</div>
+		</div>
+		<ng-template #errorHappened>
+
+			<div class="row">
+				<b><span class="red-text"> {{ error }} </span></b>
+			</div>
+			</ng-template>
 	</div>
 </div>
 </div>
