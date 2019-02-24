@@ -56,50 +56,48 @@
 
 	</div>
 
-<div *ngIf="data || error" class="section">
-    <h5>Running Services</h5>
-    <p>Below you can see all backend services currently running (or not).</p>
-	<div class="row">
-	<div *ngIf="!error; else errorHappened">
-		<div class="col l4" *ngFor="let item of data">
-			<div class="card small">
-				<div class="card-content">
-					<a routerLink="/microservice-status/{{item.name}}" routerLinkActive="active"><span class="card-title ">{{item.name}}</span></a>
-					{{item.bindHostname}}:{{item.bindPort}} 
-					
-					<i class="material-icons teal-text center-align " style="font-size: 10rem; width:100%"
-						*ngIf="item.status == 'running'">check</i>
-						
-					<i class="material-icons yellow-text center-align" style="font-size: 10rem; width:100%"
-						*ngIf="item.status == 'stopped'">pause</i>
-						
-					<i class="material-icons red-text center-align" style="font-size: 10rem; width:100%"
-						*ngIf="item.status == 'failed'">clear</i>
-				</div>
-				<div class="card-action center">
-					<a class="waves-effect waves-teal btn-flat teal-text"
-						*ngIf="item.status != 'running'"
-						(click)="start(item.name)">start</a> <a
-						class="waves-effect waves-teal btn-flat disabled teal-text"
-						*ngIf="item.status == 'running'">start</a> <a
-						class="waves-effect btn-flat red-text"
-						*ngIf="item.status != 'stopped'" (click)="stop(item.name)">stop</a> <a
-						class="waves-effect waves-red btn-flat disabled red-text"
-						*ngIf="item.status == 'stopped'">stop</a>
-				</div>
+	<div *ngIf="data || error" class="section">
+		<h5>Running Services</h5>
+		<p>Below you can see all backend services currently running (or
+			not).</p>
+		<div class="row">
+			<div *ngIf="!error; else errorHappened">
+				<div class="col l4" *ngFor="let item of data">
+					<div class="card small">
+						<div class="card-content">
+							<a routerLink="/microservice-status/{{item.name}}"
+								routerLinkActive="active"><span class="card-title ">{{item.name}}</span></a>
+							{{item.bindHostname}}:{{item.bindPort}} <i
+								class="material-icons teal-text center-align "
+								style="font-size: 10rem; width: 100%"
+								*ngIf="item.status == 'running'">check</i> <i
+								class="material-icons yellow-text center-align"
+								style="font-size: 10rem; width: 100%"
+								*ngIf="item.status == 'stopped'">pause</i> <i
+								class="material-icons red-text center-align"
+								style="font-size: 10rem; width: 100%"
+								*ngIf="item.status == 'failed'">clear</i>
+						</div>
+						<div class="card-action center">
+							<a class="waves-effect waves-teal btn-flat teal-text"
+								*ngIf="item.status != 'running'" (click)="start(item.name)">start</a>
+							<a class="waves-effect waves-teal btn-flat disabled teal-text"
+								*ngIf="item.status == 'running'">start</a> <a
+								class="waves-effect btn-flat red-text"
+								*ngIf="item.status != 'stopped'" (click)="stop(item.name)">stop</a>
+							<a class="waves-effect waves-red btn-flat disabled red-text"
+								*ngIf="item.status == 'stopped'">stop</a>
+						</div>
 
 
+					</div>
+				</div>
 			</div>
+			<ng-template #errorHappened>
+
+			<div class="row">
+				<b><span class="red-text"> {{ error }} </span></b>
+			</div>
+			</ng-template>
 		</div>
 	</div>
-	<ng-template #errorHappened>
-
-  <div class="row">
-        <b><span class="red-text"> {{ error }}
-        </span></b>
-  </div>
-</ng-template>
-	</div>
-</div>
-
-
