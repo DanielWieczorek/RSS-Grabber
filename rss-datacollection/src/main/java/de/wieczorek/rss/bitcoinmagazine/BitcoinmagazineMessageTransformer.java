@@ -17,7 +17,7 @@ public class BitcoinmagazineMessageTransformer implements MessageTransformer {
 	String description = t.getDescription().replaceAll("\n", "");
 	try {
 
-	    Pattern pattern = Pattern.compile(Pattern.quote("<p>") + "(.*?)" + Pattern.quote("<br/>"));
+	    Pattern pattern = Pattern.compile(Pattern.quote("<p>") + "(.*?)" + Pattern.quote("</p>"));
 
 	    Matcher matcher = pattern.matcher(description);
 	    matcher.find();
