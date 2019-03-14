@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.deeplearning4j.models.embeddings.WeightLookupTable;
 import org.deeplearning4j.models.embeddings.reader.ModelUtils;
@@ -27,6 +29,14 @@ public class RssWord2VecNetwork implements WordVectors {
     private static final long serialVersionUID = 1L;
     private Word2Vec vec;
 
+    @Inject
+    private Word2VecDao word2VecDao;
+
+    @PostConstruct
+    private void init() {
+	vec = word2VecDao.readWord2Vec();
+    }
+
     public void train(List<RssEntry> findAllClassified) {
 	SentenceIterator iter = new Word2VecExampleIterator(findAllClassified);
 	TokenizerFactory t = new DefaultTokenizerFactory();
@@ -37,6 +47,8 @@ public class RssWord2VecNetwork implements WordVectors {
 
 	vec.fit();
 	this.vec = vec;
+
+	word2VecDao.writeWord2Vec(vec);
     }
 
     @Override

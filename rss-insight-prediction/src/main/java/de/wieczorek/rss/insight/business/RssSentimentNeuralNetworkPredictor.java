@@ -1,6 +1,7 @@
 package de.wieczorek.rss.insight.business;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -24,9 +25,12 @@ public class RssSentimentNeuralNetworkPredictor extends AbstractNeuralNetworkPre
     @Override
     protected INDArray buildPredictionFeatures(RssEntry item) {
 	Stemmer stemmer = new PorterStemmer();
-	INDArray vectors = vec
-		.getWordVectors(Arrays.asList((item.getHeading() + ". " + item.getDescription()).split(" ")).stream()
-			.map(stemmer::stem).map(CharSequence::toString).map(String::toLowerCase).collect(Collectors.toList()));
+
+	List<String> stemmedSentence = Arrays.asList((item.getHeading() + ". " + item.getDescription()).split(" "))
+		.stream().map(stemmer::stem).map(CharSequence::toString).map(String::toLowerCase).filter(vec::hasWord)
+		.collect(Collectors.toList());
+
+	INDArray vectors = vec.getWordVectors(stemmedSentence);
 
 	return Nd4j.expandDims(vectors, 2);
 

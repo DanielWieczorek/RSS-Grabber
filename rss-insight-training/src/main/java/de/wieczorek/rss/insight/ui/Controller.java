@@ -16,6 +16,7 @@ import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;
 import de.wieczorek.rss.insight.business.RssSentimentNeuralNetworkTrainer;
 import de.wieczorek.rss.insight.business.RssWord2VecNetwork;
+import de.wieczorek.rss.insight.business.Word2VecDao;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {
@@ -29,6 +30,9 @@ public class Controller extends ControllerBase {
 
     @Inject
     private RecurrentTaskManager timer;
+
+    @Inject
+    private Word2VecDao word2VecDao;
 
     public void trainNeuralNetwork() {
 	logger.info("get all classified");

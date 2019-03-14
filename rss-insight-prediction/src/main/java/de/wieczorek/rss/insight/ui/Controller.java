@@ -50,7 +50,6 @@ public class Controller extends ControllerBase {
 		.request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
 		});
 
-	vec.train(input);
 	List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).collect(Collectors.toList());
 
 	double positiveSum = sentimentList.stream().mapToDouble(RssEntrySentiment::getPositiveProbability).sum()
