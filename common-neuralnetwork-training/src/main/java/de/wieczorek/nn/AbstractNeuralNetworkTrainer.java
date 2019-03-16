@@ -32,14 +32,14 @@ public abstract class AbstractNeuralNetworkTrainer<T, R> {
 
 	Random random = new Random(System.currentTimeMillis());
 
-	int trainingSetSize = trainingSet.size() * 20 / 100;
+	int testSetSize = trainingSet.size() * 20 / 100;
 
 	for (int i = 0; i < nEpochs; i++) {
 
 	    List<T> filteredTrainingSet = new ArrayList<>(trainingSet);
 	    List<T> testSet = new ArrayList<>();
 
-	    for (int j = 0; j < trainingSetSize; j++) {
+	    for (int j = 0; j < testSetSize; j++) {
 		T entry = trainingSet.get(random.nextInt(filteredTrainingSet.size()));
 		testSet.add(entry);
 		filteredTrainingSet.remove(entry);

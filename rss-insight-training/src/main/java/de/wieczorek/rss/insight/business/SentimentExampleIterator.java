@@ -23,19 +23,6 @@ import de.wieczorek.rss.classification.types.RssEntry;
 import opennlp.tools.stemmer.PorterStemmer;
 import opennlp.tools.stemmer.Stemmer;
 
-/**
- * This is a DataSetIterator that is specialized for the IMDB review dataset
- * used in the Word2VecSentimentRNN example It takes either the train or test
- * set data from this data set, plus a WordVectors object (typically the Google
- * News 300 pretrained vectors from https://code.google.com/p/word2vec/) and
- * generates training data sets.<br>
- * Inputs/features: variable-length time series, where each word (with unknown
- * words removed) is represented by its Word2Vec vector representation.<br>
- * Labels/target: a single class (negative or positive), predicted at the final
- * time step (word) of each review
- *
- * @author Alex Black
- */
 public class SentimentExampleIterator implements DataSetIterator {
     private final WordVectors wordVectors;
     private final int batchSize;
@@ -46,19 +33,6 @@ public class SentimentExampleIterator implements DataSetIterator {
     private final List<RssEntry> files;
     private final TokenizerFactory tokenizerFactory;
 
-    /**
-     * @param dataDirectory
-     *            the directory of the IMDB review data set
-     * @param wordVectors
-     *            WordVectors object
-     * @param batchSize
-     *            Size of each minibatch for training
-     * @param truncateLength
-     *            If reviews exceed
-     * @param train
-     *            If true: return the training data. If false: return the testing
-     *            data.
-     */
     public SentimentExampleIterator(List<RssEntry> entries, WordVectors wordVectors, int batchSize, int truncateLength,
 	    boolean train) {
 	this.batchSize = batchSize;

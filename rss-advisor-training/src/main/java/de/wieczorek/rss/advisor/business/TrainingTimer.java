@@ -17,7 +17,7 @@ import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 
-@RecurrentTask(interval = 30, unit = TimeUnit.MINUTES)
+@RecurrentTask(interval = 0, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class TrainingTimer implements Runnable {
     private static final Logger logger = LogManager.getLogger(TrainingTimer.class.getName());
@@ -34,12 +34,12 @@ public class TrainingTimer implements Runnable {
 	try {
 
 	    List<SentimentAtTime> sentiments = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		    .target("http://localhost:11020/sentiment-at-time").request(MediaType.APPLICATION_JSON)
+		    .target("http://wieczorek.io:11020/sentiment-at-time").request(MediaType.APPLICATION_JSON)
 		    .get(new GenericType<List<SentimentAtTime>>() {
 		    });
 
 	    List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		    .target("http://localhost:12000/ohlcv").request(MediaType.APPLICATION_JSON)
+		    .target("http://wieczorek.io:12000/ohlcv").request(MediaType.APPLICATION_JSON)
 		    .get(new GenericType<List<ChartEntry>>() {
 		    });
 

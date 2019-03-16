@@ -38,7 +38,7 @@ public class Controller extends ControllerBase {
 	logger.info("get all classified");
 	timer.stop();
 
-	List<RssEntry> data = ClientBuilder.newClient().target("http://localhost:10020/classified")
+	List<RssEntry> data = ClientBuilder.newClient().target("http://wieczorek.io:10020/classified")
 		.request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
 		});
 
