@@ -16,8 +16,8 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.wieczorek.chart.core.persistence.ChartEntryDao;
 import de.wieczorek.rss.core.timer.RecurrentTask;
@@ -25,7 +25,7 @@ import de.wieczorek.rss.core.timer.RecurrentTask;
 @RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class ChartReader implements Runnable {
-    private static final Logger logger = LogManager.getLogger(ChartReader.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ChartReader.class);
 
     @Inject
     private ChartEntryDao dao;

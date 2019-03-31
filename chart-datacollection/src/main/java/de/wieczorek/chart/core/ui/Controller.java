@@ -5,8 +5,8 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.persistence.ChartEntryDao;
@@ -16,7 +16,7 @@ import de.wieczorek.rss.core.ui.ControllerBase;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {
-    private static final Logger logger = LogManager.getLogger(RestInfoSender.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(RestInfoSender.class);
 
     @Inject
     private RecurrentTaskManager timer;
