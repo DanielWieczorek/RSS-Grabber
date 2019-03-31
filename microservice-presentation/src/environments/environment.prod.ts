@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  backendHostname: 'wieczorek.io'
+  backendHostname: 'wieczorek.io',
+  backendPort: 10000,
 };

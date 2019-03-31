@@ -10,8 +10,8 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.recalculation.Recalculation;
@@ -19,7 +19,6 @@ import de.wieczorek.rss.core.recalculation.RecalculationStatusDao;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;
 import de.wieczorek.rss.insight.business.RssSentimentNeuralNetworkPredictor;
-import de.wieczorek.rss.insight.business.RssWord2VecNetwork;
 import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
 import de.wieczorek.rss.insight.types.RssEntrySentiment;
 import de.wieczorek.rss.insight.types.RssEntrySentimentSummary;
@@ -28,13 +27,10 @@ import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {
-    private static final Logger logger = LogManager.getLogger(Controller.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @Inject
     private RssSentimentNeuralNetworkPredictor network;
-
-    @Inject
-    private RssWord2VecNetwork vec;
 
     @Inject
     private RecurrentTaskManager timer;

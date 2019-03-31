@@ -9,8 +9,8 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.rss.advisor.business.DataPreparator;
@@ -27,7 +27,7 @@ import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {
-    private static final Logger logger = LogManager.getLogger(Controller.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @Inject
     private TradingNeuralNetworkPredictor nn;

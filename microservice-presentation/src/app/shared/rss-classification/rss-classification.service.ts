@@ -15,12 +15,12 @@ export class RssClassificationService {
     constructor( private http: HttpClient, private helper: HttpHelperService) { }
 
     find(): Observable<RssEntry[]> {
-        return this.http.get<RssEntry[]>( this.helper.buildPath( '/find',this.port ) )
+        return this.http.get<RssEntry[]>( this.helper.buildPath( 'routing/rss-classification/find') )
                  .pipe(catchError(this.helper.handleError));
     }
 
     classify( entry: RssEntry ): Observable<RssEntry> {
-        return this.http.post<RssEntry>( this.helper.buildPath( '/classify', this.port), entry )
+        return this.http.post<RssEntry>( this.helper.buildPath( 'routing/rss-classification/classify'), entry )
                  .pipe(catchError(this.helper.handleError));
     }
 }

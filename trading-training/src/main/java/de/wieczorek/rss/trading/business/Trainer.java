@@ -36,13 +36,13 @@ public class Trainer {
     private PolicyDao dao;
 
     private static final QLearning.QLConfiguration TRADE_QL = new QLearning.QLConfiguration(123, // Random seed
-	    100000, // Max step By epoch
+	    190000, // Max step By epoch
 	    2000, // Max step
-	    10000, // Max size of experience replay
-	    64, // size of batches
+	    2000, // Max size of experience replay
+	    128, // size of batches
 	    100, // target update (hard)
 	    0, // num step noop warmup
-	    0.05, // reward scaling
+	    1, // reward scaling
 	    0.99, // gamma
 	    10.0, // td-error clipping
 	    0.1f, // min epsilon
@@ -51,7 +51,7 @@ public class Trainer {
     );
 
     private static final DQNFactoryStdDense.Configuration TRADE_NET = DQNFactoryStdDense.Configuration.builder()
-	    .l2(0.01).updater(new Adam(1e-2)).numLayer(3).numHiddenNodes(192).build();
+	    .l2(0.01).updater(new Adam(1e-2)).numLayer(1).numHiddenNodes(128).build();
 
     private DataManager manager;
     private MDP<NeuralNetworkState, Integer, DiscreteSpace> mdp;
@@ -80,8 +80,9 @@ public class Trainer {
     }
 
     public void train() throws IOException {
-	int numberOfRounds = 100;
 	int rangeMax = dataGenerator.getMaxIndex() - 1440;
+	int numberOfRounds = rangeMax;
+
 	Random random = new Random(System.currentTimeMillis());
 	for (int i = 0; i < numberOfRounds; i++) {
 	    StateEdge root = dataGenerator.generateTrainingData(random.nextInt(rangeMax));
@@ -100,6 +101,7 @@ public class Trainer {
 	    dql.setStepCounter(0);
 
 	    printOptimumResult(graph);
+	    System.out.println("running iteration " + i + " of " + numberOfRounds);
 	}
     }
 

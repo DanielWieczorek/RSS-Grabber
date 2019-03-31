@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
-  backendHostname: 'localhost'
+  backendHostname: 'localhost',
+  backendPort: 10000,
 };

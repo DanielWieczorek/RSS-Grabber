@@ -12,8 +12,8 @@ import java.util.zip.GZIPInputStream;
 
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
 import com.rometools.rome.feed.synd.SyndEntry;
@@ -25,7 +25,7 @@ import de.wieczorek.rss.core.persistence.RssEntryDao;
 import de.wieczorek.rss.types.RssEntry;
 
 public abstract class RssReader implements Runnable {
-    private static final Logger logger = LogManager.getLogger(RssReader.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(RssReader.class);
 
     @Inject
     private RssEntryDao dao;

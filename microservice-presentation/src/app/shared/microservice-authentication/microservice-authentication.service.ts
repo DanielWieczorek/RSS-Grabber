@@ -13,7 +13,6 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class MicroserviceAuthenticationService {
-    private port = 32000;
 
     constructor( private http: HttpClient, private helper: HttpHelperService ) { }
 
@@ -21,7 +20,7 @@ export class MicroserviceAuthenticationService {
         const base64String = btoa( `${username}:${password}` );
         const authHeaders = new HttpHeaders({'Authorization': `Basic ${base64String}`});
         
-        return this.http.get( this.helper.buildPath( '/login', this.port), { headers: authHeaders,
+        return this.http.get( this.helper.buildPath( 'routing/microservice-authentication/login'), { headers: authHeaders,
             responseType: 'text' } )
             .pipe(catchError(this.helper.handleError));
        ;
@@ -32,7 +31,7 @@ export class MicroserviceAuthenticationService {
         info.username = username;
         info.token = token;
 
-        this.http.post( this.helper.buildPath( '/logout', this.port ), info )
+        this.http.post( this.helper.buildPath( 'routing/microservice-authentication/logout'), info )
         .pipe(catchError(this.helper.handleError));
     }
 
@@ -42,7 +41,7 @@ export class MicroserviceAuthenticationService {
         info.token = token;
         console.log('validate');
        
-        return this.http.post( this.helper.buildPath( '/validate',this.port ), info ,{ responseType: 'text'})
+        return this.http.post( this.helper.buildPath( 'routing/microservice-authentication/validate'), info ,{ responseType: 'text'})
         .pipe(catchError(this.helper.handleError))
         .pipe(map (resp =>  {
             console.log("validate ",resp=== 'true');

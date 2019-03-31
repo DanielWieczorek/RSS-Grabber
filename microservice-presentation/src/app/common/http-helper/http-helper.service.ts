@@ -15,8 +15,8 @@ export class HttpHelperService {
   
   
   
-  buildPath( path: string, port: number): string {
-      return `${this.protocol}://${environment.backendHostname}:${port}${path}`
+  buildPath( path: string): string {
+      return `${this.protocol}://${environment.backendHostname}:${environment.backendPort}/${path}`
   }
   
   handleError( error: HttpErrorResponse ) {

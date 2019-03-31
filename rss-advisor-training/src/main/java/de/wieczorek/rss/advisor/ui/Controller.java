@@ -8,8 +8,8 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.rss.advisor.business.DataPreparator;
@@ -21,7 +21,7 @@ import de.wieczorek.rss.insight.types.SentimentAtTime;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {
-    private static final Logger logger = LogManager.getLogger(Controller.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @Inject
     private TradingNeuralNetworkTrainer nn;
@@ -30,7 +30,7 @@ public class Controller extends ControllerBase {
     private RecurrentTaskManager timer;
 
     public void trainNeuralNetwork() {
-	logger.fatal("foo");
+	logger.error("foo"); // TODO
 	List<SentimentAtTime> sentiments = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
 		.target("http://localhost:11020/sentiment-at-time").request(MediaType.APPLICATION_JSON)
 		.get(new GenericType<List<SentimentAtTime>>() {
@@ -42,7 +42,6 @@ public class Controller extends ControllerBase {
 		});
 
 	if (sentiments != null && chartEntries != null) {
-
 	    nn.train(new DataPreparator().withChartData(chartEntries).withSentiments(sentiments).getData(), 1);
 	}
 

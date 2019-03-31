@@ -10,8 +10,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotAuthorizedException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
@@ -21,13 +21,12 @@ import de.wieczorek.chart.core.persistence.Credentials;
 import de.wieczorek.chart.core.persistence.CredentialsDao;
 import de.wieczorek.chart.core.persistence.Session;
 import de.wieczorek.chart.core.persistence.SessionDao;
-import de.wieczorek.rss.core.jgroups.RestInfoSender;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {
-    private static final Logger logger = LogManager.getLogger(RestInfoSender.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @Inject
     private RecurrentTaskManager timer;

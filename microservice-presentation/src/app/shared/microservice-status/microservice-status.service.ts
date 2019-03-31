@@ -9,8 +9,6 @@ import { catchError } from 'rxjs/operators';
 @Injectable()
 export class MicroserviceStatusService {
 
-    private port = 10000;
-    
     private cache: Observable<MicroserviceStatus[]>;
 
     constructor( private http: HttpClient, private helper: HttpHelperService ) { }
@@ -24,19 +22,19 @@ export class MicroserviceStatusService {
 
     status(): Observable<MicroserviceStatus[]> {
 
-        const result: Observable<MicroserviceStatus[]> = this.http.get<MicroserviceStatus[]>( this.helper.buildPath( '/getstatus',this.port ) )
+        const result: Observable<MicroserviceStatus[]> = this.http.get<MicroserviceStatus[]>( this.helper.buildPath( 'getstatus') )
          .pipe(catchError(this.helper.handleError));
         this.cache = result;
         return result;
     } 
 
     start( serviceName: string ): Observable<MicroserviceStatus[]> {
-        return this.http.post<MicroserviceStatus[]>( this.helper.buildPath( `/start/${serviceName}`, this.port) ,{})
+        return this.http.post<MicroserviceStatus[]>( this.helper.buildPath( `start/${serviceName}`) ,{})
          .pipe(catchError(this.helper.handleError));
     }
 
     stop( serviceName: string ): Observable<MicroserviceStatus[]>{
-        return this.http.post<MicroserviceStatus[]>( this.helper.buildPath( `/stop/${serviceName}`, this.port),{})
+        return this.http.post<MicroserviceStatus[]>( this.helper.buildPath( `stop/${serviceName}`),{})
         .pipe(catchError(this.helper.handleError));
     }
 }

@@ -5,14 +5,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RecurrentTaskRunner {
 
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
-    private static final Logger logger = LogManager.getLogger(RecurrentTaskRunner.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(RecurrentTaskRunner.class);
 
     private Runnable task;
     private int interval;

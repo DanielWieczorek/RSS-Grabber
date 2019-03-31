@@ -7,13 +7,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jgroups.Address;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.ReceiverAdapter;
 import org.jgroups.View;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,7 +27,7 @@ import de.wieczorek.rss.core.config.port.RestPort;
 
 @ApplicationScoped
 public class RestInfoSender extends ReceiverAdapter {
-    private static final Logger logger = LogManager.getLogger(RestInfoSender.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(RestInfoSender.class);
 
     @Inject
     private JChannel channel;

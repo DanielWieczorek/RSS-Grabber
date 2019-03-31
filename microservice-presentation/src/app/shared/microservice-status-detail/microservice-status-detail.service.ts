@@ -10,11 +10,11 @@ export class MicroserviceStatusDetailService {
     
     constructor( private http: HttpClient, private helper: HttpHelperService ) { }
 
-    performGetAction(path : string, port: number) : any {
-        return this.http.get( this.helper.buildPath( path, port) );
+    performGetAction(path : string) : any {
+        return this.http.get( this.helper.buildPath( path) );
     }
     
-    performPostAction(path : string, data: string, port: number) : any {
-        return this.http.post( this.helper.buildPath( path, port) ,data, {headers:{'Content-Type': 'application/json'}});
+    performPostAction(path : string, data: string) : any {
+        return this.http.post( this.helper.buildPath( path) ,data, {headers:{'Content-Type': 'application/json'}});
     }
 }

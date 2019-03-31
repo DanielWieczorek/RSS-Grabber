@@ -7,8 +7,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.ResponseProcessingException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.wieczorek.chart.core.persistence.Session;
 import de.wieczorek.chart.core.persistence.SessionDao;
@@ -17,7 +17,7 @@ import de.wieczorek.rss.core.timer.RecurrentTask;
 @RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class SessionInvalidationTimer implements Runnable {
-    private static final Logger logger = LogManager.getLogger(SessionInvalidationTimer.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(SessionInvalidationTimer.class);
 
     @Inject
     private SessionDao dao;

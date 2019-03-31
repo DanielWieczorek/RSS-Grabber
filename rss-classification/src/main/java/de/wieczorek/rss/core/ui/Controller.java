@@ -11,17 +11,15 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {
-    private static final Logger logger = LogManager.getLogger(Controller.class.getName());
-
-    private boolean isStarted = false;
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @Inject
     private RssEntryDao dao;

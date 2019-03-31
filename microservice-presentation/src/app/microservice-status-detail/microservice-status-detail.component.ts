@@ -28,7 +28,7 @@ export class MicroserviceStatusDetailComponent implements OnInit {
 
 
     performExport() {
-        const dataObservable = this.microserviceStatusDetail.performGetAction( '/feature/export', this.data.bindPort );
+        const dataObservable = this.microserviceStatusDetail.performGetAction( `routing/${this.data.name}/feature/export`);
         dataObservable.subscribe( data => {
 
             const blob = new Blob( [JSON.stringify( data )], { type: 'text/json' } );
@@ -50,7 +50,7 @@ export class MicroserviceStatusDetailComponent implements OnInit {
         let fileReader = new FileReader();
         fileReader.onload = ( e ) => {
             console.log( fileReader.result );
-            this.microserviceStatusDetail.performPostAction( '/feature/import', fileReader.result as string,this.data.bindPort)
+            this.microserviceStatusDetail.performPostAction( `routing/${this.data.name}/feature/import`, fileReader.result as string)
                 .subscribe( x => {
                     console.log( x );
                 } );

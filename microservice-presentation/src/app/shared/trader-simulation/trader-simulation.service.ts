@@ -9,13 +9,11 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class TraderSimulationService {
-    private port = 22020;
 
     constructor( private http: HttpClient, private helper: HttpHelperService) { }
 
     simulate(): Observable<Trade[]> {
-
-        return this.http.get<Trade[]>( this.helper.buildPath( '/simulate', this.port ) )
+        return this.http.get<Trade[]>( this.helper.buildPath( 'routing/trader-simulation/simulate') )
         .pipe(catchError(this.helper.handleError));
     }
 }

@@ -9,12 +9,11 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class ChartReaderService {
-    private port = 12000;
 
     constructor( private http: HttpClient, private helper: HttpHelperService) { }
 
     get24hOhlcv(): Observable<ChartEntry[]> {
-        return this.http.get<ChartEntry[]>( this.helper.buildPath( '/ohlcv/24h', this.port ) )
+        return this.http.get<ChartEntry[]>( this.helper.buildPath( 'routing/chart-datacollection/ohlcv/24h') )
         .pipe(catchError(this.helper.handleError));
 
     }

@@ -6,10 +6,10 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.deeplearning4j.rl4j.policy.DQNPolicy;
 import org.nd4j.linalg.factory.Nd4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.nn.PolicyDao;
@@ -27,7 +27,7 @@ import de.wieczorek.rss.trading.types.StateEdgePart;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {
-    private static final Logger logger = LogManager.getLogger(Controller.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @Inject
     private PolicyDao dao;

@@ -3,14 +3,14 @@ package de.wieczorek.rss.bitcoincom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.wieczorek.rss.core.business.MessageTransformer;
 import de.wieczorek.rss.types.RssEntry;
 
 public class BitcoincomMessageTransformer implements MessageTransformer {
-    private static final Logger logger = LogManager.getLogger(BitcoincomMessageTransformer.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(BitcoincomMessageTransformer.class);
 
     @Override
     public RssEntry apply(RssEntry t) {

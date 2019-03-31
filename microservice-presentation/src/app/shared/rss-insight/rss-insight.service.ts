@@ -10,12 +10,10 @@ import { catchError } from 'rxjs/operators';
 @Injectable()
 export class RssInsightService {
 
-    private port = 11020;
-
     constructor( private http: HttpClient, private helper: HttpHelperService) { }
 
     sentiment(): Observable<SentimentEvaluationResult> {
-        return this.http.get<SentimentEvaluationResult>( this.helper.buildPath( '/sentiment', this.port ) )
+        return this.http.get<SentimentEvaluationResult>( this.helper.buildPath( 'routing/rss-insight/sentiment') )
         .pipe(catchError(this.helper.handleError));
 
     }
