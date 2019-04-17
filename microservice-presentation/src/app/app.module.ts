@@ -21,6 +21,7 @@ import { MicroserviceAuthenticationService } from './shared/microservice-authent
 import { LoginComponent } from './login/login.component'
 import { ReactiveFormsModule } from '@angular/forms';
 import { MicroserviceStatusDetailComponent } from './microservice-status-detail/microservice-status-detail.component';
+import { MicroserviceStatusDetailService } from './shared/microservice-status-detail/microservice-status-detail.service';
 
 
 const appRoutes: Routes = [
@@ -63,7 +64,8 @@ const appRoutes: Routes = [
       MicroserviceStatusService,
       AuthenticationService,
       AuthenticationGuard,
-      MicroserviceAuthenticationService
+      MicroserviceAuthenticationService,
+      MicroserviceStatusDetailService
   ],
   bootstrap: [AppComponent]
 })

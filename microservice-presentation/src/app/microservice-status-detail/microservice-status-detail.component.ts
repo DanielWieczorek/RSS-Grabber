@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { MicroserviceStatusService } from '../shared/microservice-status/microservice-status.service'
 import { MicroserviceStatusDetailService } from '../shared/microservice-status-detail/microservice-status-detail.service'
-import { MicroserviceStatus, MicroserviceAction } from '../shared/microservice-status/microservice-status'
+import { MicroserviceStatus } from '../shared/microservice-status/microservice-status'
 import 'rxjs/Rx';
 
 
