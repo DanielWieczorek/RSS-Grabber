@@ -22,6 +22,8 @@
             
             <module>chart-datacollection-types</module>
             <module>chart-datacollection</module>
+            <module>chart-metric</module>
+            
             
             <module>rss-insight-types</module>
             <module>rss-insight-common</module>

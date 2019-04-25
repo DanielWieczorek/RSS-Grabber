@@ -3,10 +3,10 @@ package de.wieczorek.chart.core.business;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
@@ -46,13 +46,13 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
 	BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());
-	List<ChartMetricRecord> records = new ArrayList<>();
 
 	List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
 		.target("http://wieczorek.io:12000/ohlcv").request(MediaType.APPLICATION_JSON)
 		.get(new GenericType<List<ChartEntry>>() {
 		});
-	chartEntries.sort(Comparator.comparing(ChartEntry::getDate));
+	chartEntries = chartEntries.stream().distinct().sorted(Comparator.comparing(ChartEntry::getDate))
+		.collect(Collectors.toList());
 
 	int index = 0;
 	for (int i = 0; i < chartEntries.size(); i++) {
@@ -64,7 +64,7 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
 
 	int lastIndex = 0;
 
-	for (int i = index; i < (6000 + index) && i < chartEntries.size(); i++) {
+	for (int i = index; i < (300 + index) && i < chartEntries.size(); i++) {
 	    ChartEntry entry = chartEntries.get(i);
 
 	    Bar b = new BaseBar(ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
@@ -80,13 +80,11 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
 		ChartMetricRecord record = calculator.calculate(series);
 
 		if (dao.findById(record.getId()) == null) {
-		    records.add(record);
+		    dao.upsert(record);
 		}
 	    });
 	    lastIndex = i;
 	}
-
-	dao.persistAll(records);
 
 	if (lastIndex < chartEntries.size() - 1) {
 	    return chartEntries.get(lastIndex).getDate();

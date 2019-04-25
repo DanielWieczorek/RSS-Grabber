@@ -28,6 +28,7 @@ public abstract class AbstractRecalculationTimer implements Runnable {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
+
     }
 
     protected abstract LocalDateTime performRecalculation(LocalDateTime startDate);

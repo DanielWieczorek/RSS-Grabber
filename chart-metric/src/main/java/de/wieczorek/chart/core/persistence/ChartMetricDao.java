@@ -1,15 +1,10 @@
 package de.wieczorek.chart.core.persistence;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,35 +14,57 @@ import de.wieczorek.importexport.db.ImportExportDao;
 
 @ApplicationScoped
 public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
-    private EntityManager entityManager;
-
-    public ChartMetricDao() {
-	final Map<String, String> props = new HashMap<>();
-	EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
-	entityManager = emf.createEntityManager();
-
-    }
 
     public ChartMetricRecord findById(ChartMetricId id) {
-	return entityManager.find(ChartMetricRecord.class, id);
+	return EntityManagerProvider.getEntityManager().find(ChartMetricRecord.class, id);
+    }
+
+    public void mergeAll(Collection<ChartMetricRecord> entries) {
+	EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
+	transaction.begin();
+	entries.forEach(EntityManagerProvider.getEntityManager()::merge);
+	transaction.commit();
     }
 
     @Override
     public void persistAll(Collection<ChartMetricRecord> entries) {
-	EntityTransaction transaction = entityManager.getTransaction();
+	EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
 	transaction.begin();
-	entries.forEach(entityManager::persist);
+	entries.stream().forEach(EntityManagerProvider.getEntityManager()::persist);
 	transaction.commit();
     }
 
     @Override
     public List<ChartMetricRecord> findAll() {
-	CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+	CriteriaBuilder cb = EntityManagerProvider.getEntityManager().getCriteriaBuilder();
 	CriteriaQuery<ChartMetricRecord> cq = cb.createQuery(ChartMetricRecord.class);
 	Root<ChartMetricRecord> rootEntry = cq.from(ChartMetricRecord.class);
 	CriteriaQuery<ChartMetricRecord> all = cq.select(rootEntry);
-	TypedQuery<ChartMetricRecord> allQuery = entityManager.createQuery(all);
+	TypedQuery<ChartMetricRecord> allQuery = EntityManagerProvider.getEntityManager().createQuery(all);
 	return allQuery.getResultList();
+    }
+
+    public void persist(ChartMetricRecord sat) {
+	EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
+	transaction.begin();
+	EntityManagerProvider.getEntityManager().persist(sat);
+	transaction.commit();
+    }
+
+    public void update(ChartMetricRecord sat) {
+	EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
+	transaction.begin();
+	EntityManagerProvider.getEntityManager().merge(sat);
+	transaction.commit();
+    }
+
+    public void upsert(ChartMetricRecord sat) {
+	ChartMetricRecord found = findById(sat.getId());
+	if (found == null) {
+	    persist(sat);
+	} else {
+	    update(sat);
+	}
     }
 
     @Override

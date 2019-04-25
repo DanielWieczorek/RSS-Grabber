@@ -4,6 +4,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,8 @@ public class RecurrentTaskRunner {
     private Runnable task;
     private int interval;
     private TimeUnit unit;
+
+    private ReentrantLock lock = new ReentrantLock();
 
     private ScheduledFuture<?> nextInvocation;
 
@@ -39,7 +42,10 @@ public class RecurrentTaskRunner {
 	nextInvocation = executor.schedule(this::run, interval, unit);
 	logger.debug("scheduling again in " + interval + " " + unit);
 	try {
-	    task.run();
+	    if (lock.tryLock()) {
+		task.run();
+		lock.unlock();
+	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}

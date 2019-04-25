@@ -3,6 +3,7 @@ package de.wieczorek.chart.core.business;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -46,6 +47,7 @@ public class MetricTimer implements Runnable {
 		.target("http://wieczorek.io:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
 		.get(new GenericType<List<ChartEntry>>() {
 		});
+	chartEntries.sort(Comparator.comparing(ChartEntry::getDate));
 
 	BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());
 	chartEntries.forEach(entry -> {
@@ -67,6 +69,7 @@ public class MetricTimer implements Runnable {
 		records.add(record);
 	    }
 	});
+
 	dao.persistAll(records);
 
     }

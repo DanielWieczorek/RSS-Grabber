@@ -10,6 +10,8 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.deeplearning4j.optimize.api.TrainingListener;
+import org.deeplearning4j.optimize.listeners.PerformanceListener;
 import org.deeplearning4j.rl4j.learning.Learning;
 import org.deeplearning4j.rl4j.learning.sync.qlearning.QLearning;
 import org.deeplearning4j.rl4j.learning.sync.qlearning.QLearning.QLConfiguration;
@@ -36,22 +38,23 @@ public class Trainer {
     private PolicyDao dao;
 
     private static final QLearning.QLConfiguration TRADE_QL = new QLearning.QLConfiguration(123, // Random seed
-	    190000, // Max step By epoch
-	    2000, // Max step
-	    2000, // Max size of experience replay
-	    128, // size of batches
+	    40000, // Max step By epoch
+	    8000, // Max step
+	    8000, // Max size of experience replay
+	    8000, // size of batches
 	    100, // target update (hard)
 	    0, // num step noop warmup
 	    1, // reward scaling
 	    0.99, // gamma
 	    10.0, // td-error clipping
 	    0.1f, // min epsilon
-	    200, // num step for eps greedy anneal
+	    400, // num step for eps greedy anneal
 	    true // double DQN
     );
 
     private static final DQNFactoryStdDense.Configuration TRADE_NET = DQNFactoryStdDense.Configuration.builder()
-	    .l2(0.01).updater(new Adam(1e-2)).numLayer(1).numHiddenNodes(128).build();
+	    .l2(0.01).updater(new Adam(1e-2)).numLayer(1).numHiddenNodes(128)
+	    .listeners(new TrainingListener[] { new PerformanceListener(1, true) }).build();
 
     private DataManager manager;
     private MDP<NeuralNetworkState, Integer, DiscreteSpace> mdp;
@@ -63,6 +66,7 @@ public class Trainer {
     public void init() {
 	try {
 	    manager = new DataManager();
+	    dataGenerator.loadData();
 	    mdp = new NeuralNetworkActor(19, new IndexedStateGraph(dataGenerator.generateTrainingData(0)));
 
 	    Pair<IDQN, QLConfiguration> data = null;
@@ -70,6 +74,7 @@ public class Trainer {
 		data = DataManager.load(SAVE_FILE, QLConfiguration.class);
 	    }
 	    if (data != null) {
+
 		dql = new QLearningDiscreteDense<NeuralNetworkState>(mdp, data.getFirst(), data.getSecond(), manager);
 	    } else {
 		dql = new QLearningDiscreteDense<NeuralNetworkState>(mdp, TRADE_NET, TRADE_QL, manager);
@@ -80,6 +85,8 @@ public class Trainer {
     }
 
     public void train() throws IOException {
+	dataGenerator.loadData();
+
 	int rangeMax = dataGenerator.getMaxIndex() - 1440;
 	int numberOfRounds = rangeMax;
 

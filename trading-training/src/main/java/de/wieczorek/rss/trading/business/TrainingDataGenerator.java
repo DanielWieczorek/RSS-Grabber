@@ -27,10 +27,17 @@ public class TrainingDataGenerator {
     @Inject
     private DataLoader dataLoader;
 
-    public StateEdge generateTrainingData(int offset) {
-	List<TradingEvaluationResult> currentSentiment = dataLoader.loadAllSentiments();
+    List<TradingEvaluationResult> currentSentiment;
 
-	List<ChartEntry> chartEntries = dataLoader.loadAllChartEntries();
+    List<ChartEntry> chartEntries;
+
+    public void loadData() {
+	currentSentiment = dataLoader.loadAllSentiments();
+
+	chartEntries = dataLoader.loadAllChartEntries();
+    }
+
+    public StateEdge generateTrainingData(int offset) {
 
 	System.out.println("found " + chartEntries.size() + " entries. first at " + chartEntries.get(0).getDate()
 		+ " and last at " + chartEntries.get(chartEntries.size() - 1).getDate()); // TODO Logging
@@ -89,7 +96,7 @@ public class TrainingDataGenerator {
     }
 
     public int getMaxIndex() {
-	return dataLoader.loadAllChartEntries().size();
+	return chartEntries.size();
     }
 
     private StateEdge buildState(List<StateEdgePart> stateParts, List<ChartEntry> chartEntries, int partStartIndex,
