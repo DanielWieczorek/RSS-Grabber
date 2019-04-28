@@ -6,8 +6,6 @@ import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import de.wieczorek.rss.core.config.ServiceName;
 import de.wieczorek.rss.core.config.port.JGroupsPort;
@@ -29,7 +27,7 @@ public class Configuration {
 
     @Produces
     @ServiceName
-    private String serviceName = "chart-datacollection";
+    private String serviceName = "chart-metric";
 
     @Produces
     @MigrationConfiguration
@@ -40,7 +38,4 @@ public class Configuration {
 	    { "flyway.locations", "classpath:db/migration" } //
     }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
 
-    @Produces
-    @PersistenceContext(unitName = "rss")
-    private EntityManager userDatabaseEntityManager;
 }
