@@ -79,16 +79,13 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
 	    metricCalculators.forEach(calculator -> {
 		ChartMetricRecord record = calculator.calculate(series);
 
-		if (dao.findById(record.getId()) == null) {
-		    dao.upsert(record);
-		}
+		dao.upsert(record);
 	    });
 	    lastIndex = i;
 	}
 
 	if (lastIndex < chartEntries.size() - 1) {
 	    return chartEntries.get(lastIndex).getDate();
-
 	} else {
 	    return null;
 

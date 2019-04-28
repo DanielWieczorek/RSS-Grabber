@@ -22,6 +22,7 @@
             
             <module>chart-datacollection-types</module>
             <module>chart-datacollection</module>
+            <module>chart-metric-types</module>
             <module>chart-metric</module>
             
             
