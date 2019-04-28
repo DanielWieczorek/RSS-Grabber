@@ -23,7 +23,7 @@ public class MetricsResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/now")
+    @Path("/all")
     public List<ChartMetricRecord> metric() {
 	return controller.getAll();
     }
