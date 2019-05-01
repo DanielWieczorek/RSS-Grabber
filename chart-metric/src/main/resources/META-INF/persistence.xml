@@ -28,6 +28,7 @@
 			<property name="eclipselink.connection-pool.node2.max"
 				value="1" />
 			<property name="eclipselink.cache.type.default" value="NONE" />
+
 		</properties>
 
 		<shared-cache-mode>NONE</shared-cache-mode>

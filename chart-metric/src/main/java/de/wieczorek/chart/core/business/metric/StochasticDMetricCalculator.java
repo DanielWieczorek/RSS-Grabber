@@ -19,7 +19,7 @@ public class StochasticDMetricCalculator implements MetricCalculator {
 	int lastIndex = timeSeries.getEndIndex();
 
 	ChartMetricId id = new ChartMetricId();
-	id.setDate(timeSeries.getBar(lastIndex).getBeginTime().toLocalDateTime());
+	id.setDate(timeSeries.getBar(lastIndex).getEndTime().toLocalDateTime());
 	id.setIndicator("stochasticD");
 	result.setId(id);
 

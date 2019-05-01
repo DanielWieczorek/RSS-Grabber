@@ -20,7 +20,7 @@ public class MacdMetricCalculator implements MetricCalculator {
 
 	ChartMetricRecord result = new ChartMetricRecord();
 	ChartMetricId id = new ChartMetricId();
-	id.setDate(timeSeries.getBar(lastIndex).getBeginTime().toLocalDateTime());
+	id.setDate(timeSeries.getBar(lastIndex).getEndTime().toLocalDateTime());
 	id.setIndicator("macd");
 	result.setId(id);
 

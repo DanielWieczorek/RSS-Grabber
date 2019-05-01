@@ -58,12 +58,11 @@ public class MetricTimer implements Runnable {
 		    entry.getVolume(), //
 		    DoubleNum.valueOf(0).function());
 	    series.addBar(b);
+	});
 
-	    metricCalculators.forEach(calculator -> {
-		ChartMetricRecord record = calculator.calculate(series);
-
-		dao.upsert(record);
-	    });
+	metricCalculators.forEach(calculator -> {
+	    ChartMetricRecord record = calculator.calculate(series);
+	    dao.upsert(record);
 	});
 
     }
