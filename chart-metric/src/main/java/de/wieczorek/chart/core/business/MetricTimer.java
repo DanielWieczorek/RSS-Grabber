@@ -2,7 +2,6 @@ package de.wieczorek.chart.core.business;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -59,18 +58,13 @@ public class MetricTimer implements Runnable {
 		    entry.getVolume(), //
 		    DoubleNum.valueOf(0).function());
 	    series.addBar(b);
+
+	    metricCalculators.forEach(calculator -> {
+		ChartMetricRecord record = calculator.calculate(series);
+
+		dao.upsert(record);
+	    });
 	});
-	List<ChartMetricRecord> records = new ArrayList<>();
-
-	metricCalculators.forEach(calculator -> {
-	    ChartMetricRecord record = calculator.calculate(series);
-
-	    if (dao.findById(record.getId()) == null) {
-		records.add(record);
-	    }
-	});
-
-	dao.persistAll(records);
 
     }
 }
