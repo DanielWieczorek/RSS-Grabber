@@ -11,7 +11,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.importexport.db.ImportExportDao;
 
 @ApplicationScoped
@@ -36,10 +35,10 @@ public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
 	transaction.commit();
     }
 
-    public List<ChartEntry> find24h() {
+    public List<ChartMetricRecord> find24h() {
 	LocalDateTime date = LocalDateTime.now().withSecond(0).withNano(0).minusHours(24);
-	TypedQuery<ChartEntry> query = EntityManagerProvider.getEntityManager()
-		.createQuery("SELECT s FROM ChartMetricRecord s WHERE s.id.date >= :time", ChartEntry.class)
+	TypedQuery<ChartMetricRecord> query = EntityManagerProvider.getEntityManager()
+		.createQuery("SELECT s FROM ChartMetricRecord s WHERE s.id.date >= :time", ChartMetricRecord.class)
 		.setParameter("time", date);
 	return query.getResultList();
     }
