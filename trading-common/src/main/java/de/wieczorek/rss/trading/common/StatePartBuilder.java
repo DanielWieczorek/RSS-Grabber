@@ -7,7 +7,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.rss.advisor.types.DeltaChartEntry;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.trading.types.StateEdgePart;
@@ -18,9 +23,12 @@ public final class StatePartBuilder {
     }
 
     public static List<StateEdgePart> buildStateParts(List<ChartEntry> chartEntries,
-	    List<TradingEvaluationResult> sentiments) {
+	    List<ChartMetricRecord> chartMetrics, List<TradingEvaluationResult> sentiments) {
 	Map<LocalDateTime, TradingEvaluationResult> sentimentDateMappings = sentiments.stream().collect(
 		Collectors.toMap(TradingEvaluationResult::getCurrentTime, Function.identity(), (v1, v2) -> v2));
+
+	Multimap<LocalDateTime, ChartMetricRecord> chartMetricMappings = HashMultimap.create();
+	chartMetrics.forEach(item -> chartMetricMappings.put(item.getId().getDate(), item));
 
 	List<StateEdgePart> stateParts = new ArrayList<>();
 
@@ -42,6 +50,7 @@ public final class StatePartBuilder {
 
 	    part.setChartEntry(entry);
 	    part.setSentiment(sentimentDateMappings.get(entry.getDate()));
+	    part.setMetricsRecord(Lists.newArrayList(chartMetricMappings.get(entry.getDate())));
 
 	    stateParts.add(part);
 	}

@@ -24,8 +24,15 @@ public class MetricsResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/all")
-    public List<ChartMetricRecord> metric() {
+    public List<ChartMetricRecord> metricAll() {
 	return controller.getAll();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/24h")
+    public List<ChartMetricRecord> metric24h() {
+	return controller.get24h();
     }
 
     @GET

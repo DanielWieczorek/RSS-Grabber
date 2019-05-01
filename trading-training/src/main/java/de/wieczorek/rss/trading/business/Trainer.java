@@ -53,7 +53,7 @@ public class Trainer {
     );
 
     private static final DQNFactoryStdDense.Configuration TRADE_NET = DQNFactoryStdDense.Configuration.builder()
-	    .l2(0.01).updater(new Adam(1e-2)).numLayer(1).numHiddenNodes(128)
+	    .l2(0.01).updater(new Adam(1e-2)).numLayer(1).numHiddenNodes(2642)
 	    .listeners(new TrainingListener[] { new PerformanceListener(1, true) }).build();
 
     private DataManager manager;

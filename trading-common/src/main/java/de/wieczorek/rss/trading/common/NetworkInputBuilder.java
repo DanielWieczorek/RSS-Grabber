@@ -1,7 +1,9 @@
 package de.wieczorek.rss.trading.common;
 
+import java.util.Arrays;
 import java.util.List;
 
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.IStateHistoryHolder;
 import de.wieczorek.rss.trading.types.StateEdgePart;
@@ -15,18 +17,31 @@ public final class NetworkInputBuilder {
 	List<StateEdgePart> parts = state.getAllStateParts().subList(state.getPartsStartIndex(),
 		state.getPartsEndIndex());
 
-	double[] result = new double[2 * parts.size() + 2];
+	double[] result = new double[22 * parts.size() + 2];
 
 	// Check if at least 2 parts
 	for (int i = 0; i < parts.size(); i++) {
 	    StateEdgePart currentPart = parts.get(i);
-	    result[2 * i + 0] = currentPart.getSentiment() != null ? currentPart.getSentiment().getPredictedDelta()
+	    result[22 * i + 0] = currentPart.getSentiment() != null ? currentPart.getSentiment().getPredictedDelta()
 		    : 0.0;
-	    result[2 * i + 1] = currentPart.getChartEntry().getClose();
+	    result[22 * i + 1] = currentPart.getChartEntry().getClose();
+
+	    List<ChartMetricRecord> record = currentPart.getMetricsRecord();
+	    if (record.size() != 4) {
+		record = Arrays.asList(new ChartMetricRecord(), new ChartMetricRecord(), new ChartMetricRecord(),
+			new ChartMetricRecord());
+	    }
+	    for (int j = 0; j < record.size(); j++) {
+		result[22 * i + j * 5 + 2] = record.get(j).getValue1min();
+		result[22 * i + j * 5 + 3] = record.get(j).getValue5min();
+		result[22 * i + j * 5 + 4] = record.get(j).getValue15min();
+		result[22 * i + j * 5 + 5] = record.get(j).getValue30min();
+		result[22 * i + j * 5 + 6] = record.get(j).getValue60min();
+	    }
 	}
 
-	result[2 * parts.size() + 0] = account.getBtc() > 0.0 ? 1.0 : 0.0;
-	result[2 * parts.size() + 1] = account.getEur() > 0.0 ? 1.0 : 0.0;
+	result[22 * parts.size() + 0] = account.getBtc() > 0.0 ? 1.0 : 0.0;
+	result[22 * parts.size() + 1] = account.getEur() > 0.0 ? 1.0 : 0.0;
 
 	return result;
     }

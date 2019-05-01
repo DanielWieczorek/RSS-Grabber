@@ -8,6 +8,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 
@@ -28,10 +29,24 @@ public class DataLoader {
 		});
     }
 
+    public List<ChartMetricRecord> loadMetrics24h() {
+	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+		.target("http://wieczorek.io:13000/metric/24h").request(MediaType.APPLICATION_JSON)
+		.get(new GenericType<List<ChartMetricRecord>>() {
+		});
+    }
+
     public List<ChartEntry> loadAllChartEntries() {
 	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
 		.target("http://wieczorek.io:12000/ohlcv").request(MediaType.APPLICATION_JSON)
 		.get(new GenericType<List<ChartEntry>>() {
+		});
+    }
+
+    public List<ChartMetricRecord> loadAllChartMetrics() {
+	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+		.target("http://wieczorek.io:13000/metric/all").request(MediaType.APPLICATION_JSON)
+		.get(new GenericType<List<ChartMetricRecord>>() {
 		});
     }
 

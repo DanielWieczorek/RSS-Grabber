@@ -24,6 +24,12 @@
 			<artifactId>chart-datacollection-types</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>de.wieczorek</groupId>
+			<artifactId>chart-metric-types</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 		<dependency>
 			<groupId>de.wieczorek</groupId>

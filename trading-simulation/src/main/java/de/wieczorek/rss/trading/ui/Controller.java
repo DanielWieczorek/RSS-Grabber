@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.nn.PolicyDao;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.core.ui.ControllerBase;
@@ -39,9 +40,10 @@ public class Controller extends ControllerBase {
 	DQNPolicy<?> policy = dao.readPolicy();
 	List<ChartEntry> chartEntries = dataLoader.loadChartEntries24h();
 	List<TradingEvaluationResult> sentiments = dataLoader.loadSentiments24h();
+	List<ChartMetricRecord> metrics = dataLoader.loadMetrics24h();
 
 	Account account = buildAccount();
-	List<InputDataSnapshot> snapshots = buildInputData(chartEntries, sentiments);
+	List<InputDataSnapshot> snapshots = buildInputData(chartEntries, metrics, sentiments);
 	List<Trade> trades = new ArrayList<>();
 
 	for (int i = 0; i < snapshots.size(); i += 10) {
@@ -99,9 +101,9 @@ public class Controller extends ControllerBase {
 	return result;
     }
 
-    private List<InputDataSnapshot> buildInputData(List<ChartEntry> chartEntries,
+    private List<InputDataSnapshot> buildInputData(List<ChartEntry> chartEntries, List<ChartMetricRecord> metrics,
 	    List<TradingEvaluationResult> sentiments) {
-	List<StateEdgePart> parts = StatePartBuilder.buildStateParts(chartEntries, sentiments);
+	List<StateEdgePart> parts = StatePartBuilder.buildStateParts(chartEntries, metrics, sentiments);
 
 	List<InputDataSnapshot> result = new ArrayList<>();
 	for (int i = 0; i < parts.size() - 120; i++) {

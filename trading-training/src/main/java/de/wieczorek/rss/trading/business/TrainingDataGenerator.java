@@ -8,6 +8,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.trading.business.data.ActionVertex;
 import de.wieczorek.rss.trading.business.data.StateEdge;
@@ -28,13 +29,15 @@ public class TrainingDataGenerator {
     private DataLoader dataLoader;
 
     List<TradingEvaluationResult> currentSentiment;
-
     List<ChartEntry> chartEntries;
+
+    List<ChartMetricRecord> chartMetrics;
 
     public void loadData() {
 	currentSentiment = dataLoader.loadAllSentiments();
-
 	chartEntries = dataLoader.loadAllChartEntries();
+	chartMetrics = dataLoader.loadAllChartMetrics();
+
     }
 
     public StateEdge generateTrainingData(int offset) {
@@ -42,7 +45,7 @@ public class TrainingDataGenerator {
 	System.out.println("found " + chartEntries.size() + " entries. first at " + chartEntries.get(0).getDate()
 		+ " and last at " + chartEntries.get(chartEntries.size() - 1).getDate()); // TODO Logging
 
-	List<StateEdgePart> stateParts = StatePartBuilder.buildStateParts(chartEntries, currentSentiment);
+	List<StateEdgePart> stateParts = StatePartBuilder.buildStateParts(chartEntries, chartMetrics, currentSentiment);
 
 	System.out.println("starting iteration"); // TODO logging
 
