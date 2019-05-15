@@ -27,17 +27,25 @@ public final class NetworkInputBuilder {
 	    result[22 * i + 1] = currentPart.getChartEntry().getClose();
 
 	    List<ChartMetricRecord> record = currentPart.getMetricsRecord();
+
 	    if (record.size() != 4) {
 		record = Arrays.asList(new ChartMetricRecord(), new ChartMetricRecord(), new ChartMetricRecord(),
 			new ChartMetricRecord());
+
 	    }
 	    for (int j = 0; j < record.size(); j++) {
-		result[22 * i + j * 5 + 2] = record.get(j).getValue1min();
-		result[22 * i + j * 5 + 3] = record.get(j).getValue5min();
-		result[22 * i + j * 5 + 4] = record.get(j).getValue15min();
-		result[22 * i + j * 5 + 5] = record.get(j).getValue30min();
-		result[22 * i + j * 5 + 6] = record.get(j).getValue60min();
+		result[22 * i + j * 5 + 2] = Double.isNaN(record.get(j).getValue1min()) ? 0.0
+			: record.get(j).getValue1min();
+		result[22 * i + j * 5 + 3] = Double.isNaN(record.get(j).getValue5min()) ? 0.0
+			: record.get(j).getValue5min();
+		result[22 * i + j * 5 + 4] = Double.isNaN(record.get(j).getValue15min()) ? 0.0
+			: record.get(j).getValue15min();
+		result[22 * i + j * 5 + 5] = Double.isNaN(record.get(j).getValue30min()) ? 0.0
+			: record.get(j).getValue30min();
+		result[22 * i + j * 5 + 6] = Double.isNaN(record.get(j).getValue60min()) ? 0.0
+			: record.get(j).getValue60min();
 	    }
+
 	}
 
 	result[22 * parts.size() + 0] = account.getBtc() > 0.0 ? 1.0 : 0.0;

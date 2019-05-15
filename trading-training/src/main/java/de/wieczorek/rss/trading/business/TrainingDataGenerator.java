@@ -22,7 +22,7 @@ import de.wieczorek.rss.trading.types.StateEdgePart;
 @ApplicationScoped
 public class TrainingDataGenerator {
     private static final int STEPPING = 10;
-    private static final int SEQ_LENGTH = 120;
+    private static final int SEQ_LENGTH = 1;
     private static final int DEPTH = 20;
 
     @Inject

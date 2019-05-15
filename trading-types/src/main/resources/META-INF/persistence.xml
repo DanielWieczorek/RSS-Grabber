@@ -6,10 +6,6 @@
 	<persistence-unit name="rss" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
-
-		<class>de.wieczorek.rss.insight.types.SentimentAtTime</class>
-		 <class>de.wieczorek.rss.core.db.LocalDateTimeConverter</class>
-
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" /> <!-- DB Driver -->
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/RSS_INSIGHT" /> <!-- BD Mane -->
@@ -28,6 +24,8 @@
 			<property name="eclipselink.flush-clear.cache" value="Drop" />
 			
 		</properties>
+        <class>de.wieczorek.rss.insight.types.SentimentAtTime</class>
+		 <class>de.wieczorek.rss.core.db.LocalDateTimeConverter</class>
 
 		<shared-cache-mode>NONE</shared-cache-mode>
 	</persistence-unit>

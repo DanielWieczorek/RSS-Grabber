@@ -1,5 +1,6 @@
 package de.wieczorek.rss.trading.ui;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,10 +77,11 @@ public class Controller extends ControllerBase {
 	double[] inputData = NetworkInputBuilder.buildInputArray(snapshot, account);
 	Integer result = policy.nextAction(Nd4j.create(inputData));
 	double currentPrice = getCurrentPrice(snapshot);
+	LocalDateTime currentTime = getCurrentDateTime(snapshot);
 	if (result == 0) {
 	    Account newAcc = BuySellHelper.processBuy(currentPrice, account);
-	    System.out.println("buy/hold @ " + currentPrice + ". got " + newAcc.getBtc() + " BTC, " + newAcc.getEur()
-		    + " EUR, " + newAcc.getEurEquivalent() + " EUREQ");
+	    System.out.println(currentTime + " buy/hold @ " + currentPrice + ". got " + newAcc.getBtc() + " BTC, "
+		    + newAcc.getEur() + " EUR, " + newAcc.getEurEquivalent() + " EUREQ");
 	    return newAcc;
 	} else {
 	    Account newAcc = BuySellHelper.processSell(currentPrice, account);
@@ -91,6 +93,10 @@ public class Controller extends ControllerBase {
 
     private double getCurrentPrice(InputDataSnapshot snapshot) {
 	return snapshot.getCurrentRate().getClose();
+    }
+
+    private LocalDateTime getCurrentDateTime(InputDataSnapshot snapshot) {
+	return snapshot.getCurrentRate().getDate();
     }
 
     private Account buildAccount() {
@@ -106,9 +112,9 @@ public class Controller extends ControllerBase {
 	List<StateEdgePart> parts = StatePartBuilder.buildStateParts(chartEntries, metrics, sentiments);
 
 	List<InputDataSnapshot> result = new ArrayList<>();
-	for (int i = 0; i < parts.size() - 120; i++) {
+	for (int i = 0; i < parts.size() - 1; i++) {
 
-	    result.add(buildInputDataSnapshot(i, i + 120, parts, chartEntries.get(i + 120)));
+	    result.add(buildInputDataSnapshot(i, i + 1, parts, chartEntries.get(i + 1)));
 	}
 
 	return result;

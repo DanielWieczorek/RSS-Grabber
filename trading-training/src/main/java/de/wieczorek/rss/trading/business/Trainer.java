@@ -38,22 +38,22 @@ public class Trainer {
     private PolicyDao dao;
 
     private static final QLearning.QLConfiguration TRADE_QL = new QLearning.QLConfiguration(123, // Random seed
-	    40000, // Max step By epoch
-	    8000, // Max step
-	    8000, // Max size of experience replay
-	    8000, // size of batches
+	    800000, // Max step By epoch
+	    160000, // Max step
+	    160000, // Max size of experience replay
+	    160000, // size of batches
 	    100, // target update (hard)
 	    0, // num step noop warmup
 	    1, // reward scaling
 	    0.99, // gamma
 	    10.0, // td-error clipping
 	    0.1f, // min epsilon
-	    400, // num step for eps greedy anneal
+	    8000, // num step for eps greedy anneal
 	    true // double DQN
     );
 
     private static final DQNFactoryStdDense.Configuration TRADE_NET = DQNFactoryStdDense.Configuration.builder()
-	    .l2(0.01).updater(new Adam(1e-2)).numLayer(1).numHiddenNodes(2642)
+	    .l2(0.001).updater(new Adam(0.001)).numLayer(3).numHiddenNodes(48)
 	    .listeners(new TrainingListener[] { new PerformanceListener(1, true) }).build();
 
     private DataManager manager;
@@ -64,6 +64,7 @@ public class Trainer {
 
     @PostConstruct
     public void init() {
+
 	try {
 	    manager = new DataManager();
 	    dataGenerator.loadData();
