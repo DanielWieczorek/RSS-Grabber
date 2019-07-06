@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="trading-types" />
+        <module name="rss-datacollection-core" />
+        <module name="chart-datacollection" />
+        <module name="common-neuralnetwork-prediction" />
+        <module name="rss-advisor-types" />
+        <module name="rss-insight-prediction" />
+        <module name="rss-advisor-common" />
+        <module name="common-webservice-importexport-feature" />
+        <module name="microservice-authentication" />
+        <module name="microservice-status" />
+        <module name="trading-simulation" />
+        <module name="rss-insight-common" />
+        <module name="chart-metric-types" />
+        <module name="trading-common" />
+        <module name="rss-insight-types" />
+        <module name="chart-metric" />
+        <module name="rss-advisor-training" />
+        <module name="chart-datacollection-types" />
+        <module name="rss-classification" />
+        <module name="common-webservice-base" />
+        <module name="rss-datacollection" />
+        <module name="rss-classification-types" />
+        <module name="rss-advisor-prediction" />
+        <module name="rss-insight-training" />
+        <module name="common-neuralnetwork" />
+        <module name="trading-training" />
+        <module name="rss-datacollection-types" />
+        <module name="common-neuralnetwork-training" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="chart-datacollection" target="11" />
+      <module name="chart-datacollection-types" target="11" />
+      <module name="chart-metric" target="11" />
+      <module name="chart-metric-types" target="11" />
+      <module name="common-neuralnetwork" target="11" />
+      <module name="common-neuralnetwork-prediction" target="11" />
+      <module name="common-neuralnetwork-training" target="11" />
+      <module name="common-webservice-base" target="11" />
+      <module name="common-webservice-importexport-feature" target="11" />
+      <module name="microservice-authentication" target="11" />
+      <module name="microservice-status" target="11" />
+      <module name="rss" target="1.5" />
+      <module name="rss-advisor-common" target="11" />
+      <module name="rss-advisor-prediction" target="11" />
+      <module name="rss-advisor-training" target="9" />
+      <module name="rss-advisor-types" target="11" />
+      <module name="rss-classification" target="11" />
+      <module name="rss-classification-types" target="11" />
+      <module name="rss-datacollection" target="11" />
+      <module name="rss-datacollection-core" target="11" />
+      <module name="rss-datacollection-types" target="11" />
+      <module name="rss-insight-common" target="11" />
+      <module name="rss-insight-prediction" target="11" />
+      <module name="rss-insight-training" target="11" />
+      <module name="rss-insight-types" target="11" />
+      <module name="trading-common" target="11" />
+      <module name="trading-simulation" target="11" />
+      <module name="trading-training" target="9" />
+      <module name="trading-types" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

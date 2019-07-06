@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/chart-datacollection/chart-datacollection.iml" filepath="$PROJECT_DIR$/chart-datacollection/chart-datacollection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chart-datacollection-types/chart-datacollection-types.iml" filepath="$PROJECT_DIR$/chart-datacollection-types/chart-datacollection-types.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chart-metric/chart-metric.iml" filepath="$PROJECT_DIR$/chart-metric/chart-metric.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chart-metric-types/chart-metric-types.iml" filepath="$PROJECT_DIR$/chart-metric-types/chart-metric-types.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common-neuralnetwork/common-neuralnetwork.iml" filepath="$PROJECT_DIR$/common-neuralnetwork/common-neuralnetwork.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common-neuralnetwork-prediction/common-neuralnetwork-prediction.iml" filepath="$PROJECT_DIR$/common-neuralnetwork-prediction/common-neuralnetwork-prediction.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common-neuralnetwork-training/common-neuralnetwork-training.iml" filepath="$PROJECT_DIR$/common-neuralnetwork-training/common-neuralnetwork-training.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common-webservice-base/common-webservice-base.iml" filepath="$PROJECT_DIR$/common-webservice-base/common-webservice-base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common-webservice-importexport-feature/common-webservice-importexport-feature.iml" filepath="$PROJECT_DIR$/common-webservice-importexport-feature/common-webservice-importexport-feature.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microservice-authentication/microservice-authentication.iml" filepath="$PROJECT_DIR$/microservice-authentication/microservice-authentication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microservice-status/microservice-status.iml" filepath="$PROJECT_DIR$/microservice-status/microservice-status.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss.iml" filepath="$PROJECT_DIR$/rss.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-advisor-common/rss-advisor-common.iml" filepath="$PROJECT_DIR$/rss-advisor-common/rss-advisor-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-advisor-prediction/rss-advisor-prediction.iml" filepath="$PROJECT_DIR$/rss-advisor-prediction/rss-advisor-prediction.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-advisor-training/rss-advisor-training.iml" filepath="$PROJECT_DIR$/rss-advisor-training/rss-advisor-training.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-advisor-types/rss-advisor-types.iml" filepath="$PROJECT_DIR$/rss-advisor-types/rss-advisor-types.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-classification/rss-classification.iml" filepath="$PROJECT_DIR$/rss-classification/rss-classification.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-classification-types/rss-classification-types.iml" filepath="$PROJECT_DIR$/rss-classification-types/rss-classification-types.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-datacollection/rss-datacollection.iml" filepath="$PROJECT_DIR$/rss-datacollection/rss-datacollection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-datacollection-core/rss-datacollection-core.iml" filepath="$PROJECT_DIR$/rss-datacollection-core/rss-datacollection-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-datacollection-types/rss-datacollection-types.iml" filepath="$PROJECT_DIR$/rss-datacollection-types/rss-datacollection-types.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-insight-common/rss-insight-common.iml" filepath="$PROJECT_DIR$/rss-insight-common/rss-insight-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-insight-prediction/rss-insight-prediction.iml" filepath="$PROJECT_DIR$/rss-insight-prediction/rss-insight-prediction.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-insight-training/rss-insight-training.iml" filepath="$PROJECT_DIR$/rss-insight-training/rss-insight-training.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rss-insight-types/rss-insight-types.iml" filepath="$PROJECT_DIR$/rss-insight-types/rss-insight-types.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trading-common/trading-common.iml" filepath="$PROJECT_DIR$/trading-common/trading-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trading-simulation/trading-simulation.iml" filepath="$PROJECT_DIR$/trading-simulation/trading-simulation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trading-training/trading-training.iml" filepath="$PROJECT_DIR$/trading-training/trading-training.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trading-types/trading-types.iml" filepath="$PROJECT_DIR$/trading-types/trading-types.iml" />
+    </modules>
+  </component>
+</project>

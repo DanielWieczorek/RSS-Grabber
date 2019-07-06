@@ -43,7 +43,7 @@ public class DataLoader {
 		});
     }
 
-    public List<ChartMetricRecord> loadAllChartMetrics() {
+    public List<ChartMetricRecord> loadAllMetrics() {
 	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
 		.target("http://wieczorek.io:13000/metric/all").request(MediaType.APPLICATION_JSON)
 		.get(new GenericType<List<ChartMetricRecord>>() {

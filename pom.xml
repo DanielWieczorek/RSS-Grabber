@@ -24,6 +24,11 @@
             <module>chart-datacollection</module>
             <module>chart-metric-types</module>
             <module>chart-metric</module>
+
+            <module>chart-advisor-types</module>
+            <module>chart-advisor-common</module>
+            <module>chart-advisor-prediction</module>
+            <module>chart-advisor-training</module>
             
             
             <module>rss-insight-types</module>

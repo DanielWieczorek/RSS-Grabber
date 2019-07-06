@@ -21,7 +21,6 @@
 	
 	
 		<build>
-		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 
 			<plugin>

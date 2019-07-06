@@ -28,7 +28,7 @@ public final class StatePartBuilder {
 		Collectors.toMap(TradingEvaluationResult::getCurrentTime, Function.identity(), (v1, v2) -> v2));
 
 	Multimap<LocalDateTime, ChartMetricRecord> chartMetricMappings = HashMultimap.create();
-	chartMetrics.forEach(item -> chartMetricMappings.put(item.getId().getDate(), item));
+	chartMetrics.stream().forEach(item -> chartMetricMappings.put(item.getId().getDate(), item));
 
 	List<StateEdgePart> stateParts = new ArrayList<>();
 

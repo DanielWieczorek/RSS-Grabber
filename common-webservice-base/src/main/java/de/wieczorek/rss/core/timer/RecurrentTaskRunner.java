@@ -6,8 +6,11 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.RollbackException;
 
 public class RecurrentTaskRunner {
 
@@ -46,7 +49,10 @@ public class RecurrentTaskRunner {
 		task.run();
 		lock.unlock();
 	    }
-	} catch (Exception e) {
+	} catch (RollbackException r){
+		EntityManagerProvider.getEntityManager().clear();
+	}
+	catch (Exception e) {
 	    e.printStackTrace();
 	}
     }

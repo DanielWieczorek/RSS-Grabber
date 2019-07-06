@@ -84,7 +84,7 @@
 	
 	
 	<dependencies>
-
+	
 		<dependency>
 			<groupId>de.wieczorek</groupId>
 			<artifactId>common-neuralnetwork-prediction</artifactId>

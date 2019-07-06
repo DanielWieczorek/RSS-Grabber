@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.rss.advisor.business.DataPreparator;
-import de.wieczorek.rss.advisor.business.TradingNeuralNetworkPredictor;
+import de.wieczorek.rss.advisor.types.DataPreparator;
+import de.wieczorek.rss.advisor.types.TradingNeuralNetworkPredictor;
 import de.wieczorek.rss.advisor.persistence.TradingEvaluationResultDao;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;

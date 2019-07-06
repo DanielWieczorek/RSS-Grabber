@@ -12,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.rss.advisor.business.DataPreparator;
-import de.wieczorek.rss.advisor.business.TradingNeuralNetworkTrainer;
+import de.wieczorek.rss.advisor.types.DataPreparator;
+import de.wieczorek.rss.advisor.types.TradingNeuralNetworkTrainer;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;

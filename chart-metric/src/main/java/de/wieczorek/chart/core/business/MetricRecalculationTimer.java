@@ -3,6 +3,7 @@ package de.wieczorek.chart.core.business;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -64,7 +65,9 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
 
 	int lastIndex = 0;
 
-	for (int i = index; i < (300 + index) && i < chartEntries.size(); i++) {
+
+	List<ChartMetricRecord> records = new ArrayList<>();
+	for (int i = index; i < (1440 + index) && i < chartEntries.size(); i++) {
 	    ChartEntry entry = chartEntries.get(i);
 
 	    Bar b = new BaseBar(ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
@@ -77,12 +80,14 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
 	    series.addBar(b);
 
 	    metricCalculators.forEach(calculator -> {
-		ChartMetricRecord record = calculator.calculate(series);
+		records.add(calculator.calculate(series));
 
-		dao.upsert(record);
+
 	    });
 	    lastIndex = i;
 	}
+
+		dao.upsert(records);
 
 	if (lastIndex < chartEntries.size() - 1) {
 	    return chartEntries.get(lastIndex).getDate();

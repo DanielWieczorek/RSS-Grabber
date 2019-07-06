@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import de.wieczorek.importexport.db.ImportExportDao;
+import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 @ApplicationScoped
 public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
@@ -62,19 +63,26 @@ public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
 
     public void update(ChartMetricRecord sat) {
 	EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
+
 	transaction.begin();
 	EntityManagerProvider.getEntityManager().merge(sat);
 	transaction.commit();
     }
 
-    public void upsert(ChartMetricRecord sat) {
-	ChartMetricRecord found = findById(sat.getId());
-	if (found == null) {
-	    persist(sat);
-	} else {
-	    update(sat);
+    public void upsert(List<ChartMetricRecord> sat) {
+		EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
+		transaction.begin();
+		sat.forEach(x -> {
+					ChartMetricRecord found = findById(x.getId());
+					if (found == null) {
+						EntityManagerProvider.getEntityManager().persist(x);
+					} else {
+						EntityManagerProvider.getEntityManager().merge(x);
+					}
+				});
+		transaction.commit();
+
 	}
-    }
 
     @Override
     public Class<ChartMetricRecord> getEntityType() {

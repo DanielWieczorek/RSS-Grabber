@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.deeplearning4j.rl4j.policy.ACPolicy;
 import org.deeplearning4j.rl4j.policy.DQNPolicy;
 
 @ApplicationScoped
@@ -21,6 +22,14 @@ public class PolicyDao {
 	    e.printStackTrace();
 	}
     }
+
+	public void writePolicy(ACPolicy<?> policy) {
+		try {
+			policy.save(buildPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
     private String buildPath() {
 	return System.getProperty("user.home") + "/neural-networks/" + fileName;
