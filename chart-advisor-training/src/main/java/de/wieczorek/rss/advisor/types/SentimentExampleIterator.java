@@ -24,14 +24,14 @@ public class SentimentExampleIterator implements DataSetIterator {
     private final int batchSize;
 
     private int cursor = 0;
-    private final List<NetInputItem> files;
+    private final List<TrainingNetInputItem> files;
 
-    public SentimentExampleIterator(List<NetInputItem> entries, int batchSize, boolean train) {
+    public SentimentExampleIterator(List<TrainingNetInputItem> entries, int batchSize, boolean train) {
 	this.batchSize = batchSize;
 
-	List<NetInputItem> positiveFiles = entries.stream().filter((item) -> item.getOutputDelta() > 0)
+	List<TrainingNetInputItem> positiveFiles = entries.stream().filter((item) -> item.getOutput() > 0)
 		.collect(Collectors.toList());
-	List<NetInputItem> negativeFiles = entries.stream().filter((item) -> item.getOutputDelta() <= 0)
+	List<TrainingNetInputItem> negativeFiles = entries.stream().filter((item) -> item.getOutput() <= 0)
 		.collect(Collectors.toList());
 
 	files = new ArrayList<>();
@@ -60,7 +60,7 @@ public class SentimentExampleIterator implements DataSetIterator {
 
     private DataSet nextDataSet(int num) throws IOException {
 	// First: load reviews to String. Alternate positive and negative reviews
-	List<NetInputItem> reviews = new ArrayList<>(num);
+	List<TrainingNetInputItem> reviews = new ArrayList<>(num);
 	for (int i = 0; i < num && cursor < totalExamples(); i++) {
 	    int posReviewNumber = cursor;
 
@@ -69,7 +69,7 @@ public class SentimentExampleIterator implements DataSetIterator {
 	    cursor++;
 	}
 
-	int maxLength = 4 * 60 + 1;
+	int maxLength = 24 * 4 + 1;
 	int vectorSize = 20;
 
 	// Create data for training
@@ -85,40 +85,11 @@ public class SentimentExampleIterator implements DataSetIterator {
 	INDArray labelsMask = Nd4j.zeros(reviews.size(), maxLength);
 
 	for (int i = 0; i < reviews.size(); i++) {
-	    NetInputItem item = reviews.get(i);
-
-	    double[][] itemVectors = new double[vectorSize][maxLength];
-	    int index = 0;
-
-
-		Map<ChartEntry,List<ChartMetricRecord>> allRecords = item.getInputChartMetrics();
-
-		for(ChartEntry entry: allRecords.keySet().stream().collect(Collectors.toList())) {
-
-			List<ChartMetricRecord> record = allRecords.get(entry);
-			if (record.size() != 4) {
-				record = Arrays.asList(new ChartMetricRecord(), new ChartMetricRecord(), new ChartMetricRecord(),
-						new ChartMetricRecord());
-
-			}
-			for (int j = 0; j < record.size(); j++) {
-				itemVectors[j * 6 + 0][index] = Double.isNaN(record.get(j).getValue1min()) ? 0.0
-						: record.get(j).getValue1min();
-				itemVectors[j * 5 + 1][index] = Double.isNaN(record.get(j).getValue5min()) ? 0.0
-						: record.get(j).getValue5min();
-				itemVectors[j * 5 + 2][index] = Double.isNaN(record.get(j).getValue15min()) ? 0.0
-						: record.get(j).getValue15min();
-				itemVectors[j * 5 + 3][index] = Double.isNaN(record.get(j).getValue30min()) ? 0.0
-						: record.get(j).getValue30min();
-				itemVectors[j * 5 + 4][index] = Double.isNaN(record.get(j).getValue60min()) ? 0.0
-						: record.get(j).getValue60min();
-			}
-			index++;
-		}
+		TrainingNetInputItem item = reviews.get(i);
 
 	    // Get all wordvectors for the current document and transpose them to fit the
 	    // 2nd and 3rd feature shape
-	    final INDArray vectors = Nd4j.create(itemVectors);
+	    final INDArray vectors = item.getInput();
 
 	    // Put wordvectors into features array at the following indices:
 	    // 1) Document (i)
@@ -132,7 +103,7 @@ public class SentimentExampleIterator implements DataSetIterator {
 	    featuresMask.get(new INDArrayIndex[] { NDArrayIndex.point(i), NDArrayIndex.interval(0, maxLength) })
 		    .assign(1);
 
-	    labels.putScalar(new int[] { i, 0, maxLength - 1 }, item.getOutputDelta()); // Set label: [0,1] for
+	    labels.putScalar(new int[] { i, 0, maxLength - 1 }, item.getOutput()); // Set label: [0,1] for
 											// negative, [1,0] for
 	    // positive
 	    labelsMask.putScalar(new int[] { i, maxLength - 1 }, 1.0); // Specify that an output exists at the final

@@ -9,3 +9,4 @@ java -jar trading-simulation/target/trading-simulation* > ~/logs/trading-simulat
 java -jar microservice-status/target/microservice-status* > ~/logs/microservice-status 2>&1 &
 java -jar microservice-authentication/target/microservice-authentication* > ~/logs/microservice-authentication 2>&1 &
 java -jar chart-metric/target/chart-metric* > ~/logs/chart-metric 2>&1 &
+java -jar chart-metric/target/chart-advisor-prediction* > ~/logs/chart-advisor-prediction 2>&1 &

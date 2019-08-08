@@ -18,9 +18,8 @@ public abstract class ControllerBase {
     }
 
     protected void start() {
-    };
+    }
 
     protected void stop() {
-    };
-
+    }
 }

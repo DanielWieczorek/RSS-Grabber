@@ -29,24 +29,6 @@ public class Controller extends ControllerBase {
     @Inject
     private RecurrentTaskManager timer;
 
-    public void trainNeuralNetwork() {
-	logger.error("foo"); // TODO
-	List<ChartMetricRecord> metrics = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://wieczorek.io:13000/metric/all").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartMetricRecord>>() {
-		});
-
-	List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://wieczorek.io:12000/ohlcv").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		});
-
-	if (metrics != null && chartEntries != null) {
-	    nn.train(new DataPreparator().withChartData(chartEntries).withMetrics(metrics).getData(), 1);
-	}
-
-    }
-
     @Override
     protected void start() {
 	timer.start();

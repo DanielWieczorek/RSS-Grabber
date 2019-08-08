@@ -9,7 +9,6 @@
   <artifactId>rss-datacollection</artifactId>
   <version>0.0.3-SNAPSHOT</version>
   <build>
-    <sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>

@@ -30,15 +30,16 @@ public class PredictionTimer implements Runnable {
     @Override
     public void run() {
 	try {
-	    de.wieczorek.rss.advisor.types.TradingEvaluationResult result = controller.predict();
+        TradingEvaluationResult result = controller.predict();
 
-	    if (result != null && dao.findById(result.getCurrentTime(), result.getTargetTime()) == null) {
-		dao.persist(result);
-	    }
+        if (result != null) {
+            dao.upsert(result);
+        }
 
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    logger.error("error while retrieving chart data: ", e);
+
 	}
     }
 }

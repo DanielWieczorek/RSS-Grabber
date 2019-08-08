@@ -26,16 +26,18 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import de.wieczorek.nn.AbstractNeuralNetworkTrainer;
 
 @ApplicationScoped
-public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<NetInputItem, TradingEvaluationResult> {
+public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<TrainingNetInputItem, TradingEvaluationResult> {
 
     @Override
-    protected DataSetIterator buildTrainingSetIterator(List<NetInputItem> trainingSet) {
+    protected DataSetIterator buildTrainingSetIterator(List<TrainingNetInputItem> trainingSet) {
+
+
 	SentimentExampleIterator train = new SentimentExampleIterator(trainingSet, getBatchSize(), true);
 	return train;
     }
 
     @Override
-    protected DataSetIterator buildTestSetIterator(List<NetInputItem> testSet) {
+    protected DataSetIterator buildTestSetIterator(List<TrainingNetInputItem> testSet) {
 	SentimentExampleIterator test = new SentimentExampleIterator(testSet, getBatchSize(), false);
 
 	return test;
@@ -57,7 +59,8 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Ne
 			new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(Activation.IDENTITY)
 				.l2(0.0001).weightInit(WeightInit.XAVIER).nOut(1).build())
 
-		.backpropType(BackpropType.TruncatedBPTT).tBPTTBackwardLength(120).tBPTTForwardLength(120).build();
+		.backpropType(BackpropType.TruncatedBPTT).tBPTTBackwardLength(120).tBPTTForwardLength(120)
+		.build();
 	conf.setIterationCount(1);
 
 	MultiLayerNetwork net = new MultiLayerNetwork(conf);
@@ -74,7 +77,6 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Ne
 
     @Override
     protected BaseEvaluation<?> buildEvaluation(DataSetIterator test, MultiLayerNetwork net) {
-	System.out.println(net.memoryInfo(getBatchSize(), InputType.recurrent(9, 60*4)));
 
 	return net.evaluateRegression(test);
     }

@@ -30,7 +30,7 @@ public class Configuration {
 
     @Produces
     @NeuralNetworkName
-    private String neuralNetworkName = "rss-advisor-TradingNeuralNetwork";
+    private String neuralNetworkName = "chart-advisor-TradingNeuralNetwork";
 
     @Produces
     @MigrationConfiguration
