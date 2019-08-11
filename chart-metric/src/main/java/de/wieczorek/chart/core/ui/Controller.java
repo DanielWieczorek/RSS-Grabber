@@ -50,6 +50,10 @@ public class Controller extends ControllerBase {
 	return dao.find24h();
     }
 
+    public List<ChartMetricRecord> getNow() {
+        return dao.findNow();
+    }
+
     public void recompute() {
 	Recalculation recalculation = new Recalculation();
 	recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));

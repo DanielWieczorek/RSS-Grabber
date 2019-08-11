@@ -6,9 +6,12 @@ import { RssClassificationComponent } from './rss-classification/rss-classificat
 import { RssInsightComponent } from './rss-insight/rss-insight.component';
 import { MicroserviceStatusComponent } from './microservice-status/microservice-status.component';
 import { TradingSimulationComponent } from './trading-simulation/trading-simulation.component';
+import { ChartMetricComponent } from './chart-metric/chart-metric.component';
 import { RouterModule, Routes } from '@angular/router';
 import { IntroductionComponent } from './introduction/introduction.component';
 import { ChartReaderService } from './shared/chart-reader/chart-reader.service'
+import { ChartMetricService } from './shared/chart-metric/chart-metric.service'
+
 import { TraderSimulationService } from './shared/trader-simulation/trader-simulation.service'
 import { RssInsightService } from './shared/rss-insight/rss-insight.service'
 import { RssClassificationService } from './shared/rss-classification/rss-classification.service'
@@ -31,6 +34,7 @@ const appRoutes: Routes = [
                            { path: 'rss-classification', component: RssClassificationComponent,canActivate: [AuthenticationGuard] },
                            { path: 'rss-insight', component: RssInsightComponent,canActivate: [AuthenticationGuard]},
                            { path: 'trading-simulation', component: TradingSimulationComponent,canActivate: [AuthenticationGuard]},
+                           { path: 'chart-metric', component: ChartMetricComponent,canActivate: [AuthenticationGuard]},
                            { path: 'introduction', component: IntroductionComponent,canActivate: [AuthenticationGuard]},
                            { path: 'login', component: LoginComponent}
                            ];
@@ -42,6 +46,7 @@ const appRoutes: Routes = [
     RssClassificationComponent,
     RssInsightComponent,
     MicroserviceStatusComponent,
+    ChartMetricComponent,
     TradingSimulationComponent,
     IntroductionComponent,
     LoginComponent,
@@ -65,7 +70,8 @@ const appRoutes: Routes = [
       AuthenticationService,
       AuthenticationGuard,
       MicroserviceAuthenticationService,
-      MicroserviceStatusDetailService
+      MicroserviceStatusDetailService,
+      ChartMetricService
   ],
   bootstrap: [AppComponent]
 })

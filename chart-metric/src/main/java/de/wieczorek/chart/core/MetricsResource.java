@@ -36,6 +36,13 @@ public class MetricsResource {
     }
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/now")
+    public List<ChartMetricRecord> metricNow() {
+        return controller.getNow();
+    }
+
+    @GET
     @Path("recompute")
     public void recompute() {
 	controller.recompute();

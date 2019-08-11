@@ -44,6 +44,14 @@ public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
 	return query.getResultList();
     }
 
+	public List<ChartMetricRecord> findNow() {
+		LocalDateTime date = LocalDateTime.now().withSecond(0).withNano(0).minusMinutes(1);
+		TypedQuery<ChartMetricRecord> query = EntityManagerProvider.getEntityManager()
+				.createQuery("SELECT s FROM ChartMetricRecord s WHERE s.id.date = :time", ChartMetricRecord.class)
+				.setParameter("time", date);
+		return query.getResultList();
+	}
+
     @Override
     public List<ChartMetricRecord> findAll() {
 	CriteriaBuilder cb = EntityManagerProvider.getEntityManager().getCriteriaBuilder();

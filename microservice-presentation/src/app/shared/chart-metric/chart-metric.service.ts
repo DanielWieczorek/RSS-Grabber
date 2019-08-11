@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ChartEntry } from './chart-entry';
+import { ChartMetricRecord } from './chart-metric-record';
 import {environment} from '../../../environments/environment';
 import {HttpHelperService} from '../../common/http-helper/http-helper.service';
 import { catchError } from 'rxjs/operators';
 
 
 @Injectable()
-export class ChartReaderService {
+export class ChartMetricService {
 
     constructor( private http: HttpClient, private helper: HttpHelperService) { }
 
-    get24hOhlcv(): Observable<ChartEntry[]> {
-        return this.http.get<ChartEntry[]>( this.helper.buildPath( 'routing/chart-datacollection/ohlcv/24h') )
+    getNow(): Observable<ChartMetricRecord[]> {
+        return this.http.get<ChartMetricRecord[]>( this.helper.buildPath( 'routing/chart-metric/metric/now') )
         .pipe(catchError(this.helper.handleError));
 
     }

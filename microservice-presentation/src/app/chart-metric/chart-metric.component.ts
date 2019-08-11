@@ -1,32 +1,31 @@
 import { Component, OnInit } from '@angular/core';
-import { RssEntry,RssEntrySentiment,RssEntrySentimentSummary,SentimentEvaluationResult } from '../shared/rss-insight/rss-entry';
-import { RssInsightService } from '../shared/rss-insight/rss-insight.service'
+import { ChartMetricRecord } from '../shared/chart-metric/chart-metric-record';
+import { ChartMetricService } from '../shared/chart-metric/chart-metric.service';
 
 
 @Component({
-  selector: 'app-rss-insight',
-  templateUrl: './rss-insight.component.html',
-  styleUrls: ['./rss-insight.component.css']
+  selector: 'app-chart-metric',
+  templateUrl: './chart-metric.component.html',
+  styleUrls: ['./chart-metric.component.css']
 })
-export class RssInsightComponent implements OnInit {
-
+export class ChartMetricComponent implements OnInit {
 
   title = 'app';
-  data : SentimentEvaluationResult;
+  data : ChartMetricRecord[];
   error: string;
 
-  constructor(private rssInsight: RssInsightService){
+  constructor(private chartMetric: ChartMetricService){
   }
   
-  request24HourSentiment() : void {
-      this.rssInsight.sentiment().subscribe(data => {
+  requestCurrentHourSentiment() : void {
+      this.chartMetric.getNow().subscribe(data => {
           console.log("test",data);
-          this.data = data as SentimentEvaluationResult;
+          this.data = data as ChartMetricRecord[];
       },
       err => this.error = err);
   }
   
   ngOnInit(): void {
-      this.request24HourSentiment();
+      this.requestCurrentHourSentiment();
   }
 }
