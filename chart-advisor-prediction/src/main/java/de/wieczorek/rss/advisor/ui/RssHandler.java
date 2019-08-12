@@ -35,6 +35,13 @@ public class RssHandler {
     }
 
     @GET
+    @Path("sentiment/24hAbsolute")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TradingEvaluationResult> predict24hAbsolute() {
+        return controller.get24hAbsolutePrediction();
+    }
+
+    @GET
     @Path("sentiment/all")
     @Produces(MediaType.APPLICATION_JSON)
     public List<TradingEvaluationResult> getAllSentiments() {

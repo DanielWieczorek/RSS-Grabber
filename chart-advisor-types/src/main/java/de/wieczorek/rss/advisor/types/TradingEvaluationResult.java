@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class TradingEvaluationResult {
 
     @Column(name = "predictedDelta")
-    private double predictedDelta;
+    private double prediction;
 
     @Id
     @Column(name = "targetTime")
@@ -28,12 +28,12 @@ public class TradingEvaluationResult {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime currentTime;
 
-    public double getPredictedDelta() {
-	return predictedDelta;
+    public double getPrediction() {
+	return prediction;
     }
 
-    public void setPredictedDelta(double predictedDelta) {
-	this.predictedDelta = predictedDelta;
+    public void setPrediction(double prediction) {
+	this.prediction = prediction;
     }
 
     public LocalDateTime getTargetTime() {

@@ -11,6 +11,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { IntroductionComponent } from './introduction/introduction.component';
 import { ChartReaderService } from './shared/chart-reader/chart-reader.service'
 import { ChartMetricService } from './shared/chart-metric/chart-metric.service'
+import { ChartAdvisorService } from './shared/chart-advisor/chart-advisor.service'
 
 import { TraderSimulationService } from './shared/trader-simulation/trader-simulation.service'
 import { RssInsightService } from './shared/rss-insight/rss-insight.service'
@@ -71,7 +72,8 @@ const appRoutes: Routes = [
       AuthenticationGuard,
       MicroserviceAuthenticationService,
       MicroserviceStatusDetailService,
-      ChartMetricService
+      ChartMetricService,
+      ChartAdvisorService
   ],
   bootstrap: [AppComponent]
 })

@@ -58,8 +58,9 @@
     <div class="section">
       <h5>Current Metric values</h5>
       <p>the values below show the metric values at the current point in time</p>
-      <div class="row">
         <div *ngIf="!error; else errorHappened">
+          <div class="row">
+
           <div class="col l3" *ngFor="let item of data">
             <div class="card">
               <div class="card-content">
@@ -77,10 +78,10 @@
                     <td>1 min.</td>
                     <td>
                       <div *ngIf="item.value1min > 0; else min1Else">
-                        <div class="teal-text left"> {{item.value1min|number:'1.0-2'}}</div>
+                        <div class="teal-text"> {{item.value1min|number:'1.0-2'}}</div>
                       </div>
                       <ng-template #min1Else>
-                        <div class="teal-text">{{item.value1min|number:'1.0-2'}}</div>
+                        <div class="red-text">{{item.value1min|number:'1.0-2'}}</div>
                       </ng-template>
                     </td>
                   </tr>
@@ -89,10 +90,10 @@
                     <td>5 min.</td>
                     <td>
                       <div *ngIf="item.value5min > 0; else min1Else">
-                        <div class="teal-text left"> {{item.value5min|number:'1.0-2'}}</div>
+                        <div class="teal-text"> {{item.value5min|number:'1.0-2'}}</div>
                       </div>
                       <ng-template #min1Else>
-                        <div class="teal-text">{{item.value5min|number:'1.0-2'}}</div>
+                        <div class="red-text">{{item.value5min|number:'1.0-2'}}</div>
                       </ng-template>
                     </td>
                   </tr>
@@ -101,10 +102,10 @@
                     <td>15 min.</td>
                     <td>
                       <div *ngIf="item.value15min > 0; else min1Else">
-                        <div class="teal-text left"> {{item.value15min|number:'1.0-2'}}</div>
+                        <div class="teal-text"> {{item.value15min|number:'1.0-2'}}</div>
                       </div>
                       <ng-template #min1Else>
-                        <div class="teal-text">{{item.value15min|number:'1.0-2'}}</div>
+                        <div class="red-text">{{item.value15min|number:'1.0-2'}}</div>
                       </ng-template>
                     </td>
                   </tr>
@@ -113,10 +114,10 @@
                     <td>30 min.</td>
                     <td>
                       <div *ngIf="item.value30min > 0; else min1Else">
-                        <div class="teal-text left"> {{item.value30min|number:'1.0-2'}}</div>
+                        <div class="teal-text"> {{item.value30min|number:'1.0-2'}}</div>
                       </div>
                       <ng-template #min1Else>
-                        <div class="teal-text">{{item.value30min|number:'1.0-2'}}</div>
+                        <div class="red-text">{{item.value30min|number:'1.0-2'}}</div>
                       </ng-template>
                     </td>
                   </tr>
@@ -125,10 +126,10 @@
                     <td>60 min.</td>
                     <td>
                       <div *ngIf="item.value60min > 0; else min1Else">
-                        <div class="teal-text left"> {{item.value60min|number:'1.0-2'}}</div>
+                        <div class="teal-text"> {{item.value60min|number:'1.0-2'}}</div>
                       </div>
                       <ng-template #min1Else>
-                        <div class="teal-text">{{item.value60min|number:'1.0-2'}}</div>
+                        <div class="red-text">{{item.value60min|number:'1.0-2'}}</div>
                       </ng-template>
                     </td>
                   </tr>
@@ -139,14 +140,22 @@
               </div>
             </div>
           </div>
+          </div>
+          <div class="row">
+
+          <div class="z-depth-1" style="padding: 16px">
+            <canvas id="canvas">{{ chart }}</canvas>
+          </div>
+          </div>
         </div>
-        <ng-template #errorHappened>
+
+          <ng-template #errorHappened>
 
           <div class="row">
             <b><span class="red-text"> {{ error }} </span></b>
           </div>
         </ng-template>
       </div>
-    </div>
+
   </div>
 </div>

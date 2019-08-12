@@ -2,6 +2,8 @@ package de.wieczorek.rss.advisor.ui;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -84,11 +86,28 @@ public class Controller extends ControllerBase {
     }
 
     public List<TradingEvaluationResult> get24hPrediction() {
-	LocalDateTime.now().minusHours(24);
 	return dao.findAfterDate(LocalDateTime.now().minusHours(24));
     }
 
     public List<TradingEvaluationResult> getAllPredictions() {
 	return dao.findAll();
+    }
+
+    public List<TradingEvaluationResult> get24hAbsolutePrediction() {
+		List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+				.target("http://wieczorek.io:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
+				.get(new GenericType<List<ChartEntry>>() {
+				});
+		Map<LocalDateTime,Double> timeToChartEntry  = chartEntries
+				.stream()
+				.collect(Collectors.toMap(entry -> entry.getDate(),entry -> entry.getClose(),(y,x)-> y));
+
+		List<TradingEvaluationResult>  data = get24hPrediction();
+
+		return data.stream().filter(item -> timeToChartEntry.containsKey(item.getTargetTime())).map(item -> {
+			item.setPrediction(item.getPrediction()+timeToChartEntry.get(item.getTargetTime()));
+			return item;
+		}).collect(Collectors.toList());
+
     }
 }
