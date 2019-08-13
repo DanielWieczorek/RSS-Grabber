@@ -104,9 +104,13 @@ public class Controller extends ControllerBase {
 
 		List<TradingEvaluationResult>  data = get24hPrediction();
 
+
 		return data.stream().filter(item -> timeToChartEntry.containsKey(item.getTargetTime())).map(item -> {
-			item.setPrediction(item.getPrediction()+timeToChartEntry.get(item.getTargetTime()));
-			return item;
+			TradingEvaluationResult result = new TradingEvaluationResult();
+			result.setCurrentTime(item.getCurrentTime());
+			result.setTargetTime(item.getTargetTime());
+			result.setPrediction(item.getPrediction()+timeToChartEntry.get(item.getTargetTime()));
+			return result;
 		}).collect(Collectors.toList());
 
     }
