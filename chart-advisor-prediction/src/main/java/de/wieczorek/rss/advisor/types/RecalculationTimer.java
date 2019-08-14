@@ -33,7 +33,7 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
 
 		LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
 		List<ChartMetricRecord> metrics = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-				.target("http://wieczorek.io:13000/metric/").request(MediaType.APPLICATION_JSON)
+				.target("http://wieczorek.io:13000/metric/all").request(MediaType.APPLICATION_JSON)
 				.get(new GenericType<List<ChartMetricRecord>>() {
 				});
 

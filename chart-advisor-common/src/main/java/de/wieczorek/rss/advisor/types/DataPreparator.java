@@ -70,6 +70,7 @@ public class DataPreparator {
 			LocalDateTime currentDate = time.minusHours(24).plusMinutes(1);
 
 			List<ChartMetricRecord> lastSentiment = null;
+			ChartEntry  lastEntry = null;
 			while (currentDate.isBefore(inputChartEntry.getDate())) {
 
 
@@ -91,9 +92,16 @@ public class DataPreparator {
 					return null;
 				}
 
-					ChartEntry entry = chartEntryMappings.get(currentDate);
+				ChartEntry entry = chartEntryMappings.get(currentDate);
+				if(entry != null) {
+					lastEntry = entry;
+				}
+				else {
+					entry = lastEntry;
+				}
 
 				entries.put(entry, currentSentiment);
+
 				currentDate = currentDate.plusMinutes(1);
 				//System.out.println("found entry at " + currentDate + " ?" + (sentimentDateMappings.get(currentDate) != null ? "yes" : "no"));
 
