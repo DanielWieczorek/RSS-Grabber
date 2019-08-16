@@ -19,5 +19,7 @@
 	</root>
 	
 	<logger name="org.jgroups" level="OFF"/>
+	<logger name="org.eclipse.jetty" level="OFF"/>
+
 
 </configuration>
