@@ -33,12 +33,12 @@ public class PredictionTimer implements Runnable {
 	    TradingEvaluationResult result = controller.predict();
 
 	    if (result != null && dao.findById(result.getCurrentTime(), result.getTargetTime()) == null) {
-		dao.persist(result);
+		    dao.persist(result);
 	    }
 
 	} catch (Exception e) {
 	    e.printStackTrace();
-	    logger.error("error while retrieving chart data: ", e);
+	    logger.error("error while generating prediction: ", e);
 	}
     }
 }

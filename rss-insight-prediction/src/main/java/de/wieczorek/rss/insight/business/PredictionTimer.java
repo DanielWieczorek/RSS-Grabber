@@ -44,7 +44,7 @@ public class PredictionTimer implements Runnable {
 	    }
 
 	} catch (Exception e) {
-	    logger.error("error while retrieving chart data: ", e);
+	    logger.error("error while generating prediction: ", e);
 	}
     }
 

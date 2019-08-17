@@ -32,9 +32,9 @@ public class SessionInvalidationTimer implements Runnable {
 	    List<Session> invalidSessions = dao.findInvalidSessions();
 	    invalidSessions.forEach(dao::delete);
 	} catch (ResponseProcessingException e) {
-	    logger.error("error while retrieving chart data: ", e.getResponse().readEntity(String.class));
+	    logger.error("error while invalidating session ", e.getResponse().readEntity(String.class));
 	} catch (Exception e) {
-	    logger.error("error while retrieving chart data: ", e);
+	    logger.error("error while invalidating session: ", e);
 	}
     }
 }

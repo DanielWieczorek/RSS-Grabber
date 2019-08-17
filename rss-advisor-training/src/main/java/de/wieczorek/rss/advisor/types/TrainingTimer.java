@@ -48,7 +48,7 @@ public class TrainingTimer implements Runnable {
 	    }
 
 	} catch (Exception e) {
-	    logger.error("error while retrieving chart data: ", e);
+	    logger.error("error while training network: ", e);
 	}
     }
 }

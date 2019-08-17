@@ -40,9 +40,9 @@ public class TrainingTimer implements Runnable {
 		    });
 
 	    vec.train(data);
-	    network.train(data, 500);
+	    network.train(data, 50000);
 	} catch (Exception e) {
-	    logger.error("error while retrieving chart data: ", e);
+	    logger.error("error while training network: ", e);
 	}
     }
 
