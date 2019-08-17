@@ -12,6 +12,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
+import de.wieczorek.rss.advisor.types.NetInputItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,11 +58,16 @@ public class Controller extends ControllerBase {
 	if (metrics != null && chartEntries != null) {
 
 	    DataPreparator preparator = new DataPreparator().withChartData(chartEntries).withMetrics(metrics);
-	    TradingEvaluationResult result = nn.predict(preparator.getDataAtTime(currentTime));
-	    result.setCurrentTime(currentTime);
-	    result.setTargetTime(currentTime.plusMinutes(preparator.getOffsetMinutes()));
+		NetInputItem item = preparator.getDataAtTime(currentTime);
+		if(item != null) {
+			TradingEvaluationResult result = nn.predict(item);
+			result.setCurrentTime(currentTime);
+			result.setTargetTime(currentTime.plusMinutes(preparator.getOffsetMinutes()));
 
-	    return result;
+	    	return result;
+		} else {
+			logger.error("could not generate training data");
+		}
 	}
 	return null;
 
