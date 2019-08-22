@@ -8,10 +8,15 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import de.wieczorek.rss.core.recalculation.AbstractRecalculationTimer;
 import org.jboss.weld.inject.WeldInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class RecurrentTaskManager {
+    private static final Logger logger = LoggerFactory.getLogger(RecurrentTaskManager.class);
+
 
     @Inject
     @RecurrentTask
@@ -30,7 +35,7 @@ public class RecurrentTaskManager {
     }
 
     public void start() {
-	System.out.println("triggered start");
+        logger.debug("triggered start");
 	runners.forEach(RecurrentTaskRunner::start);
 
     }

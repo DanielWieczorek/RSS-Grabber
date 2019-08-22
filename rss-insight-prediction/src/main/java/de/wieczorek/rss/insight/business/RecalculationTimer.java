@@ -22,12 +22,14 @@ import de.wieczorek.rss.insight.types.RssEntrySentiment;
 import de.wieczorek.rss.insight.types.RssEntrySentimentSummary;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RecurrentTask(interval = 10, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class RecalculationTimer extends AbstractRecalculationTimer {
 
-    @Inject
+	@Inject
     private RssSentimentNeuralNetworkPredictor network;
 
     @Inject
@@ -44,10 +46,7 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
 		});
 
 	vec.train(input);
-	AtomicInteger j = new AtomicInteger(0);
-	List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).peek(x -> {
-	    System.out.println(j.incrementAndGet());
-	}).collect(Collectors.toList());
+	List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).collect(Collectors.toList());
 
 	for (int i = 0; i < input.size() - 24 * 60; i++) {
 	    List<RssEntry> partition = input.subList(i, i + 24 * 60);
@@ -73,7 +72,6 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
 			    ZoneId.of(TimeZone.getDefault().getID())));
 	    tradingDao.upsert(entity);
 
-	    System.out.println(i);
 	}
 	return null;
     }

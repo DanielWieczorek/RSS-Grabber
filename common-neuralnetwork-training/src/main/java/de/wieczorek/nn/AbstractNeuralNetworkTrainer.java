@@ -12,10 +12,15 @@ import org.deeplearning4j.optimize.listeners.PerformanceListener;
 import org.nd4j.evaluation.BaseEvaluation;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractNeuralNetworkTrainer<T, R> {
 
-    @Inject
+	private static final Logger logger = LoggerFactory.getLogger(AbstractNeuralNetworkTrainer.class);
+
+
+	@Inject
     private NeuralNetworkDao dao;
 
     public void train(List<T> trainingSet, int nEpochs) {
@@ -50,15 +55,15 @@ public abstract class AbstractNeuralNetworkTrainer<T, R> {
 	    DataSetIterator train = buildTrainingSetIterator(filteredTrainingSet);
 	    DataSetIterator test = buildTestSetIterator(testSet);
 
-	    System.out.println("Starting training");
+		logger.debug("Starting training");
 	    net.fit(train);
 	    train.reset();
-	    System.out.println("Epoch " + net.getEpochCount() + " complete. Starting evaluation:");
+		logger.info("Epoch " + net.getEpochCount() + " complete. Starting evaluation:");
 
 	    // Run evaluation. This is on 25k reviews, so can take some time
 	    BaseEvaluation<?> evaluation = buildEvaluation(test, net);
 	    test.reset();
-	    System.out.println(evaluation.stats());
+		logger.info(evaluation.stats());
 	    dao.writeModel(net);
 	}
 

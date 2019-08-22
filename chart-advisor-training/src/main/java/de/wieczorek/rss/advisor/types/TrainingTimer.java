@@ -61,6 +61,11 @@ public class TrainingTimer implements Runnable {
 
 			List<TrainingNetInputItem> netInput = new ArrayList<>();
 
+			double stdDev = calculateStandardDeviation(trainingData.stream().map(item -> item.getOutputDelta()).collect(Collectors.toList()));
+			int sizeBefore = trainingData.size();
+			trainingData = trainingData.stream().filter(item -> Math.abs(item.getOutputDelta()) < 2.0 * stdDev).collect(Collectors.toList());
+
+			logger.debug("removed "+(sizeBefore - trainingData.size())+" outliers");
 
 			for (int i = 0; i < trainingData.size(); i++) {
 				NetInputItem item = trainingData.get(i);
@@ -99,9 +104,11 @@ public class TrainingTimer implements Runnable {
 
 				}
 				netInput.add(new TrainingNetInputItem(Nd4j.create(itemVectors), item.getOutputDelta()));
-				System.out.println("preparing data "+ i);
+				logger.debug("preparing data "+ i);
 
 			}
+
+
 
 
 			for (int i = 0; i < 10000; i++) {
@@ -113,4 +120,25 @@ public class TrainingTimer implements Runnable {
 	    logger.error("error while training network: ", e);
 	}
     }
+
+
+	private double calculateStandardDeviation(List<Double> sd) {
+
+		double sum = 0;
+		double newSum = 0;
+
+		for (int i = 0; i < sd.size(); i++) {
+			sum = sum + sd.get(i);
+		}
+		double mean = (sum) / (sd.size());
+
+		for (int j = 0; j < sd.size(); j++) {
+			// put the calculation right in there
+			newSum = newSum + ((sd.get(j) - mean) * (sd.get(j) - mean));
+		}
+		double squaredDiffMean = (newSum) / (sd.size());
+		double standardDev = (Math.sqrt(squaredDiffMean));
+
+		return standardDev;
+	}
 }

@@ -8,17 +8,22 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
+import de.wieczorek.rss.core.ui.RssReaderServer;
 import org.jgroups.Address;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class MicroserviceDirectory {
-    private Map<String, ServiceMetadata> statusInfo = new HashMap<>();
+	private static final Logger logger = LoggerFactory.getLogger(MicroserviceDirectory.class);
+
+	private Map<String, ServiceMetadata> statusInfo = new HashMap<>();
     private Map<Address, String> addressToServiceNameMapping = new HashMap<>();
 
     protected void receiveStatusInfo(@Observes StatusMessage message) {
 	StatusResponse status = message.getResponse();
 	if (status.getBindHostname() != null) {
-	    System.out.println("received info from " + status.getCollectorName() + " at " + status.getBindHostname()
+		logger.debug("received info from " + status.getCollectorName() + " at " + status.getBindHostname()
 		    + ":" + status.getBindPort());
 
 	    ServiceMetadata metadata = createServiceMetadata(status);

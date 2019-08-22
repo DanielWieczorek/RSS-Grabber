@@ -46,20 +46,21 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Tr
     @Override
     protected MultiLayerNetwork buildNetwork() {
 
-	int vectorSize = 20; // Size of the word vectors. 300 in the Google News model
-	final int seed = 0; // Seed for reproducibility
+	int vectorSize = 20;
+	final int seed = 0;
 
 	MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed).updater(new Adam(2e-2)).l2(1e-5)
 		.weightInit(WeightInit.XAVIER).gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
 		.gradientNormalizationThreshold(1.0).trainingWorkspaceMode(WorkspaceMode.ENABLED).list()
 		.layer(0, new LSTM.Builder().nIn(vectorSize).nOut(128).activation(Activation.TANH).build())
 		.layer(1, new LSTM.Builder().nOut(128).activation(Activation.TANH).build())
-		.layer(2, new DenseLayer.Builder().nOut(128).activation(Activation.RELU).build())
-		.layer(3,
+		.layer(2, new LSTM.Builder().nOut(128).activation(Activation.TANH).build())
+		.layer(3, new DenseLayer.Builder().nOut(128).activation(Activation.RELU).build())
+		.layer(4,
 			new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(Activation.IDENTITY)
 				.l2(0.0001).weightInit(WeightInit.XAVIER).nOut(1).build())
 
-		.backpropType(BackpropType.TruncatedBPTT).tBPTTBackwardLength(120).tBPTTForwardLength(120)
+		.backpropType(BackpropType.TruncatedBPTT).tBPTTBackwardLength(10).tBPTTForwardLength(10)
 		.build();
 	conf.setIterationCount(1);
 

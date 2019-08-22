@@ -35,9 +35,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import de.wieczorek.rss.core.config.port.JGroupsPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class RestInfoReceiver extends ReceiverAdapter {
+	private static final Logger logger = LoggerFactory.getLogger(RestInfoReceiver.class);
 
     private JChannel channel;
     private ObjectMapper objectMapper;
@@ -115,7 +118,7 @@ public class RestInfoReceiver extends ReceiverAdapter {
 	    e.printStackTrace();
 	}
 
-	System.out.println(msg.getSrc() + ": " + msg.getObject());
+		logger.debug(msg.getSrc() + ": " + msg.getObject());
     }
 
     @Override

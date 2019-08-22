@@ -16,12 +16,16 @@ import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.core.recalculation.AbstractRecalculationTimer;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RecurrentTask(interval = 10, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class RecalculationTimer extends AbstractRecalculationTimer {
+	private static final Logger logger = LoggerFactory.getLogger(RecalculationTimer.class);
 
-    private static final int NUMBER_OF_ENTRIES = 300;
+
+	private static final int NUMBER_OF_ENTRIES = 300;
 
     @Inject
     private TradingNeuralNetworkPredictor nn;
@@ -41,7 +45,7 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
 		.get(new GenericType<List<ChartEntry>>() {
 		});
 
-	System.out.println(LocalDateTime.now() + "calculating for " + chartEntries.size() + "entries");
+		logger.debug("calculating for " + chartEntries.size() + "entries");
 
 	DataPreparator preparator = new DataPreparator().withChartData(chartEntries);
 	int startIndex = 0;
@@ -61,7 +65,7 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
 		result.setTargetTime(sentiment.getSentimentTime().plusMinutes(preparator.getOffsetMinutes()));
 
 		tradingDao.upsert(result);
-		System.out.println(LocalDateTime.now() + "calculating for date " + sentiment.getSentimentTime());
+			logger.debug( "calculating for date " + sentiment.getSentimentTime());
 	    }
 	}
 

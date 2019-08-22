@@ -24,9 +24,12 @@ import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import de.wieczorek.nn.AbstractNeuralNetworkTrainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<NetInputItem, TradingEvaluationResult> {
+	private static final Logger logger = LoggerFactory.getLogger(TradingNeuralNetworkTrainer.class);
 
     @Override
     protected DataSetIterator buildTrainingSetIterator(List<NetInputItem> trainingSet) {
@@ -74,7 +77,7 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Ne
 
     @Override
     protected BaseEvaluation<?> buildEvaluation(DataSetIterator test, MultiLayerNetwork net) {
-	System.out.println(net.memoryInfo(getBatchSize(), InputType.recurrent(9, 1441)));
+		logger.debug(net.memoryInfo(getBatchSize(), InputType.recurrent(9, 1441)));
 
 	return net.evaluateRegression(test);
     }

@@ -189,7 +189,6 @@ public class SentimentExampleIterator implements DataSetIterator {
 
     @Override
     public boolean hasNext() {
-	System.out.println(cursor + " < " + totalExamples());
 	return cursor < totalExamples();
     }
 

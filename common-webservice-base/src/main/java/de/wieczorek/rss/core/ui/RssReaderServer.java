@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.DispatcherType;
 
+import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -15,9 +16,13 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.jboss.weld.environment.servlet.Listener;
 
 import de.wieczorek.rss.core.config.port.RestPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class RssReaderServer {
+	private static final Logger logger = LoggerFactory.getLogger(RssReaderServer.class);
+
 
     private Server server;
 
@@ -61,7 +66,7 @@ public class RssReaderServer {
 	ServletHolder jerseyServlet = context.addServlet(org.glassfish.jersey.servlet.ServletContainer.class, "/*");
 	jerseyServlet.setInitOrder(0);
 
-	System.out.println(ServiceCollector.getClasses().stream().collect(Collectors.joining(",")));
+		logger.info("found the following REST resource classes: "+ServiceCollector.getClasses().stream().collect(Collectors.joining(",")));
 
 	jerseyServlet.setInitParameter("jersey.config.server.provider.classnames",
 		ServiceCollector.getClasses().stream().collect(Collectors.joining(",")));

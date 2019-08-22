@@ -37,7 +37,7 @@ public class ChartReader implements Runnable {
     @Override
     public void run() {
 	try {
-	    System.out.println("triggered reading chart entries at " + LocalDateTime.now());
+		logger.debug("triggered reading chart entries at " + LocalDateTime.now());
 	    OhlcApiRequestResult result = ClientBuilder.newClient()
 		    .target("https://api.kraken.com/0/public/OHLC?pair=XBTEUR").request(MediaType.APPLICATION_JSON)
 		    .get(OhlcApiRequestResult.class);

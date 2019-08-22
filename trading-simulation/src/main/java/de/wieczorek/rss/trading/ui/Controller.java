@@ -51,7 +51,6 @@ public class Controller extends ControllerBase {
 
 	for (int i = 0; i < dataGenerator.getMaxIndex(); i += 1) {
 	    StateEdge next = performTrade(policy, current);
-		System.out.println(i);
 		if(next == null) {
 			break;
 		}

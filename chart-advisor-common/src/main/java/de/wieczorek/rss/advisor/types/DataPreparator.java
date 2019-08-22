@@ -103,8 +103,6 @@ public class DataPreparator {
 				entries.put(entry, currentSentiment);
 
 				currentDate = currentDate.plusMinutes(1);
-				//System.out.println("found entry at " + currentDate + " ?" + (sentimentDateMappings.get(currentDate) != null ? "yes" : "no"));
-
 				lastSentiment = currentSentiment;
 			}
 			entries.put(inputChartEntry, sentimentDateMappings.get(currentDate));
@@ -115,7 +113,6 @@ public class DataPreparator {
 			if(entries.keySet().stream().filter(x -> x == null).count() > 0){
 				return null;
 			}
-
 
 			return result;
 		}

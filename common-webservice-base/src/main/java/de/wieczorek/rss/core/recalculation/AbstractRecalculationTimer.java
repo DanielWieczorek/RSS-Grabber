@@ -1,5 +1,8 @@
 package de.wieczorek.rss.core.recalculation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDateTime;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -7,6 +10,7 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 public abstract class AbstractRecalculationTimer implements Runnable {
+	private static final Logger logger = LoggerFactory.getLogger(AbstractRecalculationTimer.class);
 
     @Inject
     protected RecalculationStatusDao dao;
@@ -18,7 +22,7 @@ public abstract class AbstractRecalculationTimer implements Runnable {
 	    if (recalculation != null) {
 		LocalDateTime nextStartDate = performRecalculation(recalculation.getLastDate());
 		if (nextStartDate != null) {
-		    System.out.println("starting recalculation at " + nextStartDate);
+			logger.debug("starting recalculation at " + nextStartDate);
 		    recalculation.setLastDate(nextStartDate);
 		    dao.update(recalculation);
 		} else {
