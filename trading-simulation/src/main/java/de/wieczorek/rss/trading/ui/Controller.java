@@ -3,7 +3,6 @@ package de.wieczorek.rss.trading.ui;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,16 +14,11 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.nn.PolicyDao;
-import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.core.ui.ControllerBase;
-import de.wieczorek.rss.trading.business.data.InputDataSnapshot;
 import de.wieczorek.rss.trading.business.data.Trade;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.ActionVertexType;
-import de.wieczorek.rss.trading.types.StateEdgePart;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {

@@ -26,6 +26,9 @@ public class TrainingTimer implements Runnable {
     @Inject
     private RssWord2VecNetwork vec;
 
+    @Inject
+    private DataGenerator generator;
+
     public TrainingTimer() {
 
     }
@@ -35,12 +38,10 @@ public class TrainingTimer implements Runnable {
 	try {
 
 	    logger.info("get all classified");
-	    List<RssEntry> data = ClientBuilder.newClient().target("http://wieczorek.io:10020/classified")
-		    .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
-		    });
 
-	    vec.train(data);
-	    network.train(data, 50000);
+
+	    vec.train(generator.generate());
+	    network.train(generator, 50000);
 	} catch (Exception e) {
 	    logger.error("error while training network: ", e);
 	}

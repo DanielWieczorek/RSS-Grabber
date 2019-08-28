@@ -3,14 +3,12 @@ package de.wieczorek.rss.trading.common;
 import java.util.List;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
+import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.trading.types.StateEdge;
-import de.wieczorek.rss.trading.common.*;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.ActionVertexType;
 import de.wieczorek.rss.trading.types.StateEdgePart;

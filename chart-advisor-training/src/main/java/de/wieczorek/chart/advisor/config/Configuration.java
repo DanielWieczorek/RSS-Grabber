@@ -1,0 +1,29 @@
+package de.wieczorek.chart.advisor.config;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+
+import de.wieczorek.nn.NeuralNetworkName;
+import de.wieczorek.rss.core.config.ServiceName;
+import de.wieczorek.rss.core.config.port.JGroupsPort;
+import de.wieczorek.rss.core.config.port.RestPort;
+
+@ApplicationScoped
+public class Configuration {
+
+    @Produces
+    @RestPort
+    private int restPort = 14000;
+
+    @Produces
+    @JGroupsPort
+    private int jgroupsPort = restPort + 1;
+
+    @Produces
+    @ServiceName
+    private String serviceName = "chart-advisor-training";
+
+    @Produces
+    @NeuralNetworkName
+    private String neuralNetworkName = "chart-advisor-TradingNeuralNetwork";
+}

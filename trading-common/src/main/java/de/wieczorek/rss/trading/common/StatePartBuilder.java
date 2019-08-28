@@ -13,8 +13,8 @@ import com.google.common.collect.Multimap;
 
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import de.wieczorek.rss.advisor.types.DeltaChartEntry;
-import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
+import de.wieczorek.chart.advisor.types.DeltaChartEntry;
+import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.trading.types.StateEdgePart;
 
 public final class StatePartBuilder {

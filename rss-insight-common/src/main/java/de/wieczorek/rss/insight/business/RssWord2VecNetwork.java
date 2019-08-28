@@ -161,4 +161,23 @@ public class RssWord2VecNetwork implements WordVectors {
 	return vec.getLayerSize();
     }
 
+    @Override
+    public void loadWeightsInto(INDArray array) {
+        vec.loadWeightsInto(array);
+    }
+
+    @Override
+    public long vocabSize() {
+        return vec.vocabSize();
+    }
+
+    @Override
+    public int vectorSize() {
+        return vec.vectorSize();
+    }
+
+    @Override
+    public boolean jsonSerializable() {
+        return vec.jsonSerializable();
+    }
 }

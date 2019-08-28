@@ -6,10 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
-import org.deeplearning4j.nn.conf.GradientNormalization;
-import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
-import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
-import org.deeplearning4j.nn.conf.WorkspaceMode;
+import org.deeplearning4j.nn.conf.*;
 import org.deeplearning4j.nn.conf.layers.LSTM;
 import org.deeplearning4j.nn.conf.layers.RnnOutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -57,8 +54,8 @@ public class RssSentimentNeuralNetworkTrainer extends AbstractNeuralNetworkTrain
 		.layer(0, new LSTM.Builder().nIn(vec.getLayerSize()).nOut(512).activation(Activation.TANH).build())
 		.layer(1,
 			new RnnOutputLayer.Builder().activation(Activation.SOFTMAX)
-				.lossFunction(LossFunctions.LossFunction.MCXENT).nIn(512).nOut(2).build())
-		.pretrain(false).backprop(true).build();
+				.lossFunction(LossFunctions.LossFunction.MCXENT).nIn(512).nOut(2).build()).backpropType(BackpropType.Standard)
+		.build();
 
 	MultiLayerNetwork net = new MultiLayerNetwork(conf);
 	net.init();

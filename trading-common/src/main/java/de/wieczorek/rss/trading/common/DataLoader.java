@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
+import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 
 @ApplicationScoped

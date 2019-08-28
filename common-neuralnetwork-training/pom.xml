@@ -22,15 +22,15 @@
 			artifactId as either "nd4j-native-platform" or "nd4j-cuda-7.5-platform" -->
 		<dependency>
 			<groupId>org.nd4j</groupId>
-			<!-- <artifactId>nd4j-cuda-9.2-platform</artifactId> -->
-			<artifactId>nd4j-native-platform</artifactId>
-			<version>1.0.0-beta3</version>
+			<artifactId>nd4j-cuda-9.2-platform</artifactId>
+
+			<version>1.0.0-beta4</version>
 		</dependency>
 		
 		<dependency>
 	<groupId>org.deeplearning4j</groupId>
 	<artifactId>deeplearning4j-cuda-9.2</artifactId>
-	<version>1.0.0-beta3</version>
+	<version>1.0.0-beta4</version>
 </dependency>
 
 

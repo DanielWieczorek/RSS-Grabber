@@ -8,6 +8,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
+import de.wieczorek.rss.insight.business.DataGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,9 @@ public class Controller extends ControllerBase {
     @Inject
     private Word2VecDao word2VecDao;
 
+    @Inject
+    private DataGenerator generator;
+
     public void trainNeuralNetwork() {
 	logger.info("get all classified");
 	timer.stop();
@@ -43,7 +47,7 @@ public class Controller extends ControllerBase {
 		});
 
 	vec.train(data);
-	network.train(data, 25);
+	network.train(generator, 25);
 
 	timer.start();
 
