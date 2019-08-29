@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
-import de.wieczorek.rss.core.ui.RssReaderServer;
 import org.jgroups.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -4,14 +4,14 @@ import org.jboss.logging.MDC;
 
 import de.wieczorek.rss.core.db.migration.DatabaseMigrator;
 import de.wieczorek.rss.core.jgroups.RestInfoSender;
-import de.wieczorek.rss.core.ui.RssReaderServer;
+import de.wieczorek.rss.core.ui.MicroserviceServer;
 import de.wieczorek.rss.core.weld.CdiContext;
 
-public class RssReaderMain {
+public class MicroserviceMain {
 
     public static void main(String[] args) throws Exception {
 
-        RssReaderServer server = CdiContext.INSTANCE.getBean(RssReaderServer.class);
+        MicroserviceServer server = CdiContext.INSTANCE.getBean(MicroserviceServer.class);
 
         MDC.put("service", "foo");
         CdiContext.INSTANCE.getBean(DatabaseMigrator.class).migrate();

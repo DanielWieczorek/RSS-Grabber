@@ -41,7 +41,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>de.wieczorek.rss.core.RssReaderMain</mainClass>
+                  <mainClass>de.wieczorek.rss.core.MicroserviceMain</mainClass>
                 </transformer>
               </transformers>
               <filters>

@@ -7,7 +7,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.DispatcherType;
 
-import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -20,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class RssReaderServer {
-    private static final Logger logger = LoggerFactory.getLogger(RssReaderServer.class);
+public class MicroserviceServer {
+    private static final Logger logger = LoggerFactory.getLogger(MicroserviceServer.class);
 
 
     private Server server;
@@ -30,7 +29,7 @@ public class RssReaderServer {
     @RestPort
     private Integer port;
 
-    public RssReaderServer() {
+    public MicroserviceServer() {
 
     }
 

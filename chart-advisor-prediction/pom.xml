@@ -57,7 +57,7 @@
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>de.wieczorek.rss.core.RssReaderMain</mainClass>
+									<mainClass>de.wieczorek.rss.core.MicroserviceMain</mainClass>
 								</transformer>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
 								
