@@ -23,128 +23,128 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractNeuralNetworkTrainer<T, R> {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractNeuralNetworkTrainer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractNeuralNetworkTrainer.class);
 
-	@Inject
-	private NeuralNetworkPathBuilder pathBuilder;
+    @Inject
+    private NeuralNetworkPathBuilder pathBuilder;
 
-	@Inject
-	@NeuralNetworkName
-	private String fileName;
+    @Inject
+    @NeuralNetworkName
+    private String fileName;
 
 
     public void train(IDataGenerator<T> dataGenerator, int nEpochs) {
 
-		MultiLayerNetwork net;
+        MultiLayerNetwork net;
 
-		logger.debug("Retrieving or constructing network");
-		net = readOrBuildNetwork();
+        logger.debug("Retrieving or constructing network");
+        net = readOrBuildNetwork();
 
-		logger.debug("Building training data if needed");
-		buildTrainingDataIfNotPresent(dataGenerator, nEpochs);
+        logger.debug("Building training data if needed");
+        buildTrainingDataIfNotPresent(dataGenerator, nEpochs);
 
-		File checkpointTarget = pathBuilder.getCheckpointsPath();
-		checkpointTarget.mkdirs();
-		logger.debug("finalizing network");
-		CheckpointListener checkpointListener = new CheckpointListener.Builder(checkpointTarget)
-				.logSaving(true)
-				.deleteExisting(true)
-				.saveEveryEpoch()
-				.build();
-		net.setListeners(new PerformanceListener(1, true), checkpointListener);
-		net.setCacheMode(CacheMode.DEVICE);
+        File checkpointTarget = pathBuilder.getCheckpointsPath();
+        checkpointTarget.mkdirs();
+        logger.debug("finalizing network");
+        CheckpointListener checkpointListener = new CheckpointListener.Builder(checkpointTarget)
+                .logSaving(true)
+                .deleteExisting(true)
+                .saveEveryEpoch()
+                .build();
+        net.setListeners(new PerformanceListener(1, true), checkpointListener);
+        net.setCacheMode(CacheMode.DEVICE);
 
-		net.init();
+        net.init();
 
-		logger.debug("Building iterators");
-		DataSetIterator existingTrainingData = new CustomDatasetIterator(pathBuilder.getTrainingDataPath(),fileName+"-train-%d.bin");
-		DataSetIterator loadedTrain = new AsyncDataSetIterator(existingTrainingData);
-		DataSetIterator existingTestData = new CustomDatasetIterator(pathBuilder.getTestDataPath(),fileName+"-test-%d.bin");
-		DataSetIterator loadedTest = new AsyncDataSetIterator(existingTestData);
+        logger.debug("Building iterators");
+        DataSetIterator existingTrainingData = new CustomDatasetIterator(pathBuilder.getTrainingDataPath(), fileName + "-train-%d.bin");
+        DataSetIterator loadedTrain = new AsyncDataSetIterator(existingTrainingData);
+        DataSetIterator existingTestData = new CustomDatasetIterator(pathBuilder.getTestDataPath(), fileName + "-test-%d.bin");
+        DataSetIterator loadedTest = new AsyncDataSetIterator(existingTestData);
 
 
-		logger.debug("Starting training");
-		net.fit(loadedTrain,nEpochs);
-		logger.info("Epoch " + net.getEpochCount() + " complete. Starting evaluation:");
+        logger.debug("Starting training");
+        net.fit(loadedTrain, nEpochs);
+        logger.info("Epoch " + net.getEpochCount() + " complete. Starting evaluation:");
 
-		BaseEvaluation<?> evaluation = buildEvaluation(loadedTest, net);
-		logger.info(evaluation.stats());
+        BaseEvaluation<?> evaluation = buildEvaluation(loadedTest, net);
+        logger.info(evaluation.stats());
 
     }
 
-	private void buildTrainingDataIfNotPresent(IDataGenerator<T> dataGenerator, int nEpochs) {
-    	File testDataPath = pathBuilder.getTrainingDataPath();
-		if(!testDataPath.exists()){
-			buildAndPersistTrainingData(dataGenerator, nEpochs);
-		} else {
-			File[] files =  testDataPath.listFiles();
-			if(files == null || files.length == 0) {
-				buildAndPersistTrainingData(dataGenerator, nEpochs);
-			}
-		}
-	}
+    private void buildTrainingDataIfNotPresent(IDataGenerator<T> dataGenerator, int nEpochs) {
+        File testDataPath = pathBuilder.getTrainingDataPath();
+        if (!testDataPath.exists()) {
+            buildAndPersistTrainingData(dataGenerator, nEpochs);
+        } else {
+            File[] files = testDataPath.listFiles();
+            if (files == null || files.length == 0) {
+                buildAndPersistTrainingData(dataGenerator, nEpochs);
+            }
+        }
+    }
 
-	private MultiLayerNetwork readOrBuildNetwork() {
-		File dir = pathBuilder.getCheckpointsPath();
-		MultiLayerNetwork net;
-		File[] checkpointFiles = dir.listFiles();
-		if(checkpointFiles != null
-				&& checkpointFiles.length > 0
-				&& CheckpointListener.lastCheckpoint(dir) != null) {
-			net = CheckpointListener.loadCheckpointMLN(dir,CheckpointListener.lastCheckpoint(dir));
-		} else {
-			net = buildNetwork();
-		}
-		return net;
-	}
-
-
-	private void buildAndPersistTrainingData(IDataGenerator<T> dataGenerator, int nEpochs){
-		List<T> trainingSet = dataGenerator.generate();
-
-		if (trainingSet == null) {
-			return;
-		}
-
-		Random random = new Random(System.currentTimeMillis());
-
-		int testSetSize = trainingSet.size() * 20 / 100;
+    private MultiLayerNetwork readOrBuildNetwork() {
+        File dir = pathBuilder.getCheckpointsPath();
+        MultiLayerNetwork net;
+        File[] checkpointFiles = dir.listFiles();
+        if (checkpointFiles != null
+                && checkpointFiles.length > 0
+                && CheckpointListener.lastCheckpoint(dir) != null) {
+            net = CheckpointListener.loadCheckpointMLN(dir, CheckpointListener.lastCheckpoint(dir));
+        } else {
+            net = buildNetwork();
+        }
+        return net;
+    }
 
 
-			List<T> filteredTrainingSet = new ArrayList<>(trainingSet);
-			List<T> testSet = new ArrayList<>();
+    private void buildAndPersistTrainingData(IDataGenerator<T> dataGenerator, int nEpochs) {
+        List<T> trainingSet = dataGenerator.generate();
 
-			for (int j = 0; j < testSetSize; j++) {
-				T entry = trainingSet.get(random.nextInt(filteredTrainingSet.size()));
-				testSet.add(entry);
-				filteredTrainingSet.remove(entry);
-			}
-			Collections.shuffle(filteredTrainingSet);
+        if (trainingSet == null) {
+            return;
+        }
 
-			// DataSetIterators for training and testing respectively
-			DataSetIterator train = buildTrainingSetIterator(filteredTrainingSet);
-			DataSetIterator test = buildTestSetIterator(testSet);
+        Random random = new Random(System.currentTimeMillis());
 
-			File trainFolder = new File(pathBuilder.getTrainingDataPath(),"/");
-			trainFolder.mkdirs();
-			File testFolder = pathBuilder.getTestDataPath();
-			testFolder.mkdirs();
-			logger.info("Saving train data to " + trainFolder.getAbsolutePath() + " and test data to " + testFolder.getAbsolutePath());
-			//Track the indexes of the files being saved.
-			//These batch indexes are used for indexing which minibatch is being saved by the iterator.
-			int trainDataSaved = 0;
-			int testDataSaved = 0;
-			while (train.hasNext()) {
-				train.next().save(new File(trainFolder, fileName + "-train-" + trainDataSaved + ".bin"));
+        int testSetSize = trainingSet.size() * 20 / 100;
 
-				trainDataSaved++;
-			}
 
-			while (test.hasNext()) {
-				test.next().save(new File(testFolder, fileName + "-test-" + testDataSaved + ".bin"));
-				testDataSaved++;
-			}
-		}
+        List<T> filteredTrainingSet = new ArrayList<>(trainingSet);
+        List<T> testSet = new ArrayList<>();
+
+        for (int j = 0; j < testSetSize; j++) {
+            T entry = trainingSet.get(random.nextInt(filteredTrainingSet.size()));
+            testSet.add(entry);
+            filteredTrainingSet.remove(entry);
+        }
+        Collections.shuffle(filteredTrainingSet);
+
+        // DataSetIterators for training and testing respectively
+        DataSetIterator train = buildTrainingSetIterator(filteredTrainingSet);
+        DataSetIterator test = buildTestSetIterator(testSet);
+
+        File trainFolder = new File(pathBuilder.getTrainingDataPath(), "/");
+        trainFolder.mkdirs();
+        File testFolder = pathBuilder.getTestDataPath();
+        testFolder.mkdirs();
+        logger.info("Saving train data to " + trainFolder.getAbsolutePath() + " and test data to " + testFolder.getAbsolutePath());
+        //Track the indexes of the files being saved.
+        //These batch indexes are used for indexing which minibatch is being saved by the iterator.
+        int trainDataSaved = 0;
+        int testDataSaved = 0;
+        while (train.hasNext()) {
+            train.next().save(new File(trainFolder, fileName + "-train-" + trainDataSaved + ".bin"));
+
+            trainDataSaved++;
+        }
+
+        while (test.hasNext()) {
+            test.next().save(new File(testFolder, fileName + "-test-" + testDataSaved + ".bin"));
+            testDataSaved++;
+        }
+    }
 
     protected abstract BaseEvaluation<?> buildEvaluation(DataSetIterator test, MultiLayerNetwork net);
 
@@ -157,16 +157,17 @@ public abstract class AbstractNeuralNetworkTrainer<T, R> {
     protected abstract int getBatchSize();
 
 
-    private class CustomDatasetIterator extends ExistingMiniBatchDataSetIterator{
+    private class CustomDatasetIterator extends ExistingMiniBatchDataSetIterator {
 
-		public CustomDatasetIterator(File rootDir, String pattern) {
-			super(rootDir, pattern);
-		}
-		@Override
-		public int totalOutcomes(){
-			return 1;
-		}
-	}
+        public CustomDatasetIterator(File rootDir, String pattern) {
+            super(rootDir, pattern);
+        }
+
+        @Override
+        public int totalOutcomes() {
+            return 1;
+        }
+    }
 
 
 }

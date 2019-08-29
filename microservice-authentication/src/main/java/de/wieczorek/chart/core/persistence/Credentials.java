@@ -15,34 +15,34 @@ public class Credentials {
     private String salt;
 
     public String getUsername() {
-	return username;
+        return username;
     }
 
     public void setUsername(String username) {
-	this.username = username;
+        this.username = username;
     }
 
     public String getPasswordHash() {
-	return passwordHash;
+        return passwordHash;
     }
 
     public void setPasswordHash(String passwordHash) {
-	this.passwordHash = passwordHash;
+        this.passwordHash = passwordHash;
     }
 
     public int getIterations() {
-	return iterations;
+        return iterations;
     }
 
     public void setIterations(int iterations) {
-	this.iterations = iterations;
+        this.iterations = iterations;
     }
 
     public String getSalt() {
-	return salt;
+        return salt;
     }
 
     public void setSalt(String salt) {
-	this.salt = salt;
+        this.salt = salt;
     }
 }

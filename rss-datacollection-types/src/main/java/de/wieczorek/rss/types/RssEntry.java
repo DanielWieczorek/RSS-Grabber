@@ -22,81 +22,81 @@ public class RssEntry {
     private String URI;
 
     public String getHeading() {
-	return heading;
+        return heading;
     }
 
     public void setHeading(String heading) {
-	this.heading = heading;
+        this.heading = heading;
     }
 
     public String getDescription() {
-	return description;
+        return description;
     }
 
     public void setDescription(String description) {
-	this.description = description;
+        this.description = description;
     }
 
     public String getURI() {
-	return URI;
+        return URI;
     }
 
     public void setURI(String uRI) {
-	URI = uRI;
+        URI = uRI;
     }
 
     public String getFeedUrl() {
-	return feedUrl;
+        return feedUrl;
     }
 
     public void setFeedUrl(String feedUrl) {
-	this.feedUrl = feedUrl;
+        this.feedUrl = feedUrl;
     }
 
     public Date getPublicationDate() {
-	return publicationDate;
+        return publicationDate;
     }
 
     public void setPublicationDate(Date localDateTime) {
-	this.publicationDate = localDateTime;
+        this.publicationDate = localDateTime;
     }
 
     public Date getCreatedAt() {
-	return createdAt;
+        return createdAt;
     }
 
     public void setCreatedAt(Date createdAt) {
-	this.createdAt = createdAt;
+        this.createdAt = createdAt;
     }
 
     @Override
     public int hashCode() {
-	final int prime = 31;
-	int result = 1;
-	result = prime * result + ((URI == null) ? 0 : URI.hashCode());
-	return result;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((URI == null) ? 0 : URI.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
-	}
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	RssEntry other = (RssEntry) obj;
-	if (URI == null) {
-	    if (other.URI != null) {
-		return false;
-	    }
-	} else if (!URI.equals(other.URI)) {
-	    return false;
-	}
-	return true;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        RssEntry other = (RssEntry) obj;
+        if (URI == null) {
+            if (other.URI != null) {
+                return false;
+            }
+        } else if (!URI.equals(other.URI)) {
+            return false;
+        }
+        return true;
     }
 
 }

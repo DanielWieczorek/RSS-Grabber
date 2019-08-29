@@ -18,6 +18,6 @@ public class RssHandler {
     @GET
     @Path("train")
     public void train() {
-	controller.trainNeuralNetwork();
+        controller.trainNeuralNetwork();
     }
 }

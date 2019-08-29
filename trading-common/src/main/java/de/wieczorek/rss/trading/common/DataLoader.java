@@ -16,44 +16,44 @@ import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 public class DataLoader {
 
     public List<ChartEntry> loadChartEntries24h() {
-	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://wieczorek.io:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		});
+        return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartEntry>>() {
+                });
     }
 
     public List<TradingEvaluationResult> loadSentiments24h() {
-	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://wieczorek.io:12020/sentiment/24h").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<TradingEvaluationResult>>() {
-		});
+        return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:12020/sentiment/24h").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<TradingEvaluationResult>>() {
+                });
     }
 
     public List<ChartMetricRecord> loadMetrics24h() {
-	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://wieczorek.io:13000/metric/24h").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartMetricRecord>>() {
-		});
+        return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:13000/metric/24h").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartMetricRecord>>() {
+                });
     }
 
     public List<ChartEntry> loadAllChartEntries() {
-	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://wieczorek.io:12000/ohlcv").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		});
+        return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:12000/ohlcv").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartEntry>>() {
+                });
     }
 
     public List<ChartMetricRecord> loadAllMetrics() {
-	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://wieczorek.io:13000/metric/all").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartMetricRecord>>() {
-		});
+        return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:13000/metric/all").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartMetricRecord>>() {
+                });
     }
 
     public List<TradingEvaluationResult> loadAllSentiments() {
-	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://wieczorek.io:12020/sentiment/all").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<TradingEvaluationResult>>() {
-		});
+        return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:12020/sentiment/all").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<TradingEvaluationResult>>() {
+                });
     }
 }

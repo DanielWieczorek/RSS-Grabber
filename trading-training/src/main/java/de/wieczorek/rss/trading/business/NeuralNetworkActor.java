@@ -18,10 +18,10 @@ public class NeuralNetworkActor implements MDP<NeuralNetworkState, Integer, Disc
     private final DataGenerator generator;
 
     private DiscreteSpace actionSpace = new DiscreteSpace(2); // 0 Buy, 1 Sell
-    private ObservationSpace<NeuralNetworkState> observationSpace = new ArrayObservationSpace<>(new int[] { 102 });
+    private ObservationSpace<NeuralNetworkState> observationSpace = new ArrayObservationSpace<>(new int[]{102});
     private NeuralNetworkState currentState;
     private StateEdge startingEdge;
-    private Integer lastAction = -1 ;
+    private Integer lastAction = -1;
     private StateEdge lastBuy;
 
     private UUID id = UUID.randomUUID();
@@ -31,12 +31,11 @@ public class NeuralNetworkActor implements MDP<NeuralNetworkState, Integer, Disc
     private double positiveTrades = 0;
 
 
-
     public NeuralNetworkActor(int maxStep, StateEdge currentEdge, DataGenerator generator) {
-	this.maxStep = maxStep;
+        this.maxStep = maxStep;
         this.startingEdge = currentEdge;
-	currentState = new NeuralNetworkState(startingEdge, 0);
-	this.generator = generator;
+        currentState = new NeuralNetworkState(startingEdge, 0);
+        this.generator = generator;
     }
 
     @Override
@@ -45,15 +44,16 @@ public class NeuralNetworkActor implements MDP<NeuralNetworkState, Integer, Disc
 
     @Override
     public boolean isDone() {
-	return generator.buildNextState(currentState.getState(),0) == null ||currentState.getStep() == maxStep;
+        return generator.buildNextState(currentState.getState(), 0) == null || currentState.getStep() == maxStep;
     }
 
     @Override
     public NeuralNetworkState reset() {
-	currentState = new NeuralNetworkState(startingEdge, 0);
+        currentState = new NeuralNetworkState(startingEdge, 0);
         lastBuy = null;
         numberOfTrades = 0;
-        totalProfit = 0;positiveTrades = 0;
+        totalProfit = 0;
+        positiveTrades = 0;
 
         return currentState;
     }
@@ -61,46 +61,46 @@ public class NeuralNetworkActor implements MDP<NeuralNetworkState, Integer, Disc
 
     @Override
     public StepReply<NeuralNetworkState> step(Integer a) {
-        StateEdge newState = generator.buildNextState(currentState.getState(),a);
+        StateEdge newState = generator.buildNextState(currentState.getState(), a);
 
-        if(a == 0 && (lastAction == 1 ||lastAction == -1)){ // buy
-          //  System.out.println(id.toString()+": buying@"+newState.getAccount().getEurEquivalent()+" step: "+"("+currentState.getStep()+")");
-            lastBuy =  newState;
+        if (a == 0 && (lastAction == 1 || lastAction == -1)) { // buy
+            //  System.out.println(id.toString()+": buying@"+newState.getAccount().getEurEquivalent()+" step: "+"("+currentState.getStep()+")");
+            lastBuy = newState;
         }
         lastAction = a;
 
-	    double reward = 0.0;
-	    if(a == 1 && lastBuy != null){
-	        reward = newState.getAccount().getEurEquivalent() - lastBuy.getAccount().getEurEquivalent();
-	        lastBuy = null;
-            numberOfTrades ++;
+        double reward = 0.0;
+        if (a == 1 && lastBuy != null) {
+            reward = newState.getAccount().getEurEquivalent() - lastBuy.getAccount().getEurEquivalent();
+            lastBuy = null;
+            numberOfTrades++;
             totalProfit += reward;
-          //  System.out.println(id.toString()+":  selling@"+newState.getAccount().getEurEquivalent()+" reward: "+ reward +" step: "+"("+currentState.getStep()+")");
+            //  System.out.println(id.toString()+":  selling@"+newState.getAccount().getEurEquivalent()+" reward: "+ reward +" step: "+"("+currentState.getStep()+")");
         }
 
-     //   double reward = (newState.getAccount().getEurEquivalent()
-     //           - currentState.getState().getAccount().getEurEquivalent());
+        //   double reward = (newState.getAccount().getEurEquivalent()
+        //           - currentState.getState().getAccount().getEurEquivalent());
         currentState = new NeuralNetworkState(newState, currentState.getStep() + 1);
-        return new StepReply<>(currentState, isDone() && numberOfTrades == 0?0.0:reward, isDone(), new JSONObject("{}"));
+        return new StepReply<>(currentState, isDone() && numberOfTrades == 0 ? 0.0 : reward, isDone(), new JSONObject("{}"));
 
 
     }
 
     @Override
     public NeuralNetworkActor newInstance() {
-	NeuralNetworkActor simpleToy = new NeuralNetworkActor(maxStep, startingEdge, generator);
-	return simpleToy;
+        NeuralNetworkActor simpleToy = new NeuralNetworkActor(maxStep, startingEdge, generator);
+        return simpleToy;
     }
 
     @Override
     public DiscreteSpace getActionSpace() {
 
-	return actionSpace;
+        return actionSpace;
     }
 
     @Override
     public ObservationSpace<NeuralNetworkState> getObservationSpace() {
-	return observationSpace;
+        return observationSpace;
     }
 
 }

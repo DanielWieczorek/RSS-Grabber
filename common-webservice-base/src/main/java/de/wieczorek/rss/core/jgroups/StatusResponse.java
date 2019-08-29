@@ -9,27 +9,27 @@ public class StatusResponse {
     private int bindPort;
 
     public String getBindHostname() {
-	return bindHostname;
+        return bindHostname;
     }
 
     public void setBindHostname(String bindHostname) {
-	this.bindHostname = bindHostname;
+        this.bindHostname = bindHostname;
     }
 
     public int getBindPort() {
-	return bindPort;
+        return bindPort;
     }
 
     public void setBindPort(int bindPort) {
-	this.bindPort = bindPort;
+        this.bindPort = bindPort;
     }
 
     public String getCollectorName() {
-	return collectorName;
+        return collectorName;
     }
 
     public void setCollectorName(String collectorName) {
-	this.collectorName = collectorName;
+        this.collectorName = collectorName;
     }
 
 }

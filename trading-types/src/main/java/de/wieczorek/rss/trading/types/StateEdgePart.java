@@ -12,27 +12,27 @@ public class StateEdgePart {
     private List<ChartMetricRecord> metricsRecord;
 
     public DeltaChartEntry getChartEntry() {
-	return chartEntry;
+        return chartEntry;
     }
 
     public void setChartEntry(DeltaChartEntry chartEntry) {
-	this.chartEntry = chartEntry;
+        this.chartEntry = chartEntry;
     }
 
     public TradingEvaluationResult getSentiment() {
-	return sentiment;
+        return sentiment;
     }
 
     public void setSentiment(TradingEvaluationResult sentiment) {
-	this.sentiment = sentiment;
+        this.sentiment = sentiment;
     }
 
     public List<ChartMetricRecord> getMetricsRecord() {
-	return metricsRecord;
+        return metricsRecord;
     }
 
     public void setMetricsRecord(List<ChartMetricRecord> metricsRecord) {
-	this.metricsRecord = metricsRecord;
+        this.metricsRecord = metricsRecord;
     }
 
 }

@@ -36,46 +36,46 @@ public class ChartReader implements Runnable {
 
     @Override
     public void run() {
-	try {
-		logger.debug("triggered reading chart entries at " + LocalDateTime.now());
-	    OhlcApiRequestResult result = ClientBuilder.newClient()
-		    .target("https://api.kraken.com/0/public/OHLC?pair=XBTEUR").request(MediaType.APPLICATION_JSON)
-		    .get(OhlcApiRequestResult.class);
+        try {
+            logger.debug("triggered reading chart entries at " + LocalDateTime.now());
+            OhlcApiRequestResult result = ClientBuilder.newClient()
+                    .target("https://api.kraken.com/0/public/OHLC?pair=XBTEUR").request(MediaType.APPLICATION_JSON)
+                    .get(OhlcApiRequestResult.class);
 
-	    List<ChartEntry> entries = new ArrayList<>();
+            List<ChartEntry> entries = new ArrayList<>();
 
-	    if (result.getErrors().isEmpty()) {
-		((List<List<?>>) result.getResults().get("XXBTZEUR")).forEach((List<?> item) -> {
-		    ChartEntry entry = new ChartEntry();
-		    entry.setDate(LocalDateTime
-			    .ofInstant(Instant.ofEpochSecond((Integer) item.get(0)), ZoneId.systemDefault())
-			    .withSecond(0).withNano(0));
-		    entry.setOpen(Double.valueOf((String) item.get(1)));
-		    entry.setHigh(Double.valueOf((String) item.get(2)));
-		    entry.setLow(Double.valueOf((String) item.get(3)));
-		    entry.setClose(Double.valueOf((String) item.get(4)));
-		    entry.setVolumeWeightedAverage(Double.valueOf((String) item.get(5)));
-		    entry.setVolume(Double.valueOf((String) item.get(6)));
-		    entry.setTransactions((Integer) item.get(7));
+            if (result.getErrors().isEmpty()) {
+                ((List<List<?>>) result.getResults().get("XXBTZEUR")).forEach((List<?> item) -> {
+                    ChartEntry entry = new ChartEntry();
+                    entry.setDate(LocalDateTime
+                            .ofInstant(Instant.ofEpochSecond((Integer) item.get(0)), ZoneId.systemDefault())
+                            .withSecond(0).withNano(0));
+                    entry.setOpen(Double.valueOf((String) item.get(1)));
+                    entry.setHigh(Double.valueOf((String) item.get(2)));
+                    entry.setLow(Double.valueOf((String) item.get(3)));
+                    entry.setClose(Double.valueOf((String) item.get(4)));
+                    entry.setVolumeWeightedAverage(Double.valueOf((String) item.get(5)));
+                    entry.setVolume(Double.valueOf((String) item.get(6)));
+                    entry.setTransactions((Integer) item.get(7));
 
-		    entries.add(entry);
+                    entries.add(entry);
 
-		});
+                });
 
-	    }
+            }
 
-	    entries.retainAll(entries.stream().filter((item) -> dao.findById(item.getDate()) == null)
-		    .collect(Collectors.toList()));
-	    Map<LocalDateTime, ChartEntry> map = new HashMap<>();
+            entries.retainAll(entries.stream().filter((item) -> dao.findById(item.getDate()) == null)
+                    .collect(Collectors.toList()));
+            Map<LocalDateTime, ChartEntry> map = new HashMap<>();
 
-	    entries.forEach(item -> map.put(item.getDate(), item));
+            entries.forEach(item -> map.put(item.getDate(), item));
 
-	    dao.persistAll(map.values());
+            dao.persistAll(map.values());
 
-	} catch (ResponseProcessingException e) {
-	    logger.error("error while retrieving chart data: ", e.getResponse().readEntity(String.class));
-	} catch (Exception e) {
-	    logger.error("error while retrieving chart data: ", e);
-	}
+        } catch (ResponseProcessingException e) {
+            logger.error("error while retrieving chart data: ", e.getResponse().readEntity(String.class));
+        } catch (Exception e) {
+            logger.error("error while retrieving chart data: ", e);
+        }
     }
 }

@@ -21,7 +21,7 @@ public class TrainingTimer implements Runnable {
     private TradingNeuralNetworkTrainer network;
 
     @Inject
-	private TrainingDataGenerator generator;
+    private TrainingDataGenerator generator;
 
     public TrainingTimer() {
 
@@ -29,23 +29,22 @@ public class TrainingTimer implements Runnable {
 
     @Override
     public void run() {
-	try {
+        try {
 
-		CudaEnvironment.getInstance().getConfiguration()
-				.setMaximumDeviceCacheableLength(1024 * 1024 * 1024L)
-				.setMaximumDeviceCache(10L * 1024 * 1024 * 1024L)
-				.setMaximumHostCache(0 * 1024 * 1024 * 1024L);
-		Nd4j.setNumThreads(32);
-
-
-			network.train(generator, 200);
+            CudaEnvironment.getInstance().getConfiguration()
+                    .setMaximumDeviceCacheableLength(1024 * 1024 * 1024L)
+                    .setMaximumDeviceCache(10L * 1024 * 1024 * 1024L)
+                    .setMaximumHostCache(0 * 1024 * 1024 * 1024L);
+            Nd4j.setNumThreads(32);
 
 
-	} catch (Exception e) {
-	    logger.error("error while training network: ", e);
-	}
+            network.train(generator, 200);
+
+
+        } catch (Exception e) {
+            logger.error("error while training network: ", e);
+        }
     }
-
 
 
 }

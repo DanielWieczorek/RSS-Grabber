@@ -14,17 +14,17 @@ import de.wieczorek.rss.core.timer.RecurrentTask;
 public class RssReaderConfigurationProvider extends RssReader {
 
     public class RssReaderConfiguration extends RssConfig {
-	public RssReaderConfiguration() {
-	    serviceName = "rss-collector-bitcoincom";
-	    feedUrl = "https://news.bitcoin.com/feed/";
-	    filter = new NoOperationMessageFilter();
-	    transformer = new BitcoincomMessageTransformer();
+        public RssReaderConfiguration() {
+            serviceName = "rss-collector-bitcoincom";
+            feedUrl = "https://news.bitcoin.com/feed/";
+            filter = new NoOperationMessageFilter();
+            transformer = new BitcoincomMessageTransformer();
 
-	}
+        }
     }
 
     @Override
     protected RssConfig getRssConfig() {
-	return new RssReaderConfiguration();
+        return new RssReaderConfiguration();
     }
 }

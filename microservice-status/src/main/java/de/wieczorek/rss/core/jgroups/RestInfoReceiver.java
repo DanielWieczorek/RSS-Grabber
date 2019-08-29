@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class RestInfoReceiver extends ReceiverAdapter {
-	private static final Logger logger = LoggerFactory.getLogger(RestInfoReceiver.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestInfoReceiver.class);
 
     private JChannel channel;
     private ObjectMapper objectMapper;
@@ -59,90 +59,90 @@ public class RestInfoReceiver extends ReceiverAdapter {
 
     @PostConstruct
     private void init() {
-	objectMapper = new ObjectMapper();
-	objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
-	try {
-	    channel = new JChannel(new TCP() //
-		    .setValue("bind_addr", Inet4Address.getLocalHost()) //
-		    .setValue("bind_port", port) //
-		    , new MPING() //
-		    , new MERGE3() //
-		    , new FD_SOCK() //
-		    , new FD_ALL() //
-			    .setValue("timeout", 12000) //
-			    .setValue("interval", 3000) //
-		    , new VERIFY_SUSPECT() //
-		    , new BARRIER() //
-		    , new NAKACK2() //
-		    , new UNICAST3() //
-		    , new STABLE() //
-		    , new GMS() //
-		    , new MFC() //
-		    , new FRAG2());
+        try {
+            channel = new JChannel(new TCP() //
+                    .setValue("bind_addr", Inet4Address.getLocalHost()) //
+                    .setValue("bind_port", port) //
+                    , new MPING() //
+                    , new MERGE3() //
+                    , new FD_SOCK() //
+                    , new FD_ALL() //
+                    .setValue("timeout", 12000) //
+                    .setValue("interval", 3000) //
+                    , new VERIFY_SUSPECT() //
+                    , new BARRIER() //
+                    , new NAKACK2() //
+                    , new UNICAST3() //
+                    , new STABLE() //
+                    , new GMS() //
+                    , new MFC() //
+                    , new FRAG2());
 
-	    channel.setReceiver(this);
-	    channel.setDiscardOwnMessages(true);
-	    channel.connect("rss-collectors-rest");
+            channel.setReceiver(this);
+            channel.setDiscardOwnMessages(true);
+            channel.connect("rss-collectors-rest");
 
-	    channel.send(new Message(null, objectMapper.writeValueAsBytes(new StatusRequest())));
-	} catch (Exception e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} //
+            channel.send(new Message(null, objectMapper.writeValueAsBytes(new StatusRequest())));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } //
     }
 
     @Override
     public void receive(Message msg) {
 
-	try {
-	    StatusResponse response = objectMapper.readValue(msg.getBuffer(), StatusResponse.class);
-	    StatusMessage message = new StatusMessage();
-	    message.setAddress(message.getAddress());
-	    message.setResponse(response);
+        try {
+            StatusResponse response = objectMapper.readValue(msg.getBuffer(), StatusResponse.class);
+            StatusMessage message = new StatusMessage();
+            message.setAddress(message.getAddress());
+            message.setResponse(response);
 
-	    responseEvent.fire(message);
-	} catch (
+            responseEvent.fire(message);
+        } catch (
 
-	JsonParseException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (JsonMappingException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (Exception e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+                JsonParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		logger.debug(msg.getSrc() + ": " + msg.getObject());
+        logger.debug(msg.getSrc() + ": " + msg.getObject());
     }
 
     @Override
     public void viewAccepted(View newView) {
-	if (oldView != null) {
-	    leftMembersEvent.fire(View.leftMembers(oldView, newView));
+        if (oldView != null) {
+            leftMembersEvent.fire(View.leftMembers(oldView, newView));
 
-	    View.newMembers(oldView, newView).forEach(this::sendStatusRequest);
-	} else {
-	    newView.getMembers().forEach(this::sendStatusRequest);
-	}
-	oldView = newView;
+            View.newMembers(oldView, newView).forEach(this::sendStatusRequest);
+        } else {
+            newView.getMembers().forEach(this::sendStatusRequest);
+        }
+        oldView = newView;
     }
 
     private void sendStatusRequest(Address address) {
-	try {
-	    channel.send(new Message(address, objectMapper.writeValueAsBytes(new StatusRequest())));
-	} catch (JsonProcessingException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (Exception e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+        try {
+            channel.send(new Message(address, objectMapper.writeValueAsBytes(new StatusRequest())));
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 

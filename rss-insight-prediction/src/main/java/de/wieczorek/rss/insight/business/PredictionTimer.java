@@ -32,20 +32,20 @@ public class PredictionTimer implements Runnable {
 
     @Override
     public void run() {
-	try {
-	    logger.info("predicting");
-	    SentimentEvaluationResult result = controller.predict();
-	    SentimentAtTime entity = new SentimentAtTime();
-	    entity.setPositiveProbability(result.getSummary().getPositiveProbability());
-	    entity.setNegativeProbability(result.getSummary().getNegativeProbability());
-	    entity.setSentimentTime(LocalDateTime.now().withSecond(0).withNano(0));
-	    if (dao.findById(entity.getSentimentTime()) == null) {
-		dao.persist(entity);
-	    }
+        try {
+            logger.info("predicting");
+            SentimentEvaluationResult result = controller.predict();
+            SentimentAtTime entity = new SentimentAtTime();
+            entity.setPositiveProbability(result.getSummary().getPositiveProbability());
+            entity.setNegativeProbability(result.getSummary().getNegativeProbability());
+            entity.setSentimentTime(LocalDateTime.now().withSecond(0).withNano(0));
+            if (dao.findById(entity.getSentimentTime()) == null) {
+                dao.persist(entity);
+            }
 
-	} catch (Exception e) {
-	    logger.error("error while generating prediction: ", e);
-	}
+        } catch (Exception e) {
+            logger.error("error while generating prediction: ", e);
+        }
     }
 
 }

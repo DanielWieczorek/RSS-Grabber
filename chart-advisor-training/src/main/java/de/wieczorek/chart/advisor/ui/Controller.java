@@ -22,12 +22,12 @@ public class Controller extends ControllerBase {
 
     @Override
     protected void start() {
-	timer.start();
+        timer.start();
     }
 
     @Override
     protected void stop() {
-	timer.stop();
+        timer.stop();
     }
 
 }

@@ -42,56 +42,56 @@ public class Controller extends ControllerBase {
     private RecalculationStatusDao recalculationDao;
 
     public TradingEvaluationResult predict() {
-	LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
-	SentimentEvaluationResult currentSentiment = ClientBuilder.newClient()
-		.register(new ObjectMapperContextResolver()).target("http://localhost:11020/sentiment")
-		.request(MediaType.APPLICATION_JSON).get(SentimentEvaluationResult.class);
+        LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
+        SentimentEvaluationResult currentSentiment = ClientBuilder.newClient()
+                .register(new ObjectMapperContextResolver()).target("http://localhost:11020/sentiment")
+                .request(MediaType.APPLICATION_JSON).get(SentimentEvaluationResult.class);
 
-	List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		});
+        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://localhost:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartEntry>>() {
+                });
 
-	if (currentSentiment != null && chartEntries != null) {
-	    SentimentAtTime sentiment = new SentimentAtTime();
-	    sentiment.setPositiveProbability(currentSentiment.getSummary().getPositiveProbability());
-	    sentiment.setNegativeProbability(currentSentiment.getSummary().getNegativeProbability());
-	    sentiment.setSentimentTime(currentTime);
-	    DataPreparator preparator = new DataPreparator().withChartData(chartEntries);
-	    TradingEvaluationResult result = nn.predict(preparator.getDataForSentiment(sentiment));
-	    result.setCurrentTime(currentTime);
-	    result.setTargetTime(currentTime.plusMinutes(preparator.getOffsetMinutes()));
+        if (currentSentiment != null && chartEntries != null) {
+            SentimentAtTime sentiment = new SentimentAtTime();
+            sentiment.setPositiveProbability(currentSentiment.getSummary().getPositiveProbability());
+            sentiment.setNegativeProbability(currentSentiment.getSummary().getNegativeProbability());
+            sentiment.setSentimentTime(currentTime);
+            DataPreparator preparator = new DataPreparator().withChartData(chartEntries);
+            TradingEvaluationResult result = nn.predict(preparator.getDataForSentiment(sentiment));
+            result.setCurrentTime(currentTime);
+            result.setTargetTime(currentTime.plusMinutes(preparator.getOffsetMinutes()));
 
-	    return result;
-	}
-	return null;
+            return result;
+        }
+        return null;
 
     }
 
     public void recompute() {
 
-	Recalculation recalculation = new Recalculation();
-	recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
-	recalculationDao.deleteAll();
-	recalculationDao.create(recalculation);
+        Recalculation recalculation = new Recalculation();
+        recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
+        recalculationDao.deleteAll();
+        recalculationDao.create(recalculation);
     }
 
     @Override
     protected void start() {
-	timer.start();
+        timer.start();
     }
 
     @Override
     protected void stop() {
-	timer.stop();
+        timer.stop();
     }
 
     public List<TradingEvaluationResult> get24hPrediction() {
-	LocalDateTime.now().minusHours(24);
-	return dao.findAfterDate(LocalDateTime.now().minusHours(24));
+        LocalDateTime.now().minusHours(24);
+        return dao.findAfterDate(LocalDateTime.now().minusHours(24));
     }
 
     public List<TradingEvaluationResult> getAllPredictions() {
-	return dao.findAll();
+        return dao.findAll();
     }
 }

@@ -35,16 +35,16 @@ public class TrainingTimer implements Runnable {
 
     @Override
     public void run() {
-	try {
+        try {
 
-	    logger.info("get all classified");
+            logger.info("get all classified");
 
 
-	    vec.train(generator.generate());
-	    network.train(generator, 50000);
-	} catch (Exception e) {
-	    logger.error("error while training network: ", e);
-	}
+            vec.train(generator.generate());
+            network.train(generator, 50000);
+        } catch (Exception e) {
+            logger.error("error while training network: ", e);
+        }
     }
 
 }

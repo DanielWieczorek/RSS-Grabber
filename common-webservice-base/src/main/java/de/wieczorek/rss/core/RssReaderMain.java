@@ -11,12 +11,12 @@ public class RssReaderMain {
 
     public static void main(String[] args) throws Exception {
 
-	RssReaderServer server = CdiContext.INSTANCE.getBean(RssReaderServer.class);
+        RssReaderServer server = CdiContext.INSTANCE.getBean(RssReaderServer.class);
 
-	MDC.put("service", "foo");
-	CdiContext.INSTANCE.getBean(DatabaseMigrator.class).migrate();
-	CdiContext.INSTANCE.getBean(RestInfoSender.class).init();
-	server.start();
+        MDC.put("service", "foo");
+        CdiContext.INSTANCE.getBean(DatabaseMigrator.class).migrate();
+        CdiContext.INSTANCE.getBean(RestInfoSender.class).init();
+        server.start();
     }
 
 }

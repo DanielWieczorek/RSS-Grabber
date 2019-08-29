@@ -29,27 +29,27 @@ public class TradingEvaluationResult {
     private LocalDateTime currentTime;
 
     public double getPrediction() {
-	return prediction;
+        return prediction;
     }
 
     public void setPrediction(double prediction) {
-	this.prediction = prediction;
+        this.prediction = prediction;
     }
 
     public LocalDateTime getTargetTime() {
-	return targetTime;
+        return targetTime;
     }
 
     public void setTargetTime(LocalDateTime targetTime) {
-	this.targetTime = targetTime;
+        this.targetTime = targetTime;
     }
 
     public LocalDateTime getCurrentTime() {
-	return currentTime;
+        return currentTime;
     }
 
     public void setCurrentTime(LocalDateTime currentTime) {
-	this.currentTime = currentTime;
+        this.currentTime = currentTime;
     }
 
 }

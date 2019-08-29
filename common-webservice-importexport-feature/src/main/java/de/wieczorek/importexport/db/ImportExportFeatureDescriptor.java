@@ -15,14 +15,14 @@ public class ImportExportFeatureDescriptor extends FeatureDescriptor {
 
     public ImportExportFeatureDescriptor() {
 
-	List<FeatureAction> actions = new ArrayList<>();
+        List<FeatureAction> actions = new ArrayList<>();
 
-	actions.add(new FeatureAction("import", "/feature/import", HttpMethod.POST));
-	actions.add(new FeatureAction("export", "/feature/export", HttpMethod.GET));
+        actions.add(new FeatureAction("import", "/feature/import", HttpMethod.POST));
+        actions.add(new FeatureAction("export", "/feature/export", HttpMethod.GET));
 
-	setActions(actions);
-	setType(FeatureType.IMPORT_EXPORT);
-	setDescription("Feature to import or export data");
+        setActions(actions);
+        setType(FeatureType.IMPORT_EXPORT);
+        setDescription("Feature to import or export data");
     }
 
 }

@@ -8,18 +8,18 @@ public class StatusMessage {
     private StatusResponse response;
 
     public Address getAddress() {
-	return address;
+        return address;
     }
 
     public void setAddress(Address address) {
-	this.address = address;
+        this.address = address;
     }
 
     public StatusResponse getResponse() {
-	return response;
+        return response;
     }
 
     public void setResponse(StatusResponse response) {
-	this.response = response;
+        this.response = response;
     }
 }

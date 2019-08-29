@@ -16,13 +16,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class TrainingDataGenerator  implements IDataGenerator<TrainingNetInputItem> {
+public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputItem> {
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
 
 
-
-
-    public List<TrainingNetInputItem> generate(){
+    public List<TrainingNetInputItem> generate() {
         List<ChartMetricRecord> metrics = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
                 .target("http://wieczorek.io:13000/metric/all").request(MediaType.APPLICATION_JSON)
                 .get(new GenericType<List<ChartMetricRecord>>() {
@@ -100,24 +98,25 @@ public class TrainingDataGenerator  implements IDataGenerator<TrainingNetInputIt
             return netInput;
         }
         return null;
+    }
+
+    private double calculateStandardDeviation(List<Double> sd) {
+
+        double sum = 0;
+        double newSum = 0;
+
+        for (int i = 0; i < sd.size(); i++) {
+            sum = sum + sd.get(i);
         }
-        private double calculateStandardDeviation(List<Double> sd) {
+        double mean = (sum) / (sd.size());
 
-            double sum = 0;
-            double newSum = 0;
-
-            for (int i = 0; i < sd.size(); i++) {
-                sum = sum + sd.get(i);
-            }
-            double mean = (sum) / (sd.size());
-
-            for (int j = 0; j < sd.size(); j++) {
-                // put the calculation right in there
-                newSum = newSum + ((sd.get(j) - mean) * (sd.get(j) - mean));
-            }
-            double squaredDiffMean = (newSum) / (sd.size());
-            double standardDev = (Math.sqrt(squaredDiffMean));
-
-            return standardDev;
+        for (int j = 0; j < sd.size(); j++) {
+            // put the calculation right in there
+            newSum = newSum + ((sd.get(j) - mean) * (sd.get(j) - mean));
         }
+        double squaredDiffMean = (newSum) / (sd.size());
+        double standardDev = (Math.sqrt(squaredDiffMean));
+
+        return standardDev;
+    }
 }

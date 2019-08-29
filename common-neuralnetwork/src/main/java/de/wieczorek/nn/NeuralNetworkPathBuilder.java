@@ -13,19 +13,19 @@ public class NeuralNetworkPathBuilder {
     private String fileName;
 
     public File getCheckpointsPath() {
-        return Paths.get(buildBasePath(),"checkpoints").toFile();
+        return Paths.get(buildBasePath(), "checkpoints").toFile();
     }
 
     public File getTrainingDataPath() {
-        return Paths.get(buildBasePath(),"training-data").toFile();
+        return Paths.get(buildBasePath(), "training-data").toFile();
     }
 
     public File getTestDataPath() {
-        return Paths.get(buildBasePath(),"test-data").toFile();
+        return Paths.get(buildBasePath(), "test-data").toFile();
     }
 
     private String buildBasePath() {
-        return Paths.get(System.getProperty("user.home") , "neural-networks" , fileName).toString();
+        return Paths.get(System.getProperty("user.home"), "neural-networks", fileName).toString();
     }
 
 }

@@ -42,45 +42,45 @@ public class Controller extends ControllerBase {
     private RecalculationStatusDao recalculationDao;
 
     public SentimentEvaluationResult predict() {
-	List<RssEntry> input = ClientBuilder.newClient().target("http://localhost:8020/rss-entries/24h")
-		.request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
-		});
+        List<RssEntry> input = ClientBuilder.newClient().target("http://localhost:8020/rss-entries/24h")
+                .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
+                });
 
-	List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).collect(Collectors.toList());
+        List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).collect(Collectors.toList());
 
-	double positiveSum = sentimentList.stream().mapToDouble(RssEntrySentiment::getPositiveProbability).sum()
-		/ sentimentList.size();
-	double negativeSum = sentimentList.stream().mapToDouble(RssEntrySentiment::getNegativeProbability).sum()
-		/ sentimentList.size();
+        double positiveSum = sentimentList.stream().mapToDouble(RssEntrySentiment::getPositiveProbability).sum()
+                / sentimentList.size();
+        double negativeSum = sentimentList.stream().mapToDouble(RssEntrySentiment::getNegativeProbability).sum()
+                / sentimentList.size();
 
-	SentimentEvaluationResult result = new SentimentEvaluationResult();
-	RssEntrySentimentSummary summary = new RssEntrySentimentSummary();
-	summary.setPositiveProbability(positiveSum);
-	summary.setNegativeProbability(negativeSum);
-	result.setSummary(summary);
-	result.setSentiments(sentimentList);
-	return result;
+        SentimentEvaluationResult result = new SentimentEvaluationResult();
+        RssEntrySentimentSummary summary = new RssEntrySentimentSummary();
+        summary.setPositiveProbability(positiveSum);
+        summary.setNegativeProbability(negativeSum);
+        result.setSummary(summary);
+        result.setSentiments(sentimentList);
+        return result;
     }
 
     public void recalculate() {
-	Recalculation recalculation = new Recalculation();
-	recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
-	recalculationDao.deleteAll();
-	recalculationDao.create(recalculation);
+        Recalculation recalculation = new Recalculation();
+        recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
+        recalculationDao.deleteAll();
+        recalculationDao.create(recalculation);
     }
 
     @Override
     public void start() {
-	timer.start();
+        timer.start();
     }
 
     @Override
     public void stop() {
-	timer.stop();
+        timer.stop();
     }
 
     public List<SentimentAtTime> getAllSentimentAtTime() {
-	return dao.findAll();
+        return dao.findAll();
     }
 
 }

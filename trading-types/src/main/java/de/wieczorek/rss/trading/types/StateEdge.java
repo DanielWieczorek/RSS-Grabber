@@ -15,46 +15,46 @@ public class StateEdge implements IStateHistoryHolder {
     private List<StateEdgePart> allStateParts;
 
     public Account getAccount() {
-	return account;
+        return account;
     }
 
     public void setAccount(Account account) {
-	this.account = account;
+        this.account = account;
     }
 
     @Override
     public int getPartsStartIndex() {
-	return partsStartIndex;
+        return partsStartIndex;
     }
 
     public void setPartsStartIndex(int partsStartIndex) {
-	this.partsStartIndex = partsStartIndex;
+        this.partsStartIndex = partsStartIndex;
     }
 
     @Override
     public int getPartsEndIndex() {
-	return partsEndIndex;
+        return partsEndIndex;
     }
 
     public void setPartsEndIndex(int partsEndIndex) {
-	this.partsEndIndex = partsEndIndex;
+        this.partsEndIndex = partsEndIndex;
     }
 
     public long getId() {
-	return id;
+        return id;
     }
 
     public void setId(long id) {
-	this.id = id;
+        this.id = id;
     }
 
     @Override
     public List<StateEdgePart> getAllStateParts() {
-	return allStateParts;
+        return allStateParts;
     }
 
     public void setAllStateParts(List<StateEdgePart> allStateParts) {
-	this.allStateParts = allStateParts;
+        this.allStateParts = allStateParts;
     }
 
 }

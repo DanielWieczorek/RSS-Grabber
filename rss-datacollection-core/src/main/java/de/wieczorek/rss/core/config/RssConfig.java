@@ -14,19 +14,19 @@ public abstract class RssConfig {
     protected MessageTransformer transformer;
 
     public String getServiceName() {
-	return serviceName;
+        return serviceName;
     }
 
     public String getFeedUrl() {
-	return feedUrl;
+        return feedUrl;
     }
 
     public MessageFilter getFilter() {
-	return filter;
+        return filter;
     }
 
     public MessageTransformer getTransformer() {
-	return transformer;
+        return transformer;
     }
 
 }

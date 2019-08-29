@@ -19,7 +19,7 @@ public class TrainingTimer implements Runnable {
     private TradingNeuralNetworkTrainer network;
 
     @Inject
-	private DataGenerator generator;
+    private DataGenerator generator;
 
     public TrainingTimer() {
 
@@ -27,14 +27,14 @@ public class TrainingTimer implements Runnable {
 
     @Override
     public void run() {
-	try {
+        try {
 
 
-		network.train(generator, 5);
+            network.train(generator, 5);
 
 
-	} catch (Exception e) {
-	    logger.error("error while training network: ", e);
-	}
+        } catch (Exception e) {
+            logger.error("error while training network: ", e);
+        }
     }
 }

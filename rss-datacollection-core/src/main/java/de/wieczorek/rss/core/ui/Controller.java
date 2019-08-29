@@ -20,7 +20,7 @@ public class Controller extends ControllerBase {
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
-	start();
+        start();
     }
 
     @Inject
@@ -31,26 +31,26 @@ public class Controller extends ControllerBase {
 
     @Override
     public void start() {
-	logger.info("started");
-	taskManager.start();
+        logger.info("started");
+        taskManager.start();
     }
 
     @Override
     public void stop() {
-	logger.info("stopped");
-	taskManager.stop();
+        logger.info("stopped");
+        taskManager.stop();
     }
 
     public List<RssEntry> readEntriesAfter(Date before) {
-	logger.info("get all unclassified");
-	return dao.findAllAfter(before);
+        logger.info("get all unclassified");
+        return dao.findAllAfter(before);
     }
 
     public List<RssEntry> readEntries24h() {
-	return dao.findAll24h();
+        return dao.findAll24h();
     }
 
     public List<RssEntry> readAllEntries() {
-	return dao.findAll();
+        return dao.findAll();
     }
 }

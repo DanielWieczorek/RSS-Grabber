@@ -25,14 +25,14 @@ public class ChartResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/")
     public List<ChartEntry> ohlcv() {
-	return controller.getAll();
+        return controller.getAll();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("24h")
     public List<ChartEntry> ohlcv24h() {
-	return controller.get24h();
+        return controller.get24h();
     }
 
 }

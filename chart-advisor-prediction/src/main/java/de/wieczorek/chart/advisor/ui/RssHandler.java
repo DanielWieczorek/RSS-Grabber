@@ -24,14 +24,14 @@ public class RssHandler {
     @Path("sentiment")
     @Produces(MediaType.APPLICATION_JSON)
     public TradingEvaluationResult predict() {
-	return controller.predict();
+        return controller.predict();
     }
 
     @GET
     @Path("sentiment/24h")
     @Produces(MediaType.APPLICATION_JSON)
     public List<TradingEvaluationResult> predict24h() {
-	return controller.get24hPrediction();
+        return controller.get24hPrediction();
     }
 
     @GET
@@ -45,13 +45,13 @@ public class RssHandler {
     @Path("sentiment/all")
     @Produces(MediaType.APPLICATION_JSON)
     public List<TradingEvaluationResult> getAllSentiments() {
-	return controller.getAllPredictions();
+        return controller.getAllPredictions();
     }
 
     @GET
     @Path("recompute")
     public void recompute() {
-	controller.recompute();
+        controller.recompute();
     }
 
 }

@@ -11,30 +11,30 @@ public class NeuralNetworkState implements Encodable {
     private int step;
 
     public NeuralNetworkState(StateEdge state, int step) {
-	super();
-	this.state = state;
-	this.step = step;
+        super();
+        this.state = state;
+        this.step = step;
     }
 
     @Override
     public double[] toArray() {
-	return NetworkInputBuilder.buildInputArray(state, state.getAccount());
+        return NetworkInputBuilder.buildInputArray(state, state.getAccount());
     }
 
     public StateEdge getState() {
-	return state;
+        return state;
     }
 
     public void setState(StateEdge state) {
-	this.state = state;
+        this.state = state;
     }
 
     public int getStep() {
-	return step;
+        return step;
     }
 
     public void setStep(int step) {
-	this.step = step;
+        this.step = step;
     }
 
 }

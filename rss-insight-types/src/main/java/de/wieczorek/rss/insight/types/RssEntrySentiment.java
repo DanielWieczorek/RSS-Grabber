@@ -10,27 +10,27 @@ public class RssEntrySentiment {
     private double negativeProbability;
 
     public RssEntry getEntry() {
-	return entry;
+        return entry;
     }
 
     public void setEntry(RssEntry entry) {
-	this.entry = entry;
+        this.entry = entry;
     }
 
     public double getPositiveProbability() {
-	return positiveProbability;
+        return positiveProbability;
     }
 
     public void setPositiveProbability(double positiveProbability) {
-	this.positiveProbability = positiveProbability;
+        this.positiveProbability = positiveProbability;
     }
 
     public double getNegativeProbability() {
-	return negativeProbability;
+        return negativeProbability;
     }
 
     public void setNegativeProbability(double negativeProbability) {
-	this.negativeProbability = negativeProbability;
+        this.negativeProbability = negativeProbability;
     }
 
 }

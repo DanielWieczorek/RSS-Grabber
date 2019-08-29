@@ -25,14 +25,14 @@ public class MetricsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/all")
     public List<ChartMetricRecord> metricAll() {
-	return controller.getAll();
+        return controller.getAll();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/24h")
     public List<ChartMetricRecord> metric24h() {
-	return controller.get24h();
+        return controller.get24h();
     }
 
     @GET
@@ -45,6 +45,6 @@ public class MetricsResource {
     @GET
     @Path("recompute")
     public void recompute() {
-	controller.recompute();
+        controller.recompute();
     }
 }

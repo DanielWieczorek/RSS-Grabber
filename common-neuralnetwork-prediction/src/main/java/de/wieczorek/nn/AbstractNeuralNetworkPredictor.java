@@ -16,19 +16,19 @@ public abstract class AbstractNeuralNetworkPredictor<T, R> {
     private NeuralNetworkPathBuilder pathBuilder;
 
     public R predict(T item) {
-	MultiLayerNetwork net = readNetwork();
+        MultiLayerNetwork net = readNetwork();
 
-	if (net == null) {
-	    throw new RuntimeException(); // TODO
-	}
-	net.setCacheMode(null);
-	Nd4j.getMemoryManager().setAutoGcWindow(500);
-	INDArray outputRaw = net.output(buildPredictionFeatures(item));
-	long timeSeriesLength = outputRaw.size(2); // TODO
-	INDArray probabilitiesAtLastWord = outputRaw.get(NDArrayIndex.point(0), NDArrayIndex.all(),
-		NDArrayIndex.point(timeSeriesLength - 1));
-	Nd4j.getWorkspaceManager().destroyAllWorkspacesForCurrentThread();
-	return buildPredictionResult(item, probabilitiesAtLastWord);
+        if (net == null) {
+            throw new RuntimeException(); // TODO
+        }
+        net.setCacheMode(null);
+        Nd4j.getMemoryManager().setAutoGcWindow(500);
+        INDArray outputRaw = net.output(buildPredictionFeatures(item));
+        long timeSeriesLength = outputRaw.size(2); // TODO
+        INDArray probabilitiesAtLastWord = outputRaw.get(NDArrayIndex.point(0), NDArrayIndex.all(),
+                NDArrayIndex.point(timeSeriesLength - 1));
+        Nd4j.getWorkspaceManager().destroyAllWorkspacesForCurrentThread();
+        return buildPredictionResult(item, probabilitiesAtLastWord);
 
     }
 
@@ -36,18 +36,17 @@ public abstract class AbstractNeuralNetworkPredictor<T, R> {
 
     protected abstract R buildPredictionResult(T input, INDArray output);
 
-	private MultiLayerNetwork readNetwork() {
-		File dir = pathBuilder.getCheckpointsPath();
-		MultiLayerNetwork net = null;
-		File[] checkpointFiles = dir.listFiles();
-		if(checkpointFiles != null
-				&& checkpointFiles.length > 0
-				&& CheckpointListener.lastCheckpoint(dir) != null) {
-			net = CheckpointListener.loadCheckpointMLN(dir,CheckpointListener.lastCheckpoint(dir));
-		}
-		return net;
-	}
-
+    private MultiLayerNetwork readNetwork() {
+        File dir = pathBuilder.getCheckpointsPath();
+        MultiLayerNetwork net = null;
+        File[] checkpointFiles = dir.listFiles();
+        if (checkpointFiles != null
+                && checkpointFiles.length > 0
+                && CheckpointListener.lastCheckpoint(dir) != null) {
+            net = CheckpointListener.loadCheckpointMLN(dir, CheckpointListener.lastCheckpoint(dir));
+        }
+        return net;
+    }
 
 
 }

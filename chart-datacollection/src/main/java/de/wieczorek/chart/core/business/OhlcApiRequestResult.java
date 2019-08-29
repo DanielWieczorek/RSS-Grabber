@@ -14,19 +14,19 @@ public class OhlcApiRequestResult {
     private Map<String, Object> results;
 
     public List<Object> getErrors() {
-	return errors;
+        return errors;
     }
 
     public void setErrors(List<Object> errors) {
-	this.errors = errors;
+        this.errors = errors;
     }
 
     public Map<String, Object> getResults() {
-	return results;
+        return results;
     }
 
     public void setResults(Map<String, Object> results) {
-	this.results = results;
+        this.results = results;
     }
 
 }

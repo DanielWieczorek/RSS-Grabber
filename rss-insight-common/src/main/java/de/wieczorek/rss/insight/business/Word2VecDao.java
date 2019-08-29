@@ -20,30 +20,30 @@ public class Word2VecDao {
     private String fileName;
 
     public void writeWord2Vec(Word2Vec net) {
-	lock.lock();
-	try {
-	    WordVectorSerializer.writeWord2VecModel(net, buildPath());
-	} catch (Exception e) {
-	    e.printStackTrace();
-	} finally {
-	    lock.unlock();
-	}
+        lock.lock();
+        try {
+            WordVectorSerializer.writeWord2VecModel(net, buildPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
     }
 
     private String buildPath() {
-	return System.getProperty("user.home") + "/neural-networks/" + fileName + "-word2vec";
+        return System.getProperty("user.home") + "/neural-networks/" + fileName + "-word2vec";
     }
 
     public Word2Vec readWord2Vec() {
-	lock.lock();
-	try {
-	    return WordVectorSerializer.readWord2VecModel(buildPath());
-	} catch (Exception e) {
-	    e.printStackTrace();
-	} finally {
-	    lock.unlock();
-	}
-	return null;
+        lock.lock();
+        try {
+            return WordVectorSerializer.readWord2VecModel(buildPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+        return null;
     }
 
 }

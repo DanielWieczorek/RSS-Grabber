@@ -22,7 +22,7 @@ public class Configuration {
     @Produces
     @JGroupsPort
     public int getJGroupsPort() {
-	return restPort + 1;
+        return restPort + 1;
     }
 
     @Produces
@@ -31,10 +31,10 @@ public class Configuration {
 
     @Produces
     @MigrationConfiguration
-    private Map<String, String> migrationConfig = Stream.of(new String[][] { //
-	    { "flyway.url", "jdbc:postgresql://localhost/MICROSERVICE_AUTHENTICATION" }, //
-	    { "flyway.user", "postgres" }, //
-	    { "flyway.password", "admin" }, //
-	    { "flyway.locations", "classpath:db/migration" } //
+    private Map<String, String> migrationConfig = Stream.of(new String[][]{ //
+            {"flyway.url", "jdbc:postgresql://localhost/MICROSERVICE_AUTHENTICATION"}, //
+            {"flyway.user", "postgres"}, //
+            {"flyway.password", "admin"}, //
+            {"flyway.locations", "classpath:db/migration"} //
     }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
 }

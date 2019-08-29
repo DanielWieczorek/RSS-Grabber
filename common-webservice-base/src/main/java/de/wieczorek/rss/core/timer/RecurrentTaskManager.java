@@ -26,22 +26,22 @@ public class RecurrentTaskManager {
 
     @PostConstruct
     private void init() {
-	tasks.handlers().forEach((handler) -> {
-	    RecurrentTask[] taskAnnotations = handler.getBean().getBeanClass()
-		    .getAnnotationsByType(RecurrentTask.class);
-	    Arrays.asList(taskAnnotations).forEach((annotation) -> runners
-		    .add(new RecurrentTaskRunner(handler.get(), annotation.interval(), annotation.unit())));
-	});
+        tasks.handlers().forEach((handler) -> {
+            RecurrentTask[] taskAnnotations = handler.getBean().getBeanClass()
+                    .getAnnotationsByType(RecurrentTask.class);
+            Arrays.asList(taskAnnotations).forEach((annotation) -> runners
+                    .add(new RecurrentTaskRunner(handler.get(), annotation.interval(), annotation.unit())));
+        });
     }
 
     public void start() {
         logger.debug("triggered start");
-	runners.forEach(RecurrentTaskRunner::start);
+        runners.forEach(RecurrentTaskRunner::start);
 
     }
 
     public void stop() {
-	runners.forEach(RecurrentTaskRunner::stop);
+        runners.forEach(RecurrentTaskRunner::stop);
 
     }
 

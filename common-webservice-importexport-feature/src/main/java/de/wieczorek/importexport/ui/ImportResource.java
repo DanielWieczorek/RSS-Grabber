@@ -27,14 +27,14 @@ public class ImportResource {
     @SuppressWarnings("unchecked")
     @Path("import")
     public void importData(ImportExportData data) {
-	ObjectMapper mapper = new ObjectMapper();
-	importDaos.forEach(dao -> {
-	    Collection<Object> entities = (Collection<Object>) data.getData().get(dao.getEntityType().getName())
-		    .stream().map(item -> {
-			return mapper.convertValue(item, dao.getEntityType());
-		    }).collect(Collectors.toList());
-	    dao.persistAllAsObject(entities);
-	});
+        ObjectMapper mapper = new ObjectMapper();
+        importDaos.forEach(dao -> {
+            Collection<Object> entities = (Collection<Object>) data.getData().get(dao.getEntityType().getName())
+                    .stream().map(item -> {
+                        return mapper.convertValue(item, dao.getEntityType());
+                    }).collect(Collectors.toList());
+            dao.persistAllAsObject(entities);
+        });
     }
 
 }

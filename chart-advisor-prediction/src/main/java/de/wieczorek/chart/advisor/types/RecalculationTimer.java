@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 @RecurrentTask(interval = 10, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class RecalculationTimer extends AbstractRecalculationTimer {
-	private static final Logger logger = LoggerFactory.getLogger(RecalculationTimer.class);
+    private static final Logger logger = LoggerFactory.getLogger(RecalculationTimer.class);
 
     private static final int NUMBER_OF_ENTRIES = 300;
 
@@ -34,46 +34,46 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
 
-		LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
-		List<ChartMetricRecord> metrics = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-				.target("http://wieczorek.io:13000/metric/all").request(MediaType.APPLICATION_JSON)
-				.get(new GenericType<List<ChartMetricRecord>>() {
-				});
+        LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
+        List<ChartMetricRecord> metrics = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:13000/metric/all").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartMetricRecord>>() {
+                });
 
-	List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://wieczorek.io:12000/ohlcv/").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		});
+        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:12000/ohlcv/").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartEntry>>() {
+                });
 
-		logger.debug(LocalDateTime.now() + "calculating for " + chartEntries.size() + "entries");
+        logger.debug(LocalDateTime.now() + "calculating for " + chartEntries.size() + "entries");
 
-	DataPreparator preparator = new DataPreparator().withChartData(chartEntries).withMetrics(metrics);
-	int startIndex = 0;
-	for (int i = 0; i < metrics.size(); i++) {
-	    if (metrics.get(i).getId().getDate().isEqual(startDate)) {
-		startIndex = i + 1;
-		break;
-	    }
-	}
-	int i = 0;
-	for (i = 0; i < NUMBER_OF_ENTRIES && i + startIndex < metrics.size(); i++) {
-		ChartMetricRecord sentiment = metrics.get(i + startIndex);
-	    NetInputItem networkInput = preparator.getDataAtTime(sentiment.getId().getDate());
-	    if (networkInput != null) {
-		TradingEvaluationResult result = nn.predict(networkInput);
-		result.setCurrentTime(sentiment.getId().getDate());
-		result.setTargetTime(sentiment.getId().getDate().plusMinutes(preparator.getOffsetMinutes()));
+        DataPreparator preparator = new DataPreparator().withChartData(chartEntries).withMetrics(metrics);
+        int startIndex = 0;
+        for (int i = 0; i < metrics.size(); i++) {
+            if (metrics.get(i).getId().getDate().isEqual(startDate)) {
+                startIndex = i + 1;
+                break;
+            }
+        }
+        int i = 0;
+        for (i = 0; i < NUMBER_OF_ENTRIES && i + startIndex < metrics.size(); i++) {
+            ChartMetricRecord sentiment = metrics.get(i + startIndex);
+            NetInputItem networkInput = preparator.getDataAtTime(sentiment.getId().getDate());
+            if (networkInput != null) {
+                TradingEvaluationResult result = nn.predict(networkInput);
+                result.setCurrentTime(sentiment.getId().getDate());
+                result.setTargetTime(sentiment.getId().getDate().plusMinutes(preparator.getOffsetMinutes()));
 
-		tradingDao.upsert(result);
-			logger.debug(LocalDateTime.now() + "calculating for date " + sentiment.getId().getDate());
-	    }
-	}
+                tradingDao.upsert(result);
+                logger.debug(LocalDateTime.now() + "calculating for date " + sentiment.getId().getDate());
+            }
+        }
 
-	if (startIndex + NUMBER_OF_ENTRIES < metrics.size()) {
-	    return metrics.get(i + startIndex).getId().getDate();
-	} else {
-	    return null;
-	}
+        if (startIndex + NUMBER_OF_ENTRIES < metrics.size()) {
+            return metrics.get(i + startIndex).getId().getDate();
+        } else {
+            return null;
+        }
 
     }
 

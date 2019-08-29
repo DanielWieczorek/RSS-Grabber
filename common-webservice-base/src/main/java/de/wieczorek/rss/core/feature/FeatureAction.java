@@ -8,27 +8,27 @@ public class FeatureAction {
     private String method;
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     public String getPath() {
-	return path;
+        return path;
     }
 
     public void setPath(String path) {
-	this.path = path;
+        this.path = path;
     }
 
     public String getMethod() {
-	return method;
+        return method;
     }
 
     public void setMethod(String method) {
-	this.method = method;
+        this.method = method;
     }
 
     public FeatureAction() {
@@ -36,10 +36,10 @@ public class FeatureAction {
     }
 
     public FeatureAction(String name, String path, String method) {
-	super();
-	this.name = name;
-	this.path = path;
-	this.method = method;
+        super();
+        this.name = name;
+        this.path = path;
+        this.method = method;
     }
 
 }

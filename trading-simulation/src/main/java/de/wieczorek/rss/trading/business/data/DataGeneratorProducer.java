@@ -14,7 +14,7 @@ public class DataGeneratorProducer {
 
 
     @Produces
-    public DataGenerator produceGenerator(){
+    public DataGenerator produceGenerator() {
         return new DataGenerator(
                 dataLoader::loadAllSentiments,
                 dataLoader::loadAllChartEntries,

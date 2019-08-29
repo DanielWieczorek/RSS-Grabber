@@ -32,22 +32,22 @@ public class Controller extends ControllerBase {
 
     @Override
     public void start() {
-	logger.info("started");
-	timer.start();
+        logger.info("started");
+        timer.start();
     }
 
     @Override
     public void stop() {
-	logger.info("stopped");
-	timer.stop();
+        logger.info("stopped");
+        timer.stop();
     }
 
     public List<ChartMetricRecord> getAll() {
-	return dao.findAll();
+        return dao.findAll();
     }
 
     public List<ChartMetricRecord> get24h() {
-	return dao.find24h();
+        return dao.find24h();
     }
 
     public List<ChartMetricRecord> getNow() {
@@ -55,10 +55,10 @@ public class Controller extends ControllerBase {
     }
 
     public void recompute() {
-	Recalculation recalculation = new Recalculation();
-	recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
-	recalculationDao.deleteAll();
-	recalculationDao.create(recalculation);
+        Recalculation recalculation = new Recalculation();
+        recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
+        recalculationDao.deleteAll();
+        recalculationDao.create(recalculation);
     }
 
 }

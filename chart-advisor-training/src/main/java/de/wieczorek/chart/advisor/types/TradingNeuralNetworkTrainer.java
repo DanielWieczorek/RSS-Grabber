@@ -30,54 +30,54 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Tr
     protected DataSetIterator buildTrainingSetIterator(List<TrainingNetInputItem> trainingSet) {
 
 
-	SentimentExampleIterator train = new SentimentExampleIterator(trainingSet, getBatchSize(), true);
-	return train;
+        SentimentExampleIterator train = new SentimentExampleIterator(trainingSet, getBatchSize(), true);
+        return train;
     }
 
     @Override
     protected DataSetIterator buildTestSetIterator(List<TrainingNetInputItem> testSet) {
-	SentimentExampleIterator test = new SentimentExampleIterator(testSet, getBatchSize(), false);
+        SentimentExampleIterator test = new SentimentExampleIterator(testSet, getBatchSize(), false);
 
-	return test;
+        return test;
     }
 
     @Override
     protected MultiLayerNetwork buildNetwork() {
 
-	int vectorSize = 20;
-	final int seed = 0;
+        int vectorSize = 20;
+        final int seed = 0;
 
-	MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed).updater(new Adam(2e-4)).l2(1e-5)
-		.weightInit(WeightInit.XAVIER).gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
-		.gradientNormalizationThreshold(1.0).trainingWorkspaceMode(WorkspaceMode.ENABLED).list()
-		.layer(0, new LSTM.Builder().nIn(vectorSize).nOut(120).activation(Activation.TANH).build())
-		.layer(1, new LSTM.Builder().nOut(120).activation(Activation.TANH).build())
-			.layer(2, new LSTM.Builder().nOut(120).activation(Activation.TANH).build())
-			.layer(3, new LSTM.Builder().nOut(120).activation(Activation.TANH).build())
-			.layer(4, new DenseLayer.Builder().nOut(120).activation(Activation.RELU).build())
-			.layer(5, new DropoutLayer.Builder().nOut(120).build())
-			.layer(6,
-			new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(Activation.IDENTITY)
-				.l2(0.0001).weightInit(WeightInit.XAVIER).nOut(1).build())
+        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed).updater(new Adam(2e-4)).l2(1e-5)
+                .weightInit(WeightInit.XAVIER).gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
+                .gradientNormalizationThreshold(1.0).trainingWorkspaceMode(WorkspaceMode.ENABLED).list()
+                .layer(0, new LSTM.Builder().nIn(vectorSize).nOut(120).activation(Activation.TANH).build())
+                .layer(1, new LSTM.Builder().nOut(120).activation(Activation.TANH).build())
+                .layer(2, new LSTM.Builder().nOut(120).activation(Activation.TANH).build())
+                .layer(3, new LSTM.Builder().nOut(120).activation(Activation.TANH).build())
+                .layer(4, new DenseLayer.Builder().nOut(120).activation(Activation.RELU).build())
+                .layer(5, new DropoutLayer.Builder().nOut(120).build())
+                .layer(6,
+                        new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(Activation.IDENTITY)
+                                .l2(0.0001).weightInit(WeightInit.XAVIER).nOut(1).build())
 
-		.backpropType(BackpropType.Standard)
+                .backpropType(BackpropType.Standard)
 
-		.build();
-	conf.setIterationCount(10);
+                .build();
+        conf.setIterationCount(10);
 
-	MultiLayerNetwork net = new MultiLayerNetwork(conf);
+        MultiLayerNetwork net = new MultiLayerNetwork(conf);
 
-	return net;
+        return net;
     }
 
     @Override
     protected int getBatchSize() {
-	return 256;
+        return 256;
     }
 
     @Override
     protected BaseEvaluation<?> buildEvaluation(DataSetIterator test, MultiLayerNetwork net) {
 
-	return net.evaluateRegression(test);
+        return net.evaluateRegression(test);
     }
 }

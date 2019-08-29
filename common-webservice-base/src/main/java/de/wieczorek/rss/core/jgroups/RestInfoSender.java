@@ -51,89 +51,89 @@ public class RestInfoSender extends ReceiverAdapter {
     private Event<List<Address>> leftMembersEvent;
 
     public void init() throws Exception {
-	objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
-	channel.setReceiver(this);
-	channel.setDiscardOwnMessages(true);
-	channel.connect("rss-collectors-rest");
+        channel.setReceiver(this);
+        channel.setDiscardOwnMessages(true);
+        channel.connect("rss-collectors-rest");
     }
 
     @Override
     public void receive(Message msg) {
-	TypeFactory tf = objectMapper.getTypeFactory();
+        TypeFactory tf = objectMapper.getTypeFactory();
 
-	try {
+        try {
 
-	    JGroupsMessage<?> message = objectMapper.readValue(msg.getBuffer(), JGroupsMessage.class);
-	    logger.error("Received message from " + msg.getSrc() + " of type " + message.type.getSimpleName());
+            JGroupsMessage<?> message = objectMapper.readValue(msg.getBuffer(), JGroupsMessage.class);
+            logger.error("Received message from " + msg.getSrc() + " of type " + message.type.getSimpleName());
 
-	    if (message.type == StatusRequest.class) {
-		sendStatusResponse(msg);
-	    } else if (message.type == StatusResponse.class) {
-		sendStatusResponseEvent(msg);
-	    }
-	} catch (Exception e) {
-	    logger.error("error parsing message from " + msg.getSrc(), e);
-	}
+            if (message.type == StatusRequest.class) {
+                sendStatusResponse(msg);
+            } else if (message.type == StatusResponse.class) {
+                sendStatusResponseEvent(msg);
+            }
+        } catch (Exception e) {
+            logger.error("error parsing message from " + msg.getSrc(), e);
+        }
     }
 
     private void sendStatusResponseEvent(Message msg) throws IOException, JsonParseException, JsonMappingException {
-	JGroupsMessage<?> message;
-	message = objectMapper.readValue(msg.getBuffer(),
-		objectMapper.getTypeFactory().constructParametricType(JGroupsMessage.class, StatusResponse.class));
+        JGroupsMessage<?> message;
+        message = objectMapper.readValue(msg.getBuffer(),
+                objectMapper.getTypeFactory().constructParametricType(JGroupsMessage.class, StatusResponse.class));
 
-	StatusResponse response = ((JGroupsMessage<StatusResponse>) message).payload;
-	StatusMessage smg = new StatusMessage();
-	smg.setAddress(msg.src());
-	smg.setResponse(response);
+        StatusResponse response = ((JGroupsMessage<StatusResponse>) message).payload;
+        StatusMessage smg = new StatusMessage();
+        smg.setAddress(msg.src());
+        smg.setResponse(response);
 
-	responseEvent.fire(smg);
+        responseEvent.fire(smg);
     }
 
     private void sendStatusResponse(Message msg) throws Exception {
-	JGroupsMessage<?> message = objectMapper.readValue(msg.getBuffer(),
-		objectMapper.getTypeFactory().constructParametricType(JGroupsMessage.class, StatusRequest.class));
-	StatusResponse response = new StatusResponse();
-	response.setCollectorName(collectorName);
-	response.setBindHostname("localhost");
-	response.setBindPort(httpBindPort);
+        JGroupsMessage<?> message = objectMapper.readValue(msg.getBuffer(),
+                objectMapper.getTypeFactory().constructParametricType(JGroupsMessage.class, StatusRequest.class));
+        StatusResponse response = new StatusResponse();
+        response.setCollectorName(collectorName);
+        response.setBindHostname("localhost");
+        response.setBindPort(httpBindPort);
 
-	JGroupsMessage<StatusResponse> outgoingMessage = new JGroupsMessage<>();
-	outgoingMessage.type = StatusResponse.class;
-	outgoingMessage.payload = response;
+        JGroupsMessage<StatusResponse> outgoingMessage = new JGroupsMessage<>();
+        outgoingMessage.type = StatusResponse.class;
+        outgoingMessage.payload = response;
 
-	channel.send(new Message(msg.getSrc(), objectMapper.writeValueAsBytes(outgoingMessage)));
+        channel.send(new Message(msg.getSrc(), objectMapper.writeValueAsBytes(outgoingMessage)));
 
     }
 
     @Override
     public void viewAccepted(View newView) {
-	if (oldView != null) {
-	    leftMembersEvent.fire(View.leftMembers(oldView, newView));
+        if (oldView != null) {
+            leftMembersEvent.fire(View.leftMembers(oldView, newView));
 
-	    View.newMembers(oldView, newView).forEach(this::sendStatusRequest);
-	} else {
-	    newView.getMembers().forEach(this::sendStatusRequest);
-	}
-	oldView = newView;
+            View.newMembers(oldView, newView).forEach(this::sendStatusRequest);
+        } else {
+            newView.getMembers().forEach(this::sendStatusRequest);
+        }
+        oldView = newView;
     }
 
     private void sendStatusRequest(Address address) {
-	try {
-	    JGroupsMessage<StatusRequest> outgoingMessage = new JGroupsMessage<>();
-	    outgoingMessage.type = StatusRequest.class;
-	    outgoingMessage.payload = new StatusRequest();
+        try {
+            JGroupsMessage<StatusRequest> outgoingMessage = new JGroupsMessage<>();
+            outgoingMessage.type = StatusRequest.class;
+            outgoingMessage.payload = new StatusRequest();
 
-	    channel.send(new Message(address, objectMapper.writeValueAsBytes(outgoingMessage)));
-	    logger.error("Sending status request to" + address.toString());
+            channel.send(new Message(address, objectMapper.writeValueAsBytes(outgoingMessage)));
+            logger.error("Sending status request to" + address.toString());
 
-	} catch (JsonProcessingException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (Exception e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 }

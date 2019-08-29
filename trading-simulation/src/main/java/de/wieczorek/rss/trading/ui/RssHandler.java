@@ -24,6 +24,6 @@ public class RssHandler {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("simulate")
     public List<Trade> simulate() {
-	return controller.simulate();
+        return controller.simulate();
     }
 }

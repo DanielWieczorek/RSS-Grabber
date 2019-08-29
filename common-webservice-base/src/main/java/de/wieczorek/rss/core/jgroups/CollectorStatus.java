@@ -4,10 +4,10 @@ public class CollectorStatus {
     private String status;
 
     public String getStatus() {
-	return status;
+        return status;
     }
 
     public void setStatus(String status) {
-	this.status = status;
+        this.status = status;
     }
 }

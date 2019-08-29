@@ -27,51 +27,50 @@ public class RecurrentTaskRunner {
     private ScheduledFuture<?> nextInvocation;
 
     RecurrentTaskRunner(Runnable task, int interval, TimeUnit unit) {
-	this.task = task;
-	this.interval = interval;
-	this.unit = unit;
+        this.task = task;
+        this.interval = interval;
+        this.unit = unit;
     }
 
     public void start() {
-	stop();
-	if (executor == null || executor.isShutdown()) {
-	    executor = Executors.newScheduledThreadPool(1);
-	}
-	executor.execute(this::run);
+        stop();
+        if (executor == null || executor.isShutdown()) {
+            executor = Executors.newScheduledThreadPool(1);
+        }
+        executor.execute(this::run);
 
     }
 
     private void run() {
-	nextInvocation = executor.schedule(this::run, interval, unit);
-	logger.debug("scheduling again in " + interval + " " + unit);
-	try {
-	    if (lock.tryLock()) {
-		task.run();
-		lock.unlock();
-	    }
-	} catch (RollbackException r){
-		EntityManagerProvider.getEntityManager().clear();
-	}
-	catch (Exception e) {
-	    e.printStackTrace();
-	}
+        nextInvocation = executor.schedule(this::run, interval, unit);
+        logger.debug("scheduling again in " + interval + " " + unit);
+        try {
+            if (lock.tryLock()) {
+                task.run();
+                lock.unlock();
+            }
+        } catch (RollbackException r) {
+            EntityManagerProvider.getEntityManager().clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void stop() {
-	if (executor != null) {
-	    executor.shutdownNow();
-	    try {
+        if (executor != null) {
+            executor.shutdownNow();
+            try {
 
-		executor.shutdown();
-		if (nextInvocation != null) {
-		    nextInvocation.cancel(false);
-		}
-		executor.awaitTermination(10, TimeUnit.SECONDS);
+                executor.shutdown();
+                if (nextInvocation != null) {
+                    nextInvocation.cancel(false);
+                }
+                executor.awaitTermination(10, TimeUnit.SECONDS);
 
-	    } catch (InterruptedException e) {
-		logger.error("error stopping rss reader: ", e);
-	    }
-	}
+            } catch (InterruptedException e) {
+                logger.error("error stopping rss reader: ", e);
+            }
+        }
     }
 
 }

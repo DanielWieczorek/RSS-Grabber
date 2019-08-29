@@ -13,17 +13,17 @@ import de.wieczorek.rss.core.timer.RecurrentTask;
 public class RssReaderConfigurationProvider extends RssReader {
 
     public class RssReaderConfiguration extends RssConfig {
-	public RssReaderConfiguration() {
-	    serviceName = "rss-collector-cointelegraph";
-	    feedUrl = "https://cointelegraph.com/rss";
-	    filter = new CointelegraphMessageFilter();
-	    transformer = new CointelegraphMessageTransformer();
+        public RssReaderConfiguration() {
+            serviceName = "rss-collector-cointelegraph";
+            feedUrl = "https://cointelegraph.com/rss";
+            filter = new CointelegraphMessageFilter();
+            transformer = new CointelegraphMessageTransformer();
 
-	}
+        }
     }
 
     @Override
     protected RssConfig getRssConfig() {
-	return new RssReaderConfiguration();
+        return new RssReaderConfiguration();
     }
 }

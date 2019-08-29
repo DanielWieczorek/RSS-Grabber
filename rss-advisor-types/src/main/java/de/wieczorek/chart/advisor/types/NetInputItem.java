@@ -11,27 +11,27 @@ public class NetInputItem {
     private double outputDelta;
 
     public List<DeltaChartEntry> getInputChartEntry() {
-	return inputChartEntry;
+        return inputChartEntry;
     }
 
     public void setInputChartEntry(List<DeltaChartEntry> inputChartEntry) {
-	this.inputChartEntry = inputChartEntry;
+        this.inputChartEntry = inputChartEntry;
     }
 
     public SentimentAtTime getInputSentiment() {
-	return inputSentiment;
+        return inputSentiment;
     }
 
     public void setInputSentiment(SentimentAtTime inputSentiment) {
-	this.inputSentiment = inputSentiment;
+        this.inputSentiment = inputSentiment;
     }
 
     public double getOutputDelta() {
-	return outputDelta;
+        return outputDelta;
     }
 
     public void setOutputDelta(double outputDelta) {
-	this.outputDelta = outputDelta;
+        this.outputDelta = outputDelta;
     }
 
 }

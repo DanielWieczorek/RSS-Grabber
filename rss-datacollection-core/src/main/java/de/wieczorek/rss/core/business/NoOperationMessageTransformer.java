@@ -6,7 +6,7 @@ public class NoOperationMessageTransformer implements MessageTransformer {
 
     @Override
     public RssEntry apply(RssEntry t) {
-	return t;
+        return t;
     }
 
 }

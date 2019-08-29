@@ -29,31 +29,31 @@ public class Controller extends ControllerBase {
     private RecurrentTaskManager timer;
 
     public void trainNeuralNetwork() {
-	logger.error("foo"); // TODO
-	List<SentimentAtTime> sentiments = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:11020/sentiment-at-time").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<SentimentAtTime>>() {
-		});
+        logger.error("foo"); // TODO
+        List<SentimentAtTime> sentiments = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://localhost:11020/sentiment-at-time").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<SentimentAtTime>>() {
+                });
 
-	List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:12000/ohlcv").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		});
+        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://localhost:12000/ohlcv").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartEntry>>() {
+                });
 
-	if (sentiments != null && chartEntries != null) {
-	 //   nn.train(new DataPreparator().withChartData(chartEntries).withSentiments(sentiments).getData(), 1);
-	}
+        if (sentiments != null && chartEntries != null) {
+            //   nn.train(new DataPreparator().withChartData(chartEntries).withSentiments(sentiments).getData(), 1);
+        }
 
     }
 
     @Override
     protected void start() {
-	timer.start();
+        timer.start();
     }
 
     @Override
     protected void stop() {
-	timer.stop();
+        timer.stop();
     }
 
 }

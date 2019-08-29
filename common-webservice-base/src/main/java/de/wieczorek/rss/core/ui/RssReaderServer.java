@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class RssReaderServer {
-	private static final Logger logger = LoggerFactory.getLogger(RssReaderServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(RssReaderServer.class);
 
 
     private Server server;
@@ -35,41 +35,41 @@ public class RssReaderServer {
     }
 
     public void start() {
-	initServer();
+        initServer();
 
-	try {
-	    server.start();
-	    server.join();
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
-	} finally {
-	    server.destroy();
-	}
+        try {
+            server.start();
+            server.join();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            server.destroy();
+        }
     }
 
     private void initServer() {
-	ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-	context.setContextPath("/");
-	context.addEventListener(new Listener());
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.setContextPath("/");
+        context.addEventListener(new Listener());
 
-	server = new Server(port);
-	server.setHandler(context);
+        server = new Server(port);
+        server.setHandler(context);
 
-	// Add the filter, and then use the provided FilterHolder to configure it
-	FilterHolder cors = context.addFilter(CrossOriginFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-	cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
-	cors.setInitParameter(CrossOriginFilter.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, "*");
-	cors.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,HEAD,OPTIONS");
-	cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM,
-		"X-Requested-With,Content-Type,Accept,Origin,Authorization");
+        // Add the filter, and then use the provided FilterHolder to configure it
+        FilterHolder cors = context.addFilter(CrossOriginFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
+        cors.setInitParameter(CrossOriginFilter.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, "*");
+        cors.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,HEAD,OPTIONS");
+        cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM,
+                "X-Requested-With,Content-Type,Accept,Origin,Authorization");
 
-	ServletHolder jerseyServlet = context.addServlet(org.glassfish.jersey.servlet.ServletContainer.class, "/*");
-	jerseyServlet.setInitOrder(0);
+        ServletHolder jerseyServlet = context.addServlet(org.glassfish.jersey.servlet.ServletContainer.class, "/*");
+        jerseyServlet.setInitOrder(0);
 
-		logger.info("found the following REST resource classes: "+ServiceCollector.getClasses().stream().collect(Collectors.joining(",")));
+        logger.info("found the following REST resource classes: " + ServiceCollector.getClasses().stream().collect(Collectors.joining(",")));
 
-	jerseyServlet.setInitParameter("jersey.config.server.provider.classnames",
-		ServiceCollector.getClasses().stream().collect(Collectors.joining(",")));
+        jerseyServlet.setInitParameter("jersey.config.server.provider.classnames",
+                ServiceCollector.getClasses().stream().collect(Collectors.joining(",")));
 
     }
 

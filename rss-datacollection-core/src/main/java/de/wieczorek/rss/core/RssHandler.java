@@ -27,14 +27,14 @@ public class RssHandler {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("24h")
     public List<RssEntry> entriesFromLast24h() {
-	return controller.readEntries24h();
+        return controller.readEntries24h();
     }
 
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     @Path("{unixTimestamp}")
     public List<RssEntry> entriesAfter(@PathParam("unixTimestamp") long unixTimestamp) {
-	return controller.readEntriesAfter(new Date(unixTimestamp));
+        return controller.readEntriesAfter(new Date(unixTimestamp));
 
     }
 
@@ -42,7 +42,7 @@ public class RssHandler {
     @GET
     @Path("/")
     public List<RssEntry> allEntries() {
-	return controller.readAllEntries();
+        return controller.readAllEntries();
 
     }
 }

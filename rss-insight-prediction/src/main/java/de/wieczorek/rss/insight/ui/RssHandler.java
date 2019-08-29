@@ -25,21 +25,21 @@ public class RssHandler {
     @Path("sentiment")
     @Produces(MediaType.APPLICATION_JSON)
     public SentimentEvaluationResult sentiment() {
-	return controller.predict();
+        return controller.predict();
     }
 
     @GET
     @Path("sentiment-at-time")
     @Produces(MediaType.APPLICATION_JSON)
     public List<SentimentAtTime> allSentiments() {
-	return controller.getAllSentimentAtTime();
+        return controller.getAllSentimentAtTime();
     }
 
     @GET
     @Path("recompute")
     @Produces(MediaType.APPLICATION_JSON)
     public void recalculate() {
-	controller.recalculate();
+        controller.recalculate();
     }
 
 }

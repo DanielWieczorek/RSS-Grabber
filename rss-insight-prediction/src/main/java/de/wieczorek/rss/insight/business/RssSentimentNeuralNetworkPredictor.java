@@ -24,25 +24,25 @@ public class RssSentimentNeuralNetworkPredictor extends AbstractNeuralNetworkPre
 
     @Override
     protected INDArray buildPredictionFeatures(RssEntry item) {
-	Stemmer stemmer = new PorterStemmer();
+        Stemmer stemmer = new PorterStemmer();
 
-	List<String> stemmedSentence = Arrays.asList((item.getHeading() + ". " + item.getDescription()).split(" "))
-		.stream().map(stemmer::stem).map(CharSequence::toString).map(String::toLowerCase).filter(vec::hasWord)
-		.collect(Collectors.toList());
+        List<String> stemmedSentence = Arrays.asList((item.getHeading() + ". " + item.getDescription()).split(" "))
+                .stream().map(stemmer::stem).map(CharSequence::toString).map(String::toLowerCase).filter(vec::hasWord)
+                .collect(Collectors.toList());
 
-	INDArray vectors = vec.getWordVectors(stemmedSentence);
+        INDArray vectors = vec.getWordVectors(stemmedSentence);
 
-	return Nd4j.expandDims(vectors, 2);
+        return Nd4j.expandDims(vectors, 2);
 
     }
 
     @Override
     protected RssEntrySentiment buildPredictionResult(RssEntry input, INDArray output) {
-	RssEntrySentiment sentiment = new RssEntrySentiment();
-	sentiment.setEntry(input);
+        RssEntrySentiment sentiment = new RssEntrySentiment();
+        sentiment.setEntry(input);
 
-	sentiment.setPositiveProbability(output.getDouble(0));
-	sentiment.setNegativeProbability(output.getDouble(1));
-	return sentiment;
+        sentiment.setPositiveProbability(output.getDouble(0));
+        sentiment.setNegativeProbability(output.getDouble(1));
+        return sentiment;
     }
 }

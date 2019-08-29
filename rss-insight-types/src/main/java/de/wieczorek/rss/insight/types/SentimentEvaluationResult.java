@@ -8,19 +8,19 @@ public class SentimentEvaluationResult {
     private RssEntrySentimentSummary summary;
 
     public List<RssEntrySentiment> getSentiments() {
-	return sentiments;
+        return sentiments;
     }
 
     public void setSentiments(List<RssEntrySentiment> sentiments) {
-	this.sentiments = sentiments;
+        this.sentiments = sentiments;
     }
 
     public RssEntrySentimentSummary getSummary() {
-	return summary;
+        return summary;
     }
 
     public void setSummary(RssEntrySentimentSummary summary) {
-	this.summary = summary;
+        this.summary = summary;
     }
 
 }

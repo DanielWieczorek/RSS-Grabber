@@ -30,19 +30,19 @@ public class Recalculation {
     private LocalDateTime lastDate;
 
     public long getId() {
-	return id;
+        return id;
     }
 
     public void setId(long id) {
-	this.id = id;
+        this.id = id;
     }
 
     public LocalDateTime getLastDate() {
-	return lastDate;
+        return lastDate;
     }
 
     public void setLastDate(LocalDateTime lastDate) {
-	this.lastDate = lastDate;
+        this.lastDate = lastDate;
     }
 
 }

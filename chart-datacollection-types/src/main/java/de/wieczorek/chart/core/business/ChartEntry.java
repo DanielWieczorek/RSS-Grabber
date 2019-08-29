@@ -35,97 +35,97 @@ public class ChartEntry {
     private double transactions;
 
     public LocalDateTime getDate() {
-	return date;
+        return date;
     }
 
     public void setDate(LocalDateTime date) {
-	this.date = date;
+        this.date = date;
     }
 
     public double getOpen() {
-	return open;
+        return open;
     }
 
     public void setOpen(double open) {
-	this.open = open;
+        this.open = open;
     }
 
     public double getHigh() {
-	return high;
+        return high;
     }
 
     public void setHigh(double high) {
-	this.high = high;
+        this.high = high;
     }
 
     public double getLow() {
-	return low;
+        return low;
     }
 
     public void setLow(double low) {
-	this.low = low;
+        this.low = low;
     }
 
     public double getVolumeWeightedAverage() {
-	return volumeWeightedAverage;
+        return volumeWeightedAverage;
     }
 
     public void setVolumeWeightedAverage(double volumeWeightedAverage) {
-	this.volumeWeightedAverage = volumeWeightedAverage;
+        this.volumeWeightedAverage = volumeWeightedAverage;
     }
 
     public double getVolume() {
-	return volume;
+        return volume;
     }
 
     public void setVolume(double volume) {
-	this.volume = volume;
+        this.volume = volume;
     }
 
     public double getClose() {
-	return close;
+        return close;
     }
 
     public void setClose(double close) {
-	this.close = close;
+        this.close = close;
     }
 
     public double getTransactions() {
-	return transactions;
+        return transactions;
     }
 
     public void setTransactions(double transactions) {
-	this.transactions = transactions;
+        this.transactions = transactions;
     }
 
     @Override
     public int hashCode() {
-	final int prime = 31;
-	int result = 1;
-	result = prime * result + ((date == null) ? 0 : date.hashCode());
-	return result;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((date == null) ? 0 : date.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
-	}
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	ChartEntry other = (ChartEntry) obj;
-	if (date == null) {
-	    if (other.date != null) {
-		return false;
-	    }
-	} else if (!date.equals(other.date)) {
-	    return false;
-	}
-	return true;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ChartEntry other = (ChartEntry) obj;
+        if (date == null) {
+            if (other.date != null) {
+                return false;
+            }
+        } else if (!date.equals(other.date)) {
+            return false;
+        }
+        return true;
     }
 
 }

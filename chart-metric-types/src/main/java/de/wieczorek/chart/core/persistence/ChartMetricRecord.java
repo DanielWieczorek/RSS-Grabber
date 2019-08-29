@@ -28,81 +28,81 @@ public class ChartMetricRecord {
     private double value60min;
 
     public double getValue1min() {
-	return value1min;
+        return value1min;
     }
 
     public void setValue1min(double value1min) {
-	this.value1min = value1min;
+        this.value1min = value1min;
     }
 
     public double getValue5min() {
-	return value5min;
+        return value5min;
     }
 
     public void setValue5min(double value5min) {
-	this.value5min = value5min;
+        this.value5min = value5min;
     }
 
     public double getValue15min() {
-	return value15min;
+        return value15min;
     }
 
     public void setValue15min(double value15min) {
-	this.value15min = value15min;
+        this.value15min = value15min;
     }
 
     public double getValue30min() {
-	return value30min;
+        return value30min;
     }
 
     public void setValue30min(double value30min) {
-	this.value30min = value30min;
+        this.value30min = value30min;
     }
 
     public double getValue60min() {
-	return value60min;
+        return value60min;
     }
 
     public void setValue60min(double value60min) {
-	this.value60min = value60min;
+        this.value60min = value60min;
     }
 
     public ChartMetricId getId() {
-	return id;
+        return id;
     }
 
     public void setId(ChartMetricId id) {
-	this.id = id;
+        this.id = id;
     }
 
     @Override
     public int hashCode() {
-	final int prime = 31;
-	int result = 1;
-	result = prime * result + ((id == null) ? 0 : id.hashCode());
-	return result;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
-	}
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	ChartMetricRecord other = (ChartMetricRecord) obj;
-	if (id == null) {
-	    if (other.id != null) {
-		return false;
-	    }
-	} else if (!id.equals(other.id)) {
-	    return false;
-	}
-	return true;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ChartMetricRecord other = (ChartMetricRecord) obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        return true;
     }
 
 }

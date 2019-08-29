@@ -5,19 +5,19 @@ public class SessionInfo {
     private String token;
 
     public String getUsername() {
-	return username;
+        return username;
     }
 
     public void setUsername(String username) {
-	this.username = username;
+        this.username = username;
     }
 
     public String getToken() {
-	return token;
+        return token;
     }
 
     public void setToken(String token) {
-	this.token = token;
+        this.token = token;
     }
 
 }

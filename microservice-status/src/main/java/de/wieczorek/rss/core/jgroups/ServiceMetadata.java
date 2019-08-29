@@ -17,43 +17,43 @@ public class ServiceMetadata {
     private List<FeatureDescriptor> features;
 
     public String getBindHostname() {
-	return bindHostname;
+        return bindHostname;
     }
 
     public void setBindHostname(String bindHostname) {
-	this.bindHostname = bindHostname;
+        this.bindHostname = bindHostname;
     }
 
     public int getBindPort() {
-	return bindPort;
+        return bindPort;
     }
 
     public void setBindPort(int bindPort) {
-	this.bindPort = bindPort;
+        this.bindPort = bindPort;
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setName(String collectorName) {
-	this.name = collectorName;
+        this.name = collectorName;
     }
 
     public String getStatus() {
-	return status;
+        return status;
     }
 
     public void setStatus(String status) {
-	this.status = status;
+        this.status = status;
     }
 
     public List<FeatureDescriptor> getFeatures() {
-	return features;
+        return features;
     }
 
     public void setFeatures(List<FeatureDescriptor> features) {
-	this.features = features;
+        this.features = features;
     }
 
 }

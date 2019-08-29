@@ -29,16 +29,16 @@ public class PredictionTimer implements Runnable {
 
     @Override
     public void run() {
-	try {
-	    TradingEvaluationResult result = controller.predict();
+        try {
+            TradingEvaluationResult result = controller.predict();
 
-	    if (result != null && dao.findById(result.getCurrentTime(), result.getTargetTime()) == null) {
-		    dao.persist(result);
-	    }
+            if (result != null && dao.findById(result.getCurrentTime(), result.getTargetTime()) == null) {
+                dao.persist(result);
+            }
 
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    logger.error("error while generating prediction: ", e);
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("error while generating prediction: ", e);
+        }
     }
 }

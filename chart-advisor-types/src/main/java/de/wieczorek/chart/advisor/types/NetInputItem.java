@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class NetInputItem {
-    private Map<ChartEntry,List<ChartMetricRecord>>  inputChartMetrics;
+    private Map<ChartEntry, List<ChartMetricRecord>> inputChartMetrics;
 
     public List<ChartEntry> getChartEntries() {
         return chartEntries;
@@ -18,7 +18,7 @@ public class NetInputItem {
         this.chartEntries = chartEntries;
     }
 
-    private List<ChartEntry>  chartEntries;
+    private List<ChartEntry> chartEntries;
 
     private double outputDelta;
 
@@ -33,11 +33,11 @@ public class NetInputItem {
         this.outputDelta = outputDelta;
     }
 
-    public Map<ChartEntry,List<ChartMetricRecord>>  getInputChartMetrics() {
+    public Map<ChartEntry, List<ChartMetricRecord>> getInputChartMetrics() {
         return inputChartMetrics;
     }
 
-    public void setInputChartMetrics(Map<ChartEntry,List<ChartMetricRecord>> inputChartMetrics) {
+    public void setInputChartMetrics(Map<ChartEntry, List<ChartMetricRecord>> inputChartMetrics) {
         this.inputChartMetrics = inputChartMetrics;
     }
 

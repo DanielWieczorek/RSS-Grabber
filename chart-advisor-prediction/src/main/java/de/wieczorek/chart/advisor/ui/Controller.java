@@ -44,80 +44,80 @@ public class Controller extends ControllerBase {
     private RecalculationStatusDao recalculationDao;
 
     public TradingEvaluationResult predict() {
-    	LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
-		List<ChartMetricRecord> metrics = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-				.target("http://wieczorek.io:13000/metric/24h").request(MediaType.APPLICATION_JSON)
-				.get(new GenericType<List<ChartMetricRecord>>() {
-				});
+        LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
+        List<ChartMetricRecord> metrics = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:13000/metric/24h").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartMetricRecord>>() {
+                });
 
-	List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://wieczorek.io:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		});
+        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartEntry>>() {
+                });
 
-	if (metrics != null && chartEntries != null) {
+        if (metrics != null && chartEntries != null) {
 
-	    DataPreparator preparator = new DataPreparator().withChartData(chartEntries).withMetrics(metrics);
-		NetInputItem item = preparator.getDataAtTime(currentTime);
-		if(item != null) {
-			TradingEvaluationResult result = nn.predict(item);
-			result.setCurrentTime(currentTime);
-			result.setTargetTime(currentTime.plusMinutes(preparator.getOffsetMinutes()));
+            DataPreparator preparator = new DataPreparator().withChartData(chartEntries).withMetrics(metrics);
+            NetInputItem item = preparator.getDataAtTime(currentTime);
+            if (item != null) {
+                TradingEvaluationResult result = nn.predict(item);
+                result.setCurrentTime(currentTime);
+                result.setTargetTime(currentTime.plusMinutes(preparator.getOffsetMinutes()));
 
-	    	return result;
-		} else {
-			logger.error("could not generate training data");
-		}
-	}
-	return null;
+                return result;
+            } else {
+                logger.error("could not generate training data");
+            }
+        }
+        return null;
 
     }
 
     public void recompute() {
 
-	Recalculation recalculation = new Recalculation();
-	recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
-	recalculationDao.deleteAll();
-	recalculationDao.create(recalculation);
+        Recalculation recalculation = new Recalculation();
+        recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
+        recalculationDao.deleteAll();
+        recalculationDao.create(recalculation);
     }
 
     @Override
     protected void start() {
-	timer.start();
+        timer.start();
     }
 
     @Override
     protected void stop() {
-	timer.stop();
+        timer.stop();
     }
 
     public List<TradingEvaluationResult> get24hPrediction() {
-	return dao.findAfterDate(LocalDateTime.now().minusHours(24));
+        return dao.findAfterDate(LocalDateTime.now().minusHours(24));
     }
 
     public List<TradingEvaluationResult> getAllPredictions() {
-	return dao.findAll();
+        return dao.findAll();
     }
 
     public List<TradingEvaluationResult> get24hAbsolutePrediction() {
-		List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-				.target("http://wieczorek.io:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
-				.get(new GenericType<List<ChartEntry>>() {
-				});
-		Map<LocalDateTime,Double> timeToChartEntry  = chartEntries
-				.stream()
-				.collect(Collectors.toMap(entry -> entry.getDate(),entry -> entry.getClose(),(y,x)-> y));
+        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartEntry>>() {
+                });
+        Map<LocalDateTime, Double> timeToChartEntry = chartEntries
+                .stream()
+                .collect(Collectors.toMap(entry -> entry.getDate(), entry -> entry.getClose(), (y, x) -> y));
 
-		List<TradingEvaluationResult>  data = get24hPrediction();
+        List<TradingEvaluationResult> data = get24hPrediction();
 
 
-		return data.stream().filter(item -> timeToChartEntry.containsKey(item.getTargetTime())).map(item -> {
-			TradingEvaluationResult result = new TradingEvaluationResult();
-			result.setCurrentTime(item.getCurrentTime());
-			result.setTargetTime(item.getTargetTime());
-			result.setPrediction(item.getPrediction()+timeToChartEntry.get(item.getTargetTime()));
-			return result;
-		}).collect(Collectors.toList());
+        return data.stream().filter(item -> timeToChartEntry.containsKey(item.getTargetTime())).map(item -> {
+            TradingEvaluationResult result = new TradingEvaluationResult();
+            result.setCurrentTime(item.getCurrentTime());
+            result.setTargetTime(item.getTargetTime());
+            result.setPrediction(item.getPrediction() + timeToChartEntry.get(item.getTargetTime()));
+            return result;
+        }).collect(Collectors.toList());
 
     }
 }

@@ -24,60 +24,60 @@ public class TradingEvaluationResultDao {
     private EntityManager entityManager;
 
     public TradingEvaluationResultDao() {
-	final Map<String, String> props = new HashMap<>();
-	EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
-	entityManager = emf.createEntityManager();
-	entityManager.setFlushMode(FlushModeType.COMMIT);
+        final Map<String, String> props = new HashMap<>();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
+        entityManager = emf.createEntityManager();
+        entityManager.setFlushMode(FlushModeType.COMMIT);
     }
 
     public void persist(TradingEvaluationResult sat) {
-	EntityTransaction transaction = entityManager.getTransaction();
-	transaction.begin();
-	entityManager.persist(sat);
-	transaction.commit();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        entityManager.persist(sat);
+        transaction.commit();
     }
 
     public void update(TradingEvaluationResult sat) {
-	EntityTransaction transaction = entityManager.getTransaction();
-	transaction.begin();
-	entityManager.merge(sat);
-	transaction.commit();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        entityManager.merge(sat);
+        transaction.commit();
     }
 
     public void upsert(TradingEvaluationResult sat) {
-	TradingEvaluationResult found = findById(sat.getCurrentTime(), sat.getTargetTime());
-	if (found == null) {
-	    persist(sat);
-	} else {
-	    update(sat);
-	}
+        TradingEvaluationResult found = findById(sat.getCurrentTime(), sat.getTargetTime());
+        if (found == null) {
+            persist(sat);
+        } else {
+            update(sat);
+        }
     }
 
     public List<TradingEvaluationResult> findAll() {
-	CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-	CriteriaQuery<TradingEvaluationResult> cq = cb.createQuery(TradingEvaluationResult.class);
-	Root<TradingEvaluationResult> rootEntry = cq.from(TradingEvaluationResult.class);
-	CriteriaQuery<TradingEvaluationResult> all = cq.select(rootEntry);
-	TypedQuery<TradingEvaluationResult> allQuery = entityManager.createQuery(all);
-	return allQuery.getResultList();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<TradingEvaluationResult> cq = cb.createQuery(TradingEvaluationResult.class);
+        Root<TradingEvaluationResult> rootEntry = cq.from(TradingEvaluationResult.class);
+        CriteriaQuery<TradingEvaluationResult> all = cq.select(rootEntry);
+        TypedQuery<TradingEvaluationResult> allQuery = entityManager.createQuery(all);
+        return allQuery.getResultList();
     }
 
     public TradingEvaluationResult findById(LocalDateTime currentTime, LocalDateTime targetTime) {
-	TypedQuery<TradingEvaluationResult> query = entityManager.createQuery(
-		"SELECT s FROM TradingEvaluationResult s WHERE s.currentTime = :current and s.targetTime = :target",
-		TradingEvaluationResult.class).setParameter("current", currentTime).setParameter("target", targetTime);
-	try {
-	    return query.getSingleResult();
-	} catch (NoResultException e) {
-	    return null;
-	}
+        TypedQuery<TradingEvaluationResult> query = entityManager.createQuery(
+                "SELECT s FROM TradingEvaluationResult s WHERE s.currentTime = :current and s.targetTime = :target",
+                TradingEvaluationResult.class).setParameter("current", currentTime).setParameter("target", targetTime);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public List<TradingEvaluationResult> findAfterDate(LocalDateTime currentTime) {
-	TypedQuery<TradingEvaluationResult> query = entityManager.createQuery(
-		"SELECT s FROM TradingEvaluationResult s WHERE s.currentTime > :current order by s.currentTime asc",
-		TradingEvaluationResult.class).setParameter("current", currentTime);
-	return query.getResultList();
+        TypedQuery<TradingEvaluationResult> query = entityManager.createQuery(
+                "SELECT s FROM TradingEvaluationResult s WHERE s.currentTime > :current order by s.currentTime asc",
+                TradingEvaluationResult.class).setParameter("current", currentTime);
+        return query.getResultList();
     }
 
 }

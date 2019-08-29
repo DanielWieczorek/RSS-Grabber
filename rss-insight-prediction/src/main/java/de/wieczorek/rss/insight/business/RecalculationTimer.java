@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 @ApplicationScoped
 public class RecalculationTimer extends AbstractRecalculationTimer {
 
-	@Inject
+    @Inject
     private RssSentimentNeuralNetworkPredictor network;
 
     @Inject
@@ -41,39 +41,39 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
 
-	List<RssEntry> input = ClientBuilder.newClient().target("http://localhost:8020/rss-entries")
-		.request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
-		});
+        List<RssEntry> input = ClientBuilder.newClient().target("http://localhost:8020/rss-entries")
+                .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
+                });
 
-	vec.train(input);
-	List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).collect(Collectors.toList());
+        vec.train(input);
+        List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).collect(Collectors.toList());
 
-	for (int i = 0; i < input.size() - 24 * 60; i++) {
-	    List<RssEntry> partition = input.subList(i, i + 24 * 60);
-	    List<RssEntrySentiment> sentimentSubList = sentimentList.subList(i, i + 24 * 60);
+        for (int i = 0; i < input.size() - 24 * 60; i++) {
+            List<RssEntry> partition = input.subList(i, i + 24 * 60);
+            List<RssEntrySentiment> sentimentSubList = sentimentList.subList(i, i + 24 * 60);
 
-	    double positiveSum = sentimentSubList.stream().mapToDouble(RssEntrySentiment::getPositiveProbability).sum()
-		    / sentimentList.size();
-	    double negativeSum = sentimentSubList.stream().mapToDouble(RssEntrySentiment::getNegativeProbability).sum()
-		    / sentimentList.size();
+            double positiveSum = sentimentSubList.stream().mapToDouble(RssEntrySentiment::getPositiveProbability).sum()
+                    / sentimentList.size();
+            double negativeSum = sentimentSubList.stream().mapToDouble(RssEntrySentiment::getNegativeProbability).sum()
+                    / sentimentList.size();
 
-	    SentimentEvaluationResult result = new SentimentEvaluationResult();
-	    RssEntrySentimentSummary summary = new RssEntrySentimentSummary();
-	    summary.setPositiveProbability(positiveSum);
-	    summary.setNegativeProbability(negativeSum);
-	    result.setSummary(summary);
-	    result.setSentiments(sentimentList);
+            SentimentEvaluationResult result = new SentimentEvaluationResult();
+            RssEntrySentimentSummary summary = new RssEntrySentimentSummary();
+            summary.setPositiveProbability(positiveSum);
+            summary.setNegativeProbability(negativeSum);
+            result.setSummary(summary);
+            result.setSentiments(sentimentList);
 
-	    SentimentAtTime entity = new SentimentAtTime();
-	    entity.setPositiveProbability(positiveSum);
-	    entity.setNegativeProbability(negativeSum);
-	    entity.setSentimentTime(
-		    LocalDateTime.ofInstant(partition.get(partition.size() - 1).getPublicationDate().toInstant(),
-			    ZoneId.of(TimeZone.getDefault().getID())));
-	    tradingDao.upsert(entity);
+            SentimentAtTime entity = new SentimentAtTime();
+            entity.setPositiveProbability(positiveSum);
+            entity.setNegativeProbability(negativeSum);
+            entity.setSentimentTime(
+                    LocalDateTime.ofInstant(partition.get(partition.size() - 1).getPublicationDate().toInstant(),
+                            ZoneId.of(TimeZone.getDefault().getID())));
+            tradingDao.upsert(entity);
 
-	}
-	return null;
+        }
+        return null;
     }
 
 }

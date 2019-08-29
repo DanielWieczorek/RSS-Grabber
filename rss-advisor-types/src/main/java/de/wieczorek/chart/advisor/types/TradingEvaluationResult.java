@@ -34,27 +34,27 @@ public class TradingEvaluationResult {
     private LocalDateTime currentTime;
 
     public double getPredictedDelta() {
-	return predictedDelta;
+        return predictedDelta;
     }
 
     public void setPredictedDelta(double predictedDelta) {
-	this.predictedDelta = predictedDelta;
+        this.predictedDelta = predictedDelta;
     }
 
     public LocalDateTime getTargetTime() {
-	return targetTime;
+        return targetTime;
     }
 
     public void setTargetTime(LocalDateTime targetTime) {
-	this.targetTime = targetTime;
+        this.targetTime = targetTime;
     }
 
     public LocalDateTime getCurrentTime() {
-	return currentTime;
+        return currentTime;
     }
 
     public void setCurrentTime(LocalDateTime currentTime) {
-	this.currentTime = currentTime;
+        this.currentTime = currentTime;
     }
 
 }

@@ -5,19 +5,19 @@ public class RssEntrySentimentSummary {
     private double negativeProbability;
 
     public double getPositiveProbability() {
-	return positiveProbability;
+        return positiveProbability;
     }
 
     public void setPositiveProbability(double positiveProbability) {
-	this.positiveProbability = positiveProbability;
+        this.positiveProbability = positiveProbability;
     }
 
     public double getNegativeProbability() {
-	return negativeProbability;
+        return negativeProbability;
     }
 
     public void setNegativeProbability(double negativeProbability) {
-	this.negativeProbability = negativeProbability;
+        this.negativeProbability = negativeProbability;
     }
 
 }

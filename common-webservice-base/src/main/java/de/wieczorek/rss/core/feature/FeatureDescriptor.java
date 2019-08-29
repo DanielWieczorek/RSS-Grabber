@@ -11,27 +11,27 @@ public class FeatureDescriptor {
     private List<FeatureAction> actions;
 
     public FeatureType getType() {
-	return type;
+        return type;
     }
 
     public void setType(FeatureType type) {
-	this.type = type;
+        this.type = type;
     }
 
     public String getDescription() {
-	return description;
+        return description;
     }
 
     public void setDescription(String description) {
-	this.description = description;
+        this.description = description;
     }
 
     public List<FeatureAction> getActions() {
-	return actions;
+        return actions;
     }
 
     public void setActions(List<FeatureAction> actions) {
-	this.actions = actions;
+        this.actions = actions;
     }
 
 }

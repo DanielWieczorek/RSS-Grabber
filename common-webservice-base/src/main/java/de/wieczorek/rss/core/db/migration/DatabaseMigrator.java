@@ -16,18 +16,18 @@ public class DatabaseMigrator {
     private Instance<Map<String, String>> configuration;
 
     public void migrate() {
-	if (configuration.isAmbiguous()) {
-	    throw new RuntimeException("multiple migration configurations");
-	}
+        if (configuration.isAmbiguous()) {
+            throw new RuntimeException("multiple migration configurations");
+        }
 
-	if (!configuration.isUnsatisfied()) {
-	    Map<String, String> config = configuration.get();
-	    Flyway flyway = Flyway.configure().configuration(config).load();
-	    try {
-		flyway.migrate();
-	    } catch (Exception e) {
-		e.printStackTrace(); // TODO
-	    }
-	}
+        if (!configuration.isUnsatisfied()) {
+            Map<String, String> config = configuration.get();
+            Flyway flyway = Flyway.configure().configuration(config).load();
+            try {
+                flyway.migrate();
+            } catch (Exception e) {
+                e.printStackTrace(); // TODO
+            }
+        }
     }
 }

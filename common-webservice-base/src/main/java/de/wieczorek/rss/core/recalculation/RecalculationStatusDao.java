@@ -22,46 +22,46 @@ public class RecalculationStatusDao {
     private EntityManager entityManager;
 
     public RecalculationStatusDao() {
-	final Map<String, String> props = new HashMap<>();
-	EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
-	entityManager = emf.createEntityManager();
-	entityManager.setFlushMode(FlushModeType.COMMIT);
+        final Map<String, String> props = new HashMap<>();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
+        entityManager = emf.createEntityManager();
+        entityManager.setFlushMode(FlushModeType.COMMIT);
     }
 
     public Recalculation find() {
-	CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-	CriteriaQuery<Recalculation> cq = cb.createQuery(Recalculation.class);
-	Root<Recalculation> rootEntry = cq.from(Recalculation.class);
-	CriteriaQuery<Recalculation> all = cq.select(rootEntry);
-	TypedQuery<Recalculation> allQuery = entityManager.createQuery(all);
-	try {
-	    return allQuery.getSingleResult();
-	} catch (NoResultException e) {
-	    return null;
-	}
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Recalculation> cq = cb.createQuery(Recalculation.class);
+        Root<Recalculation> rootEntry = cq.from(Recalculation.class);
+        CriteriaQuery<Recalculation> all = cq.select(rootEntry);
+        TypedQuery<Recalculation> allQuery = entityManager.createQuery(all);
+        try {
+            return allQuery.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public void update(Recalculation recalculation) {
-	EntityTransaction transaction = entityManager.getTransaction();
-	transaction.begin();
-	entityManager.merge(recalculation);
-	transaction.commit();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        entityManager.merge(recalculation);
+        transaction.commit();
     }
 
     public void deleteAll() {
-	EntityTransaction transaction = entityManager.getTransaction();
-	transaction.begin();
-	Query query = entityManager.createQuery("DELETE FROM Recalculation");
-	query.executeUpdate();
-	transaction.commit();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        Query query = entityManager.createQuery("DELETE FROM Recalculation");
+        query.executeUpdate();
+        transaction.commit();
 
     }
 
     public void create(Recalculation recalculation) {
-	EntityTransaction transaction = entityManager.getTransaction();
-	transaction.begin();
-	entityManager.persist(recalculation);
-	transaction.commit();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        entityManager.persist(recalculation);
+        transaction.commit();
     }
 
 }

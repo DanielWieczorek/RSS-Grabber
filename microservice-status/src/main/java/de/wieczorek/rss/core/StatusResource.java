@@ -44,21 +44,21 @@ public class StatusResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("getstatus")
     public List<ServiceMetadata> status() {
-	return controller.status();
+        return controller.status();
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("start/{service}")
     public List<ServiceMetadata> start(@PathParam("service") String service) {
-	return controller.startService(service);
+        return controller.startService(service);
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("stop/{service}")
     public List<ServiceMetadata> stop(@PathParam("service") String service) {
-	return controller.stopService(service);
+        return controller.stopService(service);
 
     }
 
@@ -66,39 +66,39 @@ public class StatusResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("routing/{service}/{targetUri : .+}")
     public String routingGet(@PathParam("service") String service, @PathParam("targetUri") String targetUri) {
-	ServiceMetadata metadata = directory.getMetadataForService(service);
+        ServiceMetadata metadata = directory.getMetadataForService(service);
 
-	MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
-	Enumeration<String> headers = request.getHeaderNames();
-	while (headers.hasMoreElements()) {
-	    String headerName = headers.nextElement();
-	    map.putSingle(headerName, request.getHeader(headerName));
-	}
+        MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
+        Enumeration<String> headers = request.getHeaderNames();
+        while (headers.hasMoreElements()) {
+            String headerName = headers.nextElement();
+            map.putSingle(headerName, request.getHeader(headerName));
+        }
 
-	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort() + "/" + targetUri)
-		.request(request.getHeader("Accept").split(",")).headers(map).get(String.class);
+        return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort() + "/" + targetUri)
+                .request(request.getHeader("Accept").split(",")).headers(map).get(String.class);
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("routing/{service}/{targetUri : .+}")
     public String routingPost(@PathParam("service") String service, @PathParam("targetUri") String targetUri)
-	    throws IOException {
-	ServiceMetadata metadata = directory.getMetadataForService(service);
+            throws IOException {
+        ServiceMetadata metadata = directory.getMetadataForService(service);
 
-	MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
-	Enumeration<String> headers = request.getHeaderNames();
-	while (headers.hasMoreElements()) {
-	    String headerName = headers.nextElement();
-	    map.putSingle(headerName, request.getHeader(headerName));
-	}
+        MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
+        Enumeration<String> headers = request.getHeaderNames();
+        while (headers.hasMoreElements()) {
+            String headerName = headers.nextElement();
+            map.putSingle(headerName, request.getHeader(headerName));
+        }
 
-	return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort() + "/" + targetUri)
+        return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort() + "/" + targetUri)
 
-		.request(request.getHeader("Accept").split(",")).headers(map)
-		.post(Entity.json(new BufferedReader(new InputStreamReader(request.getInputStream())).lines()
-			.reduce(String::concat).get()), String.class);
+                .request(request.getHeader("Accept").split(",")).headers(map)
+                .post(Entity.json(new BufferedReader(new InputStreamReader(request.getInputStream())).lines()
+                        .reduce(String::concat).get()), String.class);
     }
 }

@@ -9,18 +9,18 @@ public class StatusUpdate {
     }
 
     public ServiceState getStatus() {
-	return status;
+        return status;
     }
 
     static StatusUpdate started() {
-	StatusUpdate result = new StatusUpdate();
-	result.status = ServiceState.STARTED;
-	return result;
+        StatusUpdate result = new StatusUpdate();
+        result.status = ServiceState.STARTED;
+        return result;
     }
 
     static StatusUpdate stopped() {
-	StatusUpdate result = new StatusUpdate();
-	result.status = ServiceState.STOPPED;
-	return result;
+        StatusUpdate result = new StatusUpdate();
+        result.status = ServiceState.STOPPED;
+        return result;
     }
 }

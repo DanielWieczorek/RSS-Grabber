@@ -15,46 +15,46 @@ import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class MicroserviceDirectory {
-	private static final Logger logger = LoggerFactory.getLogger(MicroserviceDirectory.class);
+    private static final Logger logger = LoggerFactory.getLogger(MicroserviceDirectory.class);
 
-	private Map<String, ServiceMetadata> statusInfo = new HashMap<>();
+    private Map<String, ServiceMetadata> statusInfo = new HashMap<>();
     private Map<Address, String> addressToServiceNameMapping = new HashMap<>();
 
     protected void receiveStatusInfo(@Observes StatusMessage message) {
-	StatusResponse status = message.getResponse();
-	if (status.getBindHostname() != null) {
-		logger.debug("received info from " + status.getCollectorName() + " at " + status.getBindHostname()
-		    + ":" + status.getBindPort());
+        StatusResponse status = message.getResponse();
+        if (status.getBindHostname() != null) {
+            logger.debug("received info from " + status.getCollectorName() + " at " + status.getBindHostname()
+                    + ":" + status.getBindPort());
 
-	    ServiceMetadata metadata = createServiceMetadata(status);
+            ServiceMetadata metadata = createServiceMetadata(status);
 
-	    statusInfo.put(status.getCollectorName(), metadata);
-	    addressToServiceNameMapping.put(message.getAddress(), status.getCollectorName());
-	}
+            statusInfo.put(status.getCollectorName(), metadata);
+            addressToServiceNameMapping.put(message.getAddress(), status.getCollectorName());
+        }
     }
 
     private ServiceMetadata createServiceMetadata(StatusResponse status) {
-	ServiceMetadata metadata = new ServiceMetadata();
-	metadata.setBindHostname(status.getBindHostname());
-	metadata.setBindPort(status.getBindPort());
-	metadata.setName(status.getCollectorName());
-	return metadata;
+        ServiceMetadata metadata = new ServiceMetadata();
+        metadata.setBindHostname(status.getBindHostname());
+        metadata.setBindPort(status.getBindPort());
+        metadata.setName(status.getCollectorName());
+        return metadata;
     }
 
     protected void removeMembers(@Observes List<Address> leftMembers) {
-	leftMembers.forEach(member -> {
-	    statusInfo.remove(addressToServiceNameMapping.get(member));
-	    addressToServiceNameMapping.remove(member);
-	});
+        leftMembers.forEach(member -> {
+            statusInfo.remove(addressToServiceNameMapping.get(member));
+            addressToServiceNameMapping.remove(member);
+        });
     }
 
     public List<ServiceMetadata> getMetadata() {
-	return new ArrayList<>(statusInfo.values());
+        return new ArrayList<>(statusInfo.values());
 
     }
 
     public ServiceMetadata getMetadataForService(String service) {
-	return statusInfo.get(service);
+        return statusInfo.get(service);
     }
 
 }

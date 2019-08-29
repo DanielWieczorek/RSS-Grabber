@@ -39,27 +39,27 @@ public class Controller extends ControllerBase {
     private DataGenerator generator;
 
     public void trainNeuralNetwork() {
-	logger.info("get all classified");
-	timer.stop();
+        logger.info("get all classified");
+        timer.stop();
 
-	List<RssEntry> data = ClientBuilder.newClient().target("http://wieczorek.io:10020/classified")
-		.request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
-		});
+        List<RssEntry> data = ClientBuilder.newClient().target("http://wieczorek.io:10020/classified")
+                .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
+                });
 
-	vec.train(data);
-	network.train(generator, 25);
+        vec.train(data);
+        network.train(generator, 25);
 
-	timer.start();
+        timer.start();
 
     }
 
     @Override
     public void start() {
-	timer.start();
+        timer.start();
     }
 
     @Override
     public void stop() {
-	timer.stop();
+        timer.stop();
     }
 }

@@ -15,17 +15,17 @@ import de.wieczorek.rss.core.timer.RecurrentTask;
 public class RssReaderConfigurationProvider extends RssReader {
 
     public class RssReaderConfiguration extends RssConfig {
-	public RssReaderConfiguration() {
-	    serviceName = "rss-collector-cryptonewsnet";
-	    feedUrl = "https://www.crypto-news.net/feed/";
-	    filter = new NoOperationMessageFilter();
-	    transformer = new NoOperationMessageTransformer();
+        public RssReaderConfiguration() {
+            serviceName = "rss-collector-cryptonewsnet";
+            feedUrl = "https://www.crypto-news.net/feed/";
+            filter = new NoOperationMessageFilter();
+            transformer = new NoOperationMessageTransformer();
 
-	}
+        }
     }
 
     @Override
     protected RssConfig getRssConfig() {
-	return new RssReaderConfiguration();
+        return new RssReaderConfiguration();
     }
 }

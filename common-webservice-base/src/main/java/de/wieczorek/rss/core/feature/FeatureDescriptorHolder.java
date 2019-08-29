@@ -14,9 +14,9 @@ public class FeatureDescriptorHolder {
     private Instance<FeatureDescriptor> features;
 
     public List<FeatureDescriptor> getFeatures() {
-	List<FeatureDescriptor> result = new ArrayList<FeatureDescriptor>();
-	features.forEach(result::add);
-	return result;
+        List<FeatureDescriptor> result = new ArrayList<FeatureDescriptor>();
+        features.forEach(result::add);
+        return result;
     }
 
 }

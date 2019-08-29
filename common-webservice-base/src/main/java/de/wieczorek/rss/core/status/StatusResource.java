@@ -25,20 +25,20 @@ public class StatusResource {
     @GET
     @Path("start")
     public void start() {
-	updateEvent.fire(StatusUpdate.started());
+        updateEvent.fire(StatusUpdate.started());
     }
 
     @GET
     @Path("stop")
     public void stop() {
-	updateEvent.fire(StatusUpdate.stopped());
+        updateEvent.fire(StatusUpdate.stopped());
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public CollectorStatus status() {
-	CollectorStatus status = new CollectorStatus();
-	status.setStatus(holder.getStatus() == ServiceState.STARTED ? "running" : "stopped");
-	return status;
+        CollectorStatus status = new CollectorStatus();
+        status.setStatus(holder.getStatus() == ServiceState.STARTED ? "running" : "stopped");
+        return status;
     }
 }

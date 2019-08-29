@@ -23,7 +23,7 @@ public class FeatureInfoResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/")
     public List<FeatureDescriptor> getFeatures() {
-	return holder.getFeatures();
+        return holder.getFeatures();
     }
 
 }

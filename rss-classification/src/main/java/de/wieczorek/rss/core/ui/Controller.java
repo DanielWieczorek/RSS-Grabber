@@ -25,42 +25,42 @@ public class Controller extends ControllerBase {
     private RssEntryDao dao;
 
     public List<RssEntry> readUnclassifiedEntries() {
-	logger.info("get all unclassified");
-	Date newest = dao.findNewestEntry();
-	if (newest == null) {
-	    newest = new Date(0);
-	}
+        logger.info("get all unclassified");
+        Date newest = dao.findNewestEntry();
+        if (newest == null) {
+            newest = new Date(0);
+        }
 
-	List<RssEntry> newEntries = new ArrayList<>();
-	try {
-	    newEntries.addAll(ClientBuilder.newClient()
-		    .target("http://localhost:8020/rss-entries/" + newest.toInstant().getEpochSecond())
-		    .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
-		    }));
-	} catch (Exception e) {
-	    e.printStackTrace(); // TODO
-	}
+        List<RssEntry> newEntries = new ArrayList<>();
+        try {
+            newEntries.addAll(ClientBuilder.newClient()
+                    .target("http://localhost:8020/rss-entries/" + newest.toInstant().getEpochSecond())
+                    .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
+                    }));
+        } catch (Exception e) {
+            e.printStackTrace(); // TODO
+        }
 
-	if (!newEntries.isEmpty()) {
-	    List<String> existingEntryKeys = dao
-		    .findAll(newEntries.stream().map(RssEntry::getURI).collect(Collectors.toList())).stream()
-		    .map(RssEntry::getURI).collect(Collectors.toList());
-	    newEntries.removeAll(newEntries.stream().filter(entry -> existingEntryKeys.contains(entry.getURI()))
-		    .collect(Collectors.toList()));
-	    logger.info("persisting " + newEntries.size() + " entries");
-	    dao.persist(newEntries);
-	}
+        if (!newEntries.isEmpty()) {
+            List<String> existingEntryKeys = dao
+                    .findAll(newEntries.stream().map(RssEntry::getURI).collect(Collectors.toList())).stream()
+                    .map(RssEntry::getURI).collect(Collectors.toList());
+            newEntries.removeAll(newEntries.stream().filter(entry -> existingEntryKeys.contains(entry.getURI()))
+                    .collect(Collectors.toList()));
+            logger.info("persisting " + newEntries.size() + " entries");
+            dao.persist(newEntries);
+        }
 
-	return dao.findAllUnclassified(100);
+        return dao.findAllUnclassified(100);
     }
 
     public void updateClassification(RssEntry entry) {
-	RssEntry found = dao.find(entry);
-	found.setClassification(entry.getClassification());
-	dao.persist(found);
+        RssEntry found = dao.find(entry);
+        found.setClassification(entry.getClassification());
+        dao.persist(found);
     }
 
     public List<RssEntry> readClassfiedEntries() {
-	return dao.findAllClassified();
+        return dao.findAllClassified();
     }
 }

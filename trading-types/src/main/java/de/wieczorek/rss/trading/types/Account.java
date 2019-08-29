@@ -6,27 +6,27 @@ public class Account {
     private double eurEquivalent;
 
     public double getBtc() {
-	return btc;
+        return btc;
     }
 
     public void setBtc(double btc) {
-	this.btc = btc;
+        this.btc = btc;
     }
 
     public double getEur() {
-	return eur;
+        return eur;
     }
 
     public void setEur(double eur) {
-	this.eur = eur;
+        this.eur = eur;
     }
 
     public double getEurEquivalent() {
-	return eurEquivalent;
+        return eurEquivalent;
     }
 
     public void setEurEquivalent(double eurEquivalent) {
-	this.eurEquivalent = eurEquivalent;
+        this.eurEquivalent = eurEquivalent;
     }
 
 }

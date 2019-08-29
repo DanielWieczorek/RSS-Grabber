@@ -43,32 +43,32 @@ public class MetricTimer implements Runnable {
 
     @Override
     public void run() {
-	List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://wieczorek.io:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		});
-	chartEntries.sort(Comparator.comparing(ChartEntry::getDate));
+        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartEntry>>() {
+                });
+        chartEntries.sort(Comparator.comparing(ChartEntry::getDate));
 
-	BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());
-	chartEntries.forEach(entry -> {
-	    Bar b = new BaseBar(ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
-		    entry.getOpen(), //
-		    entry.getHigh(), //
-		    entry.getLow(), //
-		    entry.getClose(), //
-		    entry.getVolume(), //
-		    DoubleNum.valueOf(0).function());
-	    series.addBar(b);
-	});
+        BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());
+        chartEntries.forEach(entry -> {
+            Bar b = new BaseBar(ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
+                    entry.getOpen(), //
+                    entry.getHigh(), //
+                    entry.getLow(), //
+                    entry.getClose(), //
+                    entry.getVolume(), //
+                    DoubleNum.valueOf(0).function());
+            series.addBar(b);
+        });
 
-	List<ChartMetricRecord> records = new ArrayList<>();
+        List<ChartMetricRecord> records = new ArrayList<>();
 
-	metricCalculators.forEach(calculator ->
-	    records.add(calculator.calculate(series))
+        metricCalculators.forEach(calculator ->
+                records.add(calculator.calculate(series))
 
-	);
+        );
 
-		dao.upsert(records);
+        dao.upsert(records);
 
     }
 }

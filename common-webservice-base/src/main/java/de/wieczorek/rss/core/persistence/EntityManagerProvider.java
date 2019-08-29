@@ -9,13 +9,13 @@ import javax.persistence.Persistence;
 
 public class EntityManagerProvider {
     private static ThreadLocal<EntityManager> entityManagerHolder = ThreadLocal.withInitial(() -> {
-	final Map<String, String> props = new HashMap<>();
-	EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
-	return emf.createEntityManager();
+        final Map<String, String> props = new HashMap<>();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
+        return emf.createEntityManager();
     });
 
     public static EntityManager getEntityManager() {
-	return entityManagerHolder.get();
+        return entityManagerHolder.get();
 
     }
 

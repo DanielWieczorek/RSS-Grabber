@@ -17,27 +17,27 @@ public class Session {
     private LocalDateTime expirationDate;
 
     public String getUsername() {
-	return username;
+        return username;
     }
 
     public void setUsername(String username) {
-	this.username = username;
+        this.username = username;
     }
 
     public String getToken() {
-	return token;
+        return token;
     }
 
     public void setToken(String token) {
-	this.token = token;
+        this.token = token;
     }
 
     public LocalDateTime getExpirationDate() {
-	return expirationDate;
+        return expirationDate;
     }
 
     public void setExpirationDate(LocalDateTime expirationDate) {
-	this.expirationDate = expirationDate;
+        this.expirationDate = expirationDate;
     }
 
 }

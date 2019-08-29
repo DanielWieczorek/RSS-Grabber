@@ -16,32 +16,32 @@ public class PolicyDao {
     private String fileName;
 
     public void writePolicy(DQNPolicy<?> policy) {
-	try {
-	    policy.save(buildPath());
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
+        try {
+            policy.save(buildPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-	public void writePolicy(ACPolicy<?> policy) {
-		try {
-			policy.save(buildPath());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    public void writePolicy(ACPolicy<?> policy) {
+        try {
+            policy.save(buildPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private String buildPath() {
-	return System.getProperty("user.home") + "/neural-networks/" + fileName;
+        return System.getProperty("user.home") + "/neural-networks/" + fileName;
     }
 
     public DQNPolicy<?> readPolicy() {
-	try {
-	    return DQNPolicy.load(buildPath());
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
-	return null;
+        try {
+            return DQNPolicy.load(buildPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

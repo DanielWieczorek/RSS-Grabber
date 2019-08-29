@@ -26,23 +26,23 @@ public class Controller extends ControllerBase {
 
     @Override
     public void start() {
-	logger.info("started");
-	timer.start();
+        logger.info("started");
+        timer.start();
     }
 
     @Override
     public void stop() {
-	logger.info("stopped");
-	timer.stop();
+        logger.info("stopped");
+        timer.stop();
     }
 
     public List<ChartEntry> getAll() {
-	return dao.findAll();
+        return dao.findAll();
     }
 
     public List<ChartEntry> get24h() {
 
-	return dao.find24h();
+        return dao.find24h();
     }
 
 }

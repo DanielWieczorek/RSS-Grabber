@@ -21,43 +21,43 @@ public class Trade {
     private double currentRate;
 
     public LocalDateTime getDate() {
-	return date;
+        return date;
     }
 
     public void setDate(LocalDateTime date) {
-	this.date = date;
+        this.date = date;
     }
 
     public ActionVertexType getAction() {
-	return action;
+        return action;
     }
 
     public void setAction(ActionVertexType action) {
-	this.action = action;
+        this.action = action;
     }
 
     public Account getBefore() {
-	return before;
+        return before;
     }
 
     public void setBefore(Account before) {
-	this.before = before;
+        this.before = before;
     }
 
     public Account getAfter() {
-	return after;
+        return after;
     }
 
     public void setAfter(Account after) {
-	this.after = after;
+        this.after = after;
     }
 
     public double getCurrentRate() {
-	return currentRate;
+        return currentRate;
     }
 
     public void setCurrentRate(double currentRate) {
-	this.currentRate = currentRate;
+        this.currentRate = currentRate;
     }
 
 }

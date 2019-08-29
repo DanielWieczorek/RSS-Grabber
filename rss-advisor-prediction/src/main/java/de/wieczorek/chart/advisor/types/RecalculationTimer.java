@@ -22,10 +22,10 @@ import org.slf4j.LoggerFactory;
 @RecurrentTask(interval = 10, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class RecalculationTimer extends AbstractRecalculationTimer {
-	private static final Logger logger = LoggerFactory.getLogger(RecalculationTimer.class);
+    private static final Logger logger = LoggerFactory.getLogger(RecalculationTimer.class);
 
 
-	private static final int NUMBER_OF_ENTRIES = 300;
+    private static final int NUMBER_OF_ENTRIES = 300;
 
     @Inject
     private TradingNeuralNetworkPredictor nn;
@@ -35,45 +35,45 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
 
-	List<SentimentAtTime> sentiments = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:11020/sentiment-at-time").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<SentimentAtTime>>() {
-		});
+        List<SentimentAtTime> sentiments = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://localhost:11020/sentiment-at-time").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<SentimentAtTime>>() {
+                });
 
-	List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://localhost:12000/ohlcv/").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		});
+        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://localhost:12000/ohlcv/").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartEntry>>() {
+                });
 
-		logger.debug("calculating for " + chartEntries.size() + "entries");
+        logger.debug("calculating for " + chartEntries.size() + "entries");
 
-	DataPreparator preparator = new DataPreparator().withChartData(chartEntries);
-	int startIndex = 0;
-	for (int i = 0; i < sentiments.size(); i++) {
-	    if (sentiments.get(i).getSentimentTime().isEqual(startDate)) {
-		startIndex = i + 1;
-		break;
-	    }
-	}
-	int i = 0;
-	for (i = 0; i < NUMBER_OF_ENTRIES && i + startIndex < sentiments.size(); i++) {
-	    SentimentAtTime sentiment = sentiments.get(i + startIndex);
-	    NetInputItem networkInput = preparator.getDataForSentiment(sentiment);
-	    if (networkInput != null) {
-		TradingEvaluationResult result = nn.predict(networkInput);
-		result.setCurrentTime(sentiment.getSentimentTime());
-		result.setTargetTime(sentiment.getSentimentTime().plusMinutes(preparator.getOffsetMinutes()));
+        DataPreparator preparator = new DataPreparator().withChartData(chartEntries);
+        int startIndex = 0;
+        for (int i = 0; i < sentiments.size(); i++) {
+            if (sentiments.get(i).getSentimentTime().isEqual(startDate)) {
+                startIndex = i + 1;
+                break;
+            }
+        }
+        int i = 0;
+        for (i = 0; i < NUMBER_OF_ENTRIES && i + startIndex < sentiments.size(); i++) {
+            SentimentAtTime sentiment = sentiments.get(i + startIndex);
+            NetInputItem networkInput = preparator.getDataForSentiment(sentiment);
+            if (networkInput != null) {
+                TradingEvaluationResult result = nn.predict(networkInput);
+                result.setCurrentTime(sentiment.getSentimentTime());
+                result.setTargetTime(sentiment.getSentimentTime().plusMinutes(preparator.getOffsetMinutes()));
 
-		tradingDao.upsert(result);
-			logger.debug( "calculating for date " + sentiment.getSentimentTime());
-	    }
-	}
+                tradingDao.upsert(result);
+                logger.debug("calculating for date " + sentiment.getSentimentTime());
+            }
+        }
 
-	if (startIndex + NUMBER_OF_ENTRIES < sentiments.size()) {
-	    return sentiments.get(i + startIndex).getSentimentTime();
-	} else {
-	    return null;
-	}
+        if (startIndex + NUMBER_OF_ENTRIES < sentiments.size()) {
+            return sentiments.get(i + startIndex).getSentimentTime();
+        } else {
+            return null;
+        }
 
     }
 

@@ -14,17 +14,17 @@ import de.wieczorek.rss.core.timer.RecurrentTask;
 public class RssReaderConfigurationProvider extends RssReader {
 
     public class RssReaderConfiguration extends RssConfig {
-	public RssReaderConfiguration() {
-	    serviceName = "rss-collector-newsbtc";
-	    feedUrl = "https://www.newsbtc.com/feed/";
-	    filter = new NoOperationMessageFilter();
-	    transformer = new NewsbtcMessageTransformer();
+        public RssReaderConfiguration() {
+            serviceName = "rss-collector-newsbtc";
+            feedUrl = "https://www.newsbtc.com/feed/";
+            filter = new NoOperationMessageFilter();
+            transformer = new NewsbtcMessageTransformer();
 
-	}
+        }
     }
 
     @Override
     protected RssConfig getRssConfig() {
-	return new RssReaderConfiguration();
+        return new RssReaderConfiguration();
     }
 }

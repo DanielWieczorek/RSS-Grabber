@@ -15,16 +15,16 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
     private final ObjectMapper mapper;
 
     public ObjectMapperContextResolver() {
-	this.mapper = createObjectMapper();
+        this.mapper = createObjectMapper();
     }
 
     @Override
     public ObjectMapper getContext(Class<?> type) {
-	return mapper;
+        return mapper;
     }
 
     private ObjectMapper createObjectMapper() {
-	ObjectMapper mapper = new ObjectMapper().registerModule(new Jdk8Module()).registerModule(new JavaTimeModule());
-	return mapper;
+        ObjectMapper mapper = new ObjectMapper().registerModule(new Jdk8Module()).registerModule(new JavaTimeModule());
+        return mapper;
     }
 }

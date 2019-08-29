@@ -31,39 +31,34 @@ public class Word2VecExampleIterator implements SentenceIterator {
     private Iterator<String> iter;
 
     /**
-     * @param dataDirectory
-     *            the directory of the IMDB review data set
-     * @param wordVectors
-     *            WordVectors object
-     * @param batchSize
-     *            Size of each minibatch for training
-     * @param truncateLength
-     *            If reviews exceed
-     * @param train
-     *            If true: return the training data. If false: return the testing
-     *            data.
+     * @param dataDirectory  the directory of the IMDB review data set
+     * @param wordVectors    WordVectors object
+     * @param batchSize      Size of each minibatch for training
+     * @param truncateLength If reviews exceed
+     * @param train          If true: return the training data. If false: return the testing
+     *                       data.
      */
     public Word2VecExampleIterator(List<RssEntry> entry) {
-	entries = entry.stream().map(x -> x.getHeading() + ". " + x.getDescription()).collect(Collectors.toList());
-	iter = entries.iterator();
+        entries = entry.stream().map(x -> x.getHeading() + ". " + x.getDescription()).collect(Collectors.toList());
+        iter = entries.iterator();
 
     }
 
     @Override
     public String nextSentence() {
-	Stemmer stemmer = new PorterStemmer();
+        Stemmer stemmer = new PorterStemmer();
 
-	return Arrays.asList(iter.next().split(" ")).stream().map(stemmer::stem).collect(Collectors.joining(" "));
+        return Arrays.asList(iter.next().split(" ")).stream().map(stemmer::stem).collect(Collectors.joining(" "));
     }
 
     @Override
     public boolean hasNext() {
-	return iter.hasNext();
+        return iter.hasNext();
     }
 
     @Override
     public void reset() {
-	iter = entries.iterator();
+        iter = entries.iterator();
     }
 
     @Override
@@ -74,7 +69,7 @@ public class Word2VecExampleIterator implements SentenceIterator {
     @Override
     public SentencePreProcessor getPreProcessor() {
 
-	return null;
+        return null;
     }
 
     @Override

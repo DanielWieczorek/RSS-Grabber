@@ -26,27 +26,27 @@ public class SentimentAtTime {
     private double negativeProbability;
 
     public LocalDateTime getSentimentTime() {
-	return sentimentTime;
+        return sentimentTime;
     }
 
     public void setSentimentTime(LocalDateTime sentimentTime) {
-	this.sentimentTime = sentimentTime;
+        this.sentimentTime = sentimentTime;
     }
 
     public double getPositiveProbability() {
-	return positiveProbability;
+        return positiveProbability;
     }
 
     public void setPositiveProbability(double positiveProbability) {
-	this.positiveProbability = positiveProbability;
+        this.positiveProbability = positiveProbability;
     }
 
     public double getNegativeProbability() {
-	return negativeProbability;
+        return negativeProbability;
     }
 
     public void setNegativeProbability(double negativeProbability) {
-	this.negativeProbability = negativeProbability;
+        this.negativeProbability = negativeProbability;
     }
 
 }

@@ -1,4 +1,5 @@
 package de.wieczorek.rss.core.ui;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,13 +15,13 @@ public class ServiceCollector implements Extension {
 
     private static final Set<String> classNames = new HashSet<>();
 
-    protected <T> void processAnnotatedType(@Observes @WithAnnotations({ Path.class }) ProcessAnnotatedType<T> pat) {
-	classNames.add(pat.getAnnotatedType().getJavaClass().getCanonicalName());
+    protected <T> void processAnnotatedType(@Observes @WithAnnotations({Path.class}) ProcessAnnotatedType<T> pat) {
+        classNames.add(pat.getAnnotatedType().getJavaClass().getCanonicalName());
 
     }
 
     public static Set<String> getClasses() {
-	return classNames;
+        return classNames;
     }
 
 }

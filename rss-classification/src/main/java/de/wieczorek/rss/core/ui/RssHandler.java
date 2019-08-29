@@ -24,7 +24,7 @@ public class RssHandler {
     @GET
     @Path("find")
     public List<RssEntry> find() {
-	return controller.readUnclassifiedEntries();
+        return controller.readUnclassifiedEntries();
 
     }
 
@@ -32,7 +32,7 @@ public class RssHandler {
     @GET
     @Path("classified")
     public List<RssEntry> classified() {
-	return controller.readClassfiedEntries();
+        return controller.readClassfiedEntries();
     }
 
     @Consumes("application/json")
@@ -40,7 +40,7 @@ public class RssHandler {
     @POST
     @Path("classify")
     public void classify(RssEntry classifiedEntry) {
-	controller.updateClassification(classifiedEntry);
+        controller.updateClassification(classifiedEntry);
     }
 
 }

@@ -36,15 +36,15 @@ public class ExportResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("export")
     public ImportExportData exportData() {
-	ImportExportData data = new ImportExportData();
-	Map<String, Collection> map = new HashMap<>();
-	data.setData(map);
+        ImportExportData data = new ImportExportData();
+        Map<String, Collection> map = new HashMap<>();
+        data.setData(map);
 
-	exportDaos.forEach(dao -> {
-	    map.put(dao.getEntityType().getName(), dao.findAll());
-	});
+        exportDaos.forEach(dao -> {
+            map.put(dao.getEntityType().getName(), dao.findAll());
+        });
 
-	return data;
+        return data;
     }
 
 }

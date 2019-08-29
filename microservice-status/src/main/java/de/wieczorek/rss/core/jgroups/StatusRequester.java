@@ -17,43 +17,43 @@ public class StatusRequester {
 
     public List<ServiceMetadata> requestStates() {
 
-	List<ServiceMetadata> metadata = directory.getMetadata();
-	directory.getMetadata().parallelStream().forEach(md -> {
-	    try {
-		md.setStatus(ClientBuilder.newClient().target("http://" + md.getBindHostname() + ":" + md.getBindPort())
-			.path("/status").request().accept("application/json").get(MicroserviceStatus.class).getStatus());
+        List<ServiceMetadata> metadata = directory.getMetadata();
+        directory.getMetadata().parallelStream().forEach(md -> {
+            try {
+                md.setStatus(ClientBuilder.newClient().target("http://" + md.getBindHostname() + ":" + md.getBindPort())
+                        .path("/status").request().accept("application/json").get(MicroserviceStatus.class).getStatus());
 
-	    } catch (Exception e) {
-		md.setStatus("failed");
-		e.printStackTrace();
-	    }
+            } catch (Exception e) {
+                md.setStatus("failed");
+                e.printStackTrace();
+            }
 
-	    try {
-		md.setFeatures(ClientBuilder.newClient()
-			.target("http://" + md.getBindHostname() + ":" + md.getBindPort()).path("/feature/info")
-			.request().accept("application/json").get(new GenericType<List<FeatureDescriptor>>() {
-			}));
-	    } catch (Exception e) {
-		e.printStackTrace();
-	    }
-	});
+            try {
+                md.setFeatures(ClientBuilder.newClient()
+                        .target("http://" + md.getBindHostname() + ":" + md.getBindPort()).path("/feature/info")
+                        .request().accept("application/json").get(new GenericType<List<FeatureDescriptor>>() {
+                        }));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
-	return metadata;
+        return metadata;
     }
 
     public void stop(String collectorName) {
-	ServiceMetadata metadata = directory.getMetadataForService(collectorName);
+        ServiceMetadata metadata = directory.getMetadataForService(collectorName);
 
-	ClientBuilder.newClient().target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort())
-		.path("/status/stop").request().accept("application/json").get();
+        ClientBuilder.newClient().target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort())
+                .path("/status/stop").request().accept("application/json").get();
 
     }
 
     public void start(String collectorName) {
-	ServiceMetadata metadata = directory.getMetadataForService(collectorName);
+        ServiceMetadata metadata = directory.getMetadataForService(collectorName);
 
-	ClientBuilder.newClient().target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort())
-		.path("/status/start").request().accept("application/json").get();
+        ClientBuilder.newClient().target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort())
+                .path("/status/start").request().accept("application/json").get();
 
     }
 }

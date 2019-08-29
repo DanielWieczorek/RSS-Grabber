@@ -14,21 +14,21 @@ public class NewsbtcMessageTransformer implements MessageTransformer {
 
     @Override
     public RssEntry apply(RssEntry t) {
-	String description = t.getDescription().replaceAll("\n", "");
-	try {
+        String description = t.getDescription().replaceAll("\n", "");
+        try {
 
-	    Pattern pattern = Pattern.compile(Pattern.quote("<p>") + "(.*?)" + Pattern.quote("<a"));
+            Pattern pattern = Pattern.compile(Pattern.quote("<p>") + "(.*?)" + Pattern.quote("<a"));
 
-	    Matcher matcher = pattern.matcher(description);
-	    matcher.find();
-	    description = matcher.group(1);
+            Matcher matcher = pattern.matcher(description);
+            matcher.find();
+            description = matcher.group(1);
 
-	    t.setDescription(description);
-	    logger.info("extracted: " + description);
-	} catch (Exception e) {
-	    logger.error("error extracting message from: " + description, e);
-	}
-	return t;
+            t.setDescription(description);
+            logger.info("extracted: " + description);
+        } catch (Exception e) {
+            logger.error("error extracting message from: " + description, e);
+        }
+        return t;
     }
 
 }

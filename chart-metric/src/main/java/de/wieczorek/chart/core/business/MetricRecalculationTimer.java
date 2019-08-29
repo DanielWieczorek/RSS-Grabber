@@ -46,55 +46,55 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
 
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
-	BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());
+        BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());
 
-	List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-		.target("http://wieczorek.io:12000/ohlcv").request(MediaType.APPLICATION_JSON)
-		.get(new GenericType<List<ChartEntry>>() {
-		});
-	chartEntries = chartEntries.stream().distinct().sorted(Comparator.comparing(ChartEntry::getDate))
-		.collect(Collectors.toList());
+        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:12000/ohlcv").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<ChartEntry>>() {
+                });
+        chartEntries = chartEntries.stream().distinct().sorted(Comparator.comparing(ChartEntry::getDate))
+                .collect(Collectors.toList());
 
-	int index = 0;
-	for (int i = 0; i < chartEntries.size(); i++) {
-	    index = i;
-	    if (chartEntries.get(i).getDate().isAfter(startDate)) {
-		break;
-	    }
-	}
+        int index = 0;
+        for (int i = 0; i < chartEntries.size(); i++) {
+            index = i;
+            if (chartEntries.get(i).getDate().isAfter(startDate)) {
+                break;
+            }
+        }
 
-	int lastIndex = 0;
-
-
-	List<ChartMetricRecord> records = new ArrayList<>();
-	for (int i = index; i < (1440 + index) && i < chartEntries.size(); i++) {
-	    ChartEntry entry = chartEntries.get(i);
-
-	    Bar b = new BaseBar(ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
-		    entry.getOpen(), //
-		    entry.getHigh(), //
-		    entry.getLow(), //
-		    entry.getClose(), //
-		    entry.getVolume(), //
-		    DoubleNum.valueOf(0).function());
-	    series.addBar(b);
-
-	    metricCalculators.forEach(calculator -> {
-		records.add(calculator.calculate(series));
+        int lastIndex = 0;
 
 
-	    });
-	    lastIndex = i;
-	}
+        List<ChartMetricRecord> records = new ArrayList<>();
+        for (int i = index; i < (1440 + index) && i < chartEntries.size(); i++) {
+            ChartEntry entry = chartEntries.get(i);
 
-		dao.upsert(records);
+            Bar b = new BaseBar(ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
+                    entry.getOpen(), //
+                    entry.getHigh(), //
+                    entry.getLow(), //
+                    entry.getClose(), //
+                    entry.getVolume(), //
+                    DoubleNum.valueOf(0).function());
+            series.addBar(b);
 
-	if (lastIndex < chartEntries.size() - 1) {
-	    return chartEntries.get(lastIndex).getDate();
-	} else {
-	    return null;
+            metricCalculators.forEach(calculator -> {
+                records.add(calculator.calculate(series));
 
-	}
+
+            });
+            lastIndex = i;
+        }
+
+        dao.upsert(records);
+
+        if (lastIndex < chartEntries.size() - 1) {
+            return chartEntries.get(lastIndex).getDate();
+        } else {
+            return null;
+
+        }
 
     }
 }
