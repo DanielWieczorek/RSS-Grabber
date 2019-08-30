@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<NetInputItem, TradingEvaluationResult> {
+public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<NetInputItem> {
     private static final Logger logger = LoggerFactory.getLogger(TradingNeuralNetworkTrainer.class);
 
     @Override

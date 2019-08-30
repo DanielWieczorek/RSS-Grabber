@@ -24,7 +24,7 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import de.wieczorek.nn.AbstractNeuralNetworkTrainer;
 
 @ApplicationScoped
-public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<TrainingNetInputItem, TradingEvaluationResult> {
+public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<TrainingNetInputItem> {
 
     @Override
     protected DataSetIterator buildTrainingSetIterator(List<TrainingNetInputItem> trainingSet) {

@@ -23,7 +23,7 @@ import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.insight.types.RssEntrySentiment;
 
 @ApplicationScoped
-public class RssSentimentNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<RssEntry, RssEntrySentiment> {
+public class RssSentimentNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<RssEntry> {
 
     @Inject
     private RssWord2VecNetwork vec;

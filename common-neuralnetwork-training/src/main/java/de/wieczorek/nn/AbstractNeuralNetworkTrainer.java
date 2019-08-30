@@ -21,7 +21,7 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractNeuralNetworkTrainer<T, R> {
+public abstract class AbstractNeuralNetworkTrainer<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractNeuralNetworkTrainer.class);
 
@@ -41,7 +41,7 @@ public abstract class AbstractNeuralNetworkTrainer<T, R> {
         net = readOrBuildNetwork();
 
         logger.debug("Building training data if needed");
-        buildTrainingDataIfNotPresent(dataGenerator, nEpochs);
+        buildTrainingDataIfNotPresent(dataGenerator);
 
         File checkpointTarget = pathBuilder.getCheckpointsPath();
         checkpointTarget.mkdirs();
@@ -72,14 +72,14 @@ public abstract class AbstractNeuralNetworkTrainer<T, R> {
 
     }
 
-    private void buildTrainingDataIfNotPresent(IDataGenerator<T> dataGenerator, int nEpochs) {
+    private void buildTrainingDataIfNotPresent(IDataGenerator<T> dataGenerator) {
         File testDataPath = pathBuilder.getTrainingDataPath();
         if (!testDataPath.exists()) {
-            buildAndPersistTrainingData(dataGenerator, nEpochs);
+            buildAndPersistTrainingData(dataGenerator);
         } else {
             File[] files = testDataPath.listFiles();
             if (files == null || files.length == 0) {
-                buildAndPersistTrainingData(dataGenerator, nEpochs);
+                buildAndPersistTrainingData(dataGenerator);
             }
         }
     }
@@ -99,7 +99,7 @@ public abstract class AbstractNeuralNetworkTrainer<T, R> {
     }
 
 
-    private void buildAndPersistTrainingData(IDataGenerator<T> dataGenerator, int nEpochs) {
+    private void buildAndPersistTrainingData(IDataGenerator<T> dataGenerator) {
         List<T> trainingSet = dataGenerator.generate();
 
         if (trainingSet == null) {
