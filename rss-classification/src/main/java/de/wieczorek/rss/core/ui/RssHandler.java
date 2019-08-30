@@ -1,17 +1,12 @@
 package de.wieczorek.rss.core.ui;
 
-import java.util.List;
+import de.wieczorek.rss.classification.types.RssEntry;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-
-import de.wieczorek.rss.classification.types.RssEntry;
+import java.util.List;
 
 @Path("/")
 @Resource

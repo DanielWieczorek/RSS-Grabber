@@ -1,11 +1,10 @@
 package de.wieczorek.rss.core.persistence;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EntityManagerProvider {
     private static ThreadLocal<EntityManager> entityManagerHolder = ThreadLocal.withInitial(() -> {

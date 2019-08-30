@@ -1,11 +1,10 @@
 package de.wieczorek.rss.core.feature;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApplicationScoped
 public class FeatureDescriptorHolder {

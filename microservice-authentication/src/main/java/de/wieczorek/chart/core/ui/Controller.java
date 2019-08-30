@@ -1,28 +1,25 @@
 package de.wieczorek.chart.core.ui;
 
-import java.nio.charset.Charset;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
-import java.util.Base64;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.NotAuthorizedException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
-
 import de.wieczorek.chart.core.persistence.Credentials;
 import de.wieczorek.chart.core.persistence.CredentialsDao;
 import de.wieczorek.chart.core.persistence.Session;
 import de.wieczorek.chart.core.persistence.SessionDao;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.ws.rs.NotAuthorizedException;
+import java.nio.charset.Charset;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.Base64;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {
@@ -96,12 +93,9 @@ public class Controller extends ControllerBase {
 
     public boolean isSessionValid(String username, String token) {
         Session session = sessionDao.findByUsername(username);
-        if (session != null //
+        return session != null //
                 && session.getToken().equals(token) //
-                && session.getExpirationDate().isAfter(LocalDateTime.now())) {
-            return true;
-        }
-        return false;
+                && session.getExpirationDate().isAfter(LocalDateTime.now());
     }
 
     public void logout(String username, String token) {

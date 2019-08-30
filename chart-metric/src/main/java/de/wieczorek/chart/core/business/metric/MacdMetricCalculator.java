@@ -1,14 +1,13 @@
 package de.wieczorek.chart.core.business.metric;
 
-import javax.enterprise.context.ApplicationScoped;
-
+import de.wieczorek.chart.core.business.MetricCalculator;
+import de.wieczorek.chart.core.persistence.ChartMetricId;
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import org.ta4j.core.TimeSeries;
 import org.ta4j.core.indicators.MACDIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
-import de.wieczorek.chart.core.business.MetricCalculator;
-import de.wieczorek.chart.core.persistence.ChartMetricId;
-import de.wieczorek.chart.core.persistence.ChartMetricRecord;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class MacdMetricCalculator implements MetricCalculator {

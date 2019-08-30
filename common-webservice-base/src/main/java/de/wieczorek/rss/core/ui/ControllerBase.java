@@ -1,8 +1,8 @@
 package de.wieczorek.rss.core.ui;
 
-import javax.enterprise.event.Observes;
-
 import de.wieczorek.rss.core.status.StatusUpdate;
+
+import javax.enterprise.event.Observes;
 
 public abstract class ControllerBase {
 

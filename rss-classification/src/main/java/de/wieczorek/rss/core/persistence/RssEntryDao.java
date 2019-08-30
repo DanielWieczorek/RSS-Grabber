@@ -1,24 +1,14 @@
 package de.wieczorek.rss.core.persistence;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import de.wieczorek.importexport.db.ImportExportDao;
+import de.wieczorek.rss.classification.types.RssEntry;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.FlushModeType;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
-import de.wieczorek.importexport.db.ImportExportDao;
-import de.wieczorek.rss.classification.types.RssEntry;
+import java.util.*;
 
 @ApplicationScoped
 public class RssEntryDao extends ImportExportDao<RssEntry> {
@@ -65,7 +55,7 @@ public class RssEntryDao extends ImportExportDao<RssEntry> {
     public synchronized void persist(List<RssEntry> entries) {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
-        entries.stream().forEach(entityManager::persist);
+        entries.forEach(entityManager::persist);
         transaction.commit();
     }
 

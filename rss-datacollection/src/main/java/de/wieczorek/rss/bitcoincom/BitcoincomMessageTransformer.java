@@ -1,13 +1,12 @@
 package de.wieczorek.rss.bitcoincom;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import de.wieczorek.rss.core.business.MessageTransformer;
+import de.wieczorek.rss.types.RssEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.wieczorek.rss.core.business.MessageTransformer;
-import de.wieczorek.rss.types.RssEntry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BitcoincomMessageTransformer implements MessageTransformer {
     private static final Logger logger = LoggerFactory.getLogger(BitcoincomMessageTransformer.class);

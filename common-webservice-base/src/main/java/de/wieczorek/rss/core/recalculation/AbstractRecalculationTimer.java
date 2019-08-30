@@ -3,10 +3,9 @@ package de.wieczorek.rss.core.recalculation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 
 @ApplicationScoped
 public abstract class AbstractRecalculationTimer implements Runnable {

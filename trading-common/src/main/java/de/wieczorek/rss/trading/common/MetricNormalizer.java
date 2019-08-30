@@ -1,14 +1,13 @@
 package de.wieczorek.rss.trading.common;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import de.wieczorek.chart.core.persistence.ChartMetricRecord;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class MetricNormalizer {

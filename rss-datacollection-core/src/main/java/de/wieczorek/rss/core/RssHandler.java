@@ -1,7 +1,8 @@
 package de.wieczorek.rss.core;
 
-import java.util.Date;
-import java.util.List;
+import de.wieczorek.rss.core.ui.Controller;
+import de.wieczorek.rss.core.ui.Resource;
+import de.wieczorek.rss.types.RssEntry;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -10,10 +11,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import de.wieczorek.rss.core.ui.Controller;
-import de.wieczorek.rss.core.ui.Resource;
-import de.wieczorek.rss.types.RssEntry;
+import java.util.Date;
+import java.util.List;
 
 @Resource
 @ApplicationScoped

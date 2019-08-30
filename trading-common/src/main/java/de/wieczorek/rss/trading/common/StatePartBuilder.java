@@ -1,21 +1,20 @@
 package de.wieczorek.rss.trading.common;
 
+import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import de.wieczorek.chart.advisor.types.DeltaChartEntry;
+import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
+import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
+import de.wieczorek.rss.trading.types.StateEdgePart;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import com.beust.jcommander.internal.Lists;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
-import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import de.wieczorek.chart.advisor.types.DeltaChartEntry;
-import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
-import de.wieczorek.rss.trading.types.StateEdgePart;
 
 public final class StatePartBuilder {
     private StatePartBuilder() {
@@ -28,7 +27,7 @@ public final class StatePartBuilder {
                 Collectors.toMap(TradingEvaluationResult::getCurrentTime, Function.identity(), (v1, v2) -> v2));
 
         Multimap<LocalDateTime, ChartMetricRecord> chartMetricMappings = HashMultimap.create();
-        chartMetrics.stream().forEach(item -> chartMetricMappings.put(item.getId().getDate(), item));
+        chartMetrics.forEach(item -> chartMetricMappings.put(item.getId().getDate(), item));
 
         List<StateEdgePart> stateParts = new ArrayList<>();
 

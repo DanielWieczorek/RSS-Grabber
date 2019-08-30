@@ -1,10 +1,7 @@
 package de.wieczorek.rss.insight.business;
 
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
+import de.wieczorek.nn.AbstractNeuralNetworkTrainer;
+import de.wieczorek.rss.classification.types.RssEntry;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
 import org.deeplearning4j.nn.conf.*;
 import org.deeplearning4j.nn.conf.layers.LSTM;
@@ -18,9 +15,9 @@ import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-import de.wieczorek.nn.AbstractNeuralNetworkTrainer;
-import de.wieczorek.rss.classification.types.RssEntry;
-import de.wieczorek.rss.insight.types.RssEntrySentiment;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.List;
 
 @ApplicationScoped
 public class RssSentimentNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<RssEntry> {
@@ -32,17 +29,15 @@ public class RssSentimentNeuralNetworkTrainer extends AbstractNeuralNetworkTrain
     @Override
     protected DataSetIterator buildTrainingSetIterator(List<RssEntry> trainingSet) {
         WordVectors wordVectors = vec;
-        SentimentExampleIterator train = new SentimentExampleIterator(trainingSet, wordVectors, getBatchSize(),
+        return new SentimentExampleIterator(trainingSet, wordVectors, getBatchSize(),
                 truncateReviewsToLength, true);
-        return train;
     }
 
     @Override
     protected DataSetIterator buildTestSetIterator(List<RssEntry> testSet) {
         WordVectors wordVectors = vec;
-        SentimentExampleIterator test = new SentimentExampleIterator(testSet, wordVectors, getBatchSize(),
+        return new SentimentExampleIterator(testSet, wordVectors, getBatchSize(),
                 truncateReviewsToLength, false);
-        return test;
     }
 
     @Override

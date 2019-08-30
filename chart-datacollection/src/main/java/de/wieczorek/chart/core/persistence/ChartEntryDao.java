@@ -1,24 +1,18 @@
 package de.wieczorek.chart.core.persistence;
 
+import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.importexport.db.ImportExportDao;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
-import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.importexport.db.ImportExportDao;
 
 @ApplicationScoped
 public class ChartEntryDao extends ImportExportDao<ChartEntry> {

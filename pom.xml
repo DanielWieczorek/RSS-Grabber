@@ -41,10 +41,10 @@
 			<module>rss-advisor-prediction</module>
 			<module>rss-advisor-training</module>
 			
-			<module>trading-types</module>
+		<!--	<module>trading-types</module>
             <module>trading-common</module>
 			<module>trading-simulation</module>
-			<module>trading-training</module>
+			<module>trading-training</module> -->
 			
             <module>microservice-status</module>
             <module>microservice-authentication</module>

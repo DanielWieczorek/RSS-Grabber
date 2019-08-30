@@ -1,14 +1,13 @@
 package de.wieczorek.importexport.db;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.Dependent;
-import javax.ws.rs.HttpMethod;
-
 import de.wieczorek.rss.core.feature.FeatureAction;
 import de.wieczorek.rss.core.feature.FeatureDescriptor;
 import de.wieczorek.rss.core.feature.FeatureType;
+
+import javax.enterprise.context.Dependent;
+import javax.ws.rs.HttpMethod;
+import java.util.ArrayList;
+import java.util.List;
 
 @Dependent
 public class ImportExportFeatureDescriptor extends FeatureDescriptor {

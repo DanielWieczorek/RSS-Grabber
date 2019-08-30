@@ -1,12 +1,12 @@
 package de.wieczorek.rss.trading.common;
 
-import java.util.Arrays;
-import java.util.List;
-
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.IStateHistoryHolder;
 import de.wieczorek.rss.trading.types.StateEdgePart;
+
+import java.util.Arrays;
+import java.util.List;
 
 public final class NetworkInputBuilder {
     private NetworkInputBuilder() {

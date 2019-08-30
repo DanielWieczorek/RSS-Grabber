@@ -1,21 +1,19 @@
 package de.wieczorek.rss.core.ui;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.core.persistence.RssEntryDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.wieczorek.rss.classification.types.RssEntry;
-import de.wieczorek.rss.core.persistence.RssEntryDao;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {

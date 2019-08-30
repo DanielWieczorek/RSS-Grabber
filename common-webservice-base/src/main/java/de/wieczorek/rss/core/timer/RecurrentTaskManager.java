@@ -1,17 +1,15 @@
 package de.wieczorek.rss.core.timer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.jboss.weld.inject.WeldInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import de.wieczorek.rss.core.recalculation.AbstractRecalculationTimer;
-import org.jboss.weld.inject.WeldInstance;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @ApplicationScoped
 public class RecurrentTaskManager {

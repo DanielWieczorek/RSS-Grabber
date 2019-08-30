@@ -1,24 +1,25 @@
 package de.wieczorek.rss.trading.ui;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import de.wieczorek.rss.trading.common.*;
+import de.wieczorek.nn.PolicyDao;
+import de.wieczorek.rss.core.ui.ControllerBase;
+import de.wieczorek.rss.trading.business.data.Trade;
+import de.wieczorek.rss.trading.common.DataGenerator;
+import de.wieczorek.rss.trading.common.DataLoader;
+import de.wieczorek.rss.trading.common.MetricNormalizer;
+import de.wieczorek.rss.trading.common.NetworkInputBuilder;
+import de.wieczorek.rss.trading.types.Account;
+import de.wieczorek.rss.trading.types.ActionVertexType;
 import de.wieczorek.rss.trading.types.StateEdge;
 import org.deeplearning4j.rl4j.policy.DQNPolicy;
 import org.nd4j.linalg.factory.Nd4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.wieczorek.nn.PolicyDao;
-import de.wieczorek.rss.core.ui.ControllerBase;
-import de.wieczorek.rss.trading.business.data.Trade;
-import de.wieczorek.rss.trading.types.Account;
-import de.wieczorek.rss.trading.types.ActionVertexType;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {

@@ -1,8 +1,8 @@
 package de.wieczorek.chart.advisor.types;
 
-import java.util.List;
-
 import de.wieczorek.rss.insight.types.SentimentAtTime;
+
+import java.util.List;
 
 public class NetInputItem {
     private List<DeltaChartEntry> inputChartEntry;

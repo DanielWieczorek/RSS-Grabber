@@ -1,20 +1,18 @@
 package de.wieczorek.rss.insight.business;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
-
 import de.wieczorek.nn.AbstractNeuralNetworkPredictor;
 import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.insight.types.RssEntrySentiment;
 import opennlp.tools.stemmer.PorterStemmer;
 import opennlp.tools.stemmer.Stemmer;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class RssSentimentNeuralNetworkPredictor extends AbstractNeuralNetworkPredictor<RssEntry, RssEntrySentiment> {
@@ -26,8 +24,7 @@ public class RssSentimentNeuralNetworkPredictor extends AbstractNeuralNetworkPre
     protected INDArray buildPredictionFeatures(RssEntry item) {
         Stemmer stemmer = new PorterStemmer();
 
-        List<String> stemmedSentence = Arrays.asList((item.getHeading() + ". " + item.getDescription()).split(" "))
-                .stream().map(stemmer::stem).map(CharSequence::toString).map(String::toLowerCase).filter(vec::hasWord)
+        List<String> stemmedSentence = Arrays.stream((item.getHeading() + ". " + item.getDescription()).split(" ")).map(stemmer::stem).map(CharSequence::toString).map(String::toLowerCase).filter(vec::hasWord)
                 .collect(Collectors.toList());
 
         INDArray vectors = vec.getWordVectors(stemmedSentence);

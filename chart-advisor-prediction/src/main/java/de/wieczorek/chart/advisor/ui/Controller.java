@@ -1,31 +1,29 @@
 package de.wieczorek.chart.advisor.ui;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import de.wieczorek.chart.advisor.persistence.TradingEvaluationResultDao;
+import de.wieczorek.chart.advisor.types.DataPreparator;
+import de.wieczorek.chart.advisor.types.NetInputItem;
+import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
+import de.wieczorek.chart.advisor.types.TradingNeuralNetworkPredictor;
+import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
+import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
+import de.wieczorek.rss.core.recalculation.Recalculation;
+import de.wieczorek.rss.core.recalculation.RecalculationStatusDao;
+import de.wieczorek.rss.core.timer.RecurrentTaskManager;
+import de.wieczorek.rss.core.ui.ControllerBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
-
-import de.wieczorek.chart.advisor.persistence.TradingEvaluationResultDao;
-import de.wieczorek.chart.advisor.types.NetInputItem;
-import de.wieczorek.chart.advisor.types.TradingNeuralNetworkPredictor;
-import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.chart.advisor.types.DataPreparator;
-import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
-import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
-import de.wieczorek.rss.core.recalculation.Recalculation;
-import de.wieczorek.rss.core.recalculation.RecalculationStatusDao;
-import de.wieczorek.rss.core.timer.RecurrentTaskManager;
-import de.wieczorek.rss.core.ui.ControllerBase;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {

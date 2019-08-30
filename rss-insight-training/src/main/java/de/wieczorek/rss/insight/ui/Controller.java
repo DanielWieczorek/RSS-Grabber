@@ -1,23 +1,21 @@
 package de.wieczorek.rss.insight.ui;
 
-import java.util.List;
+import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.core.timer.RecurrentTaskManager;
+import de.wieczorek.rss.core.ui.ControllerBase;
+import de.wieczorek.rss.insight.business.DataGenerator;
+import de.wieczorek.rss.insight.business.RssSentimentNeuralNetworkTrainer;
+import de.wieczorek.rss.insight.business.RssWord2VecNetwork;
+import de.wieczorek.rss.insight.business.Word2VecDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
-
-import de.wieczorek.rss.insight.business.DataGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.wieczorek.rss.classification.types.RssEntry;
-import de.wieczorek.rss.core.timer.RecurrentTaskManager;
-import de.wieczorek.rss.core.ui.ControllerBase;
-import de.wieczorek.rss.insight.business.RssSentimentNeuralNetworkTrainer;
-import de.wieczorek.rss.insight.business.RssWord2VecNetwork;
-import de.wieczorek.rss.insight.business.Word2VecDao;
+import java.util.List;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {

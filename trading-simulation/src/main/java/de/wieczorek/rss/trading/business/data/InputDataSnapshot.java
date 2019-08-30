@@ -1,10 +1,10 @@
 package de.wieczorek.rss.trading.business.data;
 
-import java.util.List;
-
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.rss.trading.types.IStateHistoryHolder;
 import de.wieczorek.rss.trading.types.StateEdgePart;
+
+import java.util.List;
 
 public class InputDataSnapshot implements IStateHistoryHolder {
     private ChartEntry currentRate;

@@ -1,16 +1,15 @@
 package de.wieczorek.rss.insight.business;
 
+import de.wieczorek.rss.classification.types.RssEntry;
+import opennlp.tools.stemmer.PorterStemmer;
+import opennlp.tools.stemmer.Stemmer;
+import org.deeplearning4j.text.sentenceiterator.SentenceIterator;
+import org.deeplearning4j.text.sentenceiterator.SentencePreProcessor;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.deeplearning4j.text.sentenceiterator.SentenceIterator;
-import org.deeplearning4j.text.sentenceiterator.SentencePreProcessor;
-
-import de.wieczorek.rss.classification.types.RssEntry;
-import opennlp.tools.stemmer.PorterStemmer;
-import opennlp.tools.stemmer.Stemmer;
 
 /**
  * This is a DataSetIterator that is specialized for the IMDB review dataset
@@ -30,14 +29,6 @@ public class Word2VecExampleIterator implements SentenceIterator {
     private List<String> entries;
     private Iterator<String> iter;
 
-    /**
-     * @param dataDirectory  the directory of the IMDB review data set
-     * @param wordVectors    WordVectors object
-     * @param batchSize      Size of each minibatch for training
-     * @param truncateLength If reviews exceed
-     * @param train          If true: return the training data. If false: return the testing
-     *                       data.
-     */
     public Word2VecExampleIterator(List<RssEntry> entry) {
         entries = entry.stream().map(x -> x.getHeading() + ". " + x.getDescription()).collect(Collectors.toList());
         iter = entries.iterator();
@@ -48,7 +39,7 @@ public class Word2VecExampleIterator implements SentenceIterator {
     public String nextSentence() {
         Stemmer stemmer = new PorterStemmer();
 
-        return Arrays.asList(iter.next().split(" ")).stream().map(stemmer::stem).collect(Collectors.joining(" "));
+        return Arrays.stream(iter.next().split(" ")).map(stemmer::stem).collect(Collectors.joining(" "));
     }
 
     @Override

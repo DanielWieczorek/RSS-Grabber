@@ -1,30 +1,25 @@
 package de.wieczorek.rss.core;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Enumeration;
-import java.util.List;
+import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
+import de.wieczorek.rss.core.jgroups.MicroserviceDirectory;
+import de.wieczorek.rss.core.jgroups.ServiceMetadata;
+import de.wieczorek.rss.core.ui.Resource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
-
-import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
-import de.wieczorek.rss.core.jgroups.MicroserviceDirectory;
-import de.wieczorek.rss.core.jgroups.ServiceMetadata;
-import de.wieczorek.rss.core.ui.Resource;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Enumeration;
+import java.util.List;
 
 @Resource
 @ApplicationScoped

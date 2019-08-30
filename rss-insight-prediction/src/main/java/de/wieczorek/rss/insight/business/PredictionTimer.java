@@ -1,19 +1,17 @@
 package de.wieczorek.rss.insight.business;
 
-import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
 import de.wieczorek.rss.insight.ui.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 @RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
 @ApplicationScoped

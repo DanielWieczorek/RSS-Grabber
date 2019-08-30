@@ -1,14 +1,13 @@
 package de.wieczorek.chart.core.persistence;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
-import javax.persistence.Embeddable;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
+import javax.persistence.Embeddable;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Embeddable
 public class ChartMetricId implements Serializable {
@@ -64,13 +63,8 @@ public class ChartMetricId implements Serializable {
             return false;
         }
         if (indicator == null) {
-            if (other.indicator != null) {
-                return false;
-            }
-        } else if (!indicator.equals(other.indicator)) {
-            return false;
-        }
-        return true;
+            return other.indicator == null;
+        } else return indicator.equals(other.indicator);
     }
 
 }

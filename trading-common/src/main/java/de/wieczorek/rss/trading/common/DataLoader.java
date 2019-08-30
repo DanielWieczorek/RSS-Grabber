@@ -1,16 +1,15 @@
 package de.wieczorek.rss.trading.common;
 
-import java.util.List;
+import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
+import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
+import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
-
-import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
-import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
+import java.util.List;
 
 @ApplicationScoped
 public class DataLoader {

@@ -1,8 +1,7 @@
 package de.wieczorek.chart.core.persistence;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
+import de.wieczorek.importexport.db.ImportExportDao;
+import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityTransaction;
@@ -10,9 +9,9 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
-import de.wieczorek.importexport.db.ImportExportDao;
-import de.wieczorek.rss.core.persistence.EntityManagerProvider;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @ApplicationScoped
 public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
@@ -32,7 +31,7 @@ public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
     public void persistAll(Collection<ChartMetricRecord> entries) {
         EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
         transaction.begin();
-        entries.stream().forEach(EntityManagerProvider.getEntityManager()::persist);
+        entries.forEach(EntityManagerProvider.getEntityManager()::persist);
         transaction.commit();
     }
 

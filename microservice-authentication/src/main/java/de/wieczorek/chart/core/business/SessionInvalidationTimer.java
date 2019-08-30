@@ -1,18 +1,16 @@
 package de.wieczorek.chart.core.business;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import de.wieczorek.chart.core.persistence.Session;
+import de.wieczorek.chart.core.persistence.SessionDao;
+import de.wieczorek.rss.core.timer.RecurrentTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.ResponseProcessingException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.wieczorek.chart.core.persistence.Session;
-import de.wieczorek.chart.core.persistence.SessionDao;
-import de.wieczorek.rss.core.timer.RecurrentTask;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
 @ApplicationScoped

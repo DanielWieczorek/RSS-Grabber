@@ -1,8 +1,7 @@
 package de.wieczorek.importexport.db;
 
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
+import java.util.List;
 
 @ApplicationScoped
 public interface ExportDao {

@@ -1,14 +1,13 @@
 package de.wieczorek.rss.trading.business;
 
 import de.wieczorek.rss.trading.common.DataGenerator;
+import de.wieczorek.rss.trading.types.StateEdge;
 import org.deeplearning4j.gym.StepReply;
 import org.deeplearning4j.rl4j.mdp.MDP;
 import org.deeplearning4j.rl4j.space.ArrayObservationSpace;
 import org.deeplearning4j.rl4j.space.DiscreteSpace;
 import org.deeplearning4j.rl4j.space.ObservationSpace;
 import org.json.JSONObject;
-
-import de.wieczorek.rss.trading.types.StateEdge;
 
 import java.util.UUID;
 
@@ -80,7 +79,7 @@ public class NeuralNetworkActor implements MDP<NeuralNetworkState, Integer, Disc
 
         //   double reward = (newState.getAccount().getEurEquivalent()
         //           - currentState.getState().getAccount().getEurEquivalent());
-        currentState = new NeuralNetworkState(newState, currentState.getStep() + 1);
+        currentState = new de.wieczorek.rss.trading.business.NeuralNetworkState(newState, currentState.getStep() + 1);
         return new StepReply<>(currentState, isDone() && numberOfTrades == 0 ? 0.0 : reward, isDone(), new JSONObject("{}"));
 
 
@@ -99,7 +98,7 @@ public class NeuralNetworkActor implements MDP<NeuralNetworkState, Integer, Disc
     }
 
     @Override
-    public ObservationSpace<NeuralNetworkState> getObservationSpace() {
+    public ObservationSpace<de.wieczorek.rss.trading.business.NeuralNetworkState> getObservationSpace() {
         return observationSpace;
     }
 

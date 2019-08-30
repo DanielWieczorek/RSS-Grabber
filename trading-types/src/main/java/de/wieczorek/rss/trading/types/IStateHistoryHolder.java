@@ -3,9 +3,9 @@ package de.wieczorek.rss.trading.types;
 import java.util.List;
 
 public interface IStateHistoryHolder {
-    public int getPartsStartIndex();
+     int getPartsStartIndex();
 
-    public int getPartsEndIndex();
+     int getPartsEndIndex();
 
-    public List<StateEdgePart> getAllStateParts();
+     List<StateEdgePart> getAllStateParts();
 }

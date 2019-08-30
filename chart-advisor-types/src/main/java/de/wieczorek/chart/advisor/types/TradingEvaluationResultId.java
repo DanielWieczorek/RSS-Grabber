@@ -54,13 +54,8 @@ public class TradingEvaluationResultId implements Serializable {
             return false;
         }
         if (targetTime == null) {
-            if (other.targetTime != null) {
-                return false;
-            }
-        } else if (!targetTime.equals(other.targetTime)) {
-            return false;
-        }
-        return true;
+            return other.targetTime == null;
+        } else return targetTime.equals(other.targetTime);
     }
 
 }

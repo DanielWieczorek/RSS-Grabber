@@ -1,28 +1,17 @@
 package de.wieczorek.rss.core.jgroups;
 
-import java.net.Inet4Address;
-import java.net.UnknownHostException;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
+import de.wieczorek.rss.core.config.port.JGroupsPort;
 import org.jgroups.JChannel;
-import org.jgroups.protocols.BARRIER;
-import org.jgroups.protocols.FD_ALL;
-import org.jgroups.protocols.FD_SOCK;
-import org.jgroups.protocols.FRAG2;
-import org.jgroups.protocols.JDBC_PING;
-import org.jgroups.protocols.MERGE3;
-import org.jgroups.protocols.MFC;
-import org.jgroups.protocols.TCP;
-import org.jgroups.protocols.UNICAST3;
-import org.jgroups.protocols.VERIFY_SUSPECT;
+import org.jgroups.protocols.*;
 import org.jgroups.protocols.pbcast.GMS;
 import org.jgroups.protocols.pbcast.NAKACK2;
 import org.jgroups.protocols.pbcast.STABLE;
 
-import de.wieczorek.rss.core.config.port.JGroupsPort;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 
 @ApplicationScoped
 public class ChannelProducer {

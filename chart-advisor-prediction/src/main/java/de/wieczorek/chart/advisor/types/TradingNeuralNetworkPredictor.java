@@ -1,21 +1,15 @@
 package de.wieczorek.chart.advisor.types;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
+import de.wieczorek.nn.AbstractNeuralNetworkPredictor;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.INDArrayIndex;
 import org.nd4j.linalg.indexing.NDArrayIndex;
 
-import de.wieczorek.nn.AbstractNeuralNetworkPredictor;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import javax.enterprise.context.ApplicationScoped;
+import java.util.*;
 
 @ApplicationScoped
 public class TradingNeuralNetworkPredictor
@@ -31,9 +25,9 @@ public class TradingNeuralNetworkPredictor
         INDArray features = Nd4j.create(new int[]{1, vectorSize, maxLength}, 'f');
 
         Map<ChartEntry, List<ChartMetricRecord>> allRecords = item.getInputChartMetrics();
-        List<ChartEntry> ce = allRecords.keySet().stream().collect(Collectors.toList());
+        List<ChartEntry> ce = new ArrayList<>(allRecords.keySet());
 
-        ce.sort(Comparator.comparing(entry -> entry.getDate()));
+        ce.sort(Comparator.comparing(ChartEntry::getDate));
         for (int k = 0; k < ce.size(); k += 15) {
 
             List<ChartMetricRecord> record = allRecords.get(ce.get(k));

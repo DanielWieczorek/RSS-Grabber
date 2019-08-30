@@ -1,12 +1,8 @@
 package de.wieczorek.rss.insight.business;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-
+import de.wieczorek.rss.classification.types.RssEntry;
+import opennlp.tools.stemmer.PorterStemmer;
+import opennlp.tools.stemmer.Stemmer;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
 import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreprocessor;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
@@ -19,9 +15,11 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.INDArrayIndex;
 import org.nd4j.linalg.indexing.NDArrayIndex;
 
-import de.wieczorek.rss.classification.types.RssEntry;
-import opennlp.tools.stemmer.PorterStemmer;
-import opennlp.tools.stemmer.Stemmer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 public class SentimentExampleIterator implements DataSetIterator {
     private final WordVectors wordVectors;
@@ -64,14 +62,11 @@ public class SentimentExampleIterator implements DataSetIterator {
     public DataSet next(int num) {
         if (cursor >= files.size())
             throw new NoSuchElementException();
-        try {
+
             return nextDataSet(num);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
-    private DataSet nextDataSet(int num) throws IOException {
+    private DataSet nextDataSet(int num) {
         // First: load reviews to String. Alternate positive and negative reviews
         List<String> reviews = new ArrayList<>(num);
         boolean[] positive = new boolean[num];

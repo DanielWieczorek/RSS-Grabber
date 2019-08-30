@@ -1,14 +1,5 @@
 package de.wieczorek.nn;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
-import javax.inject.Inject;
-
 import org.deeplearning4j.datasets.iterator.AsyncDataSetIterator;
 import org.deeplearning4j.nn.conf.CacheMode;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -17,9 +8,15 @@ import org.deeplearning4j.optimize.listeners.PerformanceListener;
 import org.nd4j.evaluation.BaseEvaluation;
 import org.nd4j.linalg.dataset.ExistingMiniBatchDataSetIterator;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
-import org.nd4j.linalg.factory.Nd4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public abstract class AbstractNeuralNetworkTrainer<T> {
 
@@ -157,7 +154,7 @@ public abstract class AbstractNeuralNetworkTrainer<T> {
     protected abstract int getBatchSize();
 
 
-    private class CustomDatasetIterator extends ExistingMiniBatchDataSetIterator {
+    private static class CustomDatasetIterator extends ExistingMiniBatchDataSetIterator {
 
         public CustomDatasetIterator(File rootDir, String pattern) {
             super(rootDir, pattern);

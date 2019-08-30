@@ -1,11 +1,10 @@
 package de.wieczorek.rss.core.timer;
 
+import javax.enterprise.util.Nonbinding;
+import javax.inject.Qualifier;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.TimeUnit;
-
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Qualifier;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier

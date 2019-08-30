@@ -1,14 +1,12 @@
 package de.wieczorek.rss.insight.business;
 
-import java.util.concurrent.locks.ReentrantLock;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
+import de.wieczorek.nn.NeuralNetworkName;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 
-import de.wieczorek.nn.NeuralNetworkName;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.concurrent.locks.ReentrantLock;
 
 @ApplicationScoped
 public class Word2VecDao {

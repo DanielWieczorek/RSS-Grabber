@@ -1,19 +1,12 @@
 package de.wieczorek.rss.insight.business;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-
+import de.wieczorek.rss.core.timer.RecurrentTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.wieczorek.rss.classification.types.RssEntry;
-import de.wieczorek.rss.core.timer.RecurrentTask;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.concurrent.TimeUnit;
 
 @RecurrentTask(interval = 0, unit = TimeUnit.MINUTES)
 @ApplicationScoped

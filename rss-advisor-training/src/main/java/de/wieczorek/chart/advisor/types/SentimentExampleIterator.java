@@ -1,12 +1,5 @@
 package de.wieczorek.chart.advisor.types;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.DataSetPreProcessor;
@@ -14,6 +7,12 @@ import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.INDArrayIndex;
 import org.nd4j.linalg.indexing.NDArrayIndex;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 public class SentimentExampleIterator implements DataSetIterator {
     /**
@@ -51,14 +50,11 @@ public class SentimentExampleIterator implements DataSetIterator {
     public DataSet next(int num) {
         if (cursor >= files.size())
             throw new NoSuchElementException();
-        try {
+
             return nextDataSet(num);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
-    private DataSet nextDataSet(int num) throws IOException {
+    private DataSet nextDataSet(int num) {
         // First: load reviews to String. Alternate positive and negative reviews
         List<NetInputItem> reviews = new ArrayList<>(num);
         for (int i = 0; i < num && cursor < totalExamples(); i++) {
@@ -139,8 +135,7 @@ public class SentimentExampleIterator implements DataSetIterator {
             // step for this example
         }
 
-        DataSet result = new DataSet(features, labels, featuresMask, labelsMask);
-        return result;
+        return new DataSet(features, labels, featuresMask, labelsMask);
     }
 
     public int totalExamples() {

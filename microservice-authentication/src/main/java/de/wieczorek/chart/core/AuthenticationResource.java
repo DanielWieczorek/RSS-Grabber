@@ -1,25 +1,19 @@
 package de.wieczorek.chart.core;
 
+import de.wieczorek.chart.core.ui.Controller;
+import de.wieczorek.rss.core.ui.Resource;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-
-import de.wieczorek.chart.core.ui.Controller;
-import de.wieczorek.rss.core.ui.Resource;
 
 @Resource
 @ApplicationScoped

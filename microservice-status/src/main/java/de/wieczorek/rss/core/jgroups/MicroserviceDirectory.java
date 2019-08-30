@@ -1,16 +1,15 @@
 package de.wieczorek.rss.core.jgroups;
 
+import org.jgroups.Address;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-
-import org.jgroups.Address;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class MicroserviceDirectory {

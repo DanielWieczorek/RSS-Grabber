@@ -1,14 +1,13 @@
 package de.wieczorek.rss.core.ui;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
 import javax.ws.rs.Path;
+import java.util.HashSet;
+import java.util.Set;
 
 @ApplicationScoped
 public class ServiceCollector implements Extension {

@@ -1,16 +1,15 @@
 package de.wieczorek.chart.core.config;
 
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-
 import de.wieczorek.rss.core.config.ServiceName;
 import de.wieczorek.rss.core.config.port.JGroupsPort;
 import de.wieczorek.rss.core.config.port.RestPort;
 import de.wieczorek.rss.core.db.migration.MigrationConfiguration;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class Configuration {

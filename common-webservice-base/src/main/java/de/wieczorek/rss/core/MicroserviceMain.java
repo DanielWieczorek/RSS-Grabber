@@ -1,11 +1,10 @@
 package de.wieczorek.rss.core;
 
-import org.jboss.logging.MDC;
-
 import de.wieczorek.rss.core.db.migration.DatabaseMigrator;
 import de.wieczorek.rss.core.jgroups.RestInfoSender;
 import de.wieczorek.rss.core.ui.MicroserviceServer;
 import de.wieczorek.rss.core.weld.CdiContext;
+import org.jboss.logging.MDC;
 
 public class MicroserviceMain {
 

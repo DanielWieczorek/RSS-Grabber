@@ -1,15 +1,12 @@
 package de.wieczorek.chart.advisor.types;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
+
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class DataPreparator {
 
@@ -79,11 +76,8 @@ public class DataPreparator {
                                     current.getVolumeWeightedAverage() - previous.getVolumeWeightedAverage());
 
                             DeltaChartEntry cached = deltaEntryCache.putIfAbsent(delta, delta);
-                            if (cached != null) {
-                                return cached;
-                            }
+                            return Objects.requireNonNullElse(cached, delta);
 
-                            return delta;
                         }
                     }
                     return null;
@@ -105,8 +99,7 @@ public class DataPreparator {
         Map<LocalDateTime, ChartEntry> chartEntryMappings = chartEntries.stream()
                 .collect(Collectors.toMap(ChartEntry::getDate, Function.identity(), (v1, v2) -> v2));
 
-        LocalDateTime startTime = sentiment.getSentimentTime().minusHours(24);
-        LocalDateTime currentDate = startTime;
+        LocalDateTime currentDate = sentiment.getSentimentTime().minusHours(24);
 
         ChartEntry inputChartEntry = chartEntryMappings.get(currentDate);
         while (inputChartEntry == null && currentDate.isBefore(sentiment.getSentimentTime())) {

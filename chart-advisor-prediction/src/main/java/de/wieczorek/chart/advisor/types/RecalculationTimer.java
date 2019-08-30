@@ -1,15 +1,5 @@
 package de.wieczorek.chart.advisor.types;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-
 import de.wieczorek.chart.advisor.persistence.TradingEvaluationResultDao;
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
@@ -18,6 +8,15 @@ import de.wieczorek.rss.core.recalculation.AbstractRecalculationTimer;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RecurrentTask(interval = 10, unit = TimeUnit.MINUTES)
 @ApplicationScoped

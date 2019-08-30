@@ -1,12 +1,11 @@
 package de.wieczorek.rss.core;
 
-import java.util.List;
+import de.wieczorek.rss.core.jgroups.ServiceMetadata;
+import de.wieczorek.rss.core.jgroups.StatusRequester;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import de.wieczorek.rss.core.jgroups.ServiceMetadata;
-import de.wieczorek.rss.core.jgroups.StatusRequester;
+import java.util.List;
 
 @ApplicationScoped
 public class Controller {

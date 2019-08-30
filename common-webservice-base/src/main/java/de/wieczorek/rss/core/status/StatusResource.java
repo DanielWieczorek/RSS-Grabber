@@ -1,5 +1,8 @@
 package de.wieczorek.rss.core.status;
 
+import de.wieczorek.rss.core.jgroups.CollectorStatus;
+import de.wieczorek.rss.core.ui.Resource;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -7,9 +10,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import de.wieczorek.rss.core.jgroups.CollectorStatus;
-import de.wieczorek.rss.core.ui.Resource;
 
 @Resource
 @Path("status/")

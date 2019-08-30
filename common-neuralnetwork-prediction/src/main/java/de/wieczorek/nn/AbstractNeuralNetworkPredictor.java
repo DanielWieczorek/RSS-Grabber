@@ -1,13 +1,12 @@
 package de.wieczorek.nn;
 
-import javax.inject.Inject;
-
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.listeners.CheckpointListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.NDArrayIndex;
 
+import javax.inject.Inject;
 import java.io.File;
 
 public abstract class AbstractNeuralNetworkPredictor<T, R> {

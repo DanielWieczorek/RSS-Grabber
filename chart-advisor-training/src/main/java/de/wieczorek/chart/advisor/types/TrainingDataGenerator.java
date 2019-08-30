@@ -105,18 +105,17 @@ public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputIte
         double sum = 0;
         double newSum = 0;
 
-        for (int i = 0; i < sd.size(); i++) {
-            sum = sum + sd.get(i);
+        for (Double aDouble : sd) {
+            sum = sum + aDouble;
         }
         double mean = (sum) / (sd.size());
 
-        for (int j = 0; j < sd.size(); j++) {
+        for (Double aDouble : sd) {
             // put the calculation right in there
-            newSum = newSum + ((sd.get(j) - mean) * (sd.get(j) - mean));
+            newSum = newSum + ((aDouble - mean) * (aDouble - mean));
         }
         double squaredDiffMean = (newSum) / (sd.size());
-        double standardDev = (Math.sqrt(squaredDiffMean));
 
-        return standardDev;
+        return (Math.sqrt(squaredDiffMean));
     }
 }

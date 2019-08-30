@@ -1,11 +1,6 @@
 package de.wieczorek.rss.trading.types;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import de.wieczorek.rss.trading.types.Account;
-import de.wieczorek.rss.trading.types.IStateHistoryHolder;
-import de.wieczorek.rss.trading.types.StateEdgePart;
 
 public class StateEdge implements IStateHistoryHolder {
     private long id;

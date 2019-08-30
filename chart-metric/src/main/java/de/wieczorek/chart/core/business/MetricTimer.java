@@ -1,19 +1,9 @@
 package de.wieczorek.chart.core.business;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-
+import de.wieczorek.chart.core.persistence.ChartMetricDao;
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
+import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
+import de.wieczorek.rss.core.timer.RecurrentTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ta4j.core.Bar;
@@ -21,10 +11,18 @@ import org.ta4j.core.BaseBar;
 import org.ta4j.core.BaseTimeSeries;
 import org.ta4j.core.num.DoubleNum;
 
-import de.wieczorek.chart.core.persistence.ChartMetricDao;
-import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
-import de.wieczorek.rss.core.timer.RecurrentTask;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RecurrentTask(interval = 30, unit = TimeUnit.SECONDS)
 @ApplicationScoped

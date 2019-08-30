@@ -1,13 +1,12 @@
 package de.wieczorek.rss.trading.ui;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
+import de.wieczorek.rss.core.timer.RecurrentTaskManager;
+import de.wieczorek.rss.core.ui.ControllerBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.wieczorek.rss.core.timer.RecurrentTaskManager;
-import de.wieczorek.rss.core.ui.ControllerBase;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {

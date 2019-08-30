@@ -1,19 +1,17 @@
 package de.wieczorek.rss.core.ui;
 
-import java.util.Date;
-import java.util.List;
+import de.wieczorek.rss.core.persistence.RssEntryDao;
+import de.wieczorek.rss.core.timer.RecurrentTaskManager;
+import de.wieczorek.rss.types.RssEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.wieczorek.rss.core.persistence.RssEntryDao;
-import de.wieczorek.rss.core.timer.RecurrentTaskManager;
-import de.wieczorek.rss.types.RssEntry;
+import java.util.Date;
+import java.util.List;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {

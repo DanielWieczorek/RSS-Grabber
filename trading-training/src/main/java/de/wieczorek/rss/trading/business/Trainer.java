@@ -1,16 +1,8 @@
 package de.wieczorek.rss.trading.business;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Random;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
+import de.wieczorek.nn.PolicyDao;
 import de.wieczorek.rss.trading.common.DataGenerator;
+import de.wieczorek.rss.trading.types.StateEdge;
 import org.deeplearning4j.optimize.api.TrainingListener;
 import org.deeplearning4j.optimize.listeners.PerformanceListener;
 import org.deeplearning4j.rl4j.learning.Learning;
@@ -26,8 +18,14 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.primitives.Pair;
 
-import de.wieczorek.nn.PolicyDao;
-import de.wieczorek.rss.trading.types.StateEdge;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Random;
 
 @ApplicationScoped
 public class Trainer {

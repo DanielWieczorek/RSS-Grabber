@@ -1,5 +1,15 @@
 package de.wieczorek.chart.core.business;
 
+import de.wieczorek.chart.core.persistence.ChartEntryDao;
+import de.wieczorek.rss.core.timer.RecurrentTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.ResponseProcessingException;
+import javax.ws.rs.core.MediaType;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -9,18 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.ResponseProcessingException;
-import javax.ws.rs.core.MediaType;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.wieczorek.chart.core.persistence.ChartEntryDao;
-import de.wieczorek.rss.core.timer.RecurrentTask;
 
 @RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
 @ApplicationScoped

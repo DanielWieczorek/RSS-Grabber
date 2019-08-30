@@ -1,6 +1,8 @@
 package de.wieczorek.chart.core;
 
-import java.util.List;
+import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.ui.Controller;
+import de.wieczorek.rss.core.ui.Resource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -8,10 +10,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.chart.core.ui.Controller;
-import de.wieczorek.rss.core.ui.Resource;
+import java.util.List;
 
 @Resource
 @ApplicationScoped

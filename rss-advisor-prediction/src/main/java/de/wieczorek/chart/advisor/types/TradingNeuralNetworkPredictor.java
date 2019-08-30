@@ -1,13 +1,12 @@
 package de.wieczorek.chart.advisor.types;
 
-import javax.enterprise.context.ApplicationScoped;
-
+import de.wieczorek.nn.AbstractNeuralNetworkPredictor;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.INDArrayIndex;
 import org.nd4j.linalg.indexing.NDArrayIndex;
 
-import de.wieczorek.nn.AbstractNeuralNetworkPredictor;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class TradingNeuralNetworkPredictor

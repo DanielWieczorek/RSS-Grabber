@@ -1,22 +1,19 @@
 package de.wieczorek.rss.core.ui;
 
-import java.util.EnumSet;
-import java.util.stream.Collectors;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.servlet.DispatcherType;
-
+import de.wieczorek.rss.core.config.port.RestPort;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.jboss.weld.environment.servlet.Listener;
-
-import de.wieczorek.rss.core.config.port.RestPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.servlet.DispatcherType;
+import java.util.EnumSet;
 
 @ApplicationScoped
 public class MicroserviceServer {
@@ -65,10 +62,10 @@ public class MicroserviceServer {
         ServletHolder jerseyServlet = context.addServlet(org.glassfish.jersey.servlet.ServletContainer.class, "/*");
         jerseyServlet.setInitOrder(0);
 
-        logger.info("found the following REST resource classes: " + ServiceCollector.getClasses().stream().collect(Collectors.joining(",")));
+        logger.info("found the following REST resource classes: " + String.join(",", ServiceCollector.getClasses()));
 
         jerseyServlet.setInitParameter("jersey.config.server.provider.classnames",
-                ServiceCollector.getClasses().stream().collect(Collectors.joining(",")));
+                String.join(",", ServiceCollector.getClasses()));
 
     }
 

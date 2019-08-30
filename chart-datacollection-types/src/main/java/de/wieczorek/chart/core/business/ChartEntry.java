@@ -1,15 +1,14 @@
 package de.wieczorek.chart.core.business;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ohlc")
@@ -119,13 +118,8 @@ public class ChartEntry {
         }
         ChartEntry other = (ChartEntry) obj;
         if (date == null) {
-            if (other.date != null) {
-                return false;
-            }
-        } else if (!date.equals(other.date)) {
-            return false;
-        }
-        return true;
+            return other.date == null;
+        } else return date.equals(other.date);
     }
 
 }

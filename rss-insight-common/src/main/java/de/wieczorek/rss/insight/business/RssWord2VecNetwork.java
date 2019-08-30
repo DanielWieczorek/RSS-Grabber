@@ -1,13 +1,6 @@
 package de.wieczorek.rss.insight.business;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
+import de.wieczorek.rss.classification.types.RssEntry;
 import org.deeplearning4j.models.embeddings.WeightLookupTable;
 import org.deeplearning4j.models.embeddings.reader.ModelUtils;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
@@ -19,7 +12,12 @@ import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFac
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
-import de.wieczorek.rss.classification.types.RssEntry;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class RssWord2VecNetwork implements WordVectors {

@@ -1,12 +1,11 @@
 package de.wieczorek.nn;
 
-import java.io.IOException;
+import org.deeplearning4j.rl4j.policy.ACPolicy;
+import org.deeplearning4j.rl4j.policy.DQNPolicy;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import org.deeplearning4j.rl4j.policy.ACPolicy;
-import org.deeplearning4j.rl4j.policy.DQNPolicy;
+import java.io.IOException;
 
 @ApplicationScoped
 public class PolicyDao {

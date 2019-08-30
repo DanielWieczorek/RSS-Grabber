@@ -1,13 +1,12 @@
 package de.wieczorek.rss.core.jgroups;
 
-import java.util.List;
+import de.wieczorek.rss.core.feature.FeatureDescriptor;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
-
-import de.wieczorek.rss.core.feature.FeatureDescriptor;
+import java.util.List;
 
 @ApplicationScoped
 public class StatusRequester {

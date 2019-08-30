@@ -1,9 +1,8 @@
 package de.wieczorek.importexport.db;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.Collection;
 import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public abstract class ImportExportDao<T> {

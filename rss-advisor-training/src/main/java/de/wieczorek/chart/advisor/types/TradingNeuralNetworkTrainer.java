@@ -1,15 +1,7 @@
 package de.wieczorek.chart.advisor.types;
 
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-
-import org.deeplearning4j.nn.conf.BackpropType;
-import org.deeplearning4j.nn.conf.CacheMode;
-import org.deeplearning4j.nn.conf.GradientNormalization;
-import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
-import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
-import org.deeplearning4j.nn.conf.WorkspaceMode;
+import de.wieczorek.nn.AbstractNeuralNetworkTrainer;
+import org.deeplearning4j.nn.conf.*;
 import org.deeplearning4j.nn.conf.inputs.InputType;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.LSTM;
@@ -22,10 +14,11 @@ import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
-
-import de.wieczorek.nn.AbstractNeuralNetworkTrainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import java.util.List;
 
 @ApplicationScoped
 public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<NetInputItem> {
@@ -33,15 +26,12 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Ne
 
     @Override
     protected DataSetIterator buildTrainingSetIterator(List<NetInputItem> trainingSet) {
-        SentimentExampleIterator train = new SentimentExampleIterator(trainingSet, getBatchSize(), true);
-        return train;
+        return new SentimentExampleIterator(trainingSet, getBatchSize(), true);
     }
 
     @Override
     protected DataSetIterator buildTestSetIterator(List<NetInputItem> testSet) {
-        SentimentExampleIterator test = new SentimentExampleIterator(testSet, getBatchSize(), false);
-
-        return test;
+        return new SentimentExampleIterator(testSet, getBatchSize(), false);
     }
 
     @Override

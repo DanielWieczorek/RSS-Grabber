@@ -1,14 +1,5 @@
 package de.wieczorek.chart.core.ui;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.wieczorek.chart.core.persistence.ChartMetricDao;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.rss.core.jgroups.RestInfoSender;
@@ -16,6 +7,13 @@ import de.wieczorek.rss.core.recalculation.Recalculation;
 import de.wieczorek.rss.core.recalculation.RecalculationStatusDao;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {

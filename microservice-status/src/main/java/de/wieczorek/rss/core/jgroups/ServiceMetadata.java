@@ -1,8 +1,8 @@
 package de.wieczorek.rss.core.jgroups;
 
-import java.util.List;
-
 import de.wieczorek.rss.core.feature.FeatureDescriptor;
+
+import java.util.List;
 
 public class ServiceMetadata {
 

@@ -1,11 +1,10 @@
 package de.wieczorek.rss.classification.types;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Table(name = "rss_entries")
@@ -100,13 +99,8 @@ public class RssEntry {
         }
         RssEntry other = (RssEntry) obj;
         if (URI == null) {
-            if (other.URI != null) {
-                return false;
-            }
-        } else if (!URI.equals(other.URI)) {
-            return false;
-        }
-        return true;
+            return other.URI == null;
+        } else return URI.equals(other.URI);
     }
 
 }

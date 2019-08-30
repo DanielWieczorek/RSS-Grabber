@@ -1,11 +1,11 @@
 package de.wieczorek.rss.insight.ui;
 
+import de.wieczorek.rss.core.ui.Resource;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-
-import de.wieczorek.rss.core.ui.Resource;
 
 @Resource
 @Path("/")

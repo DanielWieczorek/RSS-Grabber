@@ -1,19 +1,5 @@
 package de.wieczorek.rss.insight.business;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-
 import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.recalculation.AbstractRecalculationTimer;
 import de.wieczorek.rss.core.timer.RecurrentTask;
@@ -22,8 +8,18 @@ import de.wieczorek.rss.insight.types.RssEntrySentiment;
 import de.wieczorek.rss.insight.types.RssEntrySentimentSummary;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @RecurrentTask(interval = 10, unit = TimeUnit.MINUTES)
 @ApplicationScoped

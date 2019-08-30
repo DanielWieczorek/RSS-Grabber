@@ -1,29 +1,22 @@
 package de.wieczorek.rss.core.jgroups;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
-import org.jgroups.Address;
-import org.jgroups.JChannel;
-import org.jgroups.Message;
-import org.jgroups.ReceiverAdapter;
-import org.jgroups.View;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-
 import de.wieczorek.rss.core.config.ServiceName;
 import de.wieczorek.rss.core.config.port.RestPort;
+import org.jgroups.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.List;
 
 @ApplicationScoped
 public class RestInfoSender extends ReceiverAdapter {

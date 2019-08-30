@@ -1,14 +1,13 @@
 package de.wieczorek.rss.trading.business.data;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.ActionVertexType;
+
+import java.time.LocalDateTime;
 
 public class Trade {
 

@@ -1,17 +1,11 @@
 package de.wieczorek.chart.core.persistence;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
 
 @ApplicationScoped
 public class SessionDao {

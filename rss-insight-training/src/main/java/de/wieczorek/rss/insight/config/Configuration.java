@@ -1,12 +1,12 @@
 package de.wieczorek.rss.insight.config;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-
 import de.wieczorek.nn.NeuralNetworkName;
 import de.wieczorek.rss.core.config.ServiceName;
 import de.wieczorek.rss.core.config.port.JGroupsPort;
 import de.wieczorek.rss.core.config.port.RestPort;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 
 @ApplicationScoped
 public class Configuration {

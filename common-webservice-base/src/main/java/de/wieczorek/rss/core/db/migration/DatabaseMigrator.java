@@ -1,12 +1,11 @@
 package de.wieczorek.rss.core.db.migration;
 
-import java.util.Map;
+import org.flywaydb.core.Flyway;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-
-import org.flywaydb.core.Flyway;
+import java.util.Map;
 
 @ApplicationScoped
 public class DatabaseMigrator {

@@ -1,14 +1,9 @@
 package de.wieczorek.chart.core.persistence;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
 
 @ApplicationScoped
 public class CredentialsDao {

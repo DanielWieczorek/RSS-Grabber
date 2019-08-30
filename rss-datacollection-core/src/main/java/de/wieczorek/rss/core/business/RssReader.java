@@ -1,5 +1,16 @@
 package de.wieczorek.rss.core.business;
 
+import com.rometools.rome.feed.synd.SyndEntry;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.SyndFeedInput;
+import de.wieczorek.rss.core.config.RssConfig;
+import de.wieczorek.rss.core.persistence.RssEntryDao;
+import de.wieczorek.rss.types.RssEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.InputSource;
+
+import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -9,20 +20,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
-
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.InputSource;
-
-import com.rometools.rome.feed.synd.SyndEntry;
-import com.rometools.rome.feed.synd.SyndFeed;
-import com.rometools.rome.io.SyndFeedInput;
-
-import de.wieczorek.rss.core.config.RssConfig;
-import de.wieczorek.rss.core.persistence.RssEntryDao;
-import de.wieczorek.rss.types.RssEntry;
 
 public abstract class RssReader implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RssReader.class);

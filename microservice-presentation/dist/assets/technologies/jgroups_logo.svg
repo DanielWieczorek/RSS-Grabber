@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="612px" height="233px" viewBox="0 0 612 233" enable-background="new 0 0 612 233" xml:space="preserve">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+     width="612px" height="233px" viewBox="0 0 612 233" enable-background="new 0 0 612 233" xml:space="preserve">
 <g>
 	<path fill="#4A5D75" d="M219.278,146.734c0,16.957-11.726,31.389-31.388,31.389c-11.726,0-19.482-6.494-23.992-11.545
 		l14.431-11.545c2.525,2.525,6.314,4.689,10.102,4.689c4.51,0,12.447-2.705,12.447-15.514V48.604h18.4V146.734z"/>
@@ -41,19 +41,19 @@
 								<stop  offset="0" style="stop-color:#4A5D75"/>
 								<stop  offset="1" style="stop-color:#243446"/>
 							</linearGradient>
-							<polyline fill="url(#SVGID_1_)" points="201.637,30.234 119.058,39.047 154.944,51.074 146.039,76.729 201.637,30.234 
+							<polyline fill="url(#SVGID_1_)" points="201.637,30.234 119.058,39.047 154.944,51.074 146.039,76.729 201.637,30.234
 															"/>
 							<linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="154.7866" y1="140.1816" x2="103.789" y2="51.6854">
 								<stop  offset="0" style="stop-color:#4A5D75"/>
 								<stop  offset="1" style="stop-color:#243446"/>
 							</linearGradient>
-							<polyline fill="url(#SVGID_2_)" points="156.678,79.664 88.877,89.607 88.88,89.607 120.535,94.793 116.894,111.289 
+							<polyline fill="url(#SVGID_2_)" points="156.678,79.664 88.877,89.607 88.88,89.607 120.535,94.793 116.894,111.289
 								156.678,79.664 							"/>
 							<linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="138.2773" y1="149.6953" x2="87.2799" y2="61.1994">
 								<stop  offset="0" style="stop-color:#4A5D75"/>
 								<stop  offset="1" style="stop-color:#243446"/>
 							</linearGradient>
-							<polyline fill="url(#SVGID_3_)" points="120.608,23.979 16.671,33.725 70.912,48.227 73.292,77.543 120.608,23.979 							
+							<polyline fill="url(#SVGID_3_)" points="120.608,23.979 16.671,33.725 70.912,48.227 73.292,77.543 120.608,23.979
 								"/>
 						</g>
 					</g>

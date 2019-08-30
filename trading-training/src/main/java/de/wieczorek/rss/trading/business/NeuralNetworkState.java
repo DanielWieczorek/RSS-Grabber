@@ -1,9 +1,8 @@
 package de.wieczorek.rss.trading.business;
 
-import org.deeplearning4j.rl4j.space.Encodable;
-
-import de.wieczorek.rss.trading.types.StateEdge;
 import de.wieczorek.rss.trading.common.NetworkInputBuilder;
+import de.wieczorek.rss.trading.types.StateEdge;
+import org.deeplearning4j.rl4j.space.Encodable;
 
 public class NeuralNetworkState implements Encodable {
 
