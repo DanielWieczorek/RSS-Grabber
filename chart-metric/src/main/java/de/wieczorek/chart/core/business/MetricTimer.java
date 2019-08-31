@@ -63,7 +63,6 @@ public class MetricTimer implements Runnable {
 
         metricCalculators.forEach(calculator ->
                 records.add(calculator.calculate(series))
-
         );
 
         dao.upsert(records);

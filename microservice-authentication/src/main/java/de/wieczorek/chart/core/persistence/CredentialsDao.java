@@ -1,5 +1,7 @@
 package de.wieczorek.chart.core.persistence;
 
+import de.wieczorek.rss.core.persistence.EntityManagerProvider;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.*;
 import java.util.HashMap;
@@ -7,17 +9,9 @@ import java.util.Map;
 
 @ApplicationScoped
 public class CredentialsDao {
-    private EntityManager entityManager;
-
-    public CredentialsDao() {
-        final Map<String, String> props = new HashMap<>();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("authentication", props);
-        entityManager = emf.createEntityManager();
-
-    }
 
     public Credentials findByUsername(String username) {
-        TypedQuery<Credentials> query = entityManager
+        TypedQuery<Credentials> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM Credentials s WHERE s.username = :user", Credentials.class)
                 .setParameter("user", username);
         try {

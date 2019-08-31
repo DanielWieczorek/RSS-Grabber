@@ -12,63 +12,64 @@ import java.util.*;
 
 @ApplicationScoped
 public class RssEntryDao extends ImportExportDao<RssEntry> {
-    private EntityManager entityManager;
-
-    public RssEntryDao() {
-        final Map<String, String> props = new HashMap<>();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
-        entityManager = emf.createEntityManager();
-        entityManager.setFlushMode(FlushModeType.COMMIT);
-
-    }
 
     public void persist(RssEntry entry) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        entityManager.merge(entry);
+        em.merge(entry);
         transaction.commit();
     }
 
     public RssEntry find(RssEntry entry) {
-        return entityManager.createQuery("from RssEntry r where r.URI = :key", RssEntry.class) //
+        return EntityManagerProvider.getEntityManager()
+                .createQuery("from RssEntry r where r.URI = :key", RssEntry.class) //
                 .setParameter("key", entry.getURI()) //
                 .getSingleResult();
     }
 
     public Date findNewestEntry() {
-        return entityManager.createQuery("select max(r.createdAt) from RssEntry r ", Date.class) //
+        return EntityManagerProvider.getEntityManager()
+                .createQuery("select max(r.createdAt) from RssEntry r ", Date.class) //
                 .getSingleResult();
     }
 
     public List<RssEntry> findAll(List<String> collect) {
 
-        return entityManager.createQuery("from RssEntry r where r.URI in :keys", RssEntry.class)//
+        return EntityManagerProvider.getEntityManager()
+                .createQuery("from RssEntry r where r.URI in :keys", RssEntry.class)//
                 .setParameter("keys", collect).getResultList();
     }
 
     public List<RssEntry> findAllUnclassified(int maxResult) {
-        return entityManager.createQuery("from RssEntry r where r.classification is null", RssEntry.class) //
+        return EntityManagerProvider.getEntityManager()
+                .createQuery("from RssEntry r where r.classification is null", RssEntry.class) //
                 .setMaxResults(maxResult) //
                 .getResultList();
     }
 
     public synchronized void persist(List<RssEntry> entries) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        entries.forEach(entityManager::persist);
+        entries.forEach(em::persist);
         transaction.commit();
     }
 
     public List<RssEntry> findAllClassified() {
-        return entityManager.createQuery("select r from RssEntry r where r.classification is not null", RssEntry.class) //
+        return EntityManagerProvider.getEntityManager()
+                .createQuery("select r from RssEntry r where r.classification is not null", RssEntry.class) //
                 .getResultList();
     }
 
     @Override
     public void persistAll(Collection<RssEntry> entries) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        entries.forEach(entityManager::persist);
+        entries.forEach(em::persist);
         transaction.commit();
     }
 
@@ -80,11 +81,13 @@ public class RssEntryDao extends ImportExportDao<RssEntry> {
 
     @Override
     public List<RssEntry> findAll() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<RssEntry> cq = cb.createQuery(RssEntry.class);
         Root<RssEntry> rootEntry = cq.from(RssEntry.class);
         CriteriaQuery<RssEntry> all = cq.select(rootEntry);
-        TypedQuery<RssEntry> allQuery = entityManager.createQuery(all);
+        TypedQuery<RssEntry> allQuery = em.createQuery(all);
         return allQuery.getResultList();
     }
 }

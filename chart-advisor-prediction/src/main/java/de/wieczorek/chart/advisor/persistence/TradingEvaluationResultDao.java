@@ -16,22 +16,22 @@ import java.util.Map;
 @ApplicationScoped
 public class TradingEvaluationResultDao {
 
-    public TradingEvaluationResultDao() {
-        final Map<String, String> props = new HashMap<>();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
-    }
 
     public void persist(TradingEvaluationResult sat) {
-        EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        EntityManagerProvider.getEntityManager().persist(sat);
+        em.persist(sat);
         transaction.commit();
     }
 
     public void update(TradingEvaluationResult sat) {
-        EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        EntityManagerProvider.getEntityManager().merge(sat);
+        em.merge(sat);
         transaction.commit();
     }
 
@@ -45,11 +45,13 @@ public class TradingEvaluationResultDao {
     }
 
     public List<TradingEvaluationResult> findAll() {
-        CriteriaBuilder cb = EntityManagerProvider.getEntityManager().getCriteriaBuilder();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<TradingEvaluationResult> cq = cb.createQuery(TradingEvaluationResult.class);
         Root<TradingEvaluationResult> rootEntry = cq.from(TradingEvaluationResult.class);
         CriteriaQuery<TradingEvaluationResult> all = cq.select(rootEntry);
-        TypedQuery<TradingEvaluationResult> allQuery = EntityManagerProvider.getEntityManager().createQuery(all);
+        TypedQuery<TradingEvaluationResult> allQuery = em.createQuery(all);
         return allQuery.getResultList();
     }
 

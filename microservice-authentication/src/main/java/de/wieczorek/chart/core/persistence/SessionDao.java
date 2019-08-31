@@ -1,5 +1,7 @@
 package de.wieczorek.chart.core.persistence;
 
+import de.wieczorek.rss.core.persistence.EntityManagerProvider;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -9,26 +11,22 @@ import java.util.Map;
 
 @ApplicationScoped
 public class SessionDao {
-    private EntityManager entityManager;
 
-    public SessionDao() {
-        final Map<String, String> props = new HashMap<>();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("authentication", props);
-        entityManager = emf.createEntityManager();
-
-    }
 
     public void persist(Session session) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        entityManager.persist(session);
+        em.persist(session);
         transaction.commit();
     }
 
     public void update(Session session) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        entityManager.merge(session);
+        em.merge(session);
         transaction.commit();
     }
 
@@ -42,7 +40,7 @@ public class SessionDao {
     }
 
     public Session findByUsername(String username) {
-        TypedQuery<Session> query = entityManager
+        TypedQuery<Session> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM Session s WHERE s.username = :user", Session.class)
                 .setParameter("user", username);
         try {
@@ -53,16 +51,17 @@ public class SessionDao {
     }
 
     public List<Session> findInvalidSessions() {
-        TypedQuery<Session> query = entityManager
+        TypedQuery<Session> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM Session s WHERE s.expirationDate < :time", Session.class)
                 .setParameter("time", LocalDateTime.now());
         return query.getResultList();
     }
 
     public void delete(Session session) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        entityManager.remove(session);
+        em.remove(session);
         transaction.commit();
     }
 

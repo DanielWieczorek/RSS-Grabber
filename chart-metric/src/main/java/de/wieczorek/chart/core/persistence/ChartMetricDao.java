@@ -4,6 +4,7 @@ import de.wieczorek.importexport.db.ImportExportDao;
 import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -20,18 +21,12 @@ public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
         return EntityManagerProvider.getEntityManager().find(ChartMetricRecord.class, id);
     }
 
-    public void mergeAll(Collection<ChartMetricRecord> entries) {
-        EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
-        transaction.begin();
-        entries.forEach(EntityManagerProvider.getEntityManager()::merge);
-        transaction.commit();
-    }
-
     @Override
     public void persistAll(Collection<ChartMetricRecord> entries) {
-        EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        entries.forEach(EntityManagerProvider.getEntityManager()::persist);
+        entries.forEach(em::persist);
         transaction.commit();
     }
 
@@ -61,30 +56,16 @@ public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
         return allQuery.getResultList();
     }
 
-    public void persist(ChartMetricRecord sat) {
-        EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
-        transaction.begin();
-        EntityManagerProvider.getEntityManager().persist(sat);
-        transaction.commit();
-    }
-
-    public void update(ChartMetricRecord sat) {
-        EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
-
-        transaction.begin();
-        EntityManagerProvider.getEntityManager().merge(sat);
-        transaction.commit();
-    }
-
     public void upsert(List<ChartMetricRecord> sat) {
-        EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         sat.forEach(x -> {
             ChartMetricRecord found = findById(x.getId());
             if (found == null) {
-                EntityManagerProvider.getEntityManager().persist(x);
+                em.persist(x);
             } else {
-                EntityManagerProvider.getEntityManager().merge(x);
+                em.merge(x);
             }
         });
         transaction.commit();

@@ -1,5 +1,6 @@
 package de.wieczorek.rss.insight.persistence;
 
+import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -14,26 +15,22 @@ import java.util.Map;
 
 @ApplicationScoped
 public class SentimentAtTimeDao {
-    private EntityManager entityManager;
 
-    public SentimentAtTimeDao() {
-        final Map<String, String> props = new HashMap<>();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
-        entityManager = emf.createEntityManager();
-        entityManager.setFlushMode(FlushModeType.COMMIT);
-    }
 
     public void persist(SentimentAtTime sat) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        entityManager.persist(sat);
+        em.persist(sat);
         transaction.commit();
     }
 
     public void update(SentimentAtTime sat) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        entityManager.merge(sat);
+        em.merge(sat);
         transaction.commit();
     }
 
@@ -47,7 +44,7 @@ public class SentimentAtTimeDao {
     }
 
     public SentimentAtTime findById(LocalDateTime sentimentTime) {
-        TypedQuery<SentimentAtTime> query = entityManager
+        TypedQuery<SentimentAtTime> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM SentimentAtTime s WHERE s.sentimentTime = :time", SentimentAtTime.class)
                 .setParameter("time", sentimentTime);
         try {
@@ -58,11 +55,13 @@ public class SentimentAtTimeDao {
     }
 
     public List<SentimentAtTime> findAll() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<SentimentAtTime> cq = cb.createQuery(SentimentAtTime.class);
         Root<SentimentAtTime> rootEntry = cq.from(SentimentAtTime.class);
         CriteriaQuery<SentimentAtTime> all = cq.select(rootEntry);
-        TypedQuery<SentimentAtTime> allQuery = entityManager.createQuery(all);
+        TypedQuery<SentimentAtTime> allQuery = em.createQuery(all);
         return allQuery.getResultList();
     }
 

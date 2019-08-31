@@ -17,10 +17,7 @@ import java.util.Map;
 
 @ApplicationScoped
 public class ChartEntryDao extends ImportExportDao<ChartEntry> {
-    
-    public ChartEntryDao() {
-        final Map<String, String> props = new HashMap<>();
-    }
+
 
     public ChartEntry findById(LocalDateTime date) {
         TypedQuery<ChartEntry> query = EntityManagerProvider.getEntityManager()
@@ -35,19 +32,22 @@ public class ChartEntryDao extends ImportExportDao<ChartEntry> {
 
     @Override
     public void persistAll(Collection<ChartEntry> entries) {
-        EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        entries.forEach(EntityManagerProvider.getEntityManager()::persist);
+        entries.forEach(em::persist);
         transaction.commit();
     }
 
     @Override
     public List<ChartEntry> findAll() {
-        CriteriaBuilder cb = EntityManagerProvider.getEntityManager().getCriteriaBuilder();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ChartEntry> cq = cb.createQuery(ChartEntry.class);
         Root<ChartEntry> rootEntry = cq.from(ChartEntry.class);
         CriteriaQuery<ChartEntry> all = cq.select(rootEntry);
-        TypedQuery<ChartEntry> allQuery = EntityManagerProvider.getEntityManager().createQuery(all);
+        TypedQuery<ChartEntry> allQuery = em.createQuery(all);
         return allQuery.getResultList();
     }
 

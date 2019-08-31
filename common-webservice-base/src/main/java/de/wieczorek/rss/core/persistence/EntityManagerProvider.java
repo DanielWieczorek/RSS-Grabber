@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EntityManagerProvider {
-    private static ThreadLocal<EntityManager> entityManagerHolder = ThreadLocal.withInitial(() -> {
+    private static ThreadLocal<EntityManagerFactory> entityManagerHolder = ThreadLocal.withInitial(() -> {
         final Map<String, String> props = new HashMap<>();
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
-        return emf.createEntityManager();
+        return emf;
     });
 
     public static EntityManager getEntityManager() {
-        return entityManagerHolder.get();
+        return entityManagerHolder.get().createEntityManager();
 
     }
 

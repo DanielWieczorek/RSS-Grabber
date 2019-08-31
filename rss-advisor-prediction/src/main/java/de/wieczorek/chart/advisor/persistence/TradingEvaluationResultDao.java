@@ -1,6 +1,7 @@
 package de.wieczorek.chart.advisor.persistence;
 
 import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
+import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.*;
@@ -14,26 +15,22 @@ import java.util.Map;
 
 @ApplicationScoped
 public class TradingEvaluationResultDao {
-    private EntityManager entityManager;
 
-    public TradingEvaluationResultDao() {
-        final Map<String, String> props = new HashMap<>();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
-        entityManager = emf.createEntityManager();
-        entityManager.setFlushMode(FlushModeType.COMMIT);
-    }
 
     public void persist(TradingEvaluationResult sat) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        entityManager.persist(sat);
+        em.persist(sat);
         transaction.commit();
     }
 
     public void update(TradingEvaluationResult sat) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        entityManager.merge(sat);
+        em.merge(sat);
         transaction.commit();
     }
 
@@ -47,16 +44,17 @@ public class TradingEvaluationResultDao {
     }
 
     public List<TradingEvaluationResult> findAll() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        EntityManager em = EntityManagerProvider.getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<TradingEvaluationResult> cq = cb.createQuery(TradingEvaluationResult.class);
         Root<TradingEvaluationResult> rootEntry = cq.from(TradingEvaluationResult.class);
         CriteriaQuery<TradingEvaluationResult> all = cq.select(rootEntry);
-        TypedQuery<TradingEvaluationResult> allQuery = entityManager.createQuery(all);
+        TypedQuery<TradingEvaluationResult> allQuery = em.createQuery(all);
         return allQuery.getResultList();
     }
 
     public TradingEvaluationResult findById(LocalDateTime currentTime, LocalDateTime targetTime) {
-        TypedQuery<TradingEvaluationResult> query = entityManager.createQuery(
+        TypedQuery<TradingEvaluationResult> query = EntityManagerProvider.getEntityManager().createQuery(
                 "SELECT s FROM TradingEvaluationResult s WHERE s.currentTime = :current and s.targetTime = :target",
                 TradingEvaluationResult.class).setParameter("current", currentTime).setParameter("target", targetTime);
         try {
@@ -67,7 +65,7 @@ public class TradingEvaluationResultDao {
     }
 
     public List<TradingEvaluationResult> findAfterDate(LocalDateTime currentTime) {
-        TypedQuery<TradingEvaluationResult> query = entityManager.createQuery(
+        TypedQuery<TradingEvaluationResult> query = EntityManagerProvider.getEntityManager().createQuery(
                 "SELECT s FROM TradingEvaluationResult s WHERE s.currentTime > :current order by s.currentTime asc",
                 TradingEvaluationResult.class).setParameter("current", currentTime);
         return query.getResultList();
