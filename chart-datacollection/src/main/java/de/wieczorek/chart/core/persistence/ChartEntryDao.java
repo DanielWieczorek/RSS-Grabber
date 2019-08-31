@@ -17,9 +17,7 @@ import java.util.Map;
 
 @ApplicationScoped
 public class ChartEntryDao extends ImportExportDao<ChartEntry> {
-
-    EntityManagerProvider.getEntityManager();
-
+    
     public ChartEntryDao() {
         final Map<String, String> props = new HashMap<>();
     }
