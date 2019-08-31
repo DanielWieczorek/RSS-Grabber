@@ -74,6 +74,7 @@ public class ChartReader implements Runnable {
             logger.error("error while retrieving chart data: ", e.getResponse().readEntity(String.class));
         } catch (Exception e) {
             logger.error("error while retrieving chart data: ", e);
+
         }
     }
 }

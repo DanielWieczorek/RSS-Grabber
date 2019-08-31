@@ -2,6 +2,7 @@ package de.wieczorek.chart.core.persistence;
 
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.importexport.db.ImportExportDao;
+import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.*;
@@ -16,17 +17,15 @@ import java.util.Map;
 
 @ApplicationScoped
 public class ChartEntryDao extends ImportExportDao<ChartEntry> {
-    private EntityManager entityManager;
+
+    EntityManagerProvider.getEntityManager();
 
     public ChartEntryDao() {
         final Map<String, String> props = new HashMap<>();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("chart", props);
-        entityManager = emf.createEntityManager();
-
     }
 
     public ChartEntry findById(LocalDateTime date) {
-        TypedQuery<ChartEntry> query = entityManager
+        TypedQuery<ChartEntry> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM ChartEntry s WHERE s.date = :time", ChartEntry.class)
                 .setParameter("time", date);
         try {
@@ -38,25 +37,25 @@ public class ChartEntryDao extends ImportExportDao<ChartEntry> {
 
     @Override
     public void persistAll(Collection<ChartEntry> entries) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityTransaction transaction = EntityManagerProvider.getEntityManager().getTransaction();
         transaction.begin();
-        entries.forEach(entityManager::persist);
+        entries.forEach(EntityManagerProvider.getEntityManager()::persist);
         transaction.commit();
     }
 
     @Override
     public List<ChartEntry> findAll() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaBuilder cb = EntityManagerProvider.getEntityManager().getCriteriaBuilder();
         CriteriaQuery<ChartEntry> cq = cb.createQuery(ChartEntry.class);
         Root<ChartEntry> rootEntry = cq.from(ChartEntry.class);
         CriteriaQuery<ChartEntry> all = cq.select(rootEntry);
-        TypedQuery<ChartEntry> allQuery = entityManager.createQuery(all);
+        TypedQuery<ChartEntry> allQuery = EntityManagerProvider.getEntityManager().createQuery(all);
         return allQuery.getResultList();
     }
 
     public List<ChartEntry> find24h() {
         LocalDateTime date = LocalDateTime.now().withSecond(0).withNano(0).minusHours(24);
-        TypedQuery<ChartEntry> query = entityManager
+        TypedQuery<ChartEntry> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM ChartEntry s WHERE s.date >= :time", ChartEntry.class)
                 .setParameter("time", date);
         return query.getResultList();
