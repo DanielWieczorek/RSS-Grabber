@@ -2,6 +2,7 @@ package de.wieczorek.chart.core.business;
 
 import de.wieczorek.chart.core.persistence.Session;
 import de.wieczorek.chart.core.persistence.SessionDao;
+import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
