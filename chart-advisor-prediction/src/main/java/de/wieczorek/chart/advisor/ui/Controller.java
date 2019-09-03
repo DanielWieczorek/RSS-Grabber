@@ -21,6 +21,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -109,13 +110,28 @@ public class Controller extends ControllerBase {
         List<TradingEvaluationResult> data = get24hPrediction();
 
 
-        return data.stream().filter(item -> timeToChartEntry.containsKey(item.getTargetTime())).map(item -> {
+       List<TradingEvaluationResult> rawPredictions =data.stream().filter(item -> timeToChartEntry.containsKey(item.getTargetTime())).map(item -> {
             TradingEvaluationResult result = new TradingEvaluationResult();
             result.setCurrentTime(item.getCurrentTime());
             result.setTargetTime(item.getTargetTime());
             result.setPrediction(item.getPrediction() + timeToChartEntry.get(item.getTargetTime()));
             return result;
         }).collect(Collectors.toList());
+
+        List<TradingEvaluationResult> finalResult = new ArrayList<>();
+
+
+        for(int i=2;i< rawPredictions.size();i++){
+            TradingEvaluationResult before1 = rawPredictions.get(i-2);
+            TradingEvaluationResult before2 = rawPredictions.get(i-1);
+
+            TradingEvaluationResult current = rawPredictions.get(i-1);
+
+            current.setPrediction((before1.getPrediction() + before2.getPrediction() + current.getPrediction())/3.0);
+            finalResult.add(current);
+        }
+
+        return finalResult;
 
     }
 }
