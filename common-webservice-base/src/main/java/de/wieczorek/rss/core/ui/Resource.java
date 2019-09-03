@@ -11,7 +11,6 @@ import java.lang.annotation.Target;
 
 @Qualifier
 @Stereotype
-@EntityManagerContext
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD})
 public @interface Resource {

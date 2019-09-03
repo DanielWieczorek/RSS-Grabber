@@ -1,6 +1,7 @@
 package de.wieczorek.chart.core;
 
 import de.wieczorek.chart.core.ui.Controller;
+import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.ui.Resource;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
 
 @Resource
 @ApplicationScoped
+@EntityManagerContext
 @Path("/")
 public class AuthenticationResource {
 

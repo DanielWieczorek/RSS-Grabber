@@ -11,7 +11,6 @@ import javax.ws.rs.Path;
 @ApplicationScoped
 public class RssHandler {
 
-    @Inject
-    private Controller controller;
+
 
 }

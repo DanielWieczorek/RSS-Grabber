@@ -1,6 +1,7 @@
 package de.wieczorek.chart.advisor.ui;
 
 import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
+import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.ui.Resource;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Resource
+@EntityManagerContext
 @Path("/")
 @ApplicationScoped
 public class RssHandler {

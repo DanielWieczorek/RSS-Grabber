@@ -15,6 +15,7 @@ import java.util.List;
 
 @Resource
 @ApplicationScoped
+@EntityManagerContext
 @Path("metric")
 public class MetricsResource {
 

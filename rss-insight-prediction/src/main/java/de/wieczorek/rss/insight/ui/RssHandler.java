@@ -1,5 +1,6 @@
 package de.wieczorek.rss.insight.ui;
 
+import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.ui.Resource;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Resource
+@EntityManagerContext
 @Path("/")
 @ApplicationScoped
 public class RssHandler {

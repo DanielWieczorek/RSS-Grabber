@@ -1,6 +1,7 @@
 package de.wieczorek.rss.core.ui;
 
 import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.core.persistence.EntityManagerContext;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Path("/")
 @Resource
+@EntityManagerContext
 @ApplicationScoped
 public class RssHandler {
     @Inject

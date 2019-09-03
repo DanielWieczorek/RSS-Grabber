@@ -2,6 +2,7 @@ package de.wieczorek.importexport.ui;
 
 import de.wieczorek.importexport.db.ImportExportDao;
 import de.wieczorek.importexport.type.ImportExportData;
+import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.ui.Resource;
 import org.jboss.weld.inject.WeldInstance;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @Resource
 @ApplicationScoped
+@EntityManagerContext
 @Path("feature")
 public class ExportResource {
 
