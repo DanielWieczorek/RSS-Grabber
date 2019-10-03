@@ -2,6 +2,7 @@ package de.wieczorek.chart.advisor.types;
 
 import de.wieczorek.chart.advisor.persistence.TradingEvaluationResultDao;
 import de.wieczorek.chart.advisor.ui.Controller;
+import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import org.slf4j.Logger;

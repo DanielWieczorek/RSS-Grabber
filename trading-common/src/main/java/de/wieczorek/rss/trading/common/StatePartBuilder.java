@@ -3,7 +3,7 @@ package de.wieczorek.rss.trading.common;
 import com.beust.jcommander.internal.Lists;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import de.wieczorek.chart.advisor.types.DeltaChartEntry;
+import de.wieczorek.rss.advisor.types.DeltaChartEntry;
 import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;

@@ -1,5 +1,7 @@
 package de.wieczorek.chart.advisor.types;
 
+import de.wieczorek.rss.advisor.types.DeltaChartEntry;
+import de.wieczorek.rss.advisor.types.NetInputItem;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.DataSetPreProcessor;

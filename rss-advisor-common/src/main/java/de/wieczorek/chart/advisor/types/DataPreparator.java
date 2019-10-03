@@ -1,6 +1,8 @@
 package de.wieczorek.chart.advisor.types;
 
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.rss.advisor.types.DeltaChartEntry;
+import de.wieczorek.rss.advisor.types.NetInputItem;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 
 import java.time.LocalDateTime;

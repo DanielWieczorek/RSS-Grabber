@@ -1,4 +1,4 @@
-package de.wieczorek.chart.advisor.types;
+package de.wieczorek.rss.advisor.types;
 
 import java.time.LocalDateTime;
 

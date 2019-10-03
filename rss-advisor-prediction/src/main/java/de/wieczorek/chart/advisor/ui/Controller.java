@@ -2,9 +2,9 @@ package de.wieczorek.chart.advisor.ui;
 
 import de.wieczorek.chart.advisor.persistence.TradingEvaluationResultDao;
 import de.wieczorek.chart.advisor.types.DataPreparator;
-import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
 import de.wieczorek.chart.advisor.types.TradingNeuralNetworkPredictor;
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.core.recalculation.Recalculation;
 import de.wieczorek.rss.core.recalculation.RecalculationStatusDao;

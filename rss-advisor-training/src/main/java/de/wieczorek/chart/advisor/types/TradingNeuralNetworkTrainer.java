@@ -1,6 +1,7 @@
 package de.wieczorek.chart.advisor.types;
 
 import de.wieczorek.nn.AbstractNeuralNetworkTrainer;
+import de.wieczorek.rss.advisor.types.NetInputItem;
 import org.deeplearning4j.nn.conf.*;
 import org.deeplearning4j.nn.conf.inputs.InputType;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
