@@ -8,5 +8,5 @@ java -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -jar rss-advisor-prediction
 java -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -jar trading-simulation/target/trading-simulation* > ~/logs/trading-simulation 2>&1 &
 java -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -jar microservice-status/target/microservice-status* > ~/logs/microservice-status 2>&1 &
 java -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -jar microservice-authentication/target/microservice-authentication* > ~/logs/microservice-authentication 2>&1 &
-+java -Xmx1024m  -jar chart-metric/target/chart-metric* > ~/logs/chart-metric 2>&1 &
-+java -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -jar chart-advisor-prediction/target/chart-advisor-prediction* > ~/logs/chart-advisor-prediction 2>&1 &
+java -Xmx1024m  -jar chart-metric/target/chart-metric* > ~/logs/chart-metric 2>&1 &
+java -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -jar chart-advisor-prediction/target/chart-advisor-prediction* > ~/logs/chart-advisor-prediction 2>&1 &
