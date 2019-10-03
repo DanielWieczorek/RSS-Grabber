@@ -3,6 +3,7 @@ package de.wieczorek.chart.core.business;
 import de.wieczorek.chart.core.persistence.ChartMetricDao;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
+import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.recalculation.AbstractRecalculationTimer;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RecurrentTask(interval = 30, unit = TimeUnit.SECONDS)
+@EntityManagerContext
 @ApplicationScoped
 public class MetricRecalculationTimer extends AbstractRecalculationTimer {
     private static final Logger logger = LoggerFactory.getLogger(MetricRecalculationTimer.class);

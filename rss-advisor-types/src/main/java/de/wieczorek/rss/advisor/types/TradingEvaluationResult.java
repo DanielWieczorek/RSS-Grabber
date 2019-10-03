@@ -1,4 +1,4 @@
-package de.wieczorek.chart.advisor.types;
+package de.wieczorek.rss.advisor.types;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

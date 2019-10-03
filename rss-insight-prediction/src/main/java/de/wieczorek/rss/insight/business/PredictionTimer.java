@@ -1,5 +1,6 @@
 package de.wieczorek.rss.insight.business;
 
+import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 @RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
+@EntityManagerContext
 @ApplicationScoped
 public class PredictionTimer implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(PredictionTimer.class);

@@ -1,6 +1,7 @@
 package de.wieczorek.chart.core.business;
 
 import de.wieczorek.chart.core.persistence.ChartEntryDao;
+import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
+@EntityManagerContext
 @ApplicationScoped
 public class ChartReader implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(ChartReader.class);

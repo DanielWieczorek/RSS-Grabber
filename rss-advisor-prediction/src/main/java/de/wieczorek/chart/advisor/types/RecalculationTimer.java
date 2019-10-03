@@ -3,6 +3,7 @@ package de.wieczorek.chart.advisor.types;
 import de.wieczorek.chart.advisor.persistence.TradingEvaluationResultDao;
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
+import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.recalculation.AbstractRecalculationTimer;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RecurrentTask(interval = 10, unit = TimeUnit.MINUTES)
+@EntityManagerContext
 @ApplicationScoped
 public class RecalculationTimer extends AbstractRecalculationTimer {
     private static final Logger logger = LoggerFactory.getLogger(RecalculationTimer.class);

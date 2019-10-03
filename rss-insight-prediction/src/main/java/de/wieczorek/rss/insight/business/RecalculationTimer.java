@@ -1,6 +1,7 @@
 package de.wieczorek.rss.insight.business;
 
 import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.recalculation.AbstractRecalculationTimer;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
@@ -22,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RecurrentTask(interval = 10, unit = TimeUnit.MINUTES)
+@EntityManagerContext
 @ApplicationScoped
 public class RecalculationTimer extends AbstractRecalculationTimer {
 

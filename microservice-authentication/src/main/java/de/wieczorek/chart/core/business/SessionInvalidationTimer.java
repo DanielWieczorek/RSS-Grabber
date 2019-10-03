@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
+@EntityManagerContext
 @ApplicationScoped
 public class SessionInvalidationTimer implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(SessionInvalidationTimer.class);
