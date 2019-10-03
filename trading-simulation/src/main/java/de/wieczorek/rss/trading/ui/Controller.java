@@ -6,7 +6,6 @@ import de.wieczorek.rss.trading.business.data.Trade;
 import de.wieczorek.rss.trading.common.DataGenerator;
 import de.wieczorek.rss.trading.common.DataLoader;
 import de.wieczorek.rss.trading.common.MetricNormalizer;
-import de.wieczorek.rss.trading.common.NetworkInputBuilder;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.ActionVertexType;
 import de.wieczorek.rss.trading.types.StateEdge;
@@ -26,7 +25,7 @@ public class Controller extends ControllerBase {
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @Inject
-    private PolicyDao dao;
+    private Oracle oracle;
 
     @Inject
     private DataLoader dataLoader;
@@ -38,14 +37,14 @@ public class Controller extends ControllerBase {
     private MetricNormalizer normalizer;
 
     public List<Trade> simulate() {
-        DQNPolicy<?> policy = dao.readPolicy();
+
 
 
         StateEdge current = dataGenerator.buildNewStartState(0);
         List<Trade> trades = new ArrayList<>();
 
         for (int i = 0; i < dataGenerator.getMaxIndex(); i += 1) {
-            StateEdge next = performTrade(policy, current);
+            StateEdge next = performTrade(oracle, current);
             if (next == null) {
                 break;
             }
@@ -73,11 +72,9 @@ public class Controller extends ControllerBase {
         }
     }
 
-    private StateEdge performTrade(DQNPolicy<?> policy, StateEdge snapshot) {
-        double[] inputData = NetworkInputBuilder.buildInputArray(snapshot, snapshot.getAccount());
-        Integer result = policy.nextAction(Nd4j.create(inputData));
+    private StateEdge performTrade(Oracle oracle, StateEdge snapshot) {
 
-        return dataGenerator.buildNextState(snapshot, result);
+        return dataGenerator.buildNextState(snapshot, oracle.nextAction(snapshot));
     }
 
     private double getCurrentPrice(StateEdge snapshot) {

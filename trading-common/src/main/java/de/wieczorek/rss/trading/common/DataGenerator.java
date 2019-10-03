@@ -1,5 +1,6 @@
 package de.wieczorek.rss.trading.common;
 
+
 import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
@@ -23,7 +24,11 @@ public class DataGenerator {
     @Inject
     private MetricNormalizer normalizer;
 
-    private List<TradingEvaluationResult> currentSentiment;
+    private List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> currentSentiment;
+
+    private List<TradingEvaluationResult> currentMetricSentiment;
+
+
     private List<ChartEntry> chartEntries;
 
     private List<ChartMetricRecord> chartMetrics;
@@ -31,14 +36,14 @@ public class DataGenerator {
     List<StateEdgePart> stateParts;
 
 
-    public DataGenerator(Supplier<List<TradingEvaluationResult>> sentimentSupplier,
+    public DataGenerator(Supplier<List<de.wieczorek.rss.advisor.types.TradingEvaluationResult>> sentimentSupplier,
                          Supplier<List<ChartEntry>> chartEntrySupplier,
-                         Supplier<List<ChartMetricRecord>> metricSupplier) {
+                         Supplier<List<TradingEvaluationResult>> metricSupplier) {
 
         currentSentiment = sentimentSupplier.get();
         chartEntries = chartEntrySupplier.get();
-        chartMetrics = metricSupplier.get();//.stream().map(normalizer::normalize).collect(Collectors.toList());
-        stateParts = StatePartBuilder.buildStateParts(chartEntries, chartMetrics, currentSentiment);
+        currentMetricSentiment = metricSupplier.get();
+        stateParts = StatePartBuilder.buildStateParts(chartEntries, currentMetricSentiment, currentSentiment);
 
     }
 
@@ -57,12 +62,11 @@ public class DataGenerator {
         return rootState;
     }
 
-    public StateEdge buildNextState(StateEdge currentState, int action) {
+    public StateEdge buildNextState(StateEdge currentState, ActionVertexType action) {
         int endIndex = Math.min(currentState.getPartsEndIndex() + SEQ_LENGTH + STEPPING * DEPTH, stateParts.size());
 
         return buildState(stateParts, chartEntries, currentState.getPartsStartIndex() + STEPPING,
-                currentState.getPartsEndIndex() + STEPPING, action == 0 ? ActionVertexType.BUY :
-                        ActionVertexType.SELL, currentState.getAccount(), endIndex);
+                currentState.getPartsEndIndex() + STEPPING, action, currentState.getAccount(), endIndex);
     }
 
 

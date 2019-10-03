@@ -1,4 +1,4 @@
-package main.java.de.wieczorek.rss.trading.business.data;
+package de.wieczorek.rss.trading.business.data;
 
 import de.wieczorek.rss.trading.common.DataGenerator;
 import de.wieczorek.rss.trading.common.DataLoader;
@@ -16,9 +16,9 @@ public class DataGeneratorProducer {
     @Produces
     public DataGenerator produceGenerator() {
         return new DataGenerator(
-                dataLoader::loadAllSentiments,
-                dataLoader::loadAllChartEntries,
-                dataLoader::loadAllMetrics
+                dataLoader::loadSentiments24h,
+                dataLoader::loadChartEntries24h,
+                dataLoader::loadMetricSentiments24h
         );
     }
 

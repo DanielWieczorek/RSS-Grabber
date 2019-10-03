@@ -7,9 +7,9 @@ import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import java.util.List;
 
 public class StateEdgePart {
-    private TradingEvaluationResult sentiment;
+    private de.wieczorek.rss.advisor.types.TradingEvaluationResult sentiment;
     private DeltaChartEntry chartEntry;
-    private List<ChartMetricRecord> metricsRecord;
+    private TradingEvaluationResult metricsSentiment;
 
     public DeltaChartEntry getChartEntry() {
         return chartEntry;
@@ -19,20 +19,20 @@ public class StateEdgePart {
         this.chartEntry = chartEntry;
     }
 
-    public TradingEvaluationResult getSentiment() {
+    public de.wieczorek.rss.advisor.types.TradingEvaluationResult getSentiment() {
         return sentiment;
     }
 
-    public void setSentiment(TradingEvaluationResult sentiment) {
+    public void setSentiment(de.wieczorek.rss.advisor.types.TradingEvaluationResult sentiment) {
         this.sentiment = sentiment;
     }
 
-    public List<ChartMetricRecord> getMetricsRecord() {
-        return metricsRecord;
+    public TradingEvaluationResult getMetricsSentiment() {
+        return metricsSentiment;
     }
 
-    public void setMetricsRecord(List<ChartMetricRecord> metricsRecord) {
-        this.metricsRecord = metricsRecord;
+    public void setMetricsSentiment(TradingEvaluationResult metricsSentiment) {
+        this.metricsSentiment = metricsSentiment;
     }
 
 }

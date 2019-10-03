@@ -21,10 +21,10 @@ public class DataLoader {
                 });
     }
 
-    public List<TradingEvaluationResult> loadSentiments24h() {
+    public List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> loadSentiments24h() {
         return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
                 .target("http://wieczorek.io:12020/sentiment/24h").request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<TradingEvaluationResult>>() {
+                .get(new GenericType<List<de.wieczorek.rss.advisor.types.TradingEvaluationResult>>() {
                 });
     }
 
@@ -49,9 +49,23 @@ public class DataLoader {
                 });
     }
 
-    public List<TradingEvaluationResult> loadAllSentiments() {
+    public List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> loadAllSentiments() {
         return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
                 .target("http://wieczorek.io:12020/sentiment/all").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<de.wieczorek.rss.advisor.types.TradingEvaluationResult>>() {
+                });
+    }
+
+    public List<TradingEvaluationResult> loadAllMetricSentiments() {
+        return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:14020/sentiment/all").request(MediaType.APPLICATION_JSON)
+                .get(new GenericType<List<TradingEvaluationResult>>() {
+                });
+    }
+
+    public List<TradingEvaluationResult> loadMetricSentiments24h() {
+        return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://wieczorek.io:14020/sentiment/24h").request(MediaType.APPLICATION_JSON)
                 .get(new GenericType<List<TradingEvaluationResult>>() {
                 });
     }

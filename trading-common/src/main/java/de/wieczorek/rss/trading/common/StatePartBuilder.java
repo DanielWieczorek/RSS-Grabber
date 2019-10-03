@@ -22,12 +22,13 @@ public final class StatePartBuilder {
     }
 
     public static List<StateEdgePart> buildStateParts(List<ChartEntry> chartEntries,
-                                                      List<ChartMetricRecord> chartMetrics, List<TradingEvaluationResult> sentiments) {
-        Map<LocalDateTime, TradingEvaluationResult> sentimentDateMappings = sentiments.stream().collect(
-                Collectors.toMap(TradingEvaluationResult::getCurrentTime, Function.identity(), (v1, v2) -> v2));
+                                                      List<TradingEvaluationResult> chartMetrics,
+                                                      List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> sentiments) {
+        Map<LocalDateTime, de.wieczorek.rss.advisor.types.TradingEvaluationResult> sentimentDateMappings = sentiments.stream().collect(
+                Collectors.toMap(de.wieczorek.rss.advisor.types.TradingEvaluationResult::getCurrentTime, Function.identity(), (v1, v2) -> v2));
 
-        Multimap<LocalDateTime, ChartMetricRecord> chartMetricMappings = HashMultimap.create();
-        chartMetrics.forEach(item -> chartMetricMappings.put(item.getId().getDate(), item));
+        Map<LocalDateTime, TradingEvaluationResult> chartMetricMappings = chartMetrics.stream().collect(
+                Collectors.toMap(TradingEvaluationResult::getCurrentTime, Function.identity(), (v1, v2) -> v2));
 
         List<StateEdgePart> stateParts = new ArrayList<>();
 
@@ -49,7 +50,7 @@ public final class StatePartBuilder {
 
             part.setChartEntry(entry);
             part.setSentiment(sentimentDateMappings.get(entry.getDate()));
-            part.setMetricsRecord(Lists.newArrayList(chartMetricMappings.get(entry.getDate())));
+            part.setMetricsSentiment(chartMetricMappings.get(entry.getDate()));
 
             stateParts.add(part);
         }
