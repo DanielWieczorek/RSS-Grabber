@@ -45,7 +45,7 @@ public class Controller extends ControllerBase {
         List<Trade> trades = new ArrayList<>();
 
         for (int i = 0; i < generator.getMaxIndex(); i += 1) {
-            StateEdge next = performTrade(oracle, current);
+            StateEdge next = performTrade(oracle, current, generator);
             if (next == null) {
                 break;
             }
@@ -73,8 +73,7 @@ public class Controller extends ControllerBase {
         }
     }
 
-    private StateEdge performTrade(Oracle oracle, StateEdge snapshot) {
-        DataGenerator generator =  dataGeneratorBuilder.produceGenerator();
+    private StateEdge performTrade(Oracle oracle, StateEdge snapshot,DataGenerator generator) {
         return generator.buildNextState(snapshot, oracle.nextAction(snapshot));
     }
 

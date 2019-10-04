@@ -48,9 +48,9 @@ public final class StatePartBuilder {
             entry.setVolumeWeightedAverage(
                     currentEntry.getVolumeWeightedAverage() - previousEntry.getVolumeWeightedAverage());
 
-            part.setChartEntry(entry);
-            part.setSentiment(sentimentDateMappings.get(entry.getDate()));
-            part.setMetricsSentiment(chartMetricMappings.get(entry.getDate()));
+            part.setChartEntry(currentEntry);
+            part.setSentiment(sentimentDateMappings.get(currentEntry.getDate()));
+            part.setMetricsSentiment(chartMetricMappings.get(currentEntry.getDate()));
 
             stateParts.add(part);
         }
