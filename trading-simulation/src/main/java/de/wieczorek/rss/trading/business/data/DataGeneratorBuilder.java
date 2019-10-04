@@ -8,12 +8,11 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 @ApplicationScoped
-public class DataGeneratorProducer {
+public class DataGeneratorBuilder {
     @Inject
     DataLoader dataLoader;
 
 
-    @Produces
     public DataGenerator produceGenerator() {
         return new DataGenerator(
                 dataLoader::loadSentiments24h,

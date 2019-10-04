@@ -2,6 +2,7 @@ package de.wieczorek.rss.trading.ui;
 
 import de.wieczorek.nn.PolicyDao;
 import de.wieczorek.rss.core.ui.ControllerBase;
+import de.wieczorek.rss.trading.business.data.DataGeneratorBuilder;
 import de.wieczorek.rss.trading.business.data.Trade;
 import de.wieczorek.rss.trading.common.DataGenerator;
 import de.wieczorek.rss.trading.common.DataLoader;
@@ -31,19 +32,19 @@ public class Controller extends ControllerBase {
     private DataLoader dataLoader;
 
     @Inject
-    private DataGenerator dataGenerator;
+    private DataGeneratorBuilder dataGeneratorBuilder;
 
     @Inject
     private MetricNormalizer normalizer;
 
     public List<Trade> simulate() {
 
+        DataGenerator generator =  dataGeneratorBuilder.produceGenerator();
 
-
-        StateEdge current = dataGenerator.buildNewStartState(0);
+        StateEdge current = generator.buildNewStartState(0);
         List<Trade> trades = new ArrayList<>();
 
-        for (int i = 0; i < dataGenerator.getMaxIndex(); i += 1) {
+        for (int i = 0; i < generator.getMaxIndex(); i += 1) {
             StateEdge next = performTrade(oracle, current);
             if (next == null) {
                 break;
@@ -73,8 +74,8 @@ public class Controller extends ControllerBase {
     }
 
     private StateEdge performTrade(Oracle oracle, StateEdge snapshot) {
-
-        return dataGenerator.buildNextState(snapshot, oracle.nextAction(snapshot));
+        DataGenerator generator =  dataGeneratorBuilder.produceGenerator();
+        return generator.buildNextState(snapshot, oracle.nextAction(snapshot));
     }
 
     private double getCurrentPrice(StateEdge snapshot) {
