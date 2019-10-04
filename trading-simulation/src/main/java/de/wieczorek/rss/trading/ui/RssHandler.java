@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Resource
-@EntityManagerContext
 @Path("/")
 @ApplicationScoped
 public class RssHandler {
