@@ -1,8 +1,7 @@
 package de.wieczorek.rss.trading.ui;
 
-import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.ui.Resource;
-import de.wieczorek.rss.trading.business.data.Trade;
+import de.wieczorek.rss.trading.common.Trade;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

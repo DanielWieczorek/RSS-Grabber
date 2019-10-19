@@ -53,7 +53,7 @@ public class DataGenerator {
         startAcc.setEur(1000);
         startAcc.setEurEquivalent(1000);
 
-        int endIndex = Math.min(offset + SEQ_LENGTH + STEPPING * DEPTH, stateParts.size());
+        int endIndex = Math.min(offset + SEQ_LENGTH + STEPPING * DEPTH, stateParts.size()-1);
 
         StateEdge rootState = buildState(stateParts, chartEntries, offset, offset + SEQ_LENGTH, ActionVertexType.BUY,
                 startAcc, endIndex);
