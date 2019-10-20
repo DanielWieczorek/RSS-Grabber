@@ -9,43 +9,14 @@ import java.util.Comparator;
 
 public class DefaultOracle implements Oracle {
 
-    private int sellThreshold;
-    private int buyThreshold;
-    private int averageTime;
-
-    private Comparison buyComparison = Comparison.GREATER;
-    private Comparison sellComparison =  Comparison.LOWER;
-
-    private boolean isStopLossActivated = false;
-
-    private int stopLossThreshold = 0;
+    private OracleConfiguration configuration;
 
     private double lastBuyPrice = -1.0;
 
 
 
-    public DefaultOracle (int sellThreshold, int buyThreshold, int averageTime) {
-        this.sellThreshold = sellThreshold;
-        this.buyThreshold = buyThreshold;
-        this.averageTime = averageTime;
-    }
-
-    public DefaultOracle (int sellThreshold, int buyThreshold, int averageTime, Comparison buyComparison ,Comparison sellComparison) {
-        this.sellThreshold = sellThreshold;
-        this.buyThreshold = buyThreshold;
-        this.averageTime = averageTime;
-        this.buyComparison = buyComparison;
-        this.sellComparison = sellComparison;
-    }
-
-    public DefaultOracle (int sellThreshold, int buyThreshold, int averageTime, Comparison buyComparison ,Comparison sellComparison,int stopLossThreshold ) {
-        this.sellThreshold = sellThreshold;
-        this.buyThreshold = buyThreshold;
-        this.averageTime = averageTime;
-        this.buyComparison = buyComparison;
-        this.sellComparison = sellComparison;
-        this.isStopLossActivated = true;
-        this.stopLossThreshold = stopLossThreshold;
+    public DefaultOracle (OracleConfiguration configuration) {
+       this.configuration = configuration;
     }
 
     @Override
@@ -54,14 +25,11 @@ public class DefaultOracle implements Oracle {
         boolean canBuy = snapshot.getAccount().getEur() > 0;
 
         double currentPrice;
-    try {
-         currentPrice = snapshot.getAllStateParts().get(snapshot.getPartsEndIndex()).getChartEntry().getClose();
-    } catch (Exception e) {
-        throw e;
-    }
+        currentPrice = snapshot.getAllStateParts().get(snapshot.getPartsEndIndex()).getChartEntry().getClose();
+
         int end = snapshot.getPartsEndIndex();
 
-        int start = Math.max(0,end - averageTime);
+        int start = Math.max(0,end - configuration.getAverageTime());
 
         int averageNumbers = 0;
         double average =0;
@@ -74,8 +42,8 @@ public class DefaultOracle implements Oracle {
 
         average /= (double)averageNumbers;
 
-        if(canSell && lastBuyPrice > -1.0){
-            if(lastBuyPrice < currentPrice - stopLossThreshold){
+        if(canSell && lastBuyPrice > -1.0){ // stop loss
+            if(lastBuyPrice < currentPrice - configuration.getStopLossThreshold()){
                 lastBuyPrice = -1.0;
                 return ActionVertexType.SELL;
             }
@@ -83,7 +51,7 @@ public class DefaultOracle implements Oracle {
 
 
         if(canBuy){
-            if(average > buyThreshold){
+            if(compare(average,configuration.getBuyThreshold(),configuration.getBuyComparison())){
                 lastBuyPrice = currentPrice;
                 return ActionVertexType.BUY;
             }
@@ -94,7 +62,7 @@ public class DefaultOracle implements Oracle {
         }
         else {
 
-            if(average <= sellThreshold){
+            if(compare(average, configuration.getSellThreshold(),configuration.getSellComparison())){
                 lastBuyPrice = -1.0;
                 return ActionVertexType.SELL;
             } else {

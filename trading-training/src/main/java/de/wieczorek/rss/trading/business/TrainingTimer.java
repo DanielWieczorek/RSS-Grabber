@@ -38,21 +38,9 @@ public class TrainingTimer implements Runnable {
     }
 
     private double eval(Genotype<IntegerGene> genes) {
-        Oracle oracle = null;
-        if(genes.get(3).getGene(0).intValue() == 0){
-            oracle = new DefaultOracle(genes.get(0).getGene(0).intValue(),
-                    genes.get(0).getGene(1).intValue(),
-                    genes.get(1).getGene(0).intValue(),
-                    genes.get(2).getGene(0).intValue() == 0? Comparison.LOWER: Comparison.GREATER,
-                    genes.get(2).getGene(1).intValue() == 0? Comparison.LOWER: Comparison.GREATER);
-        } else {
-            oracle = new DefaultOracle(genes.get(0).getGene(0).intValue(),
-                    genes.get(0).getGene(1).intValue(),
-                    genes.get(1).getGene(0).intValue(),
-                    genes.get(2).getGene(0).intValue() == 0? Comparison.LOWER: Comparison.GREATER,
-                    genes.get(2).getGene(1).intValue() == 0? Comparison.LOWER: Comparison.GREATER,
-                    genes.get(4).getGene(0).intValue());
-        }
+        OracleConfiguration configuration = buildOracleConfiguration(genes);
+
+        Oracle oracle = new DefaultOracle(configuration);
 
         List<Trade> trades = simulator.simulate(generator,oracle);
         if(trades.size() > 4){
@@ -61,6 +49,30 @@ public class TrainingTimer implements Runnable {
         }
         return 0;
 
+    }
+
+    private OracleConfiguration buildOracleConfiguration(Genotype<IntegerGene> genes) {
+        OracleConfiguration configuration = null;
+        if(genes.get(3).getGene(0).intValue() == 0){
+            configuration = new OracleConfiguration();
+            configuration.setSellThreshold(genes.get(0).getGene(0).intValue());
+            configuration.setBuyThreshold(genes.get(0).getGene(1).intValue());
+            configuration.setAverageTime(genes.get(1).getGene(0).intValue());
+            configuration.setBuyComparison(genes.get(2).getGene(0).intValue() == 0? Comparison.LOWER: Comparison.GREATER);
+            configuration.setSellComparison(genes.get(2).getGene(1).intValue() == 0? Comparison.LOWER: Comparison.GREATER);
+            configuration.setStopLossActivated(false);
+            configuration.setStopLossThreshold(0);
+        } else {
+            configuration = new OracleConfiguration();
+            configuration.setSellThreshold(genes.get(0).getGene(0).intValue());
+            configuration.setBuyThreshold(genes.get(0).getGene(1).intValue());
+            configuration.setAverageTime(genes.get(1).getGene(0).intValue());
+            configuration.setBuyComparison(genes.get(2).getGene(0).intValue() == 0? Comparison.LOWER: Comparison.GREATER);
+            configuration.setSellComparison(genes.get(2).getGene(1).intValue() == 0? Comparison.LOWER: Comparison.GREATER);
+            configuration.setStopLossActivated(true);
+            configuration.setStopLossThreshold(genes.get(4).getGene(0).intValue());
+        }
+        return configuration;
     }
 
     Phenotype<IntegerGene,Double> best = null;
@@ -100,11 +112,9 @@ private  void update(final EvolutionResult<IntegerGene,Double> result) {
                     .peek(EvolutionStatistics.ofNumber())
                     .collect(EvolutionResult.toBestPhenotype());
 
-            Oracle oracle = new DefaultOracle(result.getGenotype().get(0).getGene(0).intValue(),
-                    result.getGenotype().get(0).getGene(1).intValue(),
-                    result.getGenotype().get(1).getGene(0).intValue(),
-                    result.getGenotype().get(2).getGene(0).intValue() == 0? Comparison.LOWER: Comparison.GREATER,
-                    result.getGenotype().get(2).getGene(1).intValue() == 0? Comparison.LOWER: Comparison.GREATER);
+            OracleConfiguration  config = buildOracleConfiguration(result.getGenotype());
+
+            Oracle oracle = new DefaultOracle(config);
             List<Trade> trades = simulator.simulate(generator,oracle);
             System.out.println("Number of trades: "+trades.size());
             if(trades.size() > 0) {

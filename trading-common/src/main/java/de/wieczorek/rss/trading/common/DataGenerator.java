@@ -18,12 +18,6 @@ public class DataGenerator {
     private static final int SEQ_LENGTH = 5;
     private static final int DEPTH = 1440;
 
-    @Inject
-    private DataLoader dataLoader;
-
-    @Inject
-    private MetricNormalizer normalizer;
-
     private List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> currentSentiment;
 
     private List<TradingEvaluationResult> currentMetricSentiment;
@@ -53,7 +47,7 @@ public class DataGenerator {
         startAcc.setEur(1000);
         startAcc.setEurEquivalent(1000);
 
-        int endIndex = Math.min(offset + SEQ_LENGTH + STEPPING * DEPTH, stateParts.size()-1);
+        int endIndex = getEndIndex(offset);
 
         StateEdge rootState = buildState(stateParts, chartEntries, offset, offset + SEQ_LENGTH, ActionVertexType.BUY,
                 startAcc, endIndex);
@@ -62,8 +56,12 @@ public class DataGenerator {
         return rootState;
     }
 
+    private int getEndIndex(int offset) {
+        return Math.min(offset + SEQ_LENGTH + STEPPING * DEPTH, stateParts.size() - 1);
+    }
+
     public StateEdge buildNextState(StateEdge currentState, ActionVertexType action) {
-        int endIndex = Math.min(currentState.getPartsEndIndex() + SEQ_LENGTH + STEPPING * DEPTH, stateParts.size());
+        int endIndex = getEndIndex(currentState.getPartsEndIndex());
 
         return buildState(stateParts, chartEntries, currentState.getPartsStartIndex() + STEPPING,
                 currentState.getPartsEndIndex() + STEPPING, action, currentState.getAccount(), endIndex);
@@ -82,7 +80,7 @@ public class DataGenerator {
             return null;
         }
 
-        Account newAcc = new Account();
+        Account newAcc = null;
         double currentPrice = chartEntries.get(partEndIndex).getClose();
         if (action == ActionVertexType.BUY) {
             newAcc = BuySellHelper.processBuy(currentPrice, acc);
