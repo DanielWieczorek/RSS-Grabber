@@ -1,7 +1,5 @@
 package de.wieczorek.rss.core.persistence;
 
-import javax.annotation.Priority;
-import javax.interceptor.Interceptor;
 import javax.interceptor.InterceptorBinding;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

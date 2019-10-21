@@ -1,7 +1,5 @@
 package de.wieczorek.rss.core.ui;
 
-import de.wieczorek.rss.core.persistence.EntityManagerContext;
-
 import javax.enterprise.inject.Stereotype;
 import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;

@@ -3,9 +3,8 @@ package de.wieczorek.chart.core.persistence;
 import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.*;
-import java.util.HashMap;
-import java.util.Map;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 
 @ApplicationScoped
 public class CredentialsDao {

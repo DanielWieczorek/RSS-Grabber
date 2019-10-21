@@ -4,13 +4,17 @@ import de.wieczorek.importexport.db.ImportExportDao;
 import de.wieczorek.rss.types.RssEntry;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 @ApplicationScoped
 public class RssEntryDao extends ImportExportDao<RssEntry> {
