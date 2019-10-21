@@ -1,11 +1,7 @@
-package de.wieczorek.rss.trading.common;
+package de.wieczorek.rss.trading.common.oracle;
 
-import de.wieczorek.rss.trading.common.Oracle;
 import de.wieczorek.rss.trading.types.ActionVertexType;
 import de.wieczorek.rss.trading.types.StateEdge;
-
-import javax.enterprise.context.ApplicationScoped;
-import java.util.Comparator;
 
 public class DefaultOracle implements Oracle {
 
@@ -42,7 +38,7 @@ public class DefaultOracle implements Oracle {
 
         average /= (double)averageNumbers;
 
-        if(canSell && lastBuyPrice > -1.0){ // stop loss
+        if(canSell && lastBuyPrice > -1.0 &&  configuration.isStopLossActivated()){ // stop loss
             if(lastBuyPrice < currentPrice - configuration.getStopLossThreshold()){
                 lastBuyPrice = -1.0;
                 return ActionVertexType.SELL;

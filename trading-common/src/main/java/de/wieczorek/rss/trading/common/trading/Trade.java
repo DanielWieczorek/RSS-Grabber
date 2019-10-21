@@ -1,4 +1,4 @@
-package de.wieczorek.rss.trading.common;
+package de.wieczorek.rss.trading.common.trading;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

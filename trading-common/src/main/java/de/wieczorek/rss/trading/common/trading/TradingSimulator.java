@@ -1,5 +1,9 @@
-package de.wieczorek.rss.trading.common;
+package de.wieczorek.rss.trading.common.trading;
 
+import de.wieczorek.rss.trading.common.io.DataGenerator;
+import de.wieczorek.rss.trading.common.io.DataGeneratorBuilder;
+import de.wieczorek.rss.trading.common.io.DataLoader;
+import de.wieczorek.rss.trading.common.oracle.Oracle;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.ActionVertexType;
 import de.wieczorek.rss.trading.types.StateEdge;
@@ -22,9 +26,6 @@ public class TradingSimulator {
 
     @Inject
     private DataGeneratorBuilder dataGeneratorBuilder;
-
-    @Inject
-    private MetricNormalizer normalizer;
 
     public List<Trade> simulate(Oracle oracle) {
 

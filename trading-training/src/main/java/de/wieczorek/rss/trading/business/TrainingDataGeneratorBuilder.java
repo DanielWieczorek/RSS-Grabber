@@ -1,8 +1,8 @@
 package de.wieczorek.rss.trading.business;
 
-import de.wieczorek.rss.trading.common.DataGenerator;
-import de.wieczorek.rss.trading.common.DataGeneratorBuilder;
-import de.wieczorek.rss.trading.common.DataLoader;
+import de.wieczorek.rss.trading.common.io.DataGenerator;
+import de.wieczorek.rss.trading.common.io.DataGeneratorBuilder;
+import de.wieczorek.rss.trading.common.io.DataLoader;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

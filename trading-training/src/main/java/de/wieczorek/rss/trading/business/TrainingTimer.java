@@ -1,22 +1,23 @@
 package de.wieczorek.rss.trading.business;
 
 import de.wieczorek.rss.core.timer.RecurrentTask;
-import de.wieczorek.rss.trading.common.*;
+import de.wieczorek.rss.trading.common.io.DataGenerator;
+import de.wieczorek.rss.trading.common.io.DataGeneratorBuilder;
+import de.wieczorek.rss.trading.common.oracle.*;
+import de.wieczorek.rss.trading.common.trading.Trade;
+import de.wieczorek.rss.trading.common.trading.TradingSimulator;
 import io.jenetics.*;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
-import io.jenetics.stat.DoubleMomentStatistics;
 import io.jenetics.util.Factory;
 import io.jenetics.util.IntRange;
-import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +31,9 @@ public class TrainingTimer implements Runnable {
 
     @Inject
     private DataGeneratorBuilder generatorBuilder;
+
+    @Inject
+    private OracleConfigurationDao configurationDao;
 
     private DataGenerator generator;
 
@@ -77,12 +81,13 @@ public class TrainingTimer implements Runnable {
 
     Phenotype<IntegerGene,Double> best = null;
 
-private  void update(final EvolutionResult<IntegerGene,Double> result) {
-    if(best == null || best.compareTo(result.getBestPhenotype())< 0) {
-        best = result.getBestPhenotype();
-        System.out.println(result.getGeneration()+": FoundBest phenotype: "+ best);
+    private  void update(final EvolutionResult<IntegerGene,Double> result) {
+        if(best == null || best.compareTo(result.getBestPhenotype())< 0) {
+            best = result.getBestPhenotype();
+            System.out.println(result.getGeneration()+": Found Best phenotype: "+ best);
+            configurationDao.write(buildOracleConfiguration(result.getBestPhenotype().getGenotype()));
+        }
     }
-}
 
     @Override
     public void run() {

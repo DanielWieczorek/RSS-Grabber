@@ -1,4 +1,4 @@
-package de.wieczorek.rss.trading.common;
+package de.wieczorek.rss.trading.common.oracle;
 
 public class OracleConfiguration {
 
@@ -12,9 +12,6 @@ public class OracleConfiguration {
     private boolean isStopLossActivated = false;
 
     private int stopLossThreshold = 0;
-
-    private double lastBuyPrice = -1.0;
-
 
     public int getSellThreshold() {
         return sellThreshold;
@@ -72,11 +69,4 @@ public class OracleConfiguration {
         this.stopLossThreshold = stopLossThreshold;
     }
 
-    public double getLastBuyPrice() {
-        return lastBuyPrice;
-    }
-
-    public void setLastBuyPrice(double lastBuyPrice) {
-        this.lastBuyPrice = lastBuyPrice;
-    }
 }
