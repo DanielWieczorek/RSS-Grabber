@@ -4,7 +4,6 @@ import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import de.wieczorek.rss.core.config.RssConfig;
-import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
 import de.wieczorek.rss.types.RssEntry;
 import org.slf4j.Logger;
@@ -22,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
-@EntityManagerContext
+
 public abstract class RssReader implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RssReader.class);
 
