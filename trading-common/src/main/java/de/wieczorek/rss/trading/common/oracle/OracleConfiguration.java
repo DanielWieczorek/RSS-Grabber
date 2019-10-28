@@ -1,5 +1,7 @@
 package de.wieczorek.rss.trading.common.oracle;
 
+import de.wieczorek.rss.trading.common.oracle.comparison.Comparison;
+
 public class OracleConfiguration {
 
     private int sellThreshold;
@@ -7,7 +9,7 @@ public class OracleConfiguration {
     private int averageTime;
 
     private Comparison buyComparison = Comparison.GREATER;
-    private Comparison sellComparison =  Comparison.LOWER;
+    private Comparison sellComparison = Comparison.LOWER;
 
     private boolean isStopLossActivated = false;
 
