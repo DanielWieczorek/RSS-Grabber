@@ -3,7 +3,6 @@ package de.wieczorek.rss.trading.common.io;
 
 import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
 import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.rss.trading.common.trading.BuySellHelper;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.ActionVertexType;
@@ -17,17 +16,10 @@ public class DataGenerator {
     private static final int STEPPING = 5;
     private static final int SEQ_LENGTH = 5;
     private static final int DEPTH = 1440;
-
-    private List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> currentSentiment;
-
-    private List<TradingEvaluationResult> currentMetricSentiment;
-
-
-    private List<ChartEntry> chartEntries;
-
-    private List<ChartMetricRecord> chartMetrics;
-
     List<StateEdgePart> stateParts;
+    private List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> currentSentiment;
+    private List<TradingEvaluationResult> currentMetricSentiment;
+    private List<ChartEntry> chartEntries;
 
 
     public DataGenerator(Supplier<List<de.wieczorek.rss.advisor.types.TradingEvaluationResult>> sentimentSupplier,
@@ -49,7 +41,7 @@ public class DataGenerator {
 
         int endIndex = getEndIndex(offset);
 
-        StateEdge rootState = buildState(stateParts, chartEntries, offset, offset + SEQ_LENGTH, ActionVertexType.BUY,
+        StateEdge rootState = buildState(stateParts, chartEntries, offset, offset + SEQ_LENGTH, ActionVertexType.SELL,
                 startAcc, endIndex);
         rootState.setId(0);
 

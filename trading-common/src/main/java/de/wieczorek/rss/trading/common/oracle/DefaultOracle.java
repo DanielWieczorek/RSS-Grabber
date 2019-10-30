@@ -9,7 +9,7 @@ public class DefaultOracle implements Oracle {
 
     private OracleConfiguration configuration;
 
-    private double lastBuyPrice = -1.0;
+    private double lastMaximumAfterBuy = -1.0;
 
 
     private Predicate<Double> buyComparator;
@@ -42,20 +42,20 @@ public class DefaultOracle implements Oracle {
                 average += snapshot.getAllStateParts().get(i).getMetricsSentiment().getPrediction();
             }
         }
-
         average /= (double) averageNumbers;
 
-        if (canSell && lastBuyPrice > -1.0 && configuration.isStopLossActivated()) { // stop loss
-            if (lastBuyPrice < currentPrice - configuration.getStopLossThreshold()) {
-                lastBuyPrice = -1.0;
+        if (canSell && lastMaximumAfterBuy > -1.0 && configuration.isStopLossActivated()) { // stop loss
+            if (lastMaximumAfterBuy < currentPrice - configuration.getStopLossThreshold()) {
+                lastMaximumAfterBuy = -1.0;
                 return ActionVertexType.SELL;
             }
         }
+        lastMaximumAfterBuy = Math.max(lastMaximumAfterBuy, currentPrice);
 
 
         if (canBuy) {
             if (buyComparator.test(average)) {
-                lastBuyPrice = currentPrice;
+                lastMaximumAfterBuy = currentPrice;
                 return ActionVertexType.BUY;
             } else {
                 return ActionVertexType.SELL; // do nothing
@@ -64,7 +64,7 @@ public class DefaultOracle implements Oracle {
         } else {
 
             if (sellComparator.test(average)) {
-                lastBuyPrice = -1.0;
+                lastMaximumAfterBuy = -1.0;
                 return ActionVertexType.SELL;
             } else {
                 return ActionVertexType.BUY; // do nothing
