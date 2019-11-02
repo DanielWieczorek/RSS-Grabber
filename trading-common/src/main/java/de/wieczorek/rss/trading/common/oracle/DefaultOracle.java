@@ -45,13 +45,13 @@ public class DefaultOracle implements Oracle {
         average /= (double) averageNumbers;
 
         if (canSell && lastMaximumAfterBuy > -1.0 && configuration.isStopLossActivated()) { // stop loss
-            if (lastMaximumAfterBuy < currentPrice - configuration.getStopLossThreshold()) {
+            if (currentPrice < lastMaximumAfterBuy - configuration.getStopLossThreshold()) {
                 lastMaximumAfterBuy = -1.0;
                 return ActionVertexType.SELL;
+            } else {
+                lastMaximumAfterBuy = Math.max(lastMaximumAfterBuy, currentPrice);
             }
         }
-        lastMaximumAfterBuy = Math.max(lastMaximumAfterBuy, currentPrice);
-
 
         if (canBuy) {
             if (buyComparator.test(average)) {

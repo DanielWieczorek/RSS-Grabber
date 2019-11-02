@@ -50,17 +50,17 @@ public class TrainingTimer implements Runnable {
         List<Trade> trades = simulator.simulate(generator, oracle);
         double tradeProfit = 0;
         if (trades.size() >= 1) {
-            tradeProfit += trades.get(0).getAfter().getEurEquivalent() - 1000;
 
-            for (int i = 1; i < trades.size() - 1; i++) {
+            for (int i = 0; i < trades.size() - 1; i += 2) {
                 Trade buy = trades.get(i);
                 Trade sell = trades.get(i + 1);
 
-                tradeProfit += sell.getAfter().getEurEquivalent() - buy.getBefore().getEurEquivalent();
+                tradeProfit += sell.getAfter().getEurEquivalent() - buy.getAfter().getEurEquivalent();
             }
         }
 
-        if (trades.size() > 4) {
+
+        if (trades.size() > 200) {
             Trade lastTrade = trades.get(trades.size() - 1);
             return tradeProfit; // lastTrade.getAfter().getEurEquivalent();
         }
@@ -115,11 +115,11 @@ public class TrainingTimer implements Runnable {
 
             Engine<IntegerGene, Double> engine = Engine
                     .builder(this::eval, gtf)
-                    .populationSize(100 * 100 * 100)
+                    .populationSize(100 * 100 * 10)
                     .mapping(EvolutionResult.toUniquePopulation())
                     .executor(Executors.newFixedThreadPool(16))
-                    .survivorsFraction(0.4)
-                    .alterers(new Mutator<>(0.1), new MultiPointCrossover<>(0.1))
+                    .survivorsFraction(0.7)
+                    .alterers(new Mutator<>(0.25), new MultiPointCrossover<>(0.1))
                     .build();
 
 
