@@ -1,6 +1,7 @@
 package de.wieczorek.rss.insight.ui;
 
 import de.wieczorek.rss.core.ui.Resource;
+import de.wieczorek.rss.insight.business.Controller;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

@@ -1,5 +1,6 @@
 package de.wieczorek.chart.core.ui;
 
+import de.wieczorek.chart.core.business.Controller;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.ui.Resource;

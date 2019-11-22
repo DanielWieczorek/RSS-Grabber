@@ -1,6 +1,7 @@
 package de.wieczorek.rss.core.ui;
 
 import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.core.business.Controller;
 import de.wieczorek.rss.core.persistence.EntityManagerContext;
 
 import javax.enterprise.context.ApplicationScoped;

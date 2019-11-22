@@ -2,6 +2,7 @@ package de.wieczorek.rss.insight.ui;
 
 import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.ui.Resource;
+import de.wieczorek.rss.insight.business.Controller;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
 
