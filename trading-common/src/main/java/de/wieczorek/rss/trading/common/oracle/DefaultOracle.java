@@ -1,25 +1,28 @@
 package de.wieczorek.rss.trading.common.oracle;
 
+import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.ActionVertexType;
 import de.wieczorek.rss.trading.types.StateEdge;
 
-import java.util.function.Predicate;
+import java.util.Optional;
 
 public class DefaultOracle implements Oracle {
 
+    private final TradeDecider buyDecider;
+    private Optional<TradeDecider> sellDecider;
+
     private OracleConfiguration configuration;
-
     private double lastMaximumAfterBuy = -1.0;
-
-
-    private Predicate<Double> buyComparator;
-    private Predicate<Double> sellComparator;
 
 
     public DefaultOracle(OracleConfiguration configuration) {
         this.configuration = configuration;
-        this.buyComparator = configuration.getBuyComparison().getComparatorBuilder().apply(configuration.getBuyThreshold());
-        this.sellComparator = configuration.getSellComparison().getComparatorBuilder().apply(configuration.getSellThreshold());
+        buyDecider = new TradeDecider(configuration.getBuyConfiguration(), Account::getEur);
+        configuration.getSellConfiguration().ifPresentOrElse(
+                config -> sellDecider = Optional.of(new TradeDecider(config, Account::getBtc)),
+                () -> sellDecider = Optional.empty());
+
+
     }
 
     @Override
@@ -30,22 +33,8 @@ public class DefaultOracle implements Oracle {
         double currentPrice;
         currentPrice = snapshot.getAllStateParts().get(snapshot.getPartsEndIndex()).getChartEntry().getClose();
 
-        int end = snapshot.getPartsEndIndex();
-
-        int start = Math.max(0, end - configuration.getAverageTime());
-
-        int averageNumbers = 0;
-        double average = 0;
-        for (int i = start; i < end; i++) {
-            if (snapshot.getAllStateParts().get(i).getMetricsSentiment() != null) {
-                averageNumbers++;
-                average += snapshot.getAllStateParts().get(i).getMetricsSentiment().getPrediction();
-            }
-        }
-        average /= (double) averageNumbers;
-
-        if (canSell && lastMaximumAfterBuy > -1.0 && configuration.isStopLossActivated()) { // stop loss
-            if (currentPrice < lastMaximumAfterBuy - configuration.getStopLossThreshold()) {
+        if (canSell && configuration.getStopLossConfiguration().isPresent()) { // stop loss
+            if (currentPrice < lastMaximumAfterBuy - configuration.getStopLossConfiguration().get().getStopLossThreshold()) {
                 lastMaximumAfterBuy = -1.0;
                 return ActionVertexType.SELL;
             } else {
@@ -54,16 +43,14 @@ public class DefaultOracle implements Oracle {
         }
 
         if (canBuy) {
-            if (buyComparator.test(average)) {
+            if (buyDecider.decide(snapshot)) {
                 lastMaximumAfterBuy = currentPrice;
                 return ActionVertexType.BUY;
             } else {
                 return ActionVertexType.SELL; // do nothing
             }
-
         } else {
-
-            if (sellComparator.test(average)) {
+            if (sellDecider.isPresent() && sellDecider.get().decide(snapshot)) {
                 lastMaximumAfterBuy = -1.0;
                 return ActionVertexType.SELL;
             } else {

@@ -1,74 +1,36 @@
 package de.wieczorek.rss.trading.common.oracle;
 
-import de.wieczorek.rss.trading.common.oracle.comparison.Comparison;
+import java.util.Optional;
 
 public class OracleConfiguration {
 
-    private int sellThreshold;
-    private int buyThreshold;
-    private int averageTime;
+    private TradeConfiguration buyConfiguration;
+    private Optional<TradeConfiguration> sellConfiguration = Optional.empty();
 
-    private Comparison buyComparison = Comparison.GREATER;
-    private Comparison sellComparison = Comparison.LOWER;
+    private Optional<StopLossConfiguration> stopLossConfiguration = Optional.empty();
 
-    private boolean isStopLossActivated = false;
-
-    private int stopLossThreshold = 0;
-
-    public int getSellThreshold() {
-        return sellThreshold;
+    public TradeConfiguration getBuyConfiguration() {
+        return buyConfiguration;
     }
 
-    public void setSellThreshold(int sellThreshold) {
-        this.sellThreshold = sellThreshold;
+    public void setBuyConfiguration(TradeConfiguration buyConfiguration) {
+        this.buyConfiguration = buyConfiguration;
     }
 
-    public int getBuyThreshold() {
-        return buyThreshold;
+    public Optional<TradeConfiguration> getSellConfiguration() {
+        return sellConfiguration;
     }
 
-    public void setBuyThreshold(int buyThreshold) {
-        this.buyThreshold = buyThreshold;
+    public void setSellConfiguration(Optional<TradeConfiguration> sellConfiguration) {
+        this.sellConfiguration = sellConfiguration;
     }
 
-    public int getAverageTime() {
-        return averageTime;
+    public Optional<StopLossConfiguration> getStopLossConfiguration() {
+        return stopLossConfiguration;
     }
 
-    public void setAverageTime(int averageTime) {
-        this.averageTime = averageTime;
-    }
-
-    public Comparison getBuyComparison() {
-        return buyComparison;
-    }
-
-    public void setBuyComparison(Comparison buyComparison) {
-        this.buyComparison = buyComparison;
-    }
-
-    public Comparison getSellComparison() {
-        return sellComparison;
-    }
-
-    public void setSellComparison(Comparison sellComparison) {
-        this.sellComparison = sellComparison;
-    }
-
-    public boolean isStopLossActivated() {
-        return isStopLossActivated;
-    }
-
-    public void setStopLossActivated(boolean stopLossActivated) {
-        isStopLossActivated = stopLossActivated;
-    }
-
-    public int getStopLossThreshold() {
-        return stopLossThreshold;
-    }
-
-    public void setStopLossThreshold(int stopLossThreshold) {
-        this.stopLossThreshold = stopLossThreshold;
+    public void setStopLossConfiguration(Optional<StopLossConfiguration> stopLossConfiguration) {
+        this.stopLossConfiguration = stopLossConfiguration;
     }
 
 }
