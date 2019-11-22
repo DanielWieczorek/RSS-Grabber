@@ -22,10 +22,6 @@ public class SessionInvalidationTimer implements Runnable {
     @Inject
     private SessionDao dao;
 
-    public SessionInvalidationTimer() {
-
-    }
-
     @Override
     public void run() {
         try {

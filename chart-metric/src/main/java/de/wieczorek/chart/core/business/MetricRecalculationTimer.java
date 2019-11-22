@@ -40,9 +40,6 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
     @Inject
     private Instance<MetricCalculator> metricCalculators;
 
-    public MetricRecalculationTimer() {
-
-    }
 
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {

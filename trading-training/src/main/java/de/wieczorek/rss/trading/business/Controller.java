@@ -15,9 +15,6 @@ public class Controller extends ControllerBase {
     @Inject
     private RecurrentTaskManager timer;
 
-    public void train() {
-
-    }
 
     @Override
     public void start() {

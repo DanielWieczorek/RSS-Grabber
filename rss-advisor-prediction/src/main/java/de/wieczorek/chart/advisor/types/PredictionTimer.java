@@ -24,10 +24,6 @@ public class PredictionTimer implements Runnable {
     @Inject
     private TradingEvaluationResultDao dao;
 
-    public PredictionTimer() {
-
-    }
-
     @Override
     public void run() {
         try {

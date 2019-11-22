@@ -37,10 +37,6 @@ public class MetricTimer implements Runnable {
     @Inject
     private Instance<MetricCalculator> metricCalculators;
 
-    public MetricTimer() {
-
-    }
-
     @Override
     public void run() {
         List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())

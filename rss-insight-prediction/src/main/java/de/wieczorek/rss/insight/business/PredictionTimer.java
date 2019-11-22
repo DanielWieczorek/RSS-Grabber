@@ -25,9 +25,6 @@ public class PredictionTimer implements Runnable {
     @Inject
     private Controller controller;
 
-    public PredictionTimer() {
-
-    }
 
     @Override
     public void run() {

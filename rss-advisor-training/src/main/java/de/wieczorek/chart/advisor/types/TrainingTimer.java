@@ -19,18 +19,10 @@ public class TrainingTimer implements Runnable {
     @Inject
     private DataGenerator generator;
 
-    public TrainingTimer() {
-
-    }
-
     @Override
     public void run() {
         try {
-
-
             network.train(generator, 5);
-
-
         } catch (Exception e) {
             logger.error("error while training network: ", e);
         }

@@ -26,19 +26,21 @@ import java.util.concurrent.TimeUnit;
 @RecurrentTask(interval = 10, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class TrainingTimer implements Runnable {
+
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
+
     Phenotype<IntegerGene, Double> best = null;
+
     @Inject
     private TradingSimulator simulator;
+
     @Inject
     private DataGeneratorBuilder generatorBuilder;
+
     @Inject
     private OracleConfigurationDao configurationDao;
+
     private DataGenerator generator;
-
-    public TrainingTimer() {
-
-    }
 
     private double eval(Genotype<IntegerGene> genes) {
         OracleConfiguration configuration = buildOracleConfiguration(genes);

@@ -22,10 +22,6 @@ public class TrainingTimer implements Runnable {
     @Inject
     private DataGenerator generator;
 
-    public TrainingTimer() {
-
-    }
-
     @Override
     public void run() {
         try {
