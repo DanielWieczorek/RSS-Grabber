@@ -79,7 +79,6 @@ public class RssEntryDao extends ImportExportDao<RssEntry> {
 
     @Override
     public Class<RssEntry> getEntityType() {
-        // TODO Auto-generated method stub
         return RssEntry.class;
     }
 
@@ -94,4 +93,17 @@ public class RssEntryDao extends ImportExportDao<RssEntry> {
         TypedQuery<RssEntry> allQuery = em.createQuery(all);
         return allQuery.getResultList();
     }
+
+    public long countClassifiedEntries() {
+        return EntityManagerProvider.getEntityManager()
+                .createQuery("select count(r) from RssEntry r where r.classification is not null", Long.class) //
+                .getSingleResult();
+    }
+
+    public long countUnclassifiedEntries() {
+        return EntityManagerProvider.getEntityManager()
+                .createQuery("select count(r) from RssEntry r where r.classification is null", Long.class) //
+                .getSingleResult();
+    }
+
 }

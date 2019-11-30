@@ -4,19 +4,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.HashMap;
-import java.util.Map;
 
 public class EntityManagerProvider {
-    private static ThreadLocal<EntityManagerFactory> entityManagerFactoryHolder = ThreadLocal.withInitial(() -> {
-        final Map<String, String> props = new HashMap<>();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("rss", props);
-        return emf;
-    });
+    private static EntityManagerFactory entityManagerFactoryHolder = Persistence.createEntityManagerFactory("rss", new HashMap<>());
 
     private static ThreadLocal<EntityManager> entityManagerHolder = new ThreadLocal<>();
 
     public static void recreateEntityManager() {
-        entityManagerHolder.set(entityManagerFactoryHolder.get().createEntityManager());
+        entityManagerHolder.set(entityManagerFactoryHolder.createEntityManager());
     }
 
     public static void destroyEntityManager() {

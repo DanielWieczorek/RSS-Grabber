@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RssClassificationService } from '../shared/rss-classification/rss-classification.service'
 import { RssEntry } from '../shared/rss-classification/rss-entry'
+import { ClassificationStatistics } from '../shared/rss-classification/classification-statistics'
+
 
 
 @Component({
@@ -12,6 +14,7 @@ export class RssClassificationComponent implements OnInit {
 
     title = 'app';
     data : RssEntry[];
+    statistics : ClassificationStatistics;
     error: string;
 
     constructor(private rssClassification: RssClassificationService){
@@ -33,6 +36,11 @@ export class RssClassificationComponent implements OnInit {
         const index = this.data.indexOf(element);
         this.data.splice(index, 1);
     }
+
+    updateStatistics() {
+        this.statistics.classified++;
+        this.statistics.unclassified--;
+    }
     
     classifyNeutral(data: RssEntry) : void {
         data.classification = 0;
@@ -43,6 +51,7 @@ export class RssClassificationComponent implements OnInit {
         this.rssClassification.classify(data).subscribe(d => {
             console.log(data)
             this.removeItem(data);
+            this.updateStatistics();
           });
     }
     
@@ -50,6 +59,12 @@ export class RssClassificationComponent implements OnInit {
         this.rssClassification.find().subscribe(data => {
           console.log(data)
         this.data = data as RssEntry[];
+      },
+      err => this.error = err);
+
+      this.rssClassification.statistics().subscribe(statistics => {
+          console.log(statistics)
+        this.statistics = statistics as ClassificationStatistics;
       },
       err => this.error = err);
     }

@@ -54,58 +54,64 @@
 
 	</div>
 
-
-<div *ngIf="data || error" class="section">
-    <h5>Classify News</h5>
-    <p>The news articles have to be classified by hand to generate training data for the neural network which performs the classification.</p>
-	<div class="row">
-		<div *ngIf="!error; else errorHappened">
-		<div class="col l4" *ngFor="let item of data">
-			<div class="card small">
-				<div class="card-content">
-					<span class="card-title activator grey-text text-darken-4">{{
-						item.heading }}<i class="material-icons right">more_vert</i>
-					</span> {{ item.publicationDate | date}}
-					<div *ngIf="item.heading.length <= 60">
-						<div *ngIf="item.description.length > 180">{{
-							item.description | slice:0:180 }} ...</div>
-						<div *ngIf="item.description.length <= 180">{{
-							item.description }}</div>
-					</div>
-
-					<div *ngIf="item.heading.length > 60">
-						<div *ngIf="item.description.length > 145">{{
-							item.description | slice:0:145 }} ...</div>
-						<div *ngIf="item.description.length <= 145">{{
-							item.description }}</div>
-					</div>
-				</div>
-
-				<div class="card-action">
-					<a class="waves-effect waves-teal btn-flat teal-text"
-						(click)="classifyPositive(item)">positive</a> <a
-						class="waves-effect waves-amber btn-flat amber-text"
-						(click)="classifyNeutral(item)">neutral</a> <a
-						class="waves-effect waves-red btn-flat red-text"
-						(click)="classifyNegative(item)">negative</a>
-				</div>
-
-				<div class="card-reveal">
-					<span class="card-title grey-text text-darken-4">{{
-						item.heading }}<i class="material-icons right">close</i>
-					</span>
-					<p>{{item.description}}</p>
-				</div>
-
-			</div>
-		</div>
-		</div>
-		<ng-template #errorHappened>
+	<div *ngIf="statistics || error" class="section">
+		<h5>Current Classification Statistics</h5>
+		<div *ngIf="!error; else errorHappened" style="font-size: 45px; font-weight: lighter; ">
 
 			<div class="row">
-				<b><span class="red-text"> {{ error }} </span></b>
+				<div class="col ">Classified:</div>
+				<div class="col teal-text">{{ statistics.classified }}</div>
+				<div class="col "> Unclassified: </div>
+				<div class="col red-text">{{ statistics.unclassified }}</div>
 			</div>
-			</ng-template>
+		</div>
 	</div>
-</div>
+
+
+	<div class="divider"></div>
+	<div *ngIf="data || error" class="section">
+		<h5>Classify News</h5>
+		<p>The news articles have to be classified by hand to generate training data for the neural network which performs the classification.</p>
+		<div class="row">
+			<div *ngIf="!error; else errorHappened">
+				<div class="col l4" *ngFor="let item of data">
+					<div class="card small">
+						<div class="card-content">
+							<span class="card-title activator grey-text text-darken-4">{{
+						item.heading }}<i class="material-icons right">more_vert</i>
+					</span> {{ item.publicationDate | date}}
+							<div *ngIf="item.heading.length <= 60">
+								<div *ngIf="item.description.length > 180">{{ item.description | slice:0:180 }} ...</div>
+								<div *ngIf="item.description.length <= 180">{{ item.description }}</div>
+							</div>
+
+							<div *ngIf="item.heading.length > 60">
+								<div *ngIf="item.description.length > 145">{{ item.description | slice:0:145 }} ...</div>
+								<div *ngIf="item.description.length <= 145">{{ item.description }}</div>
+							</div>
+						</div>
+
+						<div class="card-action">
+							<a class="waves-effect waves-teal btn-flat teal-text" (click)="classifyPositive(item)">positive</a> <a class="waves-effect waves-amber btn-flat amber-text"
+								(click)="classifyNeutral(item)">neutral</a> <a class="waves-effect waves-red btn-flat red-text" (click)="classifyNegative(item)">negative</a>
+						</div>
+
+						<div class="card-reveal">
+							<span class="card-title grey-text text-darken-4">{{
+						item.heading }}<i class="material-icons right">close</i>
+					</span>
+							<p>{{item.description}}</p>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<ng-template #errorHappened>
+
+				<div class="row">
+					<b><span class="red-text"> {{ error }} </span></b>
+				</div>
+			</ng-template>
+		</div>
+	</div>
 </div>

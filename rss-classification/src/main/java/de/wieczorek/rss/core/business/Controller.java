@@ -1,5 +1,6 @@
 package de.wieczorek.rss.core.business;
 
+import de.wieczorek.rss.classification.types.ClassificationStatistics;
 import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
 import de.wieczorek.rss.core.ui.ControllerBase;
@@ -61,5 +62,13 @@ public class Controller extends ControllerBase {
 
     public List<RssEntry> readClassfiedEntries() {
         return dao.findAllClassified();
+    }
+
+    public ClassificationStatistics getClassificationStatistics() {
+        ClassificationStatistics statistics = new ClassificationStatistics();
+        statistics.setClassified(dao.countClassifiedEntries());
+        statistics.setUnclassified(dao.countUnclassifiedEntries());
+
+        return statistics;
     }
 }
