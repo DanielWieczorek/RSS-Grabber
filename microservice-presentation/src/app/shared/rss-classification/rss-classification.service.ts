@@ -21,7 +21,7 @@ export class RssClassificationService {
                  .pipe(catchError(this.helper.handleError));
     }
 
-    statistics(): Observable<RssEntry[]> {
+    statistics(): Observable<ClassificationStatistics[]> {
         return this.http.get<ClassificationStatistics[]>( this.helper.buildPath( 'routing/rss-classification/statistics') )
                  .pipe(catchError(this.helper.handleError));
     }
