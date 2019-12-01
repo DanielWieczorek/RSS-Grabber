@@ -1,7 +1,8 @@
+import { Account } from './account';
 export class Trade {
      date: Date;
      action: string;
-      before: Account;
+     before: Account;
      after: Account;
      currentRate: number;
 }
