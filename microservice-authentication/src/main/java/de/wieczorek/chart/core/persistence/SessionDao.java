@@ -1,11 +1,11 @@
 package de.wieczorek.chart.core.persistence;
 
+import de.wieczorek.rss.core.persistence.EntityManagerHelper;
 import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,11 +44,7 @@ public class SessionDao {
         TypedQuery<Session> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM Session s WHERE s.username = :user", Session.class)
                 .setParameter("user", username);
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return EntityManagerHelper.getSingleResultOrNull(query);
     }
 
     public List<Session> findInvalidSessions() {

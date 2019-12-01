@@ -1,12 +1,12 @@
 package de.wieczorek.chart.advisor.persistence;
 
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
+import de.wieczorek.rss.core.persistence.EntityManagerHelper;
 import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -58,11 +58,7 @@ public class TradingEvaluationResultDao {
         TypedQuery<TradingEvaluationResult> query = EntityManagerProvider.getEntityManager().createQuery(
                 "SELECT s FROM TradingEvaluationResult s WHERE s.currentTime = :current and s.targetTime = :target",
                 TradingEvaluationResult.class).setParameter("current", currentTime).setParameter("target", targetTime);
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return EntityManagerHelper.getSingleResultOrNull(query);
     }
 
     public List<TradingEvaluationResult> findAfterDate(LocalDateTime currentTime) {

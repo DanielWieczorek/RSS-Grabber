@@ -1,12 +1,12 @@
 package de.wieczorek.rss.insight.persistence;
 
+import de.wieczorek.rss.core.persistence.EntityManagerHelper;
 import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -48,11 +48,7 @@ public class SentimentAtTimeDao {
         TypedQuery<SentimentAtTime> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM SentimentAtTime s WHERE s.sentimentTime = :time", SentimentAtTime.class)
                 .setParameter("time", sentimentTime);
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return EntityManagerHelper.getSingleResultOrNull(query);
     }
 
     public List<SentimentAtTime> findAll() {

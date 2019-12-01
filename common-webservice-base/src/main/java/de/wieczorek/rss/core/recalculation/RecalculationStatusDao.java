@@ -1,5 +1,7 @@
 package de.wieczorek.rss.core.recalculation;
 
+import de.wieczorek.rss.core.persistence.EntityManagerHelper;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -26,11 +28,8 @@ public class RecalculationStatusDao {
         Root<Recalculation> rootEntry = cq.from(Recalculation.class);
         CriteriaQuery<Recalculation> all = cq.select(rootEntry);
         TypedQuery<Recalculation> allQuery = entityManager.createQuery(all);
-        try {
-            return allQuery.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+
+        return EntityManagerHelper.getSingleResultOrNull(allQuery);
     }
 
     public void update(Recalculation recalculation) {

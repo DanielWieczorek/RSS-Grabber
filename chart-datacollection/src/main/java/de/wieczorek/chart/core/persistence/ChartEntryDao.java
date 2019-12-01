@@ -2,12 +2,12 @@ package de.wieczorek.chart.core.persistence;
 
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.importexport.db.ImportExportDao;
+import de.wieczorek.rss.core.persistence.EntityManagerHelper;
 import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,11 +24,7 @@ public class ChartEntryDao extends ImportExportDao<ChartEntry> {
         TypedQuery<ChartEntry> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM ChartEntry s WHERE s.date = :time", ChartEntry.class)
                 .setParameter("time", date);
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return EntityManagerHelper.getSingleResultOrNull(query);
     }
 
     @Override
