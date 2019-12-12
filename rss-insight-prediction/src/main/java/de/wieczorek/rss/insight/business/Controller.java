@@ -39,7 +39,7 @@ public class Controller extends ControllerBase {
     private RecalculationStatusDao recalculationDao;
 
     public SentimentEvaluationResult predict() {
-        List<RssEntry> input = ClientBuilder.newClient().target("http://localhost:8020/rss-entries/24h")
+        List<RssEntry> input = ClientBuilder.newClient().target("http://wieczorek.io:8020/rss-entries/24h") // TODO revert
                 .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
                 });
 

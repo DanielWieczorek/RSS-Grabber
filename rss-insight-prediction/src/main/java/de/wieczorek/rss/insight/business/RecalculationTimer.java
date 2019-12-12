@@ -33,8 +33,6 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
     @Inject
     private SentimentAtTimeDao tradingDao;
 
-    @Inject
-    private RssWord2VecNetwork vec;
 
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
@@ -43,7 +41,6 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
                 .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
                 });
 
-        vec.train(input);
         List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).collect(Collectors.toList());
 
         for (int i = 0; i < input.size() - 24 * 60; i++) {

@@ -6,7 +6,6 @@ import de.wieczorek.rss.insight.types.SentimentAtTime;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,20 +18,11 @@ public class SentimentAtTimeDao {
 
 
     public void persist(SentimentAtTime sat) {
-        EntityManager em = EntityManagerProvider.getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.persist(sat);
-        transaction.commit();
+        EntityManagerProvider.getEntityManager().persist(sat);
     }
 
     public void update(SentimentAtTime sat) {
-        EntityManager em = EntityManagerProvider.getEntityManager();
-
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.merge(sat);
-        transaction.commit();
+        EntityManagerProvider.getEntityManager().merge(sat);
     }
 
     public void upsert(SentimentAtTime sat) {

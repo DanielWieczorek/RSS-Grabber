@@ -28,7 +28,6 @@ public class RssSentimentNeuralNetworkPredictor extends AbstractNeuralNetworkPre
                 .collect(Collectors.toList());
 
         INDArray vectors = vec.getWordVectors(stemmedSentence);
-
         return Nd4j.expandDims(vectors, 2);
 
     }
