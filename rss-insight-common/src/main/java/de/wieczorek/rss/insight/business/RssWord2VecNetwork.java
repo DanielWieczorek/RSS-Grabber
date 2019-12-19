@@ -155,6 +155,11 @@ public class RssWord2VecNetwork implements WordVectors {
 
     }
 
+    @Override
+    public boolean outOfVocabularySupported() {
+        return vec.outOfVocabularySupported();
+    }
+
     public int getLayerSize() {
         return vec.getLayerSize();
     }
