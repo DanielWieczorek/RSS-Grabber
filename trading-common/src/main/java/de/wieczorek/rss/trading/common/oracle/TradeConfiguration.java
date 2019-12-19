@@ -7,6 +7,8 @@ public class TradeConfiguration {
     private int threshold;
     private int averageTime;
 
+    private int offset;
+
     private Comparison comparison = Comparison.LOWER;
 
     public int getThreshold() {
@@ -31,5 +33,13 @@ public class TradeConfiguration {
 
     public void setComparison(Comparison comparison) {
         this.comparison = comparison;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
 }

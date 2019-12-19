@@ -85,12 +85,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>de.wieczorek</groupId>
-			<artifactId>common-neuralnetwork-prediction</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>de.wieczorek</groupId>
 			<artifactId>trading-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

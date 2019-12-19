@@ -9,14 +9,18 @@ public enum Comparison {
     RISE_ABOVE(2, RiseAboveComparator::new),
     FALL_BELOW(3, FallBelowComparator::new),
     NEVER_MATCH(4, (threshold) -> new NeverMatchComparator()),
-    ALWAYS_MATCH(5, (threshold) -> new AlwaysMatchComparator());
+    ALWAYS_MATCH(5, (threshold) -> new AlwaysMatchComparator()),
+    DIFF_BELOW(6, DiffBelowComparator::new),
+    DIFF_ABOVE(7, DiffAboveComparator::new),
+    RISE(8, RisingComparator::new),
+    FALL(9, FallingComparator::new);
 
 
     private final int index;
 
-    private final Function<Integer, Predicate<Double>> comparatorBuilder;
+    private final Function<Integer, Predicate<ComparatorInput>> comparatorBuilder;
 
-    Comparison(int index, Function<Integer, Predicate<Double>> comparatorBuilder) {
+    Comparison(int index, Function<Integer, Predicate<ComparatorInput>> comparatorBuilder) {
         this.index = index;
         this.comparatorBuilder = comparatorBuilder;
     }
@@ -30,7 +34,7 @@ public enum Comparison {
         throw new RuntimeException("invalid index " + index);
     }
 
-    public Function<Integer, Predicate<Double>> getComparatorBuilder() {
+    public Function<Integer, Predicate<ComparatorInput>> getComparatorBuilder() {
         return comparatorBuilder;
     }
 }

@@ -16,7 +16,7 @@ public class DataGenerator {
     private static final int STEPPING = 5;
     private static final int SEQ_LENGTH = 5;
     private static final int DEPTH = 1440;
-    List<StateEdgePart> stateParts;
+    private List<StateEdgePart> stateParts;
     private List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> currentSentiment;
     private List<TradingEvaluationResult> currentMetricSentiment;
     private List<ChartEntry> chartEntries;
@@ -83,6 +83,19 @@ public class DataGenerator {
         currentState.setAccount(newAcc);
         currentState.setPartsStartIndex(partStartIndex);
         currentState.setPartsEndIndex(partEndIndex);
+        currentState.setAllStateParts(stateParts);
+
+        return currentState;
+    }
+
+    public StateEdge BuildLastStateEdge(Account acc) {
+
+
+        StateEdge currentState = new StateEdge();
+
+        currentState.setAccount(acc);
+        currentState.setPartsStartIndex(stateParts.size() - SEQ_LENGTH - 1);
+        currentState.setPartsEndIndex(stateParts.size() - 1);
         currentState.setAllStateParts(stateParts);
 
         return currentState;

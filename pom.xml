@@ -45,6 +45,8 @@
             <module>trading-common</module>
 			<module>trading-simulation</module>
 			<module>trading-training</module>
+            <module>trading-live</module>
+
 			
             <module>microservice-status</module>
             <module>microservice-authentication</module>

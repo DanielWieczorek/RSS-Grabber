@@ -29,11 +29,11 @@ public class TradingSimulator {
 
     public List<Trade> simulate(Oracle oracle) {
 
-        DataGenerator generator =  dataGeneratorBuilder.produceGenerator();
-        return simulate(generator,oracle);
+        DataGenerator generator = dataGeneratorBuilder.produceGenerator();
+        return simulate(generator, oracle).getTrades();
     }
 
-    public List<Trade> simulate(DataGenerator generator,Oracle oracle) {
+    public TradingSimulationResult simulate(DataGenerator generator, Oracle oracle) {
 
         StateEdge current = generator.buildNewStartState(0);
         List<Trade> trades = new ArrayList<>();
@@ -47,7 +47,12 @@ public class TradingSimulator {
             current = next;
         }
 
-        return trades;
+        TradingSimulationResult result = new TradingSimulationResult();
+        result.setTrades(trades);
+        result.setFinalBalance(current.getAccount());
+
+
+        return result;
     }
 
     private void addTrade(List<Trade> trades, Account account, Account newAccount, StateEdge snapshot) {
@@ -67,8 +72,8 @@ public class TradingSimulator {
         }
     }
 
-    private StateEdge performTrade(Oracle oracle, StateEdge snapshot,DataGenerator generator) {
-        return generator.buildNextState(snapshot, oracle.nextAction(snapshot));
+    private StateEdge performTrade(Oracle oracle, StateEdge snapshot, DataGenerator generator) {
+        return generator.buildNextState(snapshot, oracle.nextAction(snapshot).getDecision());
     }
 
     private double getCurrentPrice(StateEdge snapshot) {

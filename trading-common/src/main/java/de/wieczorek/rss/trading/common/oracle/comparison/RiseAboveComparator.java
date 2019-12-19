@@ -1,11 +1,14 @@
 package de.wieczorek.rss.trading.common.oracle.comparison;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.function.Predicate;
 
-public class RiseAboveComparator implements Predicate<Double> {
+public class RiseAboveComparator implements Predicate<ComparatorInput> {
+    private static final Logger logger = LoggerFactory.getLogger(RiseAboveComparator.class);
 
     private int threshold;
-    private double lastValue = 0;
 
     public RiseAboveComparator(int threshold) {
         this.threshold = threshold;
@@ -13,9 +16,10 @@ public class RiseAboveComparator implements Predicate<Double> {
 
     @Override
 
-    public boolean test(Double aDouble) {
-        boolean result = aDouble > threshold && lastValue <= threshold;
-        lastValue = aDouble;
+    public boolean test(ComparatorInput aDouble) {
+        boolean result = aDouble.second > threshold && aDouble.first <= threshold;
+        logger.debug(aDouble.second + " > " + threshold + " and " + aDouble.first + " <= " + threshold + " = " + result);
+
         return result;
     }
 }

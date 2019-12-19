@@ -3,60 +3,127 @@ package de.wieczorek.rss.trading.common.oracle;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.ActionVertexType;
 import de.wieczorek.rss.trading.types.StateEdge;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class DefaultOracle implements Oracle {
 
-    private final TradeDecider buyDecider;
-    private Optional<TradeDecider> sellDecider;
+    private static final Logger logger = LoggerFactory.getLogger(DefaultOracle.class);
+
+
+    private final Predicate<StateEdge> buyDecider;
+    private final Predicate<StateEdge> sellDecider;
 
     private OracleConfiguration configuration;
+    private double previousLastMaximumAfterBuy = -1.0;
     private double lastMaximumAfterBuy = -1.0;
+
+    private int lastStopLossTriggerTime = Integer.MAX_VALUE;
 
 
     public DefaultOracle(OracleConfiguration configuration) {
         this.configuration = configuration;
-        buyDecider = new TradeDecider(configuration.getBuyConfiguration(), Account::getEur);
-        configuration.getSellConfiguration().ifPresentOrElse(
-                config -> sellDecider = Optional.of(new TradeDecider(config, Account::getBtc)),
-                () -> sellDecider = Optional.empty());
 
+        List<TradeDecider> buyDecidersChildren = configuration.getBuyConfigurations()
+                .stream().map(config -> new TradeDecider(config, Account::getEur)).collect(Collectors.toList());
+
+        List<Operator> buyOperators = configuration.getBuyOperators();
+        Predicate<StateEdge> rootBuyDecider = buyOperators.get(0).getCombinationFunction()
+                .apply(buyDecidersChildren.get(0), buyDecidersChildren.get(1));
+        for (int i = 1; i < configuration.getBuyOperators().size(); i++) {
+            rootBuyDecider = buyOperators.get(i).getCombinationFunction().apply(rootBuyDecider, buyDecidersChildren.get(i + 1));
+        }
+        buyDecider = rootBuyDecider;
+
+
+        List<TradeDecider> sellDecidersChildren = configuration.getSellConfigurations()
+                .stream().map(config -> new TradeDecider(config, Account::getBtc)).collect(Collectors.toList());
+
+        List<Operator> sellOperators = configuration.getSellOperators();
+        Predicate<StateEdge> rootSellDecider = sellOperators.get(0).getCombinationFunction()
+                .apply(sellDecidersChildren.get(0), sellDecidersChildren.get(1));
+        for (int i = 1; i < configuration.getBuyOperators().size(); i++) {
+            rootSellDecider = sellOperators.get(i).getCombinationFunction().apply(rootSellDecider, sellDecidersChildren.get(i + 1));
+        }
+        sellDecider = rootSellDecider;
 
     }
 
     @Override
-    public ActionVertexType nextAction(StateEdge snapshot) {
+    public TradingDecision nextAction(StateEdge snapshot) {
         boolean canSell = snapshot.getAccount().getBtc() > 0;
         boolean canBuy = snapshot.getAccount().getEur() > 0;
 
         double currentPrice;
         currentPrice = snapshot.getAllStateParts().get(snapshot.getPartsEndIndex()).getChartEntry().getClose();
 
+
         if (canSell && configuration.getStopLossConfiguration().isPresent()) { // stop loss
+            logger.debug("evaluating stop loss");
             if (currentPrice < lastMaximumAfterBuy - configuration.getStopLossConfiguration().get().getStopLossThreshold()) {
+                previousLastMaximumAfterBuy = lastMaximumAfterBuy;
                 lastMaximumAfterBuy = -1.0;
-                return ActionVertexType.SELL;
+                return new TradingDecision(ActionVertexType.SELL, DecisionReason.STOP_LOSS);
             } else {
+                logger.debug("updating last maximum to " + lastMaximumAfterBuy);
                 lastMaximumAfterBuy = Math.max(lastMaximumAfterBuy, currentPrice);
             }
         }
 
+        boolean isStopLossDurationElapsed = true;
+        logger.debug("checking if stop loss configuration has elapsed");
+        if (configuration.getStopLossConfiguration().isPresent()) {
+            isStopLossDurationElapsed = lastStopLossTriggerTime >
+                    configuration.getStopLossConfiguration().get().getStopLossCooldown(); // if canBuy then last buy did not go through
+            logger.debug(isStopLossDurationElapsed ? "stop loss cooldown elapsed" : "stop loss cooldown is not elapsed");
+
+            if (!isStopLossDurationElapsed) {
+                lastStopLossTriggerTime++;
+                logger.debug("updating stop loss cooldown time to " + lastStopLossTriggerTime);
+            }
+        }
+
         if (canBuy) {
-            if (buyDecider.decide(snapshot)) {
+            logger.debug("checking BUY");
+            if (buyDecider.test(snapshot) && isStopLossDurationElapsed) {
                 lastMaximumAfterBuy = currentPrice;
-                return ActionVertexType.BUY;
+                lastStopLossTriggerTime = 0;
+                logger.debug("decision BUY");
+
+                return new TradingDecision(ActionVertexType.BUY, DecisionReason.TRADE);
             } else {
-                return ActionVertexType.SELL; // do nothing
+                logger.debug("decision: DO NOTHING");
+                return new TradingDecision(ActionVertexType.SELL, DecisionReason.TRADE); // do nothing
             }
         } else {
-            if (sellDecider.isPresent() && sellDecider.get().decide(snapshot)) {
+            logger.debug("checking SELL");
+            if (sellDecider.test(snapshot)) {
                 lastMaximumAfterBuy = -1.0;
-                return ActionVertexType.SELL;
+                logger.debug("decision: SELL");
+                return new TradingDecision(ActionVertexType.SELL, DecisionReason.TRADE);
             } else {
-                return ActionVertexType.BUY; // do nothing
+                logger.debug("decision: DO NOTHING");
+                return new TradingDecision(ActionVertexType.BUY, DecisionReason.TRADE); // do nothing
             }
-
         }
+    }
+
+    public void resetBuy() {
+        lastMaximumAfterBuy = -1.0;
+        lastStopLossTriggerTime = Integer.MAX_VALUE;
+    }
+
+    public void resetStopLoss() {
+        lastMaximumAfterBuy = previousLastMaximumAfterBuy;
+    }
+
+    @Override
+    public void resetSell() {
+        lastStopLossTriggerTime = Integer.MAX_VALUE;
+
     }
 }

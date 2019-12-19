@@ -6,6 +6,7 @@ import de.wieczorek.rss.trading.common.io.DataGeneratorBuilder;
 import de.wieczorek.rss.trading.common.oracle.*;
 import de.wieczorek.rss.trading.common.oracle.comparison.Comparison;
 import de.wieczorek.rss.trading.common.trading.Trade;
+import de.wieczorek.rss.trading.common.trading.TradingSimulationResult;
 import de.wieczorek.rss.trading.common.trading.TradingSimulator;
 import io.jenetics.*;
 import io.jenetics.engine.Engine;
@@ -18,19 +19,20 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @RecurrentTask(interval = 10, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 2;
     Phenotype<IntegerGene, Double> best = null;
-
     @Inject
     private TradingSimulator simulator;
 
@@ -47,22 +49,27 @@ public class TrainingTimer implements Runnable {
 
         Oracle oracle = new DefaultOracle(configuration);
 
-        List<Trade> trades = simulator.simulate(generator, oracle);
+        TradingSimulationResult simulationResult = simulator.simulate(generator, oracle);
+        List<Trade> trades = simulationResult.getTrades();
         double tradeProfit = 0;
+        int buySellPairs = 0;
+        int positiveTrades = 0;
         if (trades.size() >= 1) {
 
             for (int i = 0; i < trades.size() - 1; i += 2) {
                 Trade buy = trades.get(i);
                 Trade sell = trades.get(i + 1);
 
-                tradeProfit += sell.getAfter().getEurEquivalent() - buy.getAfter().getEurEquivalent();
+                tradeProfit += sell.getAfter().getEurEquivalent() - buy.getBefore().getEurEquivalent();
+                positiveTrades += tradeProfit > 0 ? 1 : 0;
+                buySellPairs++;
             }
         }
 
 
         if (trades.size() > 500) {
             Trade lastTrade = trades.get(trades.size() - 1);
-            return lastTrade.getAfter().getEurEquivalent();
+            return simulationResult.getFinalBalance().getEurEquivalent();
         }
         return -1000.0;
 
@@ -71,25 +78,47 @@ public class TrainingTimer implements Runnable {
     private OracleConfiguration buildOracleConfiguration(Genotype<IntegerGene> genes) {
         OracleConfiguration configuration = new OracleConfiguration();
 
-        TradeConfiguration buyConfig = new TradeConfiguration();
-        buyConfig.setThreshold(genes.get(0).getGene(0).intValue());
-        buyConfig.setAverageTime(genes.get(1).getGene(0).intValue());
-        buyConfig.setComparison(Comparison.getValueForIndex(genes.get(2).getGene(0).intValue()));
 
-        configuration.setBuyConfiguration(buyConfig);
+        List<TradeConfiguration> buyConfigurations = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_BUYSELL_CONFIGURATIONS; i++) {
+            TradeConfiguration buyConfig = new TradeConfiguration();
+            buyConfig.setThreshold(genes.get(0).getGene(i).intValue());
+            buyConfig.setAverageTime(genes.get(1).getGene(i).intValue());
+            buyConfig.setComparison(Comparison.getValueForIndex(genes.get(2).getGene(i).intValue()));
+            buyConfig.setOffset(genes.get(3).getGene(i).intValue());
+            buyConfigurations.add(buyConfig);
 
-        if (genes.get(3).getGene(0).intValue() == 1) {
-            TradeConfiguration sellConfig = new TradeConfiguration();
-            sellConfig.setThreshold(genes.get(0).getGene(1).intValue());
-            sellConfig.setAverageTime(genes.get(1).getGene(1).intValue());
-            sellConfig.setComparison(Comparison.getValueForIndex(genes.get(2).getGene(1).intValue()));
-
-            configuration.setSellConfiguration(Optional.of(sellConfig));
         }
+        configuration.setBuyConfigurations(buyConfigurations);
 
-        if (genes.get(4).getGene(0).intValue() == 1) {
+        List<Operator> buyOperators = new ArrayList<>();
+
+        configuration.setBuyOperators(genes.get(4).
+                stream()
+                .map(gene -> Operator.getValueForIndex(gene.intValue()))
+                .collect(Collectors.toList()));
+
+        List<TradeConfiguration> sellConfigurations = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_BUYSELL_CONFIGURATIONS; i++) {
+            TradeConfiguration sellConfig = new TradeConfiguration();
+            sellConfig.setThreshold(genes.get(5).getGene(i).intValue());
+            sellConfig.setAverageTime(genes.get(6).getGene(i).intValue());
+            sellConfig.setComparison(Comparison.getValueForIndex(genes.get(7).getGene(i).intValue()));
+            sellConfig.setOffset(genes.get(8).getGene(i).intValue());
+            sellConfigurations.add(sellConfig);
+        }
+        configuration.setSellConfigurations(sellConfigurations);
+
+        configuration.setSellOperators(genes.get(9).
+                stream()
+                .map(gene -> Operator.getValueForIndex(gene.intValue()))
+                .collect(Collectors.toList()));
+
+
+        if (genes.get(10).getGene(0).intValue() == 1) {
             StopLossConfiguration stopLossConfig = new StopLossConfiguration();
-            stopLossConfig.setStopLossThreshold(genes.get(5).getGene(0).intValue());
+            stopLossConfig.setStopLossThreshold(genes.get(11).getGene(0).intValue());
+            stopLossConfig.setStopLossCooldown(genes.get(12).getGene(0).intValue());
             configuration.setStopLossConfiguration(Optional.of(stopLossConfig));
         }
         return configuration;
@@ -109,20 +138,29 @@ public class TrainingTimer implements Runnable {
             generator = generatorBuilder.produceGenerator();
 
             Factory<Genotype<IntegerGene>> gtf =
-                    Genotype.of(IntegerChromosome.of(-200, 200, IntRange.of(2)), // buy sell threshold
-                            IntegerChromosome.of(1, 1440, IntRange.of(2)), // duration of the averaging
-                            IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(2)), // below/above for buy sell
-                            IntegerChromosome.of(0, 1, IntRange.of(1)), // is selling activated
-                            IntegerChromosome.of(0, 1, IntRange.of(1)), // is stop-loss activated
-                            IntegerChromosome.of(0, 8000, IntRange.of(1))); // stop-loss threshold
+                    Genotype.of(IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //0 buy thresholds
+                            IntegerChromosome.of(1, 480, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 duration of the averaging
+                            IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //1 below/above for buy
+                            IntegerChromosome.of(1, 1440 - 480, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //2 offset
+                            IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1)), //4 operators
+
+                            IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //5 sell thresholds
+                            IntegerChromosome.of(1, 480, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //8 duration of the averaging
+                            IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //7 below/above for sell
+                            IntegerChromosome.of(1, 1440 - 480, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //6 offset
+                            IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1)), //9 operators
+
+                            IntegerChromosome.of(0, 1, IntRange.of(1)), //10 is stop-loss activated
+                            IntegerChromosome.of(0, 200, IntRange.of(1)), //11 stop-loss threshold
+                            IntegerChromosome.of(0, 120, IntRange.of(1))); //12 wait time after stop-loss trigger
 
             Engine<IntegerGene, Double> engine = Engine
                     .builder(this::eval, gtf)
-                    .populationSize(100 * 10 * 10)
+                    .populationSize(2 * 100 * 10 * 10)
                     .mapping(EvolutionResult.toUniquePopulation())
                     .executor(Executors.newFixedThreadPool(16))
                     .survivorsFraction(0.7)
-                    .survivorsSelector(new TournamentSelector<>())
+                    .survivorsSelector(new EliteSelector(1000, new RouletteWheelSelector<>()))
                     .alterers(new Mutator<>(0.25), new UniformCrossover<>(0.1))
                     .build();
 
@@ -136,15 +174,13 @@ public class TrainingTimer implements Runnable {
             OracleConfiguration config = buildOracleConfiguration(result.getGenotype());
 
             Oracle oracle = new DefaultOracle(config);
-            List<Trade> trades = simulator.simulate(generator, oracle);
-            System.out.println("Number of trades: " + trades.size());
-            if (trades.size() > 0) {
-                System.out.println("Euro equivalent: " + trades.get(trades.size() - 1).getAfter().getEurEquivalent());
-            }
+            TradingSimulationResult simulationResult = simulator.simulate(generator, oracle);
+            System.out.println("Number of trades: " + simulationResult.getTrades().size());
+            System.out.println("Euro equivalent: " + simulationResult.getFinalBalance().getEurEquivalent());
 
 
         } catch (Exception e) {
-            logger.error("error while training network: ", e);
+            logger.error("error while training: ", e);
         }
     }
 }
