@@ -58,7 +58,7 @@ public class RestInfoSender extends ReceiverAdapter {
         try {
 
             JGroupsMessage<?> message = objectMapper.readValue(msg.getBuffer(), JGroupsMessage.class);
-            logger.error("Received message from " + msg.getSrc() + " of type " + message.type.getSimpleName());
+            logger.info("Received message from " + msg.getSrc() + " of type " + message.type.getSimpleName());
 
             if (message.type == StatusRequest.class) {
                 sendStatusResponse(msg);
@@ -66,7 +66,7 @@ public class RestInfoSender extends ReceiverAdapter {
                 sendStatusResponseEvent(msg);
             }
         } catch (Exception e) {
-            logger.error("error parsing message from " + msg.getSrc(), e);
+            logger.info("error parsing message from " + msg.getSrc(), e);
         }
     }
 
