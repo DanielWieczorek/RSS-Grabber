@@ -5,7 +5,6 @@ import de.wieczorek.rss.classification.types.RssEntry;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -18,11 +17,7 @@ import java.util.List;
 public class RssEntryDao extends ImportExportDao<RssEntry> {
 
     public void persist(RssEntry entry) {
-        EntityManager em = EntityManagerProvider.getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.merge(entry);
-        transaction.commit();
+        EntityManagerProvider.getEntityManager().merge(entry);
     }
 
     public RssEntry find(RssEntry entry) {
@@ -52,15 +47,6 @@ public class RssEntryDao extends ImportExportDao<RssEntry> {
                 .getResultList();
     }
 
-    public synchronized void persist(List<RssEntry> entries) {
-        EntityManager em = EntityManagerProvider.getEntityManager();
-
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        entries.forEach(em::persist);
-        transaction.commit();
-    }
-
     public List<RssEntry> findAllClassified() {
         return EntityManagerProvider.getEntityManager()
                 .createQuery("select r from RssEntry r where r.classification is not null", RssEntry.class) //
@@ -70,11 +56,7 @@ public class RssEntryDao extends ImportExportDao<RssEntry> {
     @Override
     public void persistAll(Collection<RssEntry> entries) {
         EntityManager em = EntityManagerProvider.getEntityManager();
-
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
         entries.forEach(em::persist);
-        transaction.commit();
     }
 
     @Override

@@ -6,7 +6,6 @@ import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,20 +18,11 @@ public class TradingEvaluationResultDao {
 
 
     public void persist(TradingEvaluationResult sat) {
-        EntityManager em = EntityManagerProvider.getEntityManager();
-
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.persist(sat);
-        transaction.commit();
+        EntityManagerProvider.getEntityManager().persist(sat);
     }
 
     public void update(TradingEvaluationResult sat) {
-        EntityManager em = EntityManagerProvider.getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.merge(sat);
-        transaction.commit();
+        EntityManagerProvider.getEntityManager().merge(sat);
     }
 
     public void upsert(TradingEvaluationResult sat) {

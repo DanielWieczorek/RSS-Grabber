@@ -4,8 +4,6 @@ import de.wieczorek.rss.core.persistence.EntityManagerHelper;
 import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,20 +13,11 @@ public class SessionDao {
 
 
     public void persist(Session session) {
-        EntityManager em = EntityManagerProvider.getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.persist(session);
-        transaction.commit();
+        EntityManagerProvider.getEntityManager().persist(session);
     }
 
     public void update(Session session) {
-        EntityManager em = EntityManagerProvider.getEntityManager();
-
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.merge(session);
-        transaction.commit();
+        EntityManagerProvider.getEntityManager().merge(session);
     }
 
     public void upsert(Session session) {
@@ -55,11 +44,7 @@ public class SessionDao {
     }
 
     public void delete(Session session) {
-        EntityManager em = EntityManagerProvider.getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.remove(session);
-        transaction.commit();
+        EntityManagerProvider.getEntityManager().remove(session);
     }
 
 }

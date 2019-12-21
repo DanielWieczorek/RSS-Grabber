@@ -5,7 +5,6 @@ import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,10 +23,7 @@ public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
     @Override
     public void persistAll(Collection<ChartMetricRecord> entries) {
         EntityManager em = EntityManagerProvider.getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
         entries.forEach(em::persist);
-        transaction.commit();
     }
 
     public List<ChartMetricRecord> find24h() {
@@ -58,8 +54,6 @@ public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
 
     public void upsert(List<ChartMetricRecord> sat) {
         EntityManager em = EntityManagerProvider.getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
         sat.forEach(x -> {
             ChartMetricRecord found = findById(x.getId());
             if (found == null) {
@@ -68,8 +62,6 @@ public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
                 em.merge(x);
             }
         });
-        transaction.commit();
-
     }
 
     @Override

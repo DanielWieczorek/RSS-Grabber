@@ -7,7 +7,6 @@ import de.wieczorek.rss.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -30,10 +29,7 @@ public class ChartEntryDao extends ImportExportDao<ChartEntry> {
     @Override
     public void persistAll(Collection<ChartEntry> entries) {
         EntityManager em = EntityManagerProvider.getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
         entries.forEach(em::persist);
-        transaction.commit();
     }
 
     @Override
