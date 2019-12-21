@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 2;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 3;
     Phenotype<IntegerGene, Double> best = null;
     @Inject
     private TradingSimulator simulator;
@@ -71,7 +71,7 @@ public class TrainingTimer implements Runnable {
             Trade lastTrade = trades.get(trades.size() - 1);
             return simulationResult.getFinalBalance().getEurEquivalent();
         }
-        return -1000.0;
+        return 0;
 
     }
 
@@ -127,9 +127,13 @@ public class TrainingTimer implements Runnable {
     private void update(final EvolutionResult<IntegerGene, Double> result) {
         if (best == null || best.compareTo(result.getBestPhenotype()) < 0) {
             best = result.getBestPhenotype();
-            System.out.println(result.getGeneration() + ": Found Best phenotype: " + best);
+
             configurationDao.write(buildOracleConfiguration(result.getBestPhenotype().getGenotype()));
         }
+        System.out.println("best phenotype of generation " + result.getGeneration() + ": " + result.getBestPhenotype());
+        System.out.println("average fitness: " + result.getPopulation().stream().filter(phenotype -> phenotype.getFitness() > 0).map(Phenotype::fitnessOptional).map(Optional::get).collect(Collectors.averagingDouble(Double::doubleValue)));
+        System.out.println("evaluation for " + result.getPopulation().length() + " individuals took: " + result.getDurations().getEvaluationDuration().toSeconds());
+
     }
 
     @Override
@@ -156,18 +160,24 @@ public class TrainingTimer implements Runnable {
 
             Engine<IntegerGene, Double> engine = Engine
                     .builder(this::eval, gtf)
-                    .populationSize(2 * 100 * 10 * 10)
+                    .populationSize(100 * 1000)
                     .mapping(EvolutionResult.toUniquePopulation())
                     .executor(Executors.newFixedThreadPool(16))
-                    .survivorsFraction(0.7)
-                    .survivorsSelector(new EliteSelector(1000, new RouletteWheelSelector<>()))
-                    .alterers(new Mutator<>(0.25), new UniformCrossover<>(0.1))
+                    .survivorsFraction(0.3)
+                    .survivorsSelector(new EliteSelector(20000, new MonteCarloSelector()))
+                    .alterers(new UniformCrossover<>(0.1), new MeanAlterer(0.1)
+
+                    )
+                    .offspringSelector(new TournamentSelector())
+                    .offspringFraction(0.3)
+                    .mapping(EvolutionResult.toUniquePopulation())
+                    .optimize(Optimize.MAXIMUM)
                     .build();
 
 
             Phenotype<IntegerGene, Double> result = engine.stream()
                     .peek(this::update)
-                    .limit(100)
+                    .limit(10000)
                     .peek(EvolutionStatistics.ofNumber())
                     .collect(EvolutionResult.toBestPhenotype());
 
