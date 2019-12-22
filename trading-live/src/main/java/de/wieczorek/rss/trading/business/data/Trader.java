@@ -91,7 +91,7 @@ public class Trader {
         try {
             return exchange.getTradeService().getOpenOrders().getOpenOrders();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("error while retrieving open orders: ", e);
         }
         return null;
     }
@@ -104,7 +104,7 @@ public class Trader {
             try {
                 exchange.getTradeService().cancelOrder(orderId);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("error while cancelling order with id " + orderId, e);
             }
         });
     }
@@ -118,7 +118,7 @@ public class Trader {
         try {
             exchange.getTradeService().placeLimitOrder(order);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("error while performing sell ", e);
         }
 
     }
@@ -131,7 +131,7 @@ public class Trader {
         try {
             exchange.getTradeService().placeLimitOrder(order);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("error while performing buy ", e);
         }
     }
 

@@ -48,7 +48,7 @@ public class Controller extends ControllerBase {
             newEntries.removeAll(newEntries.stream().filter(entry -> existingEntryKeys.contains(entry.getURI()))
                     .collect(Collectors.toList()));
             logger.info("persisting " + newEntries.size() + " entries");
-            dao.persist(newEntries);
+            dao.persistAll(newEntries);
         }
 
         return dao.findAllUnclassified(100);

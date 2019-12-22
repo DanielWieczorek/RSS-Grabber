@@ -7,6 +7,8 @@ import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.account.AccountInfo;
 import org.knowm.xchange.dto.meta.CurrencyPairMetaData;
 import org.knowm.xchange.utils.OrderValuesHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -16,6 +18,7 @@ import java.math.BigDecimal;
 
 @ApplicationScoped
 public class AccountInfoService {
+    private static final Logger logger = LoggerFactory.getLogger(Trader.class);
 
     @Inject
     private Exchange exchange;
@@ -45,7 +48,7 @@ public class AccountInfoService {
 
             return acc;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("error while retrieving account balance ", e);
         }
         return null;
 
