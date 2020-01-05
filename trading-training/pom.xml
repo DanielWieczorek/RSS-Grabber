@@ -102,5 +102,11 @@
 			<version>5.0.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>io.jenetics</groupId>
+			<artifactId>jenetics.ext</artifactId>
+			<version>5.0.1</version>
+		</dependency>
+
 	</dependencies>
 </project>

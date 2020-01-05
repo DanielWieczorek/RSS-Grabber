@@ -1,13 +1,17 @@
 package de.wieczorek.rss.trading.common.oracle;
 
+import de.wieczorek.rss.trading.common.oracle.average.AverageCalculator;
 import de.wieczorek.rss.trading.common.oracle.comparison.ComparatorInput;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.StateEdge;
+import de.wieczorek.rss.trading.types.StateEdgePart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class TradeDecider implements Predicate<StateEdge> {
     private static final Logger logger = LoggerFactory.getLogger(TradeDecider.class);
@@ -18,11 +22,17 @@ public class TradeDecider implements Predicate<StateEdge> {
 
     private Predicate<ComparatorInput> comparator;
 
+    private Supplier<AverageCalculator> calculatorSupplier;
+
+    private Function<List<StateEdgePart>, List<Double>> valueExtractor;
+
 
     TradeDecider(TradeConfiguration configuration, Function<Account, Double> currencyAmountGetter) {
         comparator = configuration.getComparison().getComparatorBuilder().apply(configuration.getThreshold());
         this.configuration = configuration;
         this.currencyAmountGetter = currencyAmountGetter;
+        this.calculatorSupplier = configuration.getAverageType().getAverageCalculatorBuilder();
+        this.valueExtractor = configuration.getValuesSource().getValueExtractor();
     }
 
     public boolean test(StateEdge snapshot) {
@@ -58,15 +68,8 @@ public class TradeDecider implements Predicate<StateEdge> {
 
         int start = Math.max(0, end - configuration.getAverageTime());
 
-        int averageNumbers = 0;
-        double average = 0;
-        for (int i = start; i < end; i++) {
-            if (snapshot.getAllStateParts().get(i).getMetricsSentiment() != null) {
-                averageNumbers++;
-                average += snapshot.getAllStateParts().get(i).getMetricsSentiment().getPrediction();
-            }
-        }
-        average /= (double) averageNumbers;
-        return average;
+        List<Double> predictions = valueExtractor.apply(snapshot.getAllStateParts().subList(start, end));
+
+        return calculatorSupplier.get().calculate(predictions);
     }
 }

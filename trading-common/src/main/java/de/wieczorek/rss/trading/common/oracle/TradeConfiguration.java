@@ -1,5 +1,6 @@
 package de.wieczorek.rss.trading.common.oracle;
 
+import de.wieczorek.rss.trading.common.oracle.average.AverageType;
 import de.wieczorek.rss.trading.common.oracle.comparison.Comparison;
 
 public class TradeConfiguration {
@@ -7,9 +8,13 @@ public class TradeConfiguration {
     private int threshold;
     private int averageTime;
 
+    private AverageType averageType = AverageType.EMA;
+
     private int offset;
 
     private Comparison comparison = Comparison.LOWER;
+
+    private ValuesSource valuesSource = ValuesSource.CHART_METRIC;
 
     public int getThreshold() {
         return threshold;
@@ -41,5 +46,21 @@ public class TradeConfiguration {
 
     public void setOffset(int offset) {
         this.offset = offset;
+    }
+
+    public AverageType getAverageType() {
+        return averageType;
+    }
+
+    public void setAverageType(AverageType averageType) {
+        this.averageType = averageType;
+    }
+
+    public ValuesSource getValuesSource() {
+        return valuesSource;
+    }
+
+    public void setValuesSource(ValuesSource valuesSource) {
+        this.valuesSource = valuesSource;
     }
 }

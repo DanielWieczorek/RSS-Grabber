@@ -32,24 +32,42 @@ public class DefaultOracle implements Oracle {
                 .stream().map(config -> new TradeDecider(config, Account::getEur)).collect(Collectors.toList());
 
         List<Operator> buyOperators = configuration.getBuyOperators();
-        Predicate<StateEdge> rootBuyDecider = buyOperators.get(0).getCombinationFunction()
-                .apply(buyDecidersChildren.get(0), buyDecidersChildren.get(1));
-        for (int i = 1; i < configuration.getBuyOperators().size(); i++) {
-            rootBuyDecider = buyOperators.get(i).getCombinationFunction().apply(rootBuyDecider, buyDecidersChildren.get(i + 1));
+        if (!buyOperators.isEmpty()) {
+            Predicate<StateEdge> rootBuyDecider = buyOperators.get(0).getCombinationFunction()
+                    .apply(buyDecidersChildren.get(0), buyDecidersChildren.get(1));
+            for (int i = 1; i < buyOperators.size(); i++) {
+                rootBuyDecider = buyOperators.get(i).getCombinationFunction().apply(rootBuyDecider, buyDecidersChildren.get(i + 1));
+            }
+            buyDecider = rootBuyDecider;
+
+        } else {
+            if (!buyDecidersChildren.isEmpty()) {
+                buyDecider = (x) -> buyDecidersChildren.get(0).test(x);
+            } else {
+                buyDecider = (x) -> false;
+            }
         }
-        buyDecider = rootBuyDecider;
 
 
         List<TradeDecider> sellDecidersChildren = configuration.getSellConfigurations()
                 .stream().map(config -> new TradeDecider(config, Account::getBtc)).collect(Collectors.toList());
 
         List<Operator> sellOperators = configuration.getSellOperators();
-        Predicate<StateEdge> rootSellDecider = sellOperators.get(0).getCombinationFunction()
-                .apply(sellDecidersChildren.get(0), sellDecidersChildren.get(1));
-        for (int i = 1; i < configuration.getBuyOperators().size(); i++) {
-            rootSellDecider = sellOperators.get(i).getCombinationFunction().apply(rootSellDecider, sellDecidersChildren.get(i + 1));
+        if (!sellOperators.isEmpty()) {
+
+            Predicate<StateEdge> rootSellDecider = sellOperators.get(0).getCombinationFunction()
+                    .apply(sellDecidersChildren.get(0), sellDecidersChildren.get(1));
+            for (int i = 1; i < sellOperators.size(); i++) {
+                rootSellDecider = sellOperators.get(i).getCombinationFunction().apply(rootSellDecider, sellDecidersChildren.get(i + 1));
+            }
+            sellDecider = rootSellDecider;
+        } else {
+            if (!sellDecidersChildren.isEmpty()) {
+                sellDecider = (x) -> sellDecidersChildren.get(0).test(x);
+            } else {
+                sellDecider = (x) -> false;
+            }
         }
-        sellDecider = rootSellDecider;
 
     }
 
