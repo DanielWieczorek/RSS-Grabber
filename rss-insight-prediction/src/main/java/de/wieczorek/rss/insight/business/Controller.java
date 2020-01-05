@@ -10,14 +10,12 @@ import de.wieczorek.rss.insight.types.RssEntrySentiment;
 import de.wieczorek.rss.insight.types.RssEntrySentimentSummary;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
+import de.wieczorek.rss.types.ui.RssDataCollectionLocalRestCaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,10 +36,12 @@ public class Controller extends ControllerBase {
     @Inject
     private RecalculationStatusDao recalculationDao;
 
+    @Inject
+    private RssDataCollectionLocalRestCaller rssDataCollectionCaller;
+
+
     public SentimentEvaluationResult predict() {
-        List<RssEntry> input = ClientBuilder.newClient().target("http://wieczorek.io:8020/rss-entries/24h") // TODO revert
-                .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
-                });
+        List<RssEntry> input = convertAll(rssDataCollectionCaller.entriesFromLast24h());
 
         List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).collect(Collectors.toList());
 
@@ -57,6 +57,19 @@ public class Controller extends ControllerBase {
         result.setSummary(summary);
         result.setSentiments(sentimentList);
         return result;
+    }
+
+    private List<RssEntry> convertAll(List<de.wieczorek.rss.types.RssEntry> allEntries) {
+        return allEntries.stream().map(entry -> {
+            RssEntry newEntry = new RssEntry();
+            newEntry.setCreatedAt(entry.getCreatedAt());
+            newEntry.setDescription(entry.getDescription());
+            newEntry.setFeedUrl(entry.getFeedUrl());
+            newEntry.setHeading(entry.getHeading());
+            newEntry.setPublicationDate(entry.getPublicationDate());
+            newEntry.setURI(entry.getURI());
+            return newEntry;
+        }).collect(Collectors.toList());
     }
 
     public void recalculate() {

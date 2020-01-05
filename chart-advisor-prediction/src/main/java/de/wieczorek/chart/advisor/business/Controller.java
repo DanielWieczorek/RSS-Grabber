@@ -6,8 +6,9 @@ import de.wieczorek.chart.advisor.types.NetInputItem;
 import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
 import de.wieczorek.chart.advisor.types.TradingNeuralNetworkPredictor;
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.business.ui.ChartDataCollectionLocalRestCaller;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
+import de.wieczorek.chart.core.persistence.ui.ChartMetricRemoteRestCaller;
 import de.wieczorek.rss.core.recalculation.Recalculation;
 import de.wieczorek.rss.core.recalculation.RecalculationStatusDao;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
@@ -17,9 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,17 +40,17 @@ public class Controller extends ControllerBase {
     @Inject
     private RecalculationStatusDao recalculationDao;
 
+    @Inject
+    private ChartMetricRemoteRestCaller chartMetricCaller;
+
+    @Inject
+    private ChartDataCollectionLocalRestCaller chartDataCollectionCaller;
+
     public TradingEvaluationResult predict() {
         LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
-        List<ChartMetricRecord> metrics = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-                .target("http://wieczorek.io:13000/metric/24h").request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<ChartMetricRecord>>() {
-                });
+        List<ChartMetricRecord> metrics = chartMetricCaller.metric24h();
 
-        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-                .target("http://wieczorek.io:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<ChartEntry>>() {
-                });
+        List<ChartEntry> chartEntries = chartDataCollectionCaller.ohlcv24h();
 
         if (metrics != null && chartEntries != null) {
 
@@ -99,10 +97,8 @@ public class Controller extends ControllerBase {
     }
 
     public List<TradingEvaluationResult> get24hAbsolutePrediction() {
-        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-                .target("http://wieczorek.io:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<ChartEntry>>() {
-                });
+        List<ChartEntry> chartEntries = chartDataCollectionCaller.ohlcv24h();
+
         Map<LocalDateTime, Double> timeToChartEntry = chartEntries
                 .stream()
                 .collect(Collectors.toMap(entry -> entry.getDate(), entry -> entry.getClose(), (y, x) -> y));

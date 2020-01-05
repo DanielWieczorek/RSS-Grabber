@@ -1,8 +1,8 @@
 package de.wieczorek.chart.core.business;
 
+import de.wieczorek.chart.core.business.ui.ChartDataCollectionLocalRestCaller;
 import de.wieczorek.chart.core.persistence.ChartMetricDao;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.recalculation.AbstractRecalculationTimer;
 import de.wieczorek.rss.core.timer.RecurrentTask;
@@ -16,9 +16,6 @@ import org.ta4j.core.num.DoubleNum;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -40,15 +37,14 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
     @Inject
     private Instance<MetricCalculator> metricCalculators;
 
+    @Inject
+    private ChartDataCollectionLocalRestCaller caller;
 
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
         BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());
 
-        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-                .target("http://wieczorek.io:12000/ohlcv").request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<ChartEntry>>() {
-                });
+        List<ChartEntry> chartEntries = caller.ohlcv();
         chartEntries = chartEntries.stream().distinct().sorted(Comparator.comparing(ChartEntry::getDate))
                 .collect(Collectors.toList());
 

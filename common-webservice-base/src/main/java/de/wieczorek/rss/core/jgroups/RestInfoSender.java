@@ -118,14 +118,12 @@ public class RestInfoSender extends ReceiverAdapter {
             outgoingMessage.payload = new StatusRequest();
 
             channel.send(new Message(address, objectMapper.writeValueAsBytes(outgoingMessage)));
-            logger.error("Sending status request to" + address.toString());
+            logger.debug("Sending status request to" + address.toString());
 
         } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("failed to parse JSON", e);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("Error while sending status request", e);
         }
 
     }

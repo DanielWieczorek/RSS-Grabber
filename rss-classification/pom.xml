@@ -97,6 +97,12 @@
 			<artifactId>common-webservice-importexport-feature</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>de.wieczorek</groupId>
+			<artifactId>rss-datacollection-types</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	
 

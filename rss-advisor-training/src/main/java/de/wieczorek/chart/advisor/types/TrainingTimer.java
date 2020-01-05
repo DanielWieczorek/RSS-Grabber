@@ -8,13 +8,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.concurrent.TimeUnit;
 
-@RecurrentTask(interval = 0, unit = TimeUnit.MINUTES)
+@RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
 @ApplicationScoped
 public class TrainingTimer implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
 
     @Inject
-    private TradingNeuralNetworkTrainer network;
+    private TradingNeuralNetworkTrainer nn;
 
     @Inject
     private DataGenerator generator;
@@ -22,7 +22,7 @@ public class TrainingTimer implements Runnable {
     @Override
     public void run() {
         try {
-            network.train(generator, 5);
+            nn.train(generator, 50);
         } catch (Exception e) {
             logger.error("error while training network: ", e);
         }

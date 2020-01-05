@@ -9,12 +9,10 @@ import de.wieczorek.rss.insight.types.RssEntrySentiment;
 import de.wieczorek.rss.insight.types.RssEntrySentimentSummary;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
+import de.wieczorek.rss.types.ui.RssDataCollectionLocalRestCaller;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -33,13 +31,13 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
     @Inject
     private SentimentAtTimeDao tradingDao;
 
+    @Inject
+    private RssDataCollectionLocalRestCaller rssDataCollectionCaller;
 
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
 
-        List<RssEntry> input = ClientBuilder.newClient().target("http://localhost:8020/rss-entries")
-                .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
-                });
+        List<RssEntry> input = convertAll(rssDataCollectionCaller.allEntries());
 
         List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).collect(Collectors.toList());
 
@@ -69,6 +67,19 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
 
         }
         return null;
+    }
+
+    private List<RssEntry> convertAll(List<de.wieczorek.rss.types.RssEntry> allEntries) {
+        return allEntries.stream().map(entry -> {
+            RssEntry newEntry = new RssEntry();
+            newEntry.setCreatedAt(entry.getCreatedAt());
+            newEntry.setDescription(entry.getDescription());
+            newEntry.setFeedUrl(entry.getFeedUrl());
+            newEntry.setHeading(entry.getHeading());
+            newEntry.setPublicationDate(entry.getPublicationDate());
+            newEntry.setURI(entry.getURI());
+            return newEntry;
+        }).collect(Collectors.toList());
     }
 
 }

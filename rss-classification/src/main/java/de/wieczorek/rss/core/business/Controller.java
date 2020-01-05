@@ -4,15 +4,14 @@ import de.wieczorek.rss.classification.types.ClassificationStatistics;
 import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
 import de.wieczorek.rss.core.ui.ControllerBase;
+import de.wieczorek.rss.types.ui.RssDataCollectionLocalRestCaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +23,9 @@ public class Controller extends ControllerBase {
     @Inject
     private RssEntryDao dao;
 
+    @Inject
+    private RssDataCollectionLocalRestCaller rssDataCollectionCaller;
+
     public List<RssEntry> readUnclassifiedEntries() {
         logger.info("get all unclassified");
         Date newest = dao.findNewestEntry();
@@ -32,14 +34,7 @@ public class Controller extends ControllerBase {
         }
 
         List<RssEntry> newEntries = new ArrayList<>();
-        try {
-            newEntries.addAll(ClientBuilder.newClient()
-                    .target("http://localhost:8020/rss-entries/" + newest.toInstant().getEpochSecond())
-                    .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
-                    }));
-        } catch (Exception e) {
-            e.printStackTrace(); // TODO
-        }
+        newEntries.addAll(convertAll(rssDataCollectionCaller.allEntries()));
 
         if (!newEntries.isEmpty()) {
             List<String> existingEntryKeys = dao
@@ -52,6 +47,19 @@ public class Controller extends ControllerBase {
         }
 
         return dao.findAllUnclassified(100);
+    }
+
+    private Collection<? extends RssEntry> convertAll(List<de.wieczorek.rss.types.RssEntry> allEntries) {
+        return allEntries.stream().map(entry -> {
+            RssEntry newEntry = new RssEntry();
+            newEntry.setCreatedAt(entry.getCreatedAt());
+            newEntry.setDescription(entry.getDescription());
+            newEntry.setFeedUrl(entry.getFeedUrl());
+            newEntry.setHeading(entry.getHeading());
+            newEntry.setPublicationDate(entry.getPublicationDate());
+            newEntry.setURI(entry.getURI());
+            return newEntry;
+        }).collect(Collectors.toList());
     }
 
     public void updateClassification(RssEntry entry) {

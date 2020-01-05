@@ -2,8 +2,9 @@ package de.wieczorek.chart.advisor.types;
 
 import de.wieczorek.chart.advisor.persistence.TradingEvaluationResultDao;
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.business.ui.ChartDataCollectionLocalRestCaller;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
+import de.wieczorek.chart.core.persistence.ui.ChartMetricRemoteRestCaller;
 import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.recalculation.AbstractRecalculationTimer;
 import de.wieczorek.rss.core.timer.RecurrentTask;
@@ -12,9 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -32,19 +30,19 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
     @Inject
     private TradingEvaluationResultDao tradingDao;
 
+    @Inject
+    private ChartMetricRemoteRestCaller chartMetricCaller;
+
+    @Inject
+    private ChartDataCollectionLocalRestCaller chartDataCollectionCaller;
+
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
 
         LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
-        List<ChartMetricRecord> metrics = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-                .target("http://wieczorek.io:13000/metric/all").request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<ChartMetricRecord>>() {
-                });
+        List<ChartMetricRecord> metrics = chartMetricCaller.metricAll();
 
-        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-                .target("http://wieczorek.io:12000/ohlcv/").request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<ChartEntry>>() {
-                });
+        List<ChartEntry> chartEntries = chartDataCollectionCaller.ohlcv();
 
         logger.debug(LocalDateTime.now() + "calculating for " + chartEntries.size() + "entries");
 

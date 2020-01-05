@@ -2,6 +2,7 @@ package de.wieczorek.rss.core.ui;
 
 import de.wieczorek.rss.classification.types.ClassificationStatistics;
 import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.classification.types.ui.CallableResource;
 import de.wieczorek.rss.core.business.Controller;
 import de.wieczorek.rss.core.persistence.EntityManagerContext;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @Resource
 @EntityManagerContext
 @ApplicationScoped
-public class RssHandler {
+public class RssHandler implements CallableResource {
     @Inject
     private Controller controller;
 

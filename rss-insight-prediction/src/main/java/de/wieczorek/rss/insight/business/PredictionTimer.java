@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
-@RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
+@RecurrentTask(interval = 10, unit = TimeUnit.SECONDS) // TODO revert
 @EntityManagerContext
 @ApplicationScoped
 public class PredictionTimer implements Runnable {

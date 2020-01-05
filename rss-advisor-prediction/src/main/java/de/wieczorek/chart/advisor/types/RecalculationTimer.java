@@ -2,21 +2,19 @@ package de.wieczorek.chart.advisor.types;
 
 import de.wieczorek.chart.advisor.persistence.TradingEvaluationResultDao;
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.business.ui.ChartDataCollectionLocalRestCaller;
 import de.wieczorek.rss.advisor.types.NetInputItem;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
-import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.recalculation.AbstractRecalculationTimer;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
+import de.wieczorek.rss.insight.types.ui.RssInsightLocalRestCaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -35,18 +33,18 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
     @Inject
     private TradingEvaluationResultDao tradingDao;
 
+    @Inject
+    private RssInsightLocalRestCaller rssInsightCaller;
+
+    @Inject
+    private ChartDataCollectionLocalRestCaller chartDataCollectionCaller;
+
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
 
-        List<SentimentAtTime> sentiments = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-                .target("http://localhost:11020/sentiment-at-time").request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<SentimentAtTime>>() {
-                });
+        List<SentimentAtTime> sentiments = rssInsightCaller.allSentiments();
 
-        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-                .target("http://localhost:12000/ohlcv/").request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<ChartEntry>>() {
-                });
+        List<ChartEntry> chartEntries = chartDataCollectionCaller.ohlcv();
 
         logger.debug("calculating for " + chartEntries.size() + "entries");
 

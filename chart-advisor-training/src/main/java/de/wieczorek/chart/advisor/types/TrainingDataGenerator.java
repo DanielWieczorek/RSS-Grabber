@@ -1,17 +1,16 @@
 package de.wieczorek.chart.advisor.types;
 
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.business.ui.ChartDataCollectionLocalRestCaller;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
+import de.wieczorek.chart.core.persistence.ui.ChartMetricRemoteRestCaller;
 import de.wieczorek.nn.IDataGenerator;
-import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 import org.nd4j.linalg.factory.Nd4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
+import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,17 +18,16 @@ import java.util.stream.Collectors;
 public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputItem> {
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
 
+    @Inject
+    private ChartMetricRemoteRestCaller chartMetricCaller;
+
+    @Inject
+    private ChartDataCollectionLocalRestCaller chartDataCollectionCaller;
 
     public List<TrainingNetInputItem> generate() {
-        List<ChartMetricRecord> metrics = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-                .target("http://wieczorek.io:13000/metric/all").request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<ChartMetricRecord>>() {
-                });
+        List<ChartMetricRecord> metrics = chartMetricCaller.metricAll();
 
-        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-                .target("http://wieczorek.io:12000/ohlcv").request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<ChartEntry>>() {
-                });
+        List<ChartEntry> chartEntries = chartDataCollectionCaller.ohlcv();
 
         if (metrics != null && chartEntries != null) {
 

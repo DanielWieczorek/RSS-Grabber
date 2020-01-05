@@ -4,22 +4,20 @@ import de.wieczorek.chart.advisor.persistence.TradingEvaluationResultDao;
 import de.wieczorek.chart.advisor.types.DataPreparator;
 import de.wieczorek.chart.advisor.types.TradingNeuralNetworkPredictor;
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.business.ui.ChartDataCollectionLocalRestCaller;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
-import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.core.recalculation.Recalculation;
 import de.wieczorek.rss.core.recalculation.RecalculationStatusDao;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
+import de.wieczorek.rss.insight.types.ui.RssInsightLocalRestCaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,16 +37,17 @@ public class Controller extends ControllerBase {
     @Inject
     private RecalculationStatusDao recalculationDao;
 
+    @Inject
+    private RssInsightLocalRestCaller rssInsightCaller;
+
+    @Inject
+    private ChartDataCollectionLocalRestCaller chartDataCollectionCaller;
+
     public TradingEvaluationResult predict() {
         LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
-        SentimentEvaluationResult currentSentiment = ClientBuilder.newClient()
-                .register(new ObjectMapperContextResolver()).target("http://localhost:11020/sentiment")
-                .request(MediaType.APPLICATION_JSON).get(SentimentEvaluationResult.class);
+        SentimentEvaluationResult currentSentiment = rssInsightCaller.sentiment();
 
-        List<ChartEntry> chartEntries = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-                .target("http://localhost:12000/ohlcv/24h").request(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<ChartEntry>>() {
-                });
+        List<ChartEntry> chartEntries = chartDataCollectionCaller.ohlcv24h();
 
         if (currentSentiment != null && chartEntries != null) {
             SentimentAtTime sentiment = new SentimentAtTime();

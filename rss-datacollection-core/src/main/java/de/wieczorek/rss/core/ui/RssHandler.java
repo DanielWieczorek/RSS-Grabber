@@ -3,6 +3,7 @@ package de.wieczorek.rss.core.ui;
 import de.wieczorek.rss.core.business.Controller;
 import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.types.RssEntry;
+import de.wieczorek.rss.types.ui.CallableResource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,7 +19,7 @@ import java.util.List;
 @ApplicationScoped
 @EntityManagerContext
 @Path("rss-entries")
-public class RssHandler {
+public class RssHandler implements CallableResource {
 
     @Inject
     private Controller controller;
@@ -43,6 +44,5 @@ public class RssHandler {
     @Path("/")
     public List<RssEntry> allEntries() {
         return controller.readAllEntries();
-
     }
 }

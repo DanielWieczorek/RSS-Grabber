@@ -13,10 +13,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class RecurrentTaskRunner {
 
-    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-
     private static final Logger logger = LoggerFactory.getLogger(RecurrentTaskRunner.class);
-
+    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     private Runnable task;
     private int interval;
     private TimeUnit unit;
@@ -67,7 +65,7 @@ public class RecurrentTaskRunner {
                 executor.awaitTermination(10, TimeUnit.SECONDS);
 
             } catch (InterruptedException e) {
-                logger.error("error stopping rss reader: ", e);
+                logger.error("error stopping thread: ", e);
             }
         }
     }

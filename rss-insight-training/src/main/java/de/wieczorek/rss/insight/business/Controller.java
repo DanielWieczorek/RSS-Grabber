@@ -1,6 +1,7 @@
 package de.wieczorek.rss.insight.business;
 
 import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.classification.types.ui.RssAdvisorRemoteRestCaller;
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;
 import org.slf4j.Logger;
@@ -8,9 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @ApplicationScoped
@@ -32,13 +30,14 @@ public class Controller extends ControllerBase {
     @Inject
     private DataGenerator generator;
 
+    @Inject
+    private RssAdvisorRemoteRestCaller rssAdvisorCaller;
+
     public void trainNeuralNetwork() {
         logger.info("get all classified");
         timer.stop();
 
-        List<RssEntry> data = ClientBuilder.newClient().target("http://wieczorek.io:10020/classified")
-                .request(MediaType.APPLICATION_JSON).get(new GenericType<List<RssEntry>>() {
-                });
+        List<RssEntry> data = rssAdvisorCaller.classified();
 
         vec.train(data);
         network.train(generator, 25);
