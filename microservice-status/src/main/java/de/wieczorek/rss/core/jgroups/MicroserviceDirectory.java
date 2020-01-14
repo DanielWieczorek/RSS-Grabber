@@ -7,25 +7,24 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @ApplicationScoped
 public class MicroserviceDirectory {
     private static final Logger logger = LoggerFactory.getLogger(MicroserviceDirectory.class);
 
-    private Map<String, ServiceMetadata> statusInfo = new HashMap<>();
-    private Map<Address, String> addressToServiceNameMapping = new HashMap<>();
+    private Map<String, ServiceMetadata> statusInfo = new ConcurrentHashMap<>();
+    private Map<Address, String> addressToServiceNameMapping = new ConcurrentHashMap<>();
 
     protected void receiveStatusInfo(@Observes StatusMessage message) {
         StatusResponse status = message.getResponse();
         if (status.getBindHostname() != null) {
-            logger.debug("received info from " + status.getCollectorName() + " at " + status.getBindHostname()
+            logger.debug("adding member " + status.getCollectorName() + " at " + status.getBindHostname()
                     + ":" + status.getBindPort());
 
             ServiceMetadata metadata = createServiceMetadata(status);
-
             statusInfo.put(status.getCollectorName(), metadata);
             addressToServiceNameMapping.put(message.getAddress(), status.getCollectorName());
         }
@@ -41,6 +40,8 @@ public class MicroserviceDirectory {
 
     protected void removeMembers(@Observes List<Address> leftMembers) {
         leftMembers.forEach(member -> {
+            logger.debug("removing member " + member.toString());
+
             statusInfo.remove(addressToServiceNameMapping.get(member));
             addressToServiceNameMapping.remove(member);
         });

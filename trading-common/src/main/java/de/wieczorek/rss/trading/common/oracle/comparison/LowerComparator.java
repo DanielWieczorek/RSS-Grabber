@@ -15,7 +15,6 @@ public class LowerComparator implements Predicate<ComparatorInput> {
     }
 
     @Override
-
     public boolean test(ComparatorInput aDouble) {
         boolean result = aDouble.second < threshold;
         logger.debug(aDouble.second + " < " + threshold + " = " + result);

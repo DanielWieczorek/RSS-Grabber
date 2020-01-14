@@ -104,8 +104,6 @@ public class TrainingTimer implements Runnable {
         }
         configuration.setBuyConfigurations(buyConfigurations);
 
-        List<Operator> buyOperators = new ArrayList<>();
-
         configuration.setBuyOperators(genes.get(6).
                 stream()
                 .map(gene -> Operator.getValueForIndex(gene.intValue()))
@@ -149,6 +147,7 @@ public class TrainingTimer implements Runnable {
 
             configurationDao.write(buildOracleConfiguration(result.getBestPhenotype().getGenotype()));
         }
+
         progressDao.write(result);
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new Jdk8Module());
@@ -226,7 +225,7 @@ public class TrainingTimer implements Runnable {
                 .executor(Executors.newFixedThreadPool(16))
                 .survivorsFraction(0.3)
                 .survivorsSelector(new TruncationSelector<>())
-                .alterers(new Mutator(), new UniformCrossover<>(0.1), new MeanAlterer(0.1))
+                .alterers(new Mutator(), new GaussianMutator<>(), new UniformCrossover<>(0.1), new MeanAlterer(0.1))
                 .offspringSelector(new TournamentSelector())
                 .mapping(EvolutionResult.toUniquePopulation())
                 .optimize(Optimize.MAXIMUM)

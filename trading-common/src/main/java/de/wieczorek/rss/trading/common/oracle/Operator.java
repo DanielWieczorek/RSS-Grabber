@@ -7,7 +7,9 @@ import java.util.function.Predicate;
 
 public enum Operator {
     AND(0, (currentDecider, parameterDecider) -> currentDecider.and(parameterDecider)),
-    OR(1, (currentDecider, parameterDecider) -> currentDecider.or(parameterDecider));
+    OR(1, (currentDecider, parameterDecider) -> currentDecider.or(parameterDecider)),
+    XOR(2, (currentDecider, parameterDecider) -> (t) -> currentDecider.test(t) != parameterDecider.test(t));
+
 
     private final int index;
 

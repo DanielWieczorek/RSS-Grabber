@@ -63,6 +63,10 @@ public class StatusResource {
     public String routingGet(@PathParam("service") String service, @PathParam("targetUri") String targetUri) {
         ServiceMetadata metadata = directory.getMetadataForService(service);
 
+        if (metadata == null) {
+            throw new NotFoundException();
+        }
+
         MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
         Enumeration<String> headers = request.getHeaderNames();
         while (headers.hasMoreElements()) {
@@ -81,6 +85,10 @@ public class StatusResource {
     public String routingPost(@PathParam("service") String service, @PathParam("targetUri") String targetUri)
             throws IOException {
         ServiceMetadata metadata = directory.getMetadataForService(service);
+
+        if (metadata == null) {
+            throw new NotFoundException();
+        }
 
         MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
         Enumeration<String> headers = request.getHeaderNames();

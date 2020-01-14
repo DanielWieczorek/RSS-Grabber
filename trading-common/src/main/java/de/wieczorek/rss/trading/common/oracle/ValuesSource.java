@@ -1,7 +1,7 @@
 package de.wieczorek.rss.trading.common.oracle;
 
 import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
-import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.rss.advisor.types.DeltaChartEntry;
 import de.wieczorek.rss.trading.types.StateEdgePart;
 
 import java.util.List;
@@ -40,9 +40,9 @@ public enum ValuesSource {
 
     public static List<Double> processChart(List<StateEdgePart> parts) {
         return parts.stream()
-                .map(StateEdgePart::getChartEntry)
+                .map(StateEdgePart::getDeltaChartEntry)
                 .filter(Objects::nonNull)
-                .map(ChartEntry::getClose)
+                .map(DeltaChartEntry::getClose)
                 .collect(Collectors.toList());
     }
 

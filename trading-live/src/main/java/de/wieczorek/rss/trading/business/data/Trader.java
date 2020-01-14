@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 @ApplicationScoped
@@ -93,20 +94,19 @@ public class Trader {
         } catch (IOException e) {
             logger.error("error while retrieving open orders: ", e);
         }
-        return null;
+        return Collections.emptyList();
     }
 
     private void cancelOrders(List<LimitOrder> orders) {
 
-        orders
-                .stream()
-                .map(Order::getId).forEach(orderId -> {
-            try {
-                exchange.getTradeService().cancelOrder(orderId);
-            } catch (Exception e) {
-                logger.error("error while cancelling order with id " + orderId, e);
-            }
-        });
+        orders.stream().map(Order::getId)
+                .forEach(orderId -> {
+                    try {
+                        exchange.getTradeService().cancelOrder(orderId);
+                    } catch (Exception e) {
+                        logger.error("error while cancelling order with id " + orderId, e);
+                    }
+                });
     }
 
     private void performSell(Account account, double currentPrice) {

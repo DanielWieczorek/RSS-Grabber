@@ -15,7 +15,7 @@ public final class BuySellHelper {
             newAcc.setEur(0);
             newAcc.setEurEquivalent(newAcc.getBtc() * currentPrice);
         } else {
-            newAcc.setBtc((acc.getEur() / currentPrice) * ((100 - 0.2) / 100));
+            newAcc.setBtc((acc.getEur() / currentPrice) * ((100 - 0.3) / 100));
             newAcc.setEur(0);
             newAcc.setEurEquivalent(newAcc.getBtc() * currentPrice);
         }
@@ -26,7 +26,7 @@ public final class BuySellHelper {
         Account newAcc = new Account();
         if (acc.getBtc() > 0.0) {
             newAcc.setBtc(0);
-            newAcc.setEur(acc.getBtc() * currentPrice * ((100 - 0.2) / 100));
+            newAcc.setEur(acc.getBtc() * currentPrice * ((100 - 0.3) / 100));
             newAcc.setEurEquivalent(newAcc.getEur());
         } else {
             newAcc.setBtc(0);

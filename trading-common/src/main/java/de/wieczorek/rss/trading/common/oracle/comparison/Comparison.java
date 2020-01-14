@@ -13,7 +13,9 @@ public enum Comparison {
     DIFF_BELOW(6, DiffBelowComparator::new),
     DIFF_ABOVE(7, DiffAboveComparator::new),
     RISE(8, RisingComparator::new),
-    FALL(9, FallingComparator::new);
+    FALL(9, FallingComparator::new),
+    RATIO_ABOVE(10, RatioAboveComparator::new),
+    RATIO_BELOW(11, RatioBelowComparator::new);
 
 
     private final int index;

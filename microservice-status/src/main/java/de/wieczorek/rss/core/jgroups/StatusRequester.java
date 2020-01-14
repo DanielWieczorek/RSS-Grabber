@@ -14,6 +14,7 @@ public class StatusRequester {
     @Inject
     private MicroserviceDirectory directory;
 
+
     public List<ServiceMetadata> requestStates() {
 
         List<ServiceMetadata> metadata = directory.getMetadata();

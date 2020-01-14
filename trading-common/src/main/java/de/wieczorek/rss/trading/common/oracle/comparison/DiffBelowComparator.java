@@ -16,7 +16,7 @@ public class DiffBelowComparator implements Predicate<ComparatorInput> {
 
     @Override
     public boolean test(ComparatorInput aDouble) {
-        boolean result = aDouble.second - aDouble.second < threshold;
+        boolean result = aDouble.second - aDouble.first < threshold;
         logger.debug(aDouble.second + " - " + aDouble.first + " < " + threshold + " = " + result);
         return result;
     }
