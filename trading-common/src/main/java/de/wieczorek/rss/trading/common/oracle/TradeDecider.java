@@ -58,8 +58,10 @@ public class TradeDecider implements Predicate<StateEdge> {
 
     private boolean isTimeSpanSufficient(StateEdge snapshot) {
         int end = snapshot.getPartsEndIndex();
+        boolean evaluation = (end - configuration.getAverageTime() - configuration.getOffset()) >= 0;
+        logger.debug("checking timespans: " + end + " - " + configuration.getAverageTime() + " - " + configuration.getOffset() + " >= 0 = " + evaluation);
 
-        return (end - configuration.getAverageTime() - configuration.getOffset()) >= 0;
+        return evaluation;
     }
 
 

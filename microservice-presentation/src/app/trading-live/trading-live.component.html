@@ -2,97 +2,14 @@
 	<div class="section">
 
 
-
-		<h5>Trading Simulation</h5>
-		Below is you can see the account balance at the start and the end of the simulation
-		<div class="row" *ngIf="initialTradeBalance && lastTradeBalance">
-			<div class="col s6">
-				<div class="card  ">
-					<div class="card-content ">
-						<span class="card-title ">Before</span>
-						<table>
-							<thead>
-								<tr>
-									<th>Currency</th>
-									<th>Value</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>BTC</td>
-									<td>
-										{{initialTradeBalance.btc|number:'1.0-2'}}
-									</td>
-								</tr>
-
-								<tr>
-									<td>EUR</td>
-									<td>
-										{{initialTradeBalance.eur|number:'1.0-2'}}
-									</td>
-								</tr>
-
-								<tr>
-									<td>EUR equivalent</td>
-									<td>
-										{{initialTradeBalance.eurEquivalent|number:'1.0-2'}}
-
-									</td>
-								</tr>
-
-
-
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-			<div class="col s6">
-
-				<div class="card">
-					<div class="card-content">
-						<span class="card-title ">After</span>
-						<table>
-							<thead>
-								<tr>
-									<th>Currency</th>
-									<th>Value</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>BTC</td>
-									<td>
-										{{lastTradeBalance.btc|number:'1.0-2'}}
-									</td>
-								</tr>
-
-								<tr>
-									<td>EUR</td>
-									<td>
-										{{lastTradeBalance.eur|number:'1.0-2'}}
-									</td>
-								</tr>
-
-								<tr>
-									<td>EUR equivalent</td>
-									<td>
-										{{lastTradeBalance.eurEquivalent|number:'1.0-2'}}
-
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
+<div class="card-panel">
+	<h5>Live Trading</h5>
 		<div *ngIf="chart">
-			<p>The diagram below shows a trading simulation of the last 24 hours.
+			<p>The diagram below shows the  transactions of the last 24 hours.
 			</p>
 
 			<div *ngIf="!error; else errorHappened">
-				<div class="z-depth-1" style="padding: 16px">
+				<div class="z-depth-0" style="padding: 16px">
 					<canvas id="canvas">{{ chart }}</canvas>
 				</div>
 			</div>
@@ -102,5 +19,39 @@
 				</div>
 			</ng-template>
 		</div>
-	</div>
+		</div>
+
+<div class="card-panel">
+		<h5>Transactions</h5>
+			Below is you can see the transactions of today:
+		<div class="row" *ngIf="trades">
+      	
+      <table class="highlight responsive-table">
+        <thead>
+          <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Currency Pair</th>
+			  <th>Volume</th>
+			  <th>Price</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let trade of trades">
+            <td>{{trade.time | date:'medium' }}</td>
+			<td>
+			<div *ngIf="trade.type === 'SELL' && trade.status !== 'CANCELLED'"><span class="new badge  red" data-badge-caption="SELL"> </span></div>
+			<div *ngIf="trade.type === 'BUY' && trade.status !== 'CANCELLED'"><span class="new badge  teal" data-badge-caption="BUY"> </span></div>
+			<div *ngIf=" trade.status === 'CANCELLED'"><span class="new badge  grey" data-badge-caption="">{{ trade.type }} </span></div>
+            </td>
+			<td>{{trade.pair}}</td>
+			<td>{{trade.amount | number:'.10'}}</td>
+			<td>{{trade.price | number:'.2'}}</td>
+          </tr>
+        
+        </tbody>
+      </table>
 </div>
+</div>
+<div>

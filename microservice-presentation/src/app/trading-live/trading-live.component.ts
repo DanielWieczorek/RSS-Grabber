@@ -39,6 +39,8 @@ export class TradingLiveComponent implements AfterViewInit {
             this.traderLive.get24h().subscribe(trades => {
                 this.trades = trades as LiveTrade[];
 
+                this.trades.forEach((t) => t.time  = new Date(t.time[0], t.time[1], t.time[2], t.time[3], t.time[4]));
+
 
                 let close = this.data.map(item => item.close);
                 let open = this.data.map(item => item.open);
@@ -63,8 +65,7 @@ export class TradingLiveComponent implements AfterViewInit {
                     weatherDates.push(jsdate.toLocaleTimeString('en', { year: 'numeric', month: 'short', day: 'numeric' }))
 
                     let sellFound = sells.filter(sell => {
-                        let d = new Date(sell.time[0], sell.time[1], sell.time[2], sell.time[3], sell.time[4])
-                        return (d.getTime() === jsdate.getTime())
+                        return (sell.time.getTime() === jsdate.getTime())
                     })
 
                     if (sellFound[0] !== undefined) {
@@ -73,11 +74,8 @@ export class TradingLiveComponent implements AfterViewInit {
                         sellData.push(NaN)
                     }
 
-
-
                     let cancelledSellFound = cancelledSells.filter(sell => {
-                        let d = new Date(sell.time[0], sell.time[1], sell.time[2], sell.time[3], sell.time[4])
-                        return (d.getTime() === jsdate.getTime())
+                        return (sell.time.getTime() === jsdate.getTime())
                     })
 
                     if (cancelledSellFound[0] !== undefined) {
@@ -86,15 +84,8 @@ export class TradingLiveComponent implements AfterViewInit {
                         sellDataCancelled.push(NaN)
                     }
 
-
-
-
-
-
-
                     let buyFound = buys.filter(buy => {
-                        let d = new Date(buy.time[0], buy.time[1], buy.time[2], buy.time[3], buy.time[4])
-                        return (d.getTime() === jsdate.getTime())
+                        return (buy.time.getTime() === jsdate.getTime())
                     })
 
                     if (buyFound[0] !== undefined) {
@@ -105,8 +96,7 @@ export class TradingLiveComponent implements AfterViewInit {
 
 
                     let cancelledBuyFound = cancelledBuys.filter(buy => {
-                        let d = new Date(buy.time[0], buy.time[1], buy.time[2], buy.time[3], buy.time[4])
-                        return (d.getTime() === jsdate.getTime())
+                        return (buy.time.getTime() === jsdate.getTime())
                     })
 
                     if (cancelledBuyFound[0] !== undefined) {
