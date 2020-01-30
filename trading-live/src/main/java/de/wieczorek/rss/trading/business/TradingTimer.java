@@ -1,5 +1,6 @@
 package de.wieczorek.rss.trading.business;
 
+import de.wieczorek.rss.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.core.timer.RecurrentTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import javax.inject.Inject;
 import java.util.concurrent.TimeUnit;
 
 @RecurrentTask(interval = 1, unit = TimeUnit.MINUTES)
+@EntityManagerContext
 @ApplicationScoped
 public class TradingTimer implements Runnable {
 

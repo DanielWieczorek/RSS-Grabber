@@ -4,9 +4,13 @@ import de.wieczorek.nn.NeuralNetworkName;
 import de.wieczorek.rss.core.config.ServiceName;
 import de.wieczorek.rss.core.config.port.JGroupsPort;
 import de.wieczorek.rss.core.config.port.RestPort;
+import de.wieczorek.rss.core.db.migration.MigrationConfiguration;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class Configuration {
@@ -21,9 +25,18 @@ public class Configuration {
 
     @Produces
     @ServiceName
-    private String serviceName = "trader-config";
+    private String serviceName = "trader-live";
 
     @Produces
     @NeuralNetworkName
     private String neuralNetworkName = "rss-trader-policy";
+
+    @Produces
+    @MigrationConfiguration
+    private Map<String, String> migrationConfig = Stream.of(new String[][]{ //
+            {"flyway.url", "jdbc:postgresql://localhost/TRADING_LIVE"}, //
+            {"flyway.user", "postgres"}, //
+            {"flyway.password", "admin"}, //
+            {"flyway.locations", "classpath:db/migration"} //
+    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
 }

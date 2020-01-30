@@ -2,15 +2,17 @@ package de.wieczorek.rss.trading.business;
 
 import de.wieczorek.rss.core.timer.RecurrentTaskManager;
 import de.wieczorek.rss.core.ui.ControllerBase;
-import de.wieczorek.rss.trading.business.data.Trader;
 import de.wieczorek.rss.trading.common.oracle.DefaultOracle;
 import de.wieczorek.rss.trading.common.oracle.Oracle;
 import de.wieczorek.rss.trading.common.oracle.OracleConfigurationDao;
+import de.wieczorek.rss.trading.persistence.PerformedTrade;
+import de.wieczorek.rss.trading.persistence.PerformedTradeDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {
@@ -26,6 +28,9 @@ public class Controller extends ControllerBase {
     private RecurrentTaskManager timer;
 
     private Oracle oracle;
+
+    @Inject
+    private PerformedTradeDao tradeDao;
 
     @Override
     public void start() {
@@ -50,4 +55,7 @@ public class Controller extends ControllerBase {
     }
 
 
+    public List<PerformedTrade> get24h() {
+        return tradeDao.find24h();
+    }
 }

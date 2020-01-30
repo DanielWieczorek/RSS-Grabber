@@ -1,0 +1,106 @@
+<div class="container">
+	<div class="section">
+
+
+
+		<h5>Trading Simulation</h5>
+		Below is you can see the account balance at the start and the end of the simulation
+		<div class="row" *ngIf="initialTradeBalance && lastTradeBalance">
+			<div class="col s6">
+				<div class="card  ">
+					<div class="card-content ">
+						<span class="card-title ">Before</span>
+						<table>
+							<thead>
+								<tr>
+									<th>Currency</th>
+									<th>Value</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>BTC</td>
+									<td>
+										{{initialTradeBalance.btc|number:'1.0-2'}}
+									</td>
+								</tr>
+
+								<tr>
+									<td>EUR</td>
+									<td>
+										{{initialTradeBalance.eur|number:'1.0-2'}}
+									</td>
+								</tr>
+
+								<tr>
+									<td>EUR equivalent</td>
+									<td>
+										{{initialTradeBalance.eurEquivalent|number:'1.0-2'}}
+
+									</td>
+								</tr>
+
+
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="col s6">
+
+				<div class="card">
+					<div class="card-content">
+						<span class="card-title ">After</span>
+						<table>
+							<thead>
+								<tr>
+									<th>Currency</th>
+									<th>Value</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>BTC</td>
+									<td>
+										{{lastTradeBalance.btc|number:'1.0-2'}}
+									</td>
+								</tr>
+
+								<tr>
+									<td>EUR</td>
+									<td>
+										{{lastTradeBalance.eur|number:'1.0-2'}}
+									</td>
+								</tr>
+
+								<tr>
+									<td>EUR equivalent</td>
+									<td>
+										{{lastTradeBalance.eurEquivalent|number:'1.0-2'}}
+
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div *ngIf="chart">
+			<p>The diagram below shows a trading simulation of the last 24 hours.
+			</p>
+
+			<div *ngIf="!error; else errorHappened">
+				<div class="z-depth-1" style="padding: 16px">
+					<canvas id="canvas">{{ chart }}</canvas>
+				</div>
+			</div>
+			<ng-template #errorHappened>
+				<div class="row">
+					<b><span class="red-text"> {{ error }} </span></b>
+				</div>
+			</ng-template>
+		</div>
+	</div>
+</div>

@@ -1,5 +1,6 @@
 package de.wieczorek.rss.trading.business.data;
 
+import de.wieczorek.rss.trading.business.Trader;
 import de.wieczorek.rss.trading.types.Account;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.currency.Currency;

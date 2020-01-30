@@ -6,6 +6,8 @@ import { RssClassificationComponent } from './rss-classification/rss-classificat
 import { RssInsightComponent } from './rss-insight/rss-insight.component';
 import { MicroserviceStatusComponent } from './microservice-status/microservice-status.component';
 import { TradingSimulationComponent } from './trading-simulation/trading-simulation.component';
+import { TradingLiveComponent } from './trading-live/trading-live.component';
+
 import { ChartMetricComponent } from './chart-metric/chart-metric.component';
 import { RouterModule, Routes } from '@angular/router';
 import { IntroductionComponent } from './introduction/introduction.component';
@@ -14,6 +16,8 @@ import { ChartMetricService } from './shared/chart-metric/chart-metric.service'
 import { ChartAdvisorService } from './shared/chart-advisor/chart-advisor.service'
 
 import { TraderSimulationService } from './shared/trader-simulation/trader-simulation.service'
+import { TraderLiveService } from './shared/trader-live/trader-live.service'
+
 import { RssInsightService } from './shared/rss-insight/rss-insight.service'
 import { RssClassificationService } from './shared/rss-classification/rss-classification.service'
 import { MicroserviceStatusService } from './shared/microservice-status/microservice-status.service'
@@ -35,6 +39,7 @@ const appRoutes: Routes = [
                            { path: 'rss-classification', component: RssClassificationComponent,canActivate: [AuthenticationGuard] },
                            { path: 'rss-insight', component: RssInsightComponent,canActivate: [AuthenticationGuard]},
                            { path: 'trading-simulation', component: TradingSimulationComponent,canActivate: [AuthenticationGuard]},
+                           { path: 'trading-live', component: TradingLiveComponent,canActivate: [AuthenticationGuard]},
                            { path: 'chart-metric', component: ChartMetricComponent,canActivate: [AuthenticationGuard]},
                            { path: 'introduction', component: IntroductionComponent,canActivate: [AuthenticationGuard]},
                            { path: 'login', component: LoginComponent}
@@ -51,7 +56,8 @@ const appRoutes: Routes = [
     TradingSimulationComponent,
     IntroductionComponent,
     LoginComponent,
-    MicroserviceStatusDetailComponent
+    MicroserviceStatusDetailComponent,
+    TradingLiveComponent
   ],
   imports: [
     BrowserModule,
@@ -65,6 +71,7 @@ const appRoutes: Routes = [
   providers: [
       ChartReaderService,
       TraderSimulationService,
+      TraderLiveService,
       RssInsightService,
       RssClassificationService,
       MicroserviceStatusService,

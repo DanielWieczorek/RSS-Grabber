@@ -49,6 +49,7 @@ public class RestInfoSender extends ReceiverAdapter {
         channel.setReceiver(this);
         channel.setDiscardOwnMessages(true);
         channel.connect("rss-collectors-rest");
+
     }
 
     @Override

@@ -26,4 +26,5 @@ public class Configuration {
     @Produces
     @NeuralNetworkName
     private String neuralNetworkName = "rss-trader-policy";
+
 }

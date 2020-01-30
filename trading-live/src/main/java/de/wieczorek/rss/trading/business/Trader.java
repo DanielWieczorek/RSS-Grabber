@@ -1,10 +1,14 @@
-package de.wieczorek.rss.trading.business.data;
+package de.wieczorek.rss.trading.business;
 
+import de.wieczorek.rss.trading.business.data.AccountInfoService;
 import de.wieczorek.rss.trading.common.io.DataGenerator;
 import de.wieczorek.rss.trading.common.io.DataGeneratorBuilder;
 import de.wieczorek.rss.trading.common.oracle.DecisionReason;
 import de.wieczorek.rss.trading.common.oracle.Oracle;
 import de.wieczorek.rss.trading.common.oracle.TradingDecision;
+import de.wieczorek.rss.trading.persistence.PerformedTrade;
+import de.wieczorek.rss.trading.persistence.PerformedTradeDao;
+import de.wieczorek.rss.trading.persistence.TradeStatus;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.ActionVertexType;
 import de.wieczorek.rss.trading.types.StateEdge;
@@ -22,8 +26,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class Trader {
@@ -36,8 +43,12 @@ public class Trader {
     private DataGeneratorBuilder dataGeneratorBuilder;
     @Inject
     private Exchange exchange;
+    @Inject
+    private PerformedTradeDao tradeDao;
 
     private TradingDecision lastAction;
+
+    private List<String> openOrderIds = new ArrayList<>();
 
 
     @PostConstruct
@@ -47,12 +58,16 @@ public class Trader {
     }
 
     public void trade(Oracle oracle) {
-
         DataGenerator generator = dataGeneratorBuilder.produceGenerator();
 
-
         List<LimitOrder> openOrders = getOpenOrders();
+        if (!openOrderIds.isEmpty()) {
+            persistOrders();
+        }
+        openOrderIds.removeAll(openOrders.stream().map(Order::getId).collect(Collectors.toList()));
         cancelOrders(openOrders);
+
+
         resetOracle(oracle, openOrders);
 
         StateEdge current = generator.BuildLastStateEdge(accountInfoService.getAccount());
@@ -65,6 +80,25 @@ public class Trader {
             } else {
                 performSell(current.getAccount(), getCurrentPrice(current));
             }
+        }
+    }
+
+    private void persistOrders() {
+        try {
+
+            exchange.getTradeService().getOrder(openOrderIds.toArray(new String[0]))
+                    .forEach(order -> {
+                        PerformedTrade dbOrder = tradeDao.find(order.getId());
+                        if (dbOrder != null) {
+                            dbOrder.setPrice(order.getAveragePrice().doubleValue());
+                            tradeDao.update(dbOrder);
+                        }
+
+                        openOrderIds.remove(order.getId());
+                    });
+
+        } catch (IOException e) {
+            logger.error("error while retrieving open orders: ", e);
         }
     }
 
@@ -98,11 +132,15 @@ public class Trader {
     }
 
     private void cancelOrders(List<LimitOrder> orders) {
-
         orders.stream().map(Order::getId)
                 .forEach(orderId -> {
                     try {
                         exchange.getTradeService().cancelOrder(orderId);
+                        PerformedTrade trade = tradeDao.find(orderId);
+                        if (trade != null) {
+                            trade.setStatus(TradeStatus.CANCELLED);
+                            tradeDao.update(trade);
+                        }
                     } catch (Exception e) {
                         logger.error("error while cancelling order with id " + orderId, e);
                     }
@@ -116,7 +154,17 @@ public class Trader {
                 CurrencyPair.BTC_EUR, null, null, BigDecimal.valueOf(currentPrice));
 
         try {
-            exchange.getTradeService().placeLimitOrder(order);
+            String id = exchange.getTradeService().placeLimitOrder(order);
+            PerformedTrade trade = new PerformedTrade();
+            trade.setId(id);
+            trade.setStatus(TradeStatus.PLACED);
+            trade.setAmount(volume.doubleValue());
+            trade.setPair(CurrencyPair.BTC_EUR.toString());
+            trade.setPrice(currentPrice);
+            trade.setTime(LocalDateTime.now());
+            trade.setType(ActionVertexType.SELL);
+            tradeDao.addTrade(trade);
+            openOrderIds.add(id);
         } catch (IOException e) {
             logger.error("error while performing sell ", e);
         }
@@ -129,7 +177,17 @@ public class Trader {
                 volume,
                 CurrencyPair.BTC_EUR, null, null, BigDecimal.valueOf(currentPrice));
         try {
-            exchange.getTradeService().placeLimitOrder(order);
+            String id = exchange.getTradeService().placeLimitOrder(order);
+            PerformedTrade trade = new PerformedTrade();
+            trade.setId(id);
+            trade.setStatus(TradeStatus.PLACED);
+            trade.setAmount(volume.doubleValue());
+            trade.setPair(CurrencyPair.BTC_EUR.toString());
+            trade.setPrice(currentPrice);
+            trade.setTime(LocalDateTime.now());
+            trade.setType(ActionVertexType.BUY);
+            tradeDao.addTrade(trade);
+            openOrderIds.add(id);
         } catch (IOException e) {
             logger.error("error while performing buy ", e);
         }

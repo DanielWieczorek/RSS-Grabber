@@ -36,7 +36,8 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 5;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 10;
+    private static final int OFFSET_SAFETY_MARGIN = 10;
     private Phenotype<IntegerGene, Double> best = null;
     @Inject
     private TradingSimulator simulator;
@@ -197,7 +198,7 @@ public class TrainingTimer implements Runnable {
                 Genotype.of(IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //0 buy thresholds
                         IntegerChromosome.of(1, 480, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //1 duration of the averaging
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //2 below/above for buy
-                        IntegerChromosome.of(1, 1440 - 480, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset
+                        IntegerChromosome.of(1, 1440 - 480 - OFFSET_SAFETY_MARGIN, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //4 average type
                         IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //5 source of values
                         IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1)), //6 operators
@@ -206,7 +207,7 @@ public class TrainingTimer implements Runnable {
                         IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //8 sell thresholds
                         IntegerChromosome.of(1, 480, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //9 duration of the averaging
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //10 below/above for sell
-                        IntegerChromosome.of(1, 1440 - 480, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //11 offset
+                        IntegerChromosome.of(1, 1440 - 480 - OFFSET_SAFETY_MARGIN, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //11 offset
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //12 average type
                         IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //13 source of values
                         IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1)), //14 operators
