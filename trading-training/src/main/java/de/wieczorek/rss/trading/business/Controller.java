@@ -1,7 +1,7 @@
 package de.wieczorek.rss.trading.business;
 
-import de.wieczorek.rss.core.timer.RecurrentTaskManager;
-import de.wieczorek.rss.core.ui.ControllerBase;
+import de.wieczorek.core.timer.RecurrentTaskManager;
+import de.wieczorek.core.ui.ControllerBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

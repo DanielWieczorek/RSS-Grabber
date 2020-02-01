@@ -3,8 +3,8 @@ package de.wieczorek.importexport.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.wieczorek.importexport.db.ImportExportDao;
 import de.wieczorek.importexport.type.ImportExportData;
-import de.wieczorek.rss.core.persistence.EntityManagerContext;
-import de.wieczorek.rss.core.ui.Resource;
+import de.wieczorek.core.persistence.EntityManagerContext;
+import de.wieczorek.core.ui.Resource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;

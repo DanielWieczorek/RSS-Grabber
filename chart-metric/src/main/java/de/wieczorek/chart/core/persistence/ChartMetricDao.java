@@ -1,7 +1,7 @@
 package de.wieczorek.chart.core.persistence;
 
 import de.wieczorek.importexport.db.ImportExportDao;
-import de.wieczorek.rss.core.persistence.EntityManagerProvider;
+import de.wieczorek.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;

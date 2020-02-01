@@ -2,8 +2,8 @@ package de.wieczorek.rss.classification.types.ui;
 
 import de.wieczorek.rss.classification.types.ClassificationStatistics;
 import de.wieczorek.rss.classification.types.RssEntry;
-import de.wieczorek.rss.core.ui.Target;
-import de.wieczorek.rss.core.ui.TargetType;
+import de.wieczorek.core.ui.Target;
+import de.wieczorek.core.ui.TargetType;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

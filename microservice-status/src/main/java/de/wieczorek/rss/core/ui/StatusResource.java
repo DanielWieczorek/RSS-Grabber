@@ -1,7 +1,8 @@
 package de.wieczorek.rss.core.ui;
 
+import de.wieczorek.core.ui.Resource;
 import de.wieczorek.rss.core.business.Controller;
-import de.wieczorek.rss.core.jackson.ObjectMapperContextResolver;
+import de.wieczorek.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.core.jgroups.MicroserviceDirectory;
 import de.wieczorek.rss.core.jgroups.ServiceMetadata;
 

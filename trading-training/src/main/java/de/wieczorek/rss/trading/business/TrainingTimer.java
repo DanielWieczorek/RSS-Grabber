@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import de.wieczorek.rss.core.timer.RecurrentTask;
+import de.wieczorek.core.timer.RecurrentTask;
 import de.wieczorek.rss.trading.common.io.DataGenerator;
 import de.wieczorek.rss.trading.common.io.DataGeneratorBuilder;
 import de.wieczorek.rss.trading.common.oracle.*;

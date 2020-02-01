@@ -1,7 +1,7 @@
 package de.wieczorek.rss.trading.business;
 
-import de.wieczorek.rss.core.persistence.EntityManagerContext;
-import de.wieczorek.rss.core.timer.RecurrentTask;
+import de.wieczorek.core.persistence.EntityManagerContext;
+import de.wieczorek.core.timer.RecurrentTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

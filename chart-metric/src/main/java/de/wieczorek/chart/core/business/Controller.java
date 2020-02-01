@@ -2,11 +2,11 @@ package de.wieczorek.chart.core.business;
 
 import de.wieczorek.chart.core.persistence.ChartMetricDao;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import de.wieczorek.rss.core.jgroups.RestInfoSender;
-import de.wieczorek.rss.core.recalculation.Recalculation;
-import de.wieczorek.rss.core.recalculation.RecalculationStatusDao;
-import de.wieczorek.rss.core.timer.RecurrentTaskManager;
-import de.wieczorek.rss.core.ui.ControllerBase;
+import de.wieczorek.core.jgroups.RestInfoSender;
+import de.wieczorek.core.recalculation.Recalculation;
+import de.wieczorek.core.recalculation.RecalculationStatusDao;
+import de.wieczorek.core.timer.RecurrentTaskManager;
+import de.wieczorek.core.ui.ControllerBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

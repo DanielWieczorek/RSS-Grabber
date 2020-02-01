@@ -1,8 +1,8 @@
 package de.wieczorek.chart.core.business.ui;
 
 import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.rss.core.ui.Target;
-import de.wieczorek.rss.core.ui.TargetType;
+import de.wieczorek.core.ui.Target;
+import de.wieczorek.core.ui.TargetType;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

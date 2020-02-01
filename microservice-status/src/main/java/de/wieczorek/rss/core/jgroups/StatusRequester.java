@@ -1,6 +1,6 @@
 package de.wieczorek.rss.core.jgroups;
 
-import de.wieczorek.rss.core.feature.FeatureDescriptor;
+import de.wieczorek.core.feature.FeatureDescriptor;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

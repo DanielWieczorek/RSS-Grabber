@@ -1,8 +1,8 @@
 package de.wieczorek.rss.core.business;
 
 import de.wieczorek.rss.core.persistence.RssEntryDao;
-import de.wieczorek.rss.core.timer.RecurrentTaskManager;
-import de.wieczorek.rss.core.ui.ControllerBase;
+import de.wieczorek.core.timer.RecurrentTaskManager;
+import de.wieczorek.core.ui.ControllerBase;
 import de.wieczorek.rss.types.RssEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

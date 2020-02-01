@@ -9,7 +9,7 @@
 
 		<class>de.wieczorek.chart.core.persistence.ChartMetricRecord</class>		
 		<class>de.wieczorek.chart.core.persistence.ChatMetricId</class>
-        <class>de.wieczorek.rss.core.recalculation.Recalculation</class>
+        <class>de.wieczorek.core.recalculation.Recalculation</class>
 	
 
 		<properties>

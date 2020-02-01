@@ -9,7 +9,7 @@
 
 		<class>de.wieczorek.rss.insight.types.SentimentAtTime</class>
 		<class>de.wieczorek.rss.core.db.LocalDateTimeConverter</class>
-		<class>de.wieczorek.rss.core.recalculation.Recalculation</class>
+		<class>de.wieczorek.core.recalculation.Recalculation</class>
 		 
 
 		<properties>

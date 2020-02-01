@@ -1,10 +1,11 @@
 package de.wieczorek.rss.core.ui;
 
+import de.wieczorek.core.ui.Resource;
 import de.wieczorek.rss.classification.types.ClassificationStatistics;
 import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.classification.types.ui.CallableResource;
 import de.wieczorek.rss.core.business.Controller;
-import de.wieczorek.rss.core.persistence.EntityManagerContext;
+import de.wieczorek.core.persistence.EntityManagerContext;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

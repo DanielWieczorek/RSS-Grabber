@@ -1,10 +1,10 @@
 package de.wieczorek.rss.insight.config;
 
 import de.wieczorek.nn.NeuralNetworkName;
-import de.wieczorek.rss.core.config.ServiceName;
-import de.wieczorek.rss.core.config.port.JGroupsPort;
-import de.wieczorek.rss.core.config.port.RestPort;
-import de.wieczorek.rss.core.db.migration.MigrationConfiguration;
+import de.wieczorek.core.config.ServiceName;
+import de.wieczorek.core.config.port.JGroupsPort;
+import de.wieczorek.core.config.port.RestPort;
+import de.wieczorek.core.db.migration.MigrationConfiguration;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;

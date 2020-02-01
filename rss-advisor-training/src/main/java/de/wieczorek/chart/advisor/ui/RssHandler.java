@@ -1,8 +1,8 @@
 package de.wieczorek.chart.advisor.ui;
 
 import de.wieczorek.chart.advisor.business.Controller;
-import de.wieczorek.rss.core.persistence.EntityManagerContext;
-import de.wieczorek.rss.core.ui.Resource;
+import de.wieczorek.core.persistence.EntityManagerContext;
+import de.wieczorek.core.ui.Resource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

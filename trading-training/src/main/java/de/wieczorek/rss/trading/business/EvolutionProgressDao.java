@@ -1,7 +1,7 @@
 package de.wieczorek.rss.trading.business;
 
 
-import de.wieczorek.rss.core.config.ServiceName;
+import de.wieczorek.core.config.ServiceName;
 import io.jenetics.IntegerGene;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.util.IO;

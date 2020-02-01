@@ -3,7 +3,7 @@ package de.wieczorek.rss.core.business;
 import de.wieczorek.rss.classification.types.ClassificationStatistics;
 import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
-import de.wieczorek.rss.core.ui.ControllerBase;
+import de.wieczorek.core.ui.ControllerBase;
 import de.wieczorek.rss.types.ui.RssDataCollectionLocalRestCaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

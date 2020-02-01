@@ -1,8 +1,8 @@
 package de.wieczorek.rss.advisor.types.ui;
 
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
-import de.wieczorek.rss.core.ui.Target;
-import de.wieczorek.rss.core.ui.TargetType;
+import de.wieczorek.core.ui.Target;
+import de.wieczorek.core.ui.TargetType;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

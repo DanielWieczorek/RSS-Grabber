@@ -1,7 +1,7 @@
 package de.wieczorek.rss.types.ui;
 
-import de.wieczorek.rss.core.ui.Target;
-import de.wieczorek.rss.core.ui.TargetType;
+import de.wieczorek.core.ui.Target;
+import de.wieczorek.core.ui.TargetType;
 import de.wieczorek.rss.types.RssEntry;
 
 import javax.enterprise.context.ApplicationScoped;

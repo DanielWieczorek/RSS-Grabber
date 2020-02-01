@@ -1,5 +1,6 @@
 package de.wieczorek.rss.core.persistence;
 
+import de.wieczorek.core.persistence.EntityManagerProvider;
 import de.wieczorek.importexport.db.ImportExportDao;
 import de.wieczorek.rss.classification.types.RssEntry;
 

@@ -4,8 +4,8 @@ import de.wieczorek.rss.core.business.NoOperationMessageFilter;
 import de.wieczorek.rss.core.business.NoOperationMessageTransformer;
 import de.wieczorek.rss.core.business.RssReader;
 import de.wieczorek.rss.core.config.RssConfig;
-import de.wieczorek.rss.core.persistence.EntityManagerContext;
-import de.wieczorek.rss.core.timer.RecurrentTask;
+import de.wieczorek.core.persistence.EntityManagerContext;
+import de.wieczorek.core.timer.RecurrentTask;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.concurrent.TimeUnit;

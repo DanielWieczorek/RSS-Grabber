@@ -1,5 +1,7 @@
 package de.wieczorek.rss.core.jgroups;
 
+import de.wieczorek.core.jgroups.StatusMessage;
+import de.wieczorek.core.jgroups.StatusResponse;
 import org.jgroups.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

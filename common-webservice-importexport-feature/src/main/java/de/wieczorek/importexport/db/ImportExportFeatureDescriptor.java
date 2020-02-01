@@ -1,8 +1,8 @@
 package de.wieczorek.importexport.db;
 
-import de.wieczorek.rss.core.feature.FeatureAction;
-import de.wieczorek.rss.core.feature.FeatureDescriptor;
-import de.wieczorek.rss.core.feature.FeatureType;
+import de.wieczorek.core.feature.FeatureAction;
+import de.wieczorek.core.feature.FeatureDescriptor;
+import de.wieczorek.core.feature.FeatureType;
 
 import javax.enterprise.context.Dependent;
 import javax.ws.rs.HttpMethod;

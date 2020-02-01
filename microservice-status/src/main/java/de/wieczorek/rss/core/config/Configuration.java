@@ -1,7 +1,8 @@
 package de.wieczorek.rss.core.config;
 
-import de.wieczorek.rss.core.config.port.JGroupsPort;
-import de.wieczorek.rss.core.config.port.RestPort;
+import de.wieczorek.core.config.ServiceName;
+import de.wieczorek.core.config.port.JGroupsPort;
+import de.wieczorek.core.config.port.RestPort;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;

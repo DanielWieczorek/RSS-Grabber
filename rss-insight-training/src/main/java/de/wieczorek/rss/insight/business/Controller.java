@@ -2,8 +2,8 @@ package de.wieczorek.rss.insight.business;
 
 import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.rss.classification.types.ui.RssAdvisorRemoteRestCaller;
-import de.wieczorek.rss.core.timer.RecurrentTaskManager;
-import de.wieczorek.rss.core.ui.ControllerBase;
+import de.wieczorek.core.timer.RecurrentTaskManager;
+import de.wieczorek.core.ui.ControllerBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

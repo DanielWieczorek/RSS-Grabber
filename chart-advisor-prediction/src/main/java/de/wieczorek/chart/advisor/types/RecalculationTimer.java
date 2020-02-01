@@ -5,9 +5,9 @@ import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.business.ui.ChartDataCollectionLocalRestCaller;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.chart.core.persistence.ui.ChartMetricRemoteRestCaller;
-import de.wieczorek.rss.core.persistence.EntityManagerContext;
-import de.wieczorek.rss.core.recalculation.AbstractRecalculationTimer;
-import de.wieczorek.rss.core.timer.RecurrentTask;
+import de.wieczorek.core.persistence.EntityManagerContext;
+import de.wieczorek.core.recalculation.AbstractRecalculationTimer;
+import de.wieczorek.core.timer.RecurrentTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

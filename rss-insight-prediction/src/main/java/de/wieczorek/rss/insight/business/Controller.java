@@ -1,10 +1,10 @@
 package de.wieczorek.rss.insight.business;
 
 import de.wieczorek.rss.classification.types.RssEntry;
-import de.wieczorek.rss.core.recalculation.Recalculation;
-import de.wieczorek.rss.core.recalculation.RecalculationStatusDao;
-import de.wieczorek.rss.core.timer.RecurrentTaskManager;
-import de.wieczorek.rss.core.ui.ControllerBase;
+import de.wieczorek.core.recalculation.Recalculation;
+import de.wieczorek.core.recalculation.RecalculationStatusDao;
+import de.wieczorek.core.timer.RecurrentTaskManager;
+import de.wieczorek.core.ui.ControllerBase;
 import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
 import de.wieczorek.rss.insight.types.RssEntrySentiment;
 import de.wieczorek.rss.insight.types.RssEntrySentimentSummary;

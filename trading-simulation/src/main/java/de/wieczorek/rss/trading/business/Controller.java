@@ -1,6 +1,6 @@
 package de.wieczorek.rss.trading.business;
 
-import de.wieczorek.rss.core.ui.ControllerBase;
+import de.wieczorek.core.ui.ControllerBase;
 import de.wieczorek.rss.trading.common.oracle.DefaultOracle;
 import de.wieczorek.rss.trading.common.oracle.OracleConfigurationDao;
 import de.wieczorek.rss.trading.common.trading.Trade;

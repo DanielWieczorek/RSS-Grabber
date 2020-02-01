@@ -1,8 +1,8 @@
 package de.wieczorek.chart.advisor.persistence;
 
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
-import de.wieczorek.rss.core.persistence.EntityManagerHelper;
-import de.wieczorek.rss.core.persistence.EntityManagerProvider;
+import de.wieczorek.core.persistence.EntityManagerHelper;
+import de.wieczorek.core.persistence.EntityManagerProvider;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;

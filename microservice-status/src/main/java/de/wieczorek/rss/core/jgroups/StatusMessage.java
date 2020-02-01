@@ -1,5 +1,6 @@
 package de.wieczorek.rss.core.jgroups;
 
+import de.wieczorek.core.jgroups.StatusResponse;
 import org.jgroups.Address;
 
 public class StatusMessage {

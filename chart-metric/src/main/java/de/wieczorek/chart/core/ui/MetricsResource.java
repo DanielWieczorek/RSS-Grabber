@@ -3,8 +3,8 @@ package de.wieczorek.chart.core.ui;
 import de.wieczorek.chart.core.business.Controller;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.chart.core.persistence.ui.CallableResource;
-import de.wieczorek.rss.core.persistence.EntityManagerContext;
-import de.wieczorek.rss.core.ui.Resource;
+import de.wieczorek.core.persistence.EntityManagerContext;
+import de.wieczorek.core.ui.Resource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
