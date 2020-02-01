@@ -1,10 +1,10 @@
 package de.wieczorek.rss.insight.business;
 
-import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.core.recalculation.Recalculation;
 import de.wieczorek.core.recalculation.RecalculationStatusDao;
 import de.wieczorek.core.timer.RecurrentTaskManager;
 import de.wieczorek.core.ui.ControllerBase;
+import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
 import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
 import de.wieczorek.rss.insight.types.RssEntrySentiment;
 import de.wieczorek.rss.insight.types.RssEntrySentimentSummary;
@@ -41,7 +41,7 @@ public class Controller extends ControllerBase {
 
 
     public SentimentEvaluationResult predict() {
-        List<RssEntry> input = convertAll(rssDataCollectionCaller.entriesFromLast24h());
+        List<ClassifiedRssEntry> input = convertAll(rssDataCollectionCaller.entriesFromLast24h());
 
         List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).collect(Collectors.toList());
 
@@ -59,9 +59,9 @@ public class Controller extends ControllerBase {
         return result;
     }
 
-    private List<RssEntry> convertAll(List<de.wieczorek.rss.types.RssEntry> allEntries) {
+    private List<ClassifiedRssEntry> convertAll(List<de.wieczorek.rss.types.RssEntry> allEntries) {
         return allEntries.stream().map(entry -> {
-            RssEntry newEntry = new RssEntry();
+            ClassifiedRssEntry newEntry = new ClassifiedRssEntry();
             newEntry.setCreatedAt(entry.getCreatedAt());
             newEntry.setDescription(entry.getDescription());
             newEntry.setFeedUrl(entry.getFeedUrl());

@@ -1,9 +1,9 @@
 package de.wieczorek.rss.insight.business;
 
-import de.wieczorek.rss.classification.types.RssEntry;
-import de.wieczorek.rss.classification.types.ui.RssAdvisorRemoteRestCaller;
 import de.wieczorek.core.timer.RecurrentTaskManager;
 import de.wieczorek.core.ui.ControllerBase;
+import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
+import de.wieczorek.rss.classification.types.ui.RssAdvisorRemoteRestCaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public class Controller extends ControllerBase {
         logger.info("get all classified");
         timer.stop();
 
-        List<RssEntry> data = rssAdvisorCaller.classified();
+        List<ClassifiedRssEntry> data = rssAdvisorCaller.classified();
 
         vec.train(data);
         network.train(generator, 25);

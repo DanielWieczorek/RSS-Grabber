@@ -1,19 +1,19 @@
 package de.wieczorek.rss.insight.types;
 
-import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
 
 public class RssEntrySentiment {
 
-    private RssEntry entry;
+    private ClassifiedRssEntry entry;
 
     private double positiveProbability;
     private double negativeProbability;
 
-    public RssEntry getEntry() {
+    public ClassifiedRssEntry getEntry() {
         return entry;
     }
 
-    public void setEntry(RssEntry entry) {
+    public void setEntry(ClassifiedRssEntry entry) {
         this.entry = entry;
     }
 

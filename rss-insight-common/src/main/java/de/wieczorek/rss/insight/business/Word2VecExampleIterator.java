@@ -1,6 +1,6 @@
 package de.wieczorek.rss.insight.business;
 
-import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
 import opennlp.tools.stemmer.PorterStemmer;
 import opennlp.tools.stemmer.Stemmer;
 import org.deeplearning4j.text.sentenceiterator.SentenceIterator;
@@ -29,7 +29,7 @@ public class Word2VecExampleIterator implements SentenceIterator {
     private List<String> entries;
     private Iterator<String> iter;
 
-    public Word2VecExampleIterator(List<RssEntry> entry) {
+    public Word2VecExampleIterator(List<ClassifiedRssEntry> entry) {
         entries = entry.stream().map(x -> x.getHeading() + ". " + x.getDescription()).collect(Collectors.toList());
         iter = entries.iterator();
 

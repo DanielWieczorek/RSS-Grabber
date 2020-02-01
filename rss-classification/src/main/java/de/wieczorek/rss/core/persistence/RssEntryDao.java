@@ -2,7 +2,7 @@ package de.wieczorek.rss.core.persistence;
 
 import de.wieczorek.core.persistence.EntityManagerProvider;
 import de.wieczorek.importexport.db.ImportExportDao;
-import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
@@ -15,15 +15,15 @@ import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
-public class RssEntryDao extends ImportExportDao<RssEntry> {
+public class RssEntryDao extends ImportExportDao<ClassifiedRssEntry> {
 
-    public void persist(RssEntry entry) {
+    public void persist(ClassifiedRssEntry entry) {
         EntityManagerProvider.getEntityManager().merge(entry);
     }
 
-    public RssEntry find(RssEntry entry) {
+    public ClassifiedRssEntry find(ClassifiedRssEntry entry) {
         return EntityManagerProvider.getEntityManager()
-                .createQuery("from RssEntry r where r.URI = :key", RssEntry.class) //
+                .createQuery("from RssEntry r where r.URI = :key", ClassifiedRssEntry.class) //
                 .setParameter("key", entry.getURI()) //
                 .getSingleResult();
     }
@@ -34,46 +34,46 @@ public class RssEntryDao extends ImportExportDao<RssEntry> {
                 .getSingleResult();
     }
 
-    public List<RssEntry> findAll(List<String> collect) {
+    public List<ClassifiedRssEntry> findAll(List<String> collect) {
 
         return EntityManagerProvider.getEntityManager()
-                .createQuery("from RssEntry r where r.URI in :keys", RssEntry.class)//
+                .createQuery("from RssEntry r where r.URI in :keys", ClassifiedRssEntry.class)//
                 .setParameter("keys", collect).getResultList();
     }
 
-    public List<RssEntry> findAllUnclassified(int maxResult) {
+    public List<ClassifiedRssEntry> findAllUnclassified(int maxResult) {
         return EntityManagerProvider.getEntityManager()
-                .createQuery("from RssEntry r where r.classification is null", RssEntry.class) //
+                .createQuery("from RssEntry r where r.classification is null", ClassifiedRssEntry.class) //
                 .setMaxResults(maxResult) //
                 .getResultList();
     }
 
-    public List<RssEntry> findAllClassified() {
+    public List<ClassifiedRssEntry> findAllClassified() {
         return EntityManagerProvider.getEntityManager()
-                .createQuery("select r from RssEntry r where r.classification is not null", RssEntry.class) //
+                .createQuery("select r from RssEntry r where r.classification is not null", ClassifiedRssEntry.class) //
                 .getResultList();
     }
 
     @Override
-    public void persistAll(Collection<RssEntry> entries) {
+    public void persistAll(Collection<ClassifiedRssEntry> entries) {
         EntityManager em = EntityManagerProvider.getEntityManager();
         entries.forEach(em::persist);
     }
 
     @Override
-    public Class<RssEntry> getEntityType() {
-        return RssEntry.class;
+    public Class<ClassifiedRssEntry> getEntityType() {
+        return ClassifiedRssEntry.class;
     }
 
     @Override
-    public List<RssEntry> findAll() {
+    public List<ClassifiedRssEntry> findAll() {
         EntityManager em = EntityManagerProvider.getEntityManager();
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<RssEntry> cq = cb.createQuery(RssEntry.class);
-        Root<RssEntry> rootEntry = cq.from(RssEntry.class);
-        CriteriaQuery<RssEntry> all = cq.select(rootEntry);
-        TypedQuery<RssEntry> allQuery = em.createQuery(all);
+        CriteriaQuery<ClassifiedRssEntry> cq = cb.createQuery(ClassifiedRssEntry.class);
+        Root<ClassifiedRssEntry> rootEntry = cq.from(ClassifiedRssEntry.class);
+        CriteriaQuery<ClassifiedRssEntry> all = cq.select(rootEntry);
+        TypedQuery<ClassifiedRssEntry> allQuery = em.createQuery(all);
         return allQuery.getResultList();
     }
 

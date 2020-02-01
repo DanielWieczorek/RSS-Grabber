@@ -1,11 +1,11 @@
 package de.wieczorek.rss.core.ui;
 
+import de.wieczorek.core.persistence.EntityManagerContext;
 import de.wieczorek.core.ui.Resource;
 import de.wieczorek.rss.classification.types.ClassificationStatistics;
-import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
 import de.wieczorek.rss.classification.types.ui.CallableResource;
 import de.wieczorek.rss.core.business.Controller;
-import de.wieczorek.core.persistence.EntityManagerContext;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -24,7 +24,7 @@ public class RssHandler implements CallableResource {
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     @Path("find")
-    public List<RssEntry> find() {
+    public List<ClassifiedRssEntry> find() {
         return controller.readUnclassifiedEntries();
 
     }
@@ -32,7 +32,7 @@ public class RssHandler implements CallableResource {
     @Produces(MediaType.APPLICATION_JSON)
     @GET
     @Path("classified")
-    public List<RssEntry> classified() {
+    public List<ClassifiedRssEntry> classified() {
         return controller.readClassfiedEntries();
     }
 
@@ -40,7 +40,7 @@ public class RssHandler implements CallableResource {
     @Produces(MediaType.APPLICATION_JSON)
     @POST
     @Path("classify")
-    public void classify(RssEntry classifiedEntry) {
+    public void classify(ClassifiedRssEntry classifiedEntry) {
         controller.updateClassification(classifiedEntry);
     }
 

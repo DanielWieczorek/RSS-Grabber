@@ -1,6 +1,6 @@
 package de.wieczorek.rss.insight.business;
 
-import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
 import opennlp.tools.stemmer.PorterStemmer;
 import opennlp.tools.stemmer.Stemmer;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
@@ -26,19 +26,18 @@ public class SentimentExampleIterator implements DataSetIterator {
     private final int batchSize;
     private final int vectorSize;
     private final int truncateLength;
-
-    private int cursor = 0;
-    private final List<RssEntry> files;
+    private final List<ClassifiedRssEntry> files;
     private final TokenizerFactory tokenizerFactory;
+    private int cursor = 0;
 
-    public SentimentExampleIterator(List<RssEntry> entries, WordVectors wordVectors, int batchSize, int truncateLength,
+    public SentimentExampleIterator(List<ClassifiedRssEntry> entries, WordVectors wordVectors, int batchSize, int truncateLength,
                                     boolean train) {
         this.batchSize = batchSize;
         this.vectorSize = wordVectors.getWordVector(wordVectors.vocab().wordAtIndex(0)).length;
 
-        List<RssEntry> positiveFiles = entries.stream().filter((item) -> item.getClassification() == 1)
+        List<ClassifiedRssEntry> positiveFiles = entries.stream().filter((item) -> item.getClassification() == 1)
                 .collect(Collectors.toList());
-        List<RssEntry> negativeFiles = entries.stream().filter((item) -> item.getClassification() == -1)
+        List<ClassifiedRssEntry> negativeFiles = entries.stream().filter((item) -> item.getClassification() == -1)
                 .collect(Collectors.toList());
 
         files = new ArrayList<>();
@@ -63,7 +62,7 @@ public class SentimentExampleIterator implements DataSetIterator {
         if (cursor >= files.size())
             throw new NoSuchElementException();
 
-            return nextDataSet(num);
+        return nextDataSet(num);
     }
 
     private DataSet nextDataSet(int num) {
@@ -184,11 +183,6 @@ public class SentimentExampleIterator implements DataSetIterator {
     }
 
     @Override
-    public void setPreProcessor(DataSetPreProcessor preProcessor) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public List<String> getLabels() {
         return Arrays.asList("positive", "negative");
     }
@@ -211,6 +205,11 @@ public class SentimentExampleIterator implements DataSetIterator {
     @Override
     public DataSetPreProcessor getPreProcessor() {
         throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @Override
+    public void setPreProcessor(DataSetPreProcessor preProcessor) {
+        throw new UnsupportedOperationException();
     }
 
     /**

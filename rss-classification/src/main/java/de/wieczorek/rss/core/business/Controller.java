@@ -1,9 +1,9 @@
 package de.wieczorek.rss.core.business;
 
-import de.wieczorek.rss.classification.types.ClassificationStatistics;
-import de.wieczorek.rss.classification.types.RssEntry;
-import de.wieczorek.rss.core.persistence.RssEntryDao;
 import de.wieczorek.core.ui.ControllerBase;
+import de.wieczorek.rss.classification.types.ClassificationStatistics;
+import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
+import de.wieczorek.rss.core.persistence.RssEntryDao;
 import de.wieczorek.rss.types.ui.RssDataCollectionLocalRestCaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,20 +26,20 @@ public class Controller extends ControllerBase {
     @Inject
     private RssDataCollectionLocalRestCaller rssDataCollectionCaller;
 
-    public List<RssEntry> readUnclassifiedEntries() {
+    public List<ClassifiedRssEntry> readUnclassifiedEntries() {
         logger.info("get all unclassified");
         Date newest = dao.findNewestEntry();
         if (newest == null) {
             newest = new Date(0);
         }
 
-        List<RssEntry> newEntries = new ArrayList<>();
+        List<ClassifiedRssEntry> newEntries = new ArrayList<>();
         newEntries.addAll(convertAll(rssDataCollectionCaller.allEntries()));
 
         if (!newEntries.isEmpty()) {
             List<String> existingEntryKeys = dao
-                    .findAll(newEntries.stream().map(RssEntry::getURI).collect(Collectors.toList())).stream()
-                    .map(RssEntry::getURI).collect(Collectors.toList());
+                    .findAll(newEntries.stream().map(ClassifiedRssEntry::getURI).collect(Collectors.toList())).stream()
+                    .map(ClassifiedRssEntry::getURI).collect(Collectors.toList());
             newEntries.removeAll(newEntries.stream().filter(entry -> existingEntryKeys.contains(entry.getURI()))
                     .collect(Collectors.toList()));
             logger.info("persisting " + newEntries.size() + " entries");
@@ -49,9 +49,9 @@ public class Controller extends ControllerBase {
         return dao.findAllUnclassified(100);
     }
 
-    private Collection<? extends RssEntry> convertAll(List<de.wieczorek.rss.types.RssEntry> allEntries) {
+    private Collection<? extends ClassifiedRssEntry> convertAll(List<de.wieczorek.rss.types.RssEntry> allEntries) {
         return allEntries.stream().map(entry -> {
-            RssEntry newEntry = new RssEntry();
+            ClassifiedRssEntry newEntry = new ClassifiedRssEntry();
             newEntry.setCreatedAt(entry.getCreatedAt());
             newEntry.setDescription(entry.getDescription());
             newEntry.setFeedUrl(entry.getFeedUrl());
@@ -62,13 +62,13 @@ public class Controller extends ControllerBase {
         }).collect(Collectors.toList());
     }
 
-    public void updateClassification(RssEntry entry) {
-        RssEntry found = dao.find(entry);
+    public void updateClassification(ClassifiedRssEntry entry) {
+        ClassifiedRssEntry found = dao.find(entry);
         found.setClassification(entry.getClassification());
         dao.persist(found);
     }
 
-    public List<RssEntry> readClassfiedEntries() {
+    public List<ClassifiedRssEntry> readClassfiedEntries() {
         return dao.findAllClassified();
     }
 

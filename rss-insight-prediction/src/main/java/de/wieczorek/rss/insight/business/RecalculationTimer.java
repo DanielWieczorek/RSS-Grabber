@@ -1,9 +1,9 @@
 package de.wieczorek.rss.insight.business;
 
-import de.wieczorek.rss.classification.types.RssEntry;
 import de.wieczorek.core.persistence.EntityManagerContext;
 import de.wieczorek.core.recalculation.AbstractRecalculationTimer;
 import de.wieczorek.core.timer.RecurrentTask;
+import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
 import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
 import de.wieczorek.rss.insight.types.RssEntrySentiment;
 import de.wieczorek.rss.insight.types.RssEntrySentimentSummary;
@@ -37,12 +37,12 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
 
-        List<RssEntry> input = convertAll(rssDataCollectionCaller.allEntries());
+        List<ClassifiedRssEntry> input = convertAll(rssDataCollectionCaller.allEntries());
 
         List<RssEntrySentiment> sentimentList = input.stream().map(network::predict).collect(Collectors.toList());
 
         for (int i = 0; i < input.size() - 24 * 60; i++) {
-            List<RssEntry> partition = input.subList(i, i + 24 * 60);
+            List<ClassifiedRssEntry> partition = input.subList(i, i + 24 * 60);
             List<RssEntrySentiment> sentimentSubList = sentimentList.subList(i, i + 24 * 60);
 
             double positiveSum = sentimentSubList.stream().mapToDouble(RssEntrySentiment::getPositiveProbability).sum()
@@ -69,9 +69,9 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
         return null;
     }
 
-    private List<RssEntry> convertAll(List<de.wieczorek.rss.types.RssEntry> allEntries) {
+    private List<ClassifiedRssEntry> convertAll(List<de.wieczorek.rss.types.RssEntry> allEntries) {
         return allEntries.stream().map(entry -> {
-            RssEntry newEntry = new RssEntry();
+            ClassifiedRssEntry newEntry = new ClassifiedRssEntry();
             newEntry.setCreatedAt(entry.getCreatedAt());
             newEntry.setDescription(entry.getDescription());
             newEntry.setFeedUrl(entry.getFeedUrl());

@@ -1,7 +1,7 @@
 package de.wieczorek.rss.insight.business;
 
 import de.wieczorek.nn.AbstractNeuralNetworkTrainer;
-import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
 import org.deeplearning4j.nn.conf.*;
 import org.deeplearning4j.nn.conf.layers.LSTM;
@@ -20,21 +20,21 @@ import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
-public class RssSentimentNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<RssEntry> {
+public class RssSentimentNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<ClassifiedRssEntry> {
 
     @Inject
     private RssWord2VecNetwork vec;
     private int truncateReviewsToLength = 128;
 
     @Override
-    protected DataSetIterator buildTrainingSetIterator(List<RssEntry> trainingSet) {
+    protected DataSetIterator buildTrainingSetIterator(List<ClassifiedRssEntry> trainingSet) {
         WordVectors wordVectors = vec;
         return new SentimentExampleIterator(trainingSet, wordVectors, getBatchSize(),
                 truncateReviewsToLength, true);
     }
 
     @Override
-    protected DataSetIterator buildTestSetIterator(List<RssEntry> testSet) {
+    protected DataSetIterator buildTestSetIterator(List<ClassifiedRssEntry> testSet) {
         WordVectors wordVectors = vec;
         return new SentimentExampleIterator(testSet, wordVectors, getBatchSize(),
                 truncateReviewsToLength, false);

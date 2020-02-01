@@ -1,6 +1,6 @@
 package de.wieczorek.rss.insight.business;
 
-import de.wieczorek.rss.classification.types.RssEntry;
+import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
 import org.deeplearning4j.models.embeddings.WeightLookupTable;
 import org.deeplearning4j.models.embeddings.reader.ModelUtils;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
@@ -35,7 +35,7 @@ public class RssWord2VecNetwork implements WordVectors {
         vec = word2VecDao.readWord2Vec();
     }
 
-    public void train(List<RssEntry> findAllClassified) {
+    public void train(List<ClassifiedRssEntry> findAllClassified) {
         SentenceIterator iter = new Word2VecExampleIterator(findAllClassified);
         TokenizerFactory t = new DefaultTokenizerFactory();
         t.setTokenPreProcessor(new CommonPreprocessor());
