@@ -3,7 +3,7 @@ package de.wieczorek.rss.core.business;
 import de.wieczorek.core.ui.ControllerBase;
 import de.wieczorek.rss.classification.types.ClassificationStatistics;
 import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
-import de.wieczorek.rss.core.persistence.RssEntryDao;
+import de.wieczorek.rss.core.persistence.ClassifiedRssEntryDao;
 import de.wieczorek.rss.types.ui.RssDataCollectionLocalRestCaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class Controller extends ControllerBase {
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @Inject
-    private RssEntryDao dao;
+    private ClassifiedRssEntryDao dao;
 
     @Inject
     private RssDataCollectionLocalRestCaller rssDataCollectionCaller;
