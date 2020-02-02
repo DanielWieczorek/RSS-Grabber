@@ -8,6 +8,8 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <class>de.wieczorek.rss.trading.persistence.PerformedTrade</class>
+        <class>de.wieczorek.rss.trading.persistence.LiveAccount</class>
+
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/> <!-- DB Driver -->

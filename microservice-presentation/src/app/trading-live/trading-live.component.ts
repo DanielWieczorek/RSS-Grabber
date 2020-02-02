@@ -4,6 +4,7 @@ import { Chart } from 'chart.js';
 import {Observable} from 'rxjs';
 import { ChartEntry } from '../shared/chart-reader/chart-entry';
 import { LiveTrade } from '../shared/trader-live/live-trade';
+import { LiveAccount } from '../shared/trader-live/live-account';
 import { ChartReaderService } from '../shared/chart-reader/chart-reader.service'
 import { TraderLiveService } from '../shared/trader-live/trader-live.service'
 
@@ -29,6 +30,19 @@ export class TradingLiveComponent implements AfterViewInit {
     trades: LiveTrade[];
     error: string;
 
+    accountBefore: LiveAccount;
+    accountAfter: LiveAccount;
+
+
+    ngOnInit(): void {
+        this.traderLive.getAccount24h().subscribe(res => {
+            if(res.length > 0){
+                this.accountBefore = res[0];
+                this.accountAfter = res[res.length-1]
+            }
+        });
+    }
+
 
 
     ngAfterViewInit(): void {
@@ -36,7 +50,7 @@ export class TradingLiveComponent implements AfterViewInit {
             console.log(res)
             this.data = res as ChartEntry[];
 
-            this.traderLive.get24h().subscribe(trades => {
+            this.traderLive.getTrades24h().subscribe(trades => {
                 this.trades = trades as LiveTrade[];
 
                 this.trades.forEach((t) => t.time  = new Date(t.time[0], t.time[1], t.time[2], t.time[3], t.time[4]));

@@ -2,8 +2,97 @@
 	<div class="section">
 
 
+		<h5> Live Trading </h5>
+		Here you can see an overview over the activities of the live trading service over the last 24 hours.
+			<div class="card-panel">
+
+		<h5>Account Balance</h5>
+		Below you can see the account balance at the start and the end of a 24 hour period
+		<div class="row" *ngIf="accountBefore && accountAfter">
+			<div class="col s6">
+				<div class="card  ">
+					<div class="card-content ">
+						<span class="card-title ">Before</span>
+						<table>
+							<thead>
+								<tr>
+									<th>Currency</th>
+									<th>Value</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>BTC</td>
+									<td>
+										{{accountAfter.btc|number:'1.0-2'}}
+									</td>
+								</tr>
+
+								<tr>
+									<td>EUR</td>
+									<td>
+										{{accountAfter.eur|number:'1.0-2'}}
+									</td>
+								</tr>
+
+								<tr>
+									<td>EUR equivalent</td>
+									<td>
+										{{accountAfter.eurEquivalent|number:'1.0-2'}}
+
+									</td>
+								</tr>
+
+
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="col s6">
+
+				<div class="card">
+					<div class="card-content">
+						<span class="card-title ">After</span>
+						<table>
+							<thead>
+								<tr>
+									<th>Currency</th>
+									<th>Value</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>BTC</td>
+									<td>
+										{{lastTradeBalance.btc|number:'1.0-2'}}
+									</td>
+								</tr>
+
+								<tr>
+									<td>EUR</td>
+									<td>
+										{{lastTradeBalance.eur|number:'1.0-2'}}
+									</td>
+								</tr>
+
+								<tr>
+									<td>EUR equivalent</td>
+									<td>
+										{{lastTradeBalance.eurEquivalent|number:'1.0-2'}}
+
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>		</div>
+
 <div class="card-panel">
-	<h5>Live Trading</h5>
+	<h5>Chart</h5>
 		<div *ngIf="chart">
 			<p>The diagram below shows the  transactions of the last 24 hours.
 			</p>

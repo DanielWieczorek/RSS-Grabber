@@ -6,6 +6,7 @@ import org.knowm.xchange.Exchange;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.account.AccountInfo;
+import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.meta.CurrencyPairMetaData;
 import org.knowm.xchange.utils.OrderValuesHelper;
 import org.slf4j.Logger;
@@ -35,9 +36,13 @@ public class AccountInfoService {
     public Account getAccount() {
         try {
             AccountInfo info = exchange.getAccountService().getAccountInfo();
+            Ticker last = exchange.getMarketDataService().getTicker(CurrencyPair.BTC_EUR);
             Account acc = new Account();
             acc.setBtc(info.getWallets().get(null).getBalance(Currency.BTC).getAvailable().doubleValue());
             acc.setEur(info.getWallets().get(null).getBalance(Currency.EUR).getAvailable().doubleValue());
+            acc.setEurEquivalent(info.getWallets().get(null).getBalance(Currency.EUR).getAvailable().doubleValue()
+                    + acc.getBtc() * last.getLast().doubleValue());
+
 
             if (helper.amountUnderMinimum(new BigDecimal(acc.getBtc()))) {
                 acc.setBtc(0);
@@ -45,6 +50,10 @@ public class AccountInfoService {
 
             if (helper.amountUnderMinimum(new BigDecimal(acc.getEur()))) {
                 acc.setEur(0);
+            }
+
+            if (helper.amountUnderMinimum(new BigDecimal(acc.getEurEquivalent()))) {
+                acc.setEurEquivalent(0);
             }
 
             return acc;

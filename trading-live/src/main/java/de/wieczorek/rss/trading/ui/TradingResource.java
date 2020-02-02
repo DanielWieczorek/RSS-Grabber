@@ -14,10 +14,10 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Resource
-@Path("/")
+@Path("trading")
 @ApplicationScoped
 @EntityManagerContext
-public class RssHandler {
+public class TradingResource {
 
     @Inject
     private Controller controller;
@@ -26,6 +26,6 @@ public class RssHandler {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("24h")
     public List<PerformedTrade> get24h() {
-        return controller.get24h();
+        return controller.getTrades24h();
     }
 }

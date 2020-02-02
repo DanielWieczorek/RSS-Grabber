@@ -5,6 +5,8 @@ import de.wieczorek.core.ui.ControllerBase;
 import de.wieczorek.rss.trading.common.oracle.DefaultOracle;
 import de.wieczorek.rss.trading.common.oracle.Oracle;
 import de.wieczorek.rss.trading.common.oracle.OracleConfigurationDao;
+import de.wieczorek.rss.trading.persistence.LiveAccount;
+import de.wieczorek.rss.trading.persistence.LiveAccountDao;
 import de.wieczorek.rss.trading.persistence.PerformedTrade;
 import de.wieczorek.rss.trading.persistence.PerformedTradeDao;
 import org.slf4j.Logger;
@@ -32,6 +34,9 @@ public class Controller extends ControllerBase {
     @Inject
     private PerformedTradeDao tradeDao;
 
+    @Inject
+    private LiveAccountDao liveAccountDao;
+
     @Override
     public void start() {
         oracle = new DefaultOracle(oracleConfigurationDao.read());
@@ -55,7 +60,11 @@ public class Controller extends ControllerBase {
     }
 
 
-    public List<PerformedTrade> get24h() {
+    public List<PerformedTrade> getTrades24h() {
         return tradeDao.find24h();
+    }
+
+    public List<LiveAccount> getAccount24h() {
+        return liveAccountDao.find24h();
     }
 }
