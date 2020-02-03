@@ -6,9 +6,12 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public enum Operator {
-    AND(0, (currentDecider, parameterDecider) -> currentDecider.and(parameterDecider)),
-    OR(1, (currentDecider, parameterDecider) -> currentDecider.or(parameterDecider)),
-    XOR(2, (currentDecider, parameterDecider) -> (t) -> currentDecider.test(t) != parameterDecider.test(t));
+    AND(0, Predicate::and),
+    OR(1, Predicate::or),
+    XOR(2, (currentDecider, parameterDecider) -> (t) -> currentDecider.test(t) != parameterDecider.test(t)),
+    NAND(3, (currentDecider, parameterDecider) -> currentDecider.and(parameterDecider).negate()),
+    NOR(4, (currentDecider, parameterDecider) -> currentDecider.or(parameterDecider).negate()),
+    IMPLICATION(5, (currentDecider, parameterDecider) -> currentDecider.negate().or(parameterDecider).negate());
 
 
     private final int index;
