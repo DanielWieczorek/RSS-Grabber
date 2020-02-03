@@ -1,7 +1,6 @@
 package de.wieczorek.rss.trading.common.oracle;
 
 import java.util.List;
-import java.util.Optional;
 
 public class OracleConfiguration {
 
@@ -10,16 +9,6 @@ public class OracleConfiguration {
     private List<TradeConfiguration> sellConfigurations;
     private List<Operator> sellOperators;
 
-    private Optional<StopLossConfiguration> stopLossConfiguration = Optional.empty();
-
-
-    public Optional<StopLossConfiguration> getStopLossConfiguration() {
-        return stopLossConfiguration;
-    }
-
-    public void setStopLossConfiguration(Optional<StopLossConfiguration> stopLossConfiguration) {
-        this.stopLossConfiguration = stopLossConfiguration;
-    }
 
     public List<TradeConfiguration> getBuyConfigurations() {
         return buyConfigurations;

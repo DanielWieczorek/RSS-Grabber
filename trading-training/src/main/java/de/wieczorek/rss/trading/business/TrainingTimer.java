@@ -36,7 +36,7 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 10;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 5;
     private static final int OFFSET_SAFETY_MARGIN = 10;
     private Phenotype<IntegerGene, Double> best = null;
     @Inject
@@ -132,13 +132,6 @@ public class TrainingTimer implements Runnable {
                 .limit(Math.max(sellConfigurations.size() - 1, 0))
                 .collect(Collectors.toList()));
 
-
-        if (genes.get(16).getGene(0).intValue() == 1) {
-            StopLossConfiguration stopLossConfig = new StopLossConfiguration();
-            stopLossConfig.setStopLossThreshold(genes.get(17).getGene(0).intValue());
-            stopLossConfig.setStopLossCooldown(genes.get(18).getGene(0).intValue());
-            configuration.setStopLossConfiguration(Optional.of(stopLossConfig));
-        }
         return configuration;
     }
 
@@ -211,11 +204,8 @@ public class TrainingTimer implements Runnable {
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //12 average type
                         IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //13 source of values
                         IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1)), //14 operators
-                        IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //15 is sell configuration active
-
-                        IntegerChromosome.of(0, 1, IntRange.of(1)), //16 is stop-loss activated
-                        IntegerChromosome.of(0, 200, IntRange.of(1)), //17 stop-loss threshold
-                        IntegerChromosome.of(0, 120, IntRange.of(1))); //18 wait time after stop-loss trigger
+                        IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)) //15 is sell configuration active
+                );
 
 
         int populationSize = 50 * gtf.newInstance().geneCount();

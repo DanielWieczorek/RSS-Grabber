@@ -18,16 +18,8 @@ public class DefaultOracle implements Oracle {
     private final Predicate<StateEdge> buyDecider;
     private final Predicate<StateEdge> sellDecider;
 
-    private OracleConfiguration configuration;
-    private double previousLastMaximumAfterBuy = -1.0;
-    private double lastMaximumAfterBuy = -1.0;
-
-    private int lastStopLossTriggerTime = Integer.MAX_VALUE;
-
 
     public DefaultOracle(OracleConfiguration configuration) {
-        this.configuration = configuration;
-
         List<TradeDecider> buyDecidersChildren = configuration.getBuyConfigurations()
                 .stream().map(config -> new TradeDecider(config, Account::getEur)).collect(Collectors.toList());
 
@@ -80,38 +72,10 @@ public class DefaultOracle implements Oracle {
         currentPrice = snapshot.getAllStateParts().get(snapshot.getPartsEndIndex()).getChartEntry().getClose();
 
 
-        if (canSell && configuration.getStopLossConfiguration().isPresent()) { // stop loss
-            logger.debug("evaluating stop loss");
-            if (currentPrice < lastMaximumAfterBuy - configuration.getStopLossConfiguration().get().getStopLossThreshold()) {
-                previousLastMaximumAfterBuy = lastMaximumAfterBuy;
-                lastMaximumAfterBuy = -1.0;
-                return new TradingDecision(ActionVertexType.SELL, DecisionReason.STOP_LOSS);
-            } else {
-                logger.debug("updating last maximum to " + lastMaximumAfterBuy);
-                lastMaximumAfterBuy = Math.max(lastMaximumAfterBuy, currentPrice);
-            }
-        }
-
-        boolean isStopLossDurationElapsed = true;
-        logger.debug("checking if stop loss configuration has elapsed");
-        if (configuration.getStopLossConfiguration().isPresent()) {
-            isStopLossDurationElapsed = lastStopLossTriggerTime >
-                    configuration.getStopLossConfiguration().get().getStopLossCooldown(); // if canBuy then last buy did not go through
-            logger.debug(isStopLossDurationElapsed ? "stop loss cooldown elapsed" : "stop loss cooldown is not elapsed");
-
-            if (!isStopLossDurationElapsed) {
-                lastStopLossTriggerTime++;
-                logger.debug("updating stop loss cooldown time to " + lastStopLossTriggerTime);
-            }
-        }
-
         if (canBuy) {
             logger.debug("checking BUY");
-            if (buyDecider.test(snapshot) && isStopLossDurationElapsed) {
-                lastMaximumAfterBuy = currentPrice;
-                lastStopLossTriggerTime = 0;
+            if (buyDecider.test(snapshot)) {
                 logger.debug("decision BUY");
-
                 return new TradingDecision(ActionVertexType.BUY, DecisionReason.TRADE);
             } else {
                 logger.debug("decision: DO NOTHING");
@@ -120,7 +84,6 @@ public class DefaultOracle implements Oracle {
         } else {
             logger.debug("checking SELL");
             if (sellDecider.test(snapshot)) {
-                lastMaximumAfterBuy = -1.0;
                 logger.debug("decision: SELL");
                 return new TradingDecision(ActionVertexType.SELL, DecisionReason.TRADE);
             } else {
@@ -128,20 +91,5 @@ public class DefaultOracle implements Oracle {
                 return new TradingDecision(ActionVertexType.BUY, DecisionReason.TRADE); // do nothing
             }
         }
-    }
-
-    public void resetBuy() {
-        lastMaximumAfterBuy = -1.0;
-        lastStopLossTriggerTime = Integer.MAX_VALUE;
-    }
-
-    public void resetStopLoss() {
-        lastMaximumAfterBuy = previousLastMaximumAfterBuy;
-    }
-
-    @Override
-    public void resetSell() {
-        lastStopLossTriggerTime = Integer.MAX_VALUE;
-
     }
 }
