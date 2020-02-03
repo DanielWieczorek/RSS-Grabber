@@ -61,9 +61,6 @@ public class Trader {
         DataGenerator generator = dataGeneratorBuilder.produceGenerator();
 
         List<LimitOrder> openOrders = getOpenOrders();
-        if (!openOrderIds.isEmpty()) {
-            persistOrders();
-        }
         openOrderIds.removeAll(openOrders.stream().map(Order::getId).collect(Collectors.toList()));
         cancelOrders(openOrders);
 
@@ -80,25 +77,6 @@ public class Trader {
             } else {
                 performSell(current.getAccount(), getCurrentPrice(current));
             }
-        }
-    }
-
-    private void persistOrders() {
-        try {
-
-            exchange.getTradeService().getOrder(openOrderIds.toArray(new String[0]))
-                    .forEach(order -> {
-                        PerformedTrade dbOrder = tradeDao.find(order.getId());
-                        if (dbOrder != null) {
-                            dbOrder.setPrice(order.getAveragePrice().doubleValue());
-                            tradeDao.update(dbOrder);
-                        }
-
-                        openOrderIds.remove(order.getId());
-                    });
-
-        } catch (IOException e) {
-            logger.error("error while retrieving open orders: ", e);
         }
     }
 
