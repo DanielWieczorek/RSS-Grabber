@@ -8,7 +8,7 @@ import de.wieczorek.chart.advisor.types.TradingNeuralNetworkPredictor;
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.business.ui.ChartDataCollectionLocalRestCaller;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import de.wieczorek.chart.core.persistence.ui.ChartMetricRemoteRestCaller;
+import de.wieczorek.chart.core.persistence.ui.ChartMetricLocalRestCaller;
 import de.wieczorek.core.recalculation.Recalculation;
 import de.wieczorek.core.recalculation.RecalculationStatusDao;
 import de.wieczorek.core.timer.RecurrentTaskManager;
@@ -41,7 +41,7 @@ public class Controller extends ControllerBase {
     private RecalculationStatusDao recalculationDao;
 
     @Inject
-    private ChartMetricRemoteRestCaller chartMetricCaller;
+    private ChartMetricLocalRestCaller chartMetricCaller;
 
     @Inject
     private ChartDataCollectionLocalRestCaller chartDataCollectionCaller;

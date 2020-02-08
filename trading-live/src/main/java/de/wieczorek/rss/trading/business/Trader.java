@@ -4,6 +4,8 @@ import de.wieczorek.rss.trading.business.data.AccountInfoService;
 import de.wieczorek.rss.trading.common.io.DataGenerator;
 import de.wieczorek.rss.trading.common.io.DataGeneratorBuilder;
 import de.wieczorek.rss.trading.common.oracle.Oracle;
+import de.wieczorek.rss.trading.common.oracle.OracleInput;
+import de.wieczorek.rss.trading.common.oracle.TraderState;
 import de.wieczorek.rss.trading.common.oracle.TradingDecision;
 import de.wieczorek.rss.trading.persistence.PerformedTrade;
 import de.wieczorek.rss.trading.persistence.PerformedTradeDao;
@@ -28,6 +30,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class Trader {
@@ -57,7 +60,10 @@ public class Trader {
         cancelOrders(openOrders);
 
         StateEdge current = generator.BuildLastStateEdge(accountInfoService.getAccount());
-        TradingDecision lastAction = oracle.nextAction(current);
+        OracleInput input = new OracleInput();
+        input.setStateEdge(current);
+        input.setState(buildState());
+        TradingDecision lastAction = oracle.nextAction(input);
 
 
         if (!isNoOperation(current, lastAction.getDecision())) {
@@ -67,6 +73,29 @@ public class Trader {
                 performSell(current.getAccount(), getCurrentPrice(current));
             }
         }
+    }
+
+    private TraderState buildState() {
+        List<PerformedTrade> trades = tradeDao.find24h();
+        Optional<PerformedTrade> lastBuy = trades.stream()
+                .filter(trade -> trade.getType() == ActionVertexType.BUY)
+                .reduce((trade1, trade2) -> trade1.getTime().isAfter(trade2.getTime()) ? trade1 : trade2);
+
+        Optional<PerformedTrade> lastSell = trades.stream()
+                .filter(trade -> trade.getType() == ActionVertexType.SELL)
+                .reduce((trade1, trade2) -> trade1.getTime().isAfter(trade2.getTime()) ? trade1 : trade2);
+
+        TraderState state = new TraderState();
+        if (lastBuy.isPresent()
+                && lastBuy.get().getStatus() == TradeStatus.PLACED
+                && (lastSell.isEmpty()
+                || lastSell.get().getStatus() == TradeStatus.CANCELLED
+                || lastSell.get().getTime().isBefore(lastBuy.get().getTime()))) {
+            state.setLastBuyPrice(lastBuy.get().getPrice());
+            state.setLastBuyTime(lastBuy.get().getTime());
+        }
+
+        return state;
     }
 
     private List<LimitOrder> getOpenOrders() {

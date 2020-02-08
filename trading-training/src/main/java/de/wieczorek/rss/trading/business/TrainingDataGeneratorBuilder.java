@@ -14,7 +14,7 @@ public class TrainingDataGeneratorBuilder implements DataGeneratorBuilder {
     @Inject
     private DataLoader dataLoader;
 
-    private LocalDateTime startDate = LocalDateTime.now().minusMonths(4);
+    private LocalDateTime startDate = LocalDateTime.now().minusMonths(9);
 
 
     public DataGenerator produceGenerator() {

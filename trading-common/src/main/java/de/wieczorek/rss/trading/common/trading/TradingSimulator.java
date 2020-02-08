@@ -4,6 +4,8 @@ import de.wieczorek.rss.trading.common.io.DataGenerator;
 import de.wieczorek.rss.trading.common.io.DataGeneratorBuilder;
 import de.wieczorek.rss.trading.common.io.DataLoader;
 import de.wieczorek.rss.trading.common.oracle.Oracle;
+import de.wieczorek.rss.trading.common.oracle.OracleInput;
+import de.wieczorek.rss.trading.common.oracle.TraderState;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.ActionVertexType;
 import de.wieczorek.rss.trading.types.StateEdge;
@@ -38,13 +40,18 @@ public class TradingSimulator {
         StateEdge current = generator.buildNewStartState(0);
         List<Trade> trades = new ArrayList<>();
 
+        OracleInput input = new OracleInput();
+        input.setState(new TraderState());
+        input.setStateEdge(current);
         for (int i = 0; i < generator.getMaxIndex(); i += 1) {
-            StateEdge next = performTrade(oracle, current, generator);
+
+            StateEdge next = performTrade(oracle, input, generator);
             if (next == null) {
                 break;
             }
-            addTrade(trades, current.getAccount(), next.getAccount(), current);
+            addTrade(trades, current.getAccount(), next.getAccount(), input);
             current = next;
+            input.setStateEdge(current);
         }
 
         TradingSimulationResult result = new TradingSimulationResult();
@@ -55,25 +62,30 @@ public class TradingSimulator {
         return result;
     }
 
-    private void addTrade(List<Trade> trades, Account account, Account newAccount, StateEdge snapshot) {
+    private void addTrade(List<Trade> trades, Account account, Account newAccount, OracleInput input) {
 
         Trade newTrade = new Trade();
-        newTrade.setDate(snapshot.getAllStateParts().get(snapshot.getPartsEndIndex()).getChartEntry().getDate());
+        newTrade.setDate(input.getStateEdge().getAllStateParts().get(input.getStateEdge().getPartsEndIndex()).getChartEntry().getDate());
         newTrade.setBefore(account);
         newTrade.setAfter(newAccount);
-        newTrade.setCurrentRate(getCurrentPrice(snapshot));
+        newTrade.setCurrentRate(getCurrentPrice(input.getStateEdge()));
 
         if (account.getBtc() > newAccount.getBtc()) { // Sell
             newTrade.setAction(ActionVertexType.SELL);
             trades.add(newTrade);
+            input.setState(new TraderState());
         } else if (account.getBtc() < newAccount.getBtc()) { // Buy
             newTrade.setAction(ActionVertexType.BUY);
             trades.add(newTrade);
+            TraderState newState = new TraderState();
+            newState.setLastBuyTime(newTrade.getDate());
+            newState.setLastBuyPrice(newTrade.getCurrentRate());
+            input.setState(newState);
         }
     }
 
-    private StateEdge performTrade(Oracle oracle, StateEdge snapshot, DataGenerator generator) {
-        return generator.buildNextState(snapshot, oracle.nextAction(snapshot).getDecision());
+    private StateEdge performTrade(Oracle oracle, OracleInput input, DataGenerator generator) {
+        return generator.buildNextState(input.getStateEdge(), oracle.nextAction(input).getDecision());
     }
 
     private double getCurrentPrice(StateEdge snapshot) {

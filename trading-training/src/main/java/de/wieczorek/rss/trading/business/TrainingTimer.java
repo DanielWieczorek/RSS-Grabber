@@ -38,17 +38,14 @@ public class TrainingTimer implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
     private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 5;
     private static final int OFFSET_SAFETY_MARGIN = 10;
+    private static int i = 0;
     private Phenotype<IntegerGene, Double> best = null;
     @Inject
     private TradingSimulator simulator;
-
     @Inject
     private DataGeneratorBuilder generatorBuilder;
-
     @Inject
     private OracleConfigurationDao configurationDao;
-
-
     @Inject
     private EvolutionProgressDao progressDao;
 
@@ -77,11 +74,12 @@ public class TrainingTimer implements Runnable {
         }
 
 
-        if (trades.size() > 500) {
+        if (trades.size() > 200) {
             Trade lastTrade = trades.get(trades.size() - 1);
+
             return simulationResult.getFinalBalance().getEurEquivalent();
         }
-        return 0;
+        return Integer.MIN_VALUE;
 
     }
 
@@ -142,12 +140,45 @@ public class TrainingTimer implements Runnable {
             configurationDao.write(buildOracleConfiguration(result.getBestPhenotype().getGenotype()));
         }
 
+        OracleConfiguration configuration = buildOracleConfiguration(result.getBestPhenotype().getGenotype());
+
+        Oracle oracle = new DefaultOracle(configuration);
+
+        TradingSimulationResult simulationResult = simulator.simulate(generator, oracle);
+        List<Trade> trades = simulationResult.getTrades();
+        double tradeProfit = 0;
+        int buySellPairs = 0;
+        int positiveTrades = 0;
+        double minEuroEquivalent = trades.get(0).getAfter().getEurEquivalent();
+        double maxEuroEquivalent = trades.get(0).getAfter().getEurEquivalent();
+        if (trades.size() >= 1) {
+
+            for (int i = 0; i < trades.size() - 1; i += 2) {
+                Trade buy = trades.get(i);
+                Trade sell = trades.get(i + 1);
+
+                tradeProfit += sell.getAfter().getEurEquivalent() - buy.getBefore().getEurEquivalent();
+                minEuroEquivalent = Math.min(minEuroEquivalent, sell.getAfter().getEurEquivalent());
+                maxEuroEquivalent = Math.max(maxEuroEquivalent, sell.getAfter().getEurEquivalent());
+                positiveTrades += tradeProfit > 0 ? 1 : 0;
+                buySellPairs++;
+            }
+        }
+
         progressDao.write(result);
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new Jdk8Module());
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
             System.out.println("best phenotype of generation " + result.getGeneration() + ": " + mapper.writeValueAsString(buildOracleConfiguration(result.getBestPhenotype().getGenotype())) + " -> " + result.getBestPhenotype().getFitness());
+            System.out.println("number of trades: " + trades.size());
+            System.out.println("winning trade pairs: " + positiveTrades);
+            System.out.println("losing trade pairs: " + (buySellPairs - positiveTrades));
+            System.out.println("average profit per trade pair (buy, sell): " + tradeProfit / buySellPairs);
+            System.out.println("min value Eur EQ: " + minEuroEquivalent);
+            System.out.println("max value Eur EQ: " + maxEuroEquivalent);
+
+
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

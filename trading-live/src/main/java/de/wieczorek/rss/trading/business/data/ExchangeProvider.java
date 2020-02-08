@@ -18,6 +18,7 @@ public class ExchangeProvider {
 
 
     @Produces
+    @ApplicationScoped
     private Exchange provideExchange() {
         ExchangeSpecification exSpec = new KrakenExchange().getDefaultExchangeSpecification();
         exSpec.setUserName("DWI2304");

@@ -14,7 +14,8 @@ public class TradeConfiguration {
 
     private Comparison comparison = Comparison.LOWER;
 
-    private ValuesSource valuesSource = ValuesSource.CHART_METRIC;
+    private ValuesSource valuesSource = ValuesSource.CHART_METRIC__CHART_METRIC;
+
 
     public int getThreshold() {
         return threshold;
@@ -55,6 +56,7 @@ public class TradeConfiguration {
     public void setAverageType(AverageType averageType) {
         this.averageType = averageType;
     }
+
 
     public ValuesSource getValuesSource() {
         return valuesSource;
