@@ -36,7 +36,7 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 5;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 10;
     private static final int OFFSET_SAFETY_MARGIN = 10;
     private static int i = 0;
     private Phenotype<IntegerGene, Double> best = null;
@@ -74,7 +74,7 @@ public class TrainingTimer implements Runnable {
         }
 
 
-        if (trades.size() > 200) {
+        if (trades.size() > 2) {
             Trade lastTrade = trades.get(trades.size() - 1);
 
             return simulationResult.getFinalBalance().getEurEquivalent();
@@ -151,7 +151,7 @@ public class TrainingTimer implements Runnable {
         int positiveTrades = 0;
         double minEuroEquivalent = trades.get(0).getAfter().getEurEquivalent();
         double maxEuroEquivalent = trades.get(0).getAfter().getEurEquivalent();
-        if (trades.size() >= 1) {
+        if (trades.size() > 1) {
 
             for (int i = 0; i < trades.size() - 1; i += 2) {
                 Trade buy = trades.get(i);
@@ -244,12 +244,12 @@ public class TrainingTimer implements Runnable {
                 .builder(this::eval, gtf)
                 .populationSize(populationSize)
                 .mapping(EvolutionResult.toUniquePopulation())
-                .executor(Executors.newFixedThreadPool(16))
+                .executor(Executors.newFixedThreadPool(20))
                 .survivorsFraction(0.3)
                 .survivorsSelector(new TruncationSelector<>())
-                .alterers(new Mutator(), new GaussianMutator<>(), new UniformCrossover<>(0.1), new MeanAlterer(0.1))
+                .alterers(new Mutator(), new GaussianMutator<>(), new SingleBuySellCrossover<>(0.1), new AllBuySellCrossover<>(0.05), new BuySellMeanAlterer(0.1))
                 .offspringSelector(new TournamentSelector())
-                .mapping(EvolutionResult.toUniquePopulation())
+                //  .mapping(EvolutionResult.toUniquePopulation())
                 .optimize(Optimize.MAXIMUM)
                 .build();
 

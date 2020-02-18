@@ -75,6 +75,7 @@ public class TradeDecider implements Predicate<OracleInput> {
         updatedInput.setState(input.getState());
         StateEdge edge = new StateEdge();
         edge.setAllStateParts(input.getStateEdge().getAllStateParts().subList(start, end));
+
         edge.setAccount(input.getStateEdge().getAccount());
         edge.setPartsStartIndex(input.getStateEdge().getPartsStartIndex());
         edge.setPartsEndIndex(input.getStateEdge().getPartsEndIndex());
