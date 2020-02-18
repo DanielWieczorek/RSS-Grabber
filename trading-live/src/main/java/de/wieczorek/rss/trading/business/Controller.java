@@ -67,4 +67,8 @@ public class Controller extends ControllerBase {
     public List<LiveAccount> getAccount24h() {
         return liveAccountDao.find24h();
     }
+
+    public void replaceOracle() {
+        oracle = new DefaultOracle(oracleConfigurationDao.read());
+    }
 }

@@ -28,4 +28,10 @@ public class TradingResource {
     public List<PerformedTrade> get24h() {
         return controller.getTrades24h();
     }
+
+    @GET
+    @Path("configuration/reload")
+    public void reloadConfiguration() {
+        controller.replaceOracle();
+    }
 }
