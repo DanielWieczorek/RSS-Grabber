@@ -36,7 +36,7 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 10;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 5;
     private static final int OFFSET_SAFETY_MARGIN = 10;
     private static int i = 0;
     private Phenotype<IntegerGene, Double> best = null;
