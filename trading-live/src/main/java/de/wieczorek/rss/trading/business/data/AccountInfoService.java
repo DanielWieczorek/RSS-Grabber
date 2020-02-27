@@ -1,6 +1,5 @@
 package de.wieczorek.rss.trading.business.data;
 
-import de.wieczorek.rss.trading.business.Trader;
 import de.wieczorek.rss.trading.types.Account;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.currency.Currency;
@@ -20,12 +19,14 @@ import java.math.BigDecimal;
 
 @ApplicationScoped
 public class AccountInfoService {
-    private static final Logger logger = LoggerFactory.getLogger(Trader.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountInfoService.class);
 
     @Inject
     private Exchange exchange;
 
     private OrderValuesHelper helper;
+
+    private Object lock;
 
     @PostConstruct
     private void initialize() {
@@ -33,10 +34,11 @@ public class AccountInfoService {
         helper = new OrderValuesHelper(metadata);
     }
 
-    public Account getAccount() {
+    public synchronized Account getAccount() {
         try {
             AccountInfo info = exchange.getAccountService().getAccountInfo();
             Ticker last = exchange.getMarketDataService().getTicker(CurrencyPair.BTC_EUR);
+
             Account acc = new Account();
             acc.setBtc(info.getWallets().get(null).getBalance(Currency.BTC).getAvailable().doubleValue());
             acc.setEur(info.getWallets().get(null).getBalance(Currency.EUR).getAvailable().doubleValue());
