@@ -15,6 +15,7 @@ import de.wieczorek.rss.trading.common.trading.TradingSimulationResult;
 import de.wieczorek.rss.trading.common.trading.TradingSimulator;
 import io.jenetics.*;
 import io.jenetics.engine.*;
+import io.jenetics.ext.engine.CyclicEngine;
 import io.jenetics.util.Factory;
 import io.jenetics.util.IntRange;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 5;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 10;
     private static final int OFFSET_SAFETY_MARGIN = 10;
     private static int i = 0;
     private Phenotype<IntegerGene, Double> best = null;
@@ -74,7 +75,7 @@ public class TrainingTimer implements Runnable {
         }
 
 
-        if (trades.size() > 2) {
+        if (trades.size() > generator.getMaxIndex() / 1440 * 2) {
             Trade lastTrade = trades.get(trades.size() - 1);
 
             return simulationResult.getFinalBalance().getEurEquivalent();
@@ -249,11 +250,28 @@ public class TrainingTimer implements Runnable {
                 .survivorsSelector(new TruncationSelector<>())
                 .alterers(new Mutator(), new GaussianMutator<>(), new SingleBuySellCrossover<>(0.1), new AllBuySellCrossover<>(0.05), new BuySellMeanAlterer(0.1))
                 .offspringSelector(new TournamentSelector())
-                //  .mapping(EvolutionResult.toUniquePopulation())
                 .optimize(Optimize.MAXIMUM)
                 .build();
 
-        return baseEngine;
+
+        final Engine<IntegerGene, Double> diversityEngine = Engine.builder(this::eval, gtf)
+                .populationSize(populationSize)
+                .mapping(EvolutionResult.toUniquePopulation())
+                .executor(Executors.newFixedThreadPool(20))
+                .survivorsFraction(0.3)
+                .survivorsSelector(new TruncationSelector<>())
+                .offspringSelector(new TournamentSelector())
+                .optimize(Optimize.MAXIMUM)
+                .alterers(new Mutator<>(0.5))
+                .build();
+
+        final EvolutionStreamable<IntegerGene, Double> engine = CyclicEngine.of(
+                baseEngine.limit(() -> Limits.bySteadyFitness(60)),
+
+                diversityEngine.limit(30)
+        );
+
+        return engine;
 
     }
 }

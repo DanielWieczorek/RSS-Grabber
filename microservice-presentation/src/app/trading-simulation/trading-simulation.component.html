@@ -2,9 +2,12 @@
 	<div class="section">
 
 
-
 		<h5>Trading Simulation</h5>
 		Below you can see the account balance at the start and the end of the simulation
+
+
+		<h5>Account Balance</h5>
+		Below you can see the account balance at the start and the end of a 24 hour period
 		<div class="row" *ngIf="initialTradeBalance && lastTradeBalance">
 			<div class="col s6">
 				<div class="card  ">
@@ -103,4 +106,37 @@
 			</ng-template>
 		</div>
 	</div>
+
+		<div class="card-panel">
+			<h5>Transactions</h5>
+			Below is you can see the transactions of today:
+			<div class="row" *ngIf="trades">
+
+				<table class="highlight responsive-table">
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Type</th>
+							<th>Currency Pair</th>
+							<th>Volume</th>
+							<th>Price</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr *ngFor="let trade of trades">
+							<td>{{trade.date | date:'medium' }}</td>
+							<td>
+								<div *ngIf="trade.action === 'SELL'"><span class="new badge  red" data-badge-caption="SELL"> </span></div>
+								<div *ngIf="trade.action === 'BUY'"><span class="new badge  teal" data-badge-caption="BUY"> </span></div>
+							</td>
+							<td>XBTEUR</td>
+							<td>{{calculateVolume(trade) | number:'.10'}}</td>
+							<td>{{trade.currentRate | number:'.2'}}</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+		</div>
 </div>

@@ -32,6 +32,10 @@ export class TradingSimulationComponent implements AfterViewInit {
     lastTradeBalance: Account;
     initialTradeBalance: Account;
 
+    public calculateVolume(trade: Trade) : number {
+        return trade.before.eurEquivalent/trade.currentRate;
+    }
+
 
 
     ngAfterViewInit(): void {
@@ -41,7 +45,10 @@ export class TradingSimulationComponent implements AfterViewInit {
 
             this.traderSimulation.simulate().subscribe(trades => {
                 this.trades = trades as Trade[];
-
+                this.trades.forEach((res) => {
+                     res.date = new Date(res.date[0], res.date[1], res.date[2], res.date[3], res.date[4]);
+                     console.log('foo '+res.date);
+                });
 
                 let close = this.data.map(item => item.close);
                 let open = this.data.map(item => item.open);
