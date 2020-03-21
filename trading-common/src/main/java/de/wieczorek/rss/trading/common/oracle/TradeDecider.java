@@ -2,6 +2,7 @@ package de.wieczorek.rss.trading.common.oracle;
 
 import de.wieczorek.rss.trading.common.oracle.average.AverageCalculator;
 import de.wieczorek.rss.trading.common.oracle.comparison.ComparatorInput;
+import de.wieczorek.rss.trading.common.oracle.comparison.Comparison;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.StateEdge;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class TradeDecider implements Predicate<OracleInput> {
     private static final Logger logger = LoggerFactory.getLogger(TradeDecider.class);
@@ -19,21 +21,26 @@ public class TradeDecider implements Predicate<OracleInput> {
 
     private Function<Account, Double> currencyAmountGetter;
 
-    private Predicate<ComparatorInput> comparator;
-
     private Supplier<AverageCalculator> calculatorSupplier;
 
-    private Function<OracleInput, List<Double>> valueExtractor1;
-    private Function<OracleInput, List<Double>> valueExtractor2;
+    private Function<OracleInput, List<Double>> valueExtractor;
+
+    private List<ValuePoint> valuePoints;
+
+    private List<Function<Integer, Predicate<ComparatorInput>>> comparatorBuilders;
+
+    private List<Integer> margins;
 
 
     TradeDecider(TradeConfiguration configuration, Function<Account, Double> currencyAmountGetter) {
-        comparator = configuration.getComparison().getComparatorBuilder().apply(configuration.getThreshold());
         this.configuration = configuration;
         this.currencyAmountGetter = currencyAmountGetter;
         this.calculatorSupplier = configuration.getAverageType().getAverageCalculatorBuilder();
-        this.valueExtractor1 = configuration.getValuesSource().getValueExtractor().getValueExtractor1();
-        this.valueExtractor2 = configuration.getValuesSource().getValueExtractor().getValueExtractor1();
+        this.valueExtractor = configuration.getValuesSource().getValueExtractor();
+        this.valuePoints = configuration.getComparisonPoints();
+        this.valuePoints.get(this.valuePoints.size() - 1).setOffset(0);
+        this.comparatorBuilders = configuration.getComparisons().stream().map(Comparison::getComparatorBuilder).collect(Collectors.toList());
+        this.margins = configuration.getMargins();
     }
 
     public boolean test(OracleInput input) {
@@ -46,30 +53,54 @@ public class TradeDecider implements Predicate<OracleInput> {
             return false;
         }
 
-        return comparator.test(buildInput(input));
 
+        for (int i = 0; i < comparatorBuilders.size(); i++) {
+            if (!comparatorBuilders.get(i).apply(margins.get(i)).test(buildInput(input, i, i + 1))) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    private ComparatorInput buildInput(OracleInput input) {
+    private ComparatorInput buildInput(OracleInput input, int point1Index, int point2Index) {
         ComparatorInput result = new ComparatorInput();
-        result.first = calculateAverage(valueExtractor1, input, configuration.getOffset());
-        result.second = calculateAverage(valueExtractor2, input, 0);
+        result.first = calculateAverage(valueExtractor, input, valuePoints.get(point1Index).getAverageTime(), calculateOffset(point1Index));
+        result.second = calculateAverage(valueExtractor, input, valuePoints.get(point2Index).getAverageTime(), calculateOffset(point2Index));
         return result;
+    }
+
+    private int calculateOffset(int point1Index) {
+        int sum = 0;
+        for (int i = point1Index; i < valuePoints.size() - 1; i++) {
+            sum += valuePoints.get(i).getOffset();
+        }
+
+        return sum;
     }
 
     private boolean isTimeSpanSufficient(StateEdge snapshot) {
         int end = snapshot.getPartsEndIndex();
-        boolean evaluation = (end - configuration.getAverageTime() - configuration.getOffset()) >= 0;
-        logger.debug("checking timespans: " + end + " - " + configuration.getAverageTime() + " - " + configuration.getOffset() + " >= 0 = " + evaluation);
+
+        int maxValue = 0;
+        for (int i = 0; i < valuePoints.size(); i++) {
+            ValuePoint point = valuePoints.get(i);
+            maxValue = Math.max(maxValue, calculateOffset(point.getOffset()) + point.getAverageTime());
+        }
+
+        boolean evaluation = (end - maxValue) >= 0;
+        logger.debug("checking timespans: " + end + " - " + maxValue + " >= 0 = " + evaluation);
 
         return evaluation;
     }
 
 
-    private double calculateAverage(Function<OracleInput, List<Double>> valueExtractor, OracleInput input, int negativeOffset) {
+    private double calculateAverage(Function<OracleInput, List<Double>> valueExtractor,
+                                    OracleInput input,
+                                    int averageDuration,
+                                    int negativeOffset) {
         int end = input.getStateEdge().getPartsEndIndex() - negativeOffset;
 
-        int start = Math.max(0, end - configuration.getAverageTime());
+        int start = Math.max(0, end - averageDuration);
 
         OracleInput updatedInput = new OracleInput();
         updatedInput.setState(input.getState());

@@ -5,17 +5,17 @@ import java.util.function.Predicate;
 
 public enum Comparison {
     GREATER(0, GreaterComparator::new),
-    LOWER(1, LowerComparator::new),
-    RISE_ABOVE(2, RiseAboveComparator::new),
-    FALL_BELOW(3, FallBelowComparator::new),
-    NEVER_MATCH(4, (threshold) -> new NeverMatchComparator()),
-    ALWAYS_MATCH(5, (threshold) -> new AlwaysMatchComparator()),
-    DIFF_BELOW(6, DiffBelowComparator::new),
-    DIFF_ABOVE(7, DiffAboveComparator::new),
-    RISE(8, RisingComparator::new),
-    FALL(9, FallingComparator::new),
-    RATIO_ABOVE(10, RatioAboveComparator::new),
-    RATIO_BELOW(11, RatioBelowComparator::new);
+    LOWER(1, LowerComparator::new);
+    //   RISE_ABOVE(2, RiseAboveComparator::new),
+    //   FALL_BELOW(3, FallBelowComparator::new),
+//    NEVER_MATCH(4, (threshold) -> new NeverMatchComparator()),
+//    ALWAYS_MATCH(5, (threshold) -> new AlwaysMatchComparator()),
+//    DIFF_BELOW(2, DiffBelowComparator::new),
+//    DIFF_ABOVE(3, DiffAboveComparator::new),
+//    RISE(2, RisingComparator::new),
+//    FALL(3, FallingComparator::new);
+//    RATIO_ABOVE(6, RatioAboveComparator::new),
+//    RATIO_BELOW(7, RatioBelowComparator::new);
 
 
     private final int index;
