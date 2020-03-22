@@ -88,7 +88,6 @@ public class TradeDecider implements Predicate<OracleInput> {
         }
 
         boolean evaluation = (end - maxValue) >= 0;
-        logger.debug("checking timespans: " + end + " - " + maxValue + " >= 0 = " + evaluation);
 
         return evaluation;
     }
