@@ -4,6 +4,8 @@ import de.wieczorek.rss.trading.types.Account;
 
 public final class BuySellHelper {
 
+    public static final int SELL_OFFSET_ABSOLUTE = 10;
+
     private BuySellHelper() {
 
     }
@@ -26,7 +28,7 @@ public final class BuySellHelper {
         Account newAcc = new Account();
         if (acc.getBtc() > 0.0) {
             newAcc.setBtc(0);
-            newAcc.setEur(acc.getBtc() * currentPrice * ((100 - 0.3) / 100));
+            newAcc.setEur(acc.getBtc() * (currentPrice - SELL_OFFSET_ABSOLUTE) * ((100 - 0.3) / 100));
             newAcc.setEurEquivalent(newAcc.getEur());
         } else {
             newAcc.setBtc(0);

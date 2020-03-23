@@ -32,8 +32,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static de.wieczorek.rss.trading.common.trading.BuySellHelper.SELL_OFFSET_ABSOLUTE;
+
 @ApplicationScoped
 public class Trader {
+
 
     private static final Logger logger = LoggerFactory.getLogger(Trader.class);
     private OrderValuesHelper helper;
@@ -136,7 +139,7 @@ public class Trader {
             trade.setStatus(TradeStatus.PLACED);
             trade.setAmount(volume.doubleValue());
             trade.setPair(CurrencyPair.BTC_EUR.toString());
-            trade.setPrice(currentPrice);
+            trade.setPrice(currentPrice - SELL_OFFSET_ABSOLUTE);
             trade.setTime(LocalDateTime.now());
             trade.setType(ActionVertexType.SELL);
             tradeDao.addTrade(trade);
