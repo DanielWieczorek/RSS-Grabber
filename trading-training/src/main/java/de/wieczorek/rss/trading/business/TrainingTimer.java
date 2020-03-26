@@ -179,9 +179,11 @@ public class TrainingTimer implements Runnable {
         double tradeProfit = 0;
         int buySellPairs = 0;
         int positiveTrades = 0;
-        double minEuroEquivalent = trades.get(0).getAfter().getEurEquivalent();
-        double maxEuroEquivalent = trades.get(0).getAfter().getEurEquivalent();
+        double minEuroEquivalent = 0;
+        double maxEuroEquivalent = 0;
         if (trades.size() > 1) {
+            minEuroEquivalent = trades.get(0).getAfter().getEurEquivalent();
+            maxEuroEquivalent = trades.get(0).getAfter().getEurEquivalent();
 
             for (int i = 0; i < trades.size() - 1; i += 2) {
                 Trade buy = trades.get(i);
@@ -249,22 +251,22 @@ public class TrainingTimer implements Runnable {
 
     private EvolutionStreamable<IntegerGene, Double> buildNewEngine() {
         Factory<Genotype<IntegerGene>> gtf =
-                Genotype.of(IntegerChromosome.of(0, 200, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //0 buy thresholds
+                Genotype.of(IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //0 buy thresholds
                         IntegerChromosome.of(1, 480, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //1 duration of the averaging
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //2 below/above for buy
                         IntegerChromosome.of(1, (1440 - 480 - OFFSET_SAFETY_MARGIN) / DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //3 offset
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //4 average type
                         IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //5 source of values
-                        IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1)), //6 operators
+                        IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //6 operators
                         IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //7 is buy configuration active
 
-                        IntegerChromosome.of(0, 200, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //8 sell thresholds
+                        IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //8 sell thresholds
                         IntegerChromosome.of(1, 480, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //9 duration of the averaging
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //10 below/above for sell
                         IntegerChromosome.of(1, (1440 - 480 - OFFSET_SAFETY_MARGIN) / DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //11 offset
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //12 average type
                         IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //13 source of values
-                        IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1)), //14 operators
+                        IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //14 operators
                         IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)) //15 is sell configuration active
                 );
 

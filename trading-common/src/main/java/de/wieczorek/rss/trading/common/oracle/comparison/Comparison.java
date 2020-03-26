@@ -6,8 +6,7 @@ import java.util.function.Predicate;
 public enum Comparison {
     GREATER(0, GreaterComparator::new),
     LOWER(1, LowerComparator::new),
-    ALWAYS_MATCH(2, (threshold) -> new AlwaysMatchComparator()),
-    NEVER_MATCH(3, (threshold) -> new NeverMatchComparator());;
+    ALWAYS_MATCH(2, (threshold) -> new AlwaysMatchComparator());
 
     private final int index;
 

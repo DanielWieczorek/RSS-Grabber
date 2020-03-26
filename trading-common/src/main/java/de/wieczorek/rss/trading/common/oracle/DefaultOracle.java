@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -19,15 +20,15 @@ public class DefaultOracle implements Oracle {
 
 
     public DefaultOracle(OracleConfiguration configuration) {
-        buyDecider = buildDecider(configuration.getBuyConfigurations(), configuration.getBuyOperators());
-        sellDecider = buildDecider(configuration.getSellConfigurations(), configuration.getSellOperators());
+        buyDecider = buildDecider(configuration.getBuyConfigurations(), configuration.getBuyOperators(), Account::getEur);
+        sellDecider = buildDecider(configuration.getSellConfigurations(), configuration.getSellOperators(), Account::getBtc);
     }
 
 
-    private Predicate<OracleInput> buildDecider(List<TradeConfiguration> buyConfigurations, List<Operator> buyOperators) {
-        Predicate<OracleInput> buyDecider;
+    private Predicate<OracleInput> buildDecider(List<TradeConfiguration> buyConfigurations, List<Operator> buyOperators, Function<Account, Double> currencyAmountGetter) {
+        Predicate<OracleInput> decider;
         List<TradeDecider> buyDecidersChildren = buyConfigurations
-                .stream().map(config -> new TradeDecider(config, Account::getEur)).collect(Collectors.toList());
+                .stream().map(config -> new TradeDecider(config, currencyAmountGetter)).collect(Collectors.toList());
 
         if (!buyOperators.isEmpty()) {
             Predicate<OracleInput> rootBuyDecider = buyOperators.get(0).getCombinationFunction()
@@ -35,16 +36,16 @@ public class DefaultOracle implements Oracle {
             for (int i = 1; i < buyOperators.size(); i++) {
                 rootBuyDecider = buyOperators.get(i).getCombinationFunction().apply(rootBuyDecider, buyDecidersChildren.get(i + 1));
             }
-            buyDecider = rootBuyDecider;
+            decider = rootBuyDecider;
 
         } else {
             if (!buyDecidersChildren.isEmpty()) {
-                buyDecider = (x) -> buyDecidersChildren.get(0).test(x);
+                decider = (x) -> buyDecidersChildren.get(0).test(x);
             } else {
-                buyDecider = (x) -> false;
+                decider = (x) -> false;
             }
         }
-        return buyDecider;
+        return decider;
     }
 
     @Override

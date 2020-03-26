@@ -4,6 +4,4 @@ public class ComparatorInput {
 
     public double first;
     public double second;
-
-    public int margin;
 }
