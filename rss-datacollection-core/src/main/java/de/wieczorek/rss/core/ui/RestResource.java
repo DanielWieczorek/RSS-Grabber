@@ -1,8 +1,8 @@
 package de.wieczorek.rss.core.ui;
 
+import de.wieczorek.core.persistence.EntityManagerContext;
 import de.wieczorek.core.ui.Resource;
 import de.wieczorek.rss.core.business.Controller;
-import de.wieczorek.core.persistence.EntityManagerContext;
 import de.wieczorek.rss.types.RssEntry;
 import de.wieczorek.rss.types.ui.CallableResource;
 
@@ -20,7 +20,7 @@ import java.util.List;
 @ApplicationScoped
 @EntityManagerContext
 @Path("rss-entries")
-public class RssHandler implements CallableResource {
+public class RestResource implements CallableResource {
 
     @Inject
     private Controller controller;
