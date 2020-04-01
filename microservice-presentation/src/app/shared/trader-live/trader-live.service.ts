@@ -21,4 +21,9 @@ export class TraderLiveService {
         return this.http.get<LiveAccount[]>( this.helper.buildPath( 'routing/trader-live/account/24h') )
         .pipe(catchError(this.helper.handleError));
     }
+
+    reloadConfiguration(): void {
+        this.http.get(this.helper.buildPath( 'routing/trader-live/trading/configuration/reload') )
+        .pipe(catchError(this.helper.handleError)).subscribe(res => {});
+    }
 }

@@ -24,7 +24,6 @@ export class TradingLiveComponent implements AfterViewInit {
 
     }
 
-
     chart = []; // This will hold our chart info
     data: ChartEntry[];
     trades: LiveTrade[];
@@ -43,7 +42,9 @@ export class TradingLiveComponent implements AfterViewInit {
         });
     }
 
-
+    reloadConfig(): void {
+        this.traderLive.reloadConfiguration();
+    }
 
     ngAfterViewInit(): void {
         this.chartReader.get24hOhlcv().subscribe(res => {
