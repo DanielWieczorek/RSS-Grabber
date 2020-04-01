@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static de.wieczorek.rss.trading.common.trading.BuySellHelper.BUY_OFFSET_ABSOLUTE;
 import static de.wieczorek.rss.trading.common.trading.BuySellHelper.SELL_OFFSET_ABSOLUTE;
 
 @ApplicationScoped
@@ -71,9 +72,9 @@ public class Trader {
 
         if (!isNoOperation(current, lastAction.getDecision())) {
             if (lastAction.getDecision() == ActionVertexType.BUY) {
-                performBuy(current.getAccount(), getCurrentPrice(current));
+                performBuy(current.getAccount(), getCurrentPrice(current) + BUY_OFFSET_ABSOLUTE);
             } else {
-                performSell(current.getAccount(), getCurrentPrice(current));
+                performSell(current.getAccount(), getCurrentPrice(current) - SELL_OFFSET_ABSOLUTE);
             }
         }
     }
@@ -139,7 +140,7 @@ public class Trader {
             trade.setStatus(TradeStatus.PLACED);
             trade.setAmount(volume.doubleValue());
             trade.setPair(CurrencyPair.BTC_EUR.toString());
-            trade.setPrice(currentPrice - SELL_OFFSET_ABSOLUTE);
+            trade.setPrice(currentPrice);
             trade.setTime(LocalDateTime.now());
             trade.setType(ActionVertexType.SELL);
             tradeDao.addTrade(trade);
