@@ -41,7 +41,7 @@ public class DataGenerator {
 
         int endIndex = getEndIndex(offset);
 
-        StateEdge rootState = buildState(stateParts, chartEntries, offset, offset + SEQ_LENGTH, ActionVertexType.SELL,
+        StateEdge rootState = buildState(stateParts, chartEntries, offset, offset + SEQ_LENGTH, ActionVertexType.NOTHING,
                 startAcc, endIndex);
         rootState.setId(0);
 
@@ -76,8 +76,10 @@ public class DataGenerator {
         double currentPrice = chartEntries.get(partEndIndex).getClose();
         if (action == ActionVertexType.BUY) {
             newAcc = BuySellHelper.processBuy(currentPrice, acc);
-        } else {
+        } else if (action == ActionVertexType.SELL) {
             newAcc = BuySellHelper.processSell(currentPrice, acc);
+        } else {
+            newAcc = BuySellHelper.processNoop(currentPrice, acc);
         }
 
         currentState.setAccount(newAcc);

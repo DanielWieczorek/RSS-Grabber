@@ -45,11 +45,12 @@ public class TradingSimulator {
         input.setStateEdge(current);
         for (int i = 0; i < generator.getMaxIndex(); i += 1) {
 
-            StateEdge next = performTrade(oracle, input, generator);
+            ActionVertexType nextAction = oracle.nextAction(input).getDecision();
+            StateEdge next = performTrade(input, generator, nextAction);
             if (next == null) {
                 break;
             }
-            addTrade(trades, current.getAccount(), next.getAccount(), input);
+            addTrade(trades, current.getAccount(), next.getAccount(), input, nextAction);
             current = next;
             input.setStateEdge(current);
         }
@@ -62,7 +63,7 @@ public class TradingSimulator {
         return result;
     }
 
-    private void addTrade(List<Trade> trades, Account account, Account newAccount, OracleInput input) {
+    private void addTrade(List<Trade> trades, Account account, Account newAccount, OracleInput input, ActionVertexType action) {
 
         Trade newTrade = new Trade();
         newTrade.setDate(input.getStateEdge().getAllStateParts().get(input.getStateEdge().getPartsEndIndex()).getChartEntry().getDate());
@@ -70,11 +71,11 @@ public class TradingSimulator {
         newTrade.setAfter(newAccount);
         newTrade.setCurrentRate(getCurrentPrice(input.getStateEdge()));
 
-        if (account.getBtc() > newAccount.getBtc()) { // Sell
+        if (action == ActionVertexType.SELL) { // Sell
             newTrade.setAction(ActionVertexType.SELL);
             trades.add(newTrade);
             input.setState(new TraderState());
-        } else if (account.getBtc() < newAccount.getBtc()) { // Buy
+        } else if (action == ActionVertexType.BUY) { // Buy
             newTrade.setAction(ActionVertexType.BUY);
             trades.add(newTrade);
             TraderState newState = new TraderState();
@@ -84,8 +85,8 @@ public class TradingSimulator {
         }
     }
 
-    private StateEdge performTrade(Oracle oracle, OracleInput input, DataGenerator generator) {
-        return generator.buildNextState(input.getStateEdge(), oracle.nextAction(input).getDecision());
+    private StateEdge performTrade(OracleInput input, DataGenerator generator, ActionVertexType action) {
+        return generator.buildNextState(input.getStateEdge(), action);
     }
 
     private double getCurrentPrice(StateEdge snapshot) {

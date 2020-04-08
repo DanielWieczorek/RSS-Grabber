@@ -50,10 +50,11 @@ public class Trader {
     @Inject
     private PerformedTradeDao tradeDao;
 
+    private CurrencyPairMetaData metadata;
 
     @PostConstruct
     private void initialize() {
-        CurrencyPairMetaData metadata = exchange.getExchangeMetaData().getCurrencyPairs().get(CurrencyPair.BTC_EUR);
+        metadata = exchange.getExchangeMetaData().getCurrencyPairs().get(CurrencyPair.BTC_EUR);
         helper = new OrderValuesHelper(metadata);
     }
 
@@ -67,16 +68,20 @@ public class Trader {
         OracleInput input = new OracleInput();
         input.setStateEdge(current);
         input.setState(buildState());
+        input.setMinOrder(metadata.getMinimumAmount().doubleValue());
         TradingDecision lastAction = oracle.nextAction(input);
 
 
-        if (!isNoOperation(current, lastAction.getDecision())) {
-            if (lastAction.getDecision() == ActionVertexType.BUY) {
-                performBuy(current.getAccount(), getCurrentPrice(current) + BUY_OFFSET_ABSOLUTE);
-            } else {
-                performSell(current.getAccount(), getCurrentPrice(current) - SELL_OFFSET_ABSOLUTE);
-            }
+        if (lastAction.getDecision() == ActionVertexType.NOTHING) {
+            return;
         }
+
+        if (lastAction.getDecision() == ActionVertexType.BUY) {
+            performBuy(current.getAccount(), getCurrentPrice(current) + BUY_OFFSET_ABSOLUTE);
+        } else {
+            performSell(current.getAccount(), getCurrentPrice(current) - SELL_OFFSET_ABSOLUTE);
+        }
+
     }
 
     private TraderState buildState() {

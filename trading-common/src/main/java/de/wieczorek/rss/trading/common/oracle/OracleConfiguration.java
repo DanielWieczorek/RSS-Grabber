@@ -1,6 +1,7 @@
 package de.wieczorek.rss.trading.common.oracle;
 
 import java.util.List;
+import java.util.Objects;
 
 public class OracleConfiguration {
 
@@ -40,5 +41,21 @@ public class OracleConfiguration {
 
     public void setSellOperators(List<Operator> sellOperators) {
         this.sellOperators = sellOperators;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OracleConfiguration that = (OracleConfiguration) o;
+        return Objects.equals(buyConfigurations, that.buyConfigurations) &&
+                Objects.equals(buyOperators, that.buyOperators) &&
+                Objects.equals(sellConfigurations, that.sellConfigurations) &&
+                Objects.equals(sellOperators, that.sellOperators);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(buyConfigurations, buyOperators, sellConfigurations, sellOperators);
     }
 }

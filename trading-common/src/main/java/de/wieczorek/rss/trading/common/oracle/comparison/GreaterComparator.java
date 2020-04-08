@@ -9,17 +9,17 @@ public class GreaterComparator implements Predicate<ComparatorInput> {
     private static final Logger logger = LoggerFactory.getLogger(GreaterComparator.class);
 
 
-    private int threshold;
+    private ComparatorConfiguration config;
 
-    public GreaterComparator(int threshold) {
-        this.threshold = threshold;
+    public GreaterComparator(ComparatorConfiguration config) {
+        this.config = config;
     }
 
     @Override
 
     public boolean test(ComparatorInput aDouble) {
-        boolean result = aDouble.first > aDouble.second + threshold;
-        logger.debug(aDouble.first + " > " + aDouble.second + " + " + threshold + " = " + result);
+        boolean result = aDouble.first > aDouble.second + config.threshold;
+        logger.debug(aDouble.first + " > " + aDouble.second + " + " + config.threshold + " = " + result);
 
         return result;
     }

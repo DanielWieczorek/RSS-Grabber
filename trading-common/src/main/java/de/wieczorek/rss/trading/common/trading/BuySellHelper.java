@@ -4,8 +4,10 @@ import de.wieczorek.rss.trading.types.Account;
 
 public final class BuySellHelper {
 
-    public static final int SELL_OFFSET_ABSOLUTE = 10;
-    public static final int BUY_OFFSET_ABSOLUTE = 5;
+    public static final double SELL_OFFSET_ABSOLUTE = 10.0;
+    public static final double BUY_OFFSET_ABSOLUTE = 5.0;
+    private static final double FEES_PERCENT = 0.3;
+    private static final double DESIRED_MARGIN_PERCENT = 1;
 
     private BuySellHelper() {
 
@@ -13,30 +15,36 @@ public final class BuySellHelper {
 
     public static Account processBuy(double currentPrice, Account acc) {
         Account newAcc = new Account();
-        if (acc.getBtc() > 0.0) {
-            newAcc.setBtc(acc.getBtc());
-            newAcc.setEur(0);
-            newAcc.setEurEquivalent(newAcc.getBtc() * currentPrice);
-        } else {
-            newAcc.setBtc((acc.getEur() / (currentPrice + BUY_OFFSET_ABSOLUTE)) * ((100 - 0.3) / 100));
-            newAcc.setEur(0);
-            newAcc.setEurEquivalent(newAcc.getBtc() * currentPrice);
-        }
+
+        newAcc.setBtc((acc.getEur() / (currentPrice + BUY_OFFSET_ABSOLUTE)) * remainingPercent(FEES_PERCENT));
+        newAcc.setEur(0);
+        newAcc.setEurEquivalent(newAcc.getBtc() * currentPrice);
+
         return newAcc;
+    }
+
+    private static double remainingPercent(double fees) {
+        return (100 - fees) / 100;
     }
 
     public static Account processSell(double currentPrice, Account acc) {
         Account newAcc = new Account();
-        if (acc.getBtc() > 0.0) {
-            newAcc.setBtc(0);
-            newAcc.setEur(acc.getBtc() * (currentPrice - SELL_OFFSET_ABSOLUTE) * ((100 - 0.3) / 100));
-            newAcc.setEurEquivalent(newAcc.getEur());
-        } else {
-            newAcc.setBtc(0);
-            newAcc.setEur(acc.getEur());
-            newAcc.setEurEquivalent(newAcc.getEur());
-        }
+
+        newAcc.setBtc(0);
+        newAcc.setEur(acc.getBtc() * (currentPrice - SELL_OFFSET_ABSOLUTE) * remainingPercent(FEES_PERCENT)
+                * remainingPercent(DESIRED_MARGIN_PERCENT));
+        newAcc.setEurEquivalent(newAcc.getEur());
+
         return newAcc;
     }
 
+    public static Account processNoop(double currentPrice, Account acc) {
+        Account newAcc = new Account();
+
+        newAcc.setBtc(acc.getBtc());
+        newAcc.setEur(acc.getEur());
+        newAcc.setEurEquivalent(newAcc.getEur() + newAcc.getBtc() * currentPrice);
+
+        return newAcc;
+    }
 }

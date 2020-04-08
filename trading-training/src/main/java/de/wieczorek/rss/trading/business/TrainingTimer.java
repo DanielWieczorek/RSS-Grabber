@@ -17,18 +17,19 @@ import io.jenetics.*;
 import io.jenetics.engine.*;
 import io.jenetics.ext.engine.CyclicEngine;
 import io.jenetics.util.Factory;
+import io.jenetics.util.ISeq;
 import io.jenetics.util.IntRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.jenetics.engine.Limits.bySteadyFitness;
 
@@ -39,6 +40,8 @@ public class TrainingTimer implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
     private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 1;
     private static final int DATAPOINTS_PER_SERIES = 4;
+    private static final int NUMBER_OF_COMPARATORS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
+    private static final int TOTAL_NUMBER_OF_DATAPOINTS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int OFFSET_SAFETY_MARGIN = 10;
     private static int i = 0;
     private Phenotype<IntegerGene, Double> best = null;
@@ -76,7 +79,7 @@ public class TrainingTimer implements Runnable {
         }
 
 
-        if (trades.size() > generator.getMaxIndex() / 1440 * 2) {
+        if (trades.size() > 0) { //generator.getMaxIndex() / 1440 * 2) {
             Trade lastTrade = trades.get(trades.size() - 1);
 
             return simulationResult.getFinalBalance().getEurEquivalent();
@@ -88,10 +91,32 @@ public class TrainingTimer implements Runnable {
     private OracleConfiguration buildOracleConfiguration(Genotype<IntegerGene> genes) {
         OracleConfiguration configuration = new OracleConfiguration();
 
+        final int buyConfigStartIndex = 0;
+        final int sellConfigStartIndex = 9;
 
+        List<TradeConfiguration> buyConfigurations = buildTradeConfigurations(genes, buyConfigStartIndex);
+        configuration.setBuyConfigurations(buyConfigurations);
+        configuration.setBuyOperators(buildOperatorList(genes, buyConfigStartIndex, buyConfigurations));
+
+        List<TradeConfiguration> sellConfigurations = buildTradeConfigurations(genes, sellConfigStartIndex);
+        configuration.setSellConfigurations(sellConfigurations);
+        configuration.setSellOperators(buildOperatorList(genes, sellConfigStartIndex, sellConfigurations));
+
+        return configuration;
+    }
+
+    private List<Operator> buildOperatorList(Genotype<IntegerGene> genes, int startIndex, List<TradeConfiguration> configurations) {
+        return genes.get(startIndex + 6).
+                stream()
+                .map(gene -> Operator.getValueForIndex(gene.intValue()))
+                .limit(Math.max(configurations.size() - 1, 0))
+                .collect(Collectors.toList());
+    }
+
+    private List<TradeConfiguration> buildTradeConfigurations(Genotype<IntegerGene> genes, int startingGene) {
         List<TradeConfiguration> buyConfigurations = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_BUYSELL_CONFIGURATIONS; i++) {
-            if (genes.get(7).getGene(i).intValue() == 1) {
+            if (genes.get(startingGene + 7).getGene(i).intValue() == 1) {
                 TradeConfiguration buyConfig = new TradeConfiguration();
 
                 for (int j = 0; j < DATAPOINTS_PER_SERIES; j++) {
@@ -99,68 +124,36 @@ public class TrainingTimer implements Runnable {
                     int index = i * DATAPOINTS_PER_SERIES + j;
 
 
-                    point.setAverageTime(genes.get(1).getGene(index).intValue());
-                    point.setOffset(genes.get(3).getGene(index).intValue());
+                    point.setAverageTime(genes.get(startingGene + 1).getGene(index).intValue());
+                    point.setOffset(genes.get(startingGene + 3).getGene(index).intValue());
 
                     buyConfig.getComparisonPoints().add(point);
 
                     if (j < DATAPOINTS_PER_SERIES - 1) {
-                        buyConfig.getMargins().add(genes.get(0).getGene(index).intValue());
-                        buyConfig.getComparisons().add(Comparison.getValueForIndex(genes.get(2).getGene(index).intValue()));
+                        buyConfig.getComparisons().add(Comparison.getValueForIndex(genes.get(startingGene + 2).getGene(index).intValue()));
+
+                        if (genes.get(startingGene).getGene(index).intValue() != Comparison.ALWAYS_MATCH.getIndex()) { // TODO make more generic
+                            buyConfig.getMargins().add(genes.get(startingGene).getGene(index).intValue());
+                        } else {
+                            buyConfig.getMargins().add(0);
+                        }
+
+                        if (genes.get(startingGene + 2).getGene(index).intValue() == Comparison.RANGE.getIndex()) { // TODO make more generic
+                            buyConfig.getRanges().add(genes.get(startingGene + 8).getGene(index).intValue());
+                        } else {
+                            buyConfig.getRanges().add(0);
+                        }
                     }
                 }
 
 
-                buyConfig.setAverageType(AverageType.getValueForIndex(genes.get(4).getGene(i).intValue()));
-                buyConfig.setValuesSource(ValuesSource.getValueForIndex(genes.get(5).getGene(i).intValue()));
+                buyConfig.setAverageType(AverageType.getValueForIndex(genes.get(startingGene + 4).getGene(i).intValue()));
+                buyConfig.setValuesSource(ValuesSource.getValueForIndex(genes.get(startingGene + 5).getGene(i).intValue()));
                 buyConfigurations.add(buyConfig);
             }
 
         }
-        configuration.setBuyConfigurations(buyConfigurations);
-
-        configuration.setBuyOperators(genes.get(6).
-                stream()
-                .map(gene -> Operator.getValueForIndex(gene.intValue()))
-                .limit(Math.max(buyConfigurations.size() - 1, 0))
-                .collect(Collectors.toList()));
-
-        List<TradeConfiguration> sellConfigurations = new ArrayList<>();
-        for (int i = 0; i < NUMBER_OF_BUYSELL_CONFIGURATIONS; i++) {
-            if (genes.get(15).getGene(i).intValue() == 1) {
-                TradeConfiguration sellConfig = new TradeConfiguration();
-
-
-                for (int j = 0; j < DATAPOINTS_PER_SERIES; j++) {
-                    ValuePoint point = new ValuePoint();
-                    int index = i * DATAPOINTS_PER_SERIES + j;
-
-                    point.setAverageTime(genes.get(9).getGene(index).intValue());
-                    point.setOffset(genes.get(11).getGene(index).intValue());
-
-                    sellConfig.getComparisonPoints().add(point);
-
-                    if (j < DATAPOINTS_PER_SERIES - 1) {
-                        sellConfig.getMargins().add(genes.get(8).getGene(index).intValue());
-                        sellConfig.getComparisons().add(Comparison.getValueForIndex(genes.get(10).getGene(index).intValue()));
-                    }
-                }
-
-
-                sellConfig.setAverageType(AverageType.getValueForIndex(genes.get(12).getGene(i).intValue()));
-                sellConfig.setValuesSource(ValuesSource.getValueForIndex(genes.get(13).getGene(i).intValue()));
-                sellConfigurations.add(sellConfig);
-            }
-        }
-        configuration.setSellConfigurations(sellConfigurations);
-
-        configuration.setSellOperators(genes.get(14).
-                stream()
-                .map(gene -> Operator.getValueForIndex(gene.intValue()))
-                .limit(Math.max(sellConfigurations.size() - 1, 0))
-                .collect(Collectors.toList()));
-
-        return configuration;
+        return buyConfigurations;
     }
 
     private void update(final EvolutionResult<IntegerGene, Double> result) {
@@ -249,25 +242,64 @@ public class TrainingTimer implements Runnable {
         }
     }
 
+    private <G extends Gene<?, IntegerGene>, C extends Comparable<? super C>>
+    UnaryOperator<EvolutionResult<IntegerGene, C>> toUniquePopulation() {
+        return result -> {
+            final Factory<Genotype<IntegerGene>> factory = result
+                    .getPopulation().get(0)
+                    .getGenotype();
+
+            Map<OracleConfiguration, Phenotype<IntegerGene, C>> configTypeMapping = new HashMap<>();
+
+            result.getPopulation().forEach(genotype -> configTypeMapping.put(buildOracleConfiguration(genotype.getGenotype()), genotype));
+
+            while (configTypeMapping.size() < result.getPopulation().size()) {
+                Genotype<IntegerGene> genotype = factory.newInstance();
+                configTypeMapping.put(buildOracleConfiguration(genotype), Phenotype.of(genotype, result.getGeneration()));
+            }
+
+            return EvolutionResult.of(
+                    result.getOptimize(),
+                    Stream.concat(configTypeMapping.values().stream(), result.getPopulation().stream())
+                            .limit(result.getPopulation().size())
+                            .collect(ISeq.toISeq()),
+                    result.getGeneration(),
+                    result.getTotalGenerations(),
+                    result.getDurations(),
+                    result.getKillCount(),
+                    result.getInvalidCount(),
+                    result.getAlterCount()
+            );
+
+        };
+    }
+
+
     private EvolutionStreamable<IntegerGene, Double> buildNewEngine() {
+
+
         Factory<Genotype<IntegerGene>> gtf =
-                Genotype.of(IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //0 buy thresholds
-                        IntegerChromosome.of(1, 480, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //1 duration of the averaging
-                        IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //2 below/above for buy
-                        IntegerChromosome.of(1, (1440 - 480 - OFFSET_SAFETY_MARGIN) / DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //3 offset
+                Genotype.of(IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_COMPARATORS)), //0 buy thresholds
+                        IntegerChromosome.of(1, 480, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //1 duration of the averaging
+                        IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //2 below/above for buy
+                        IntegerChromosome.of(1, (1440 - 480 - OFFSET_SAFETY_MARGIN) / DATAPOINTS_PER_SERIES, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //3 offset in minutes
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //4 average type
                         IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //5 source of values
                         IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //6 operators
                         IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //7 is buy configuration active
+                        IntegerChromosome.of(0, 200, IntRange.of(NUMBER_OF_COMPARATORS)), //8 second value for comparison
 
-                        IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //8 sell thresholds
-                        IntegerChromosome.of(1, 480, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //9 duration of the averaging
-                        IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //10 below/above for sell
-                        IntegerChromosome.of(1, (1440 - 480 - OFFSET_SAFETY_MARGIN) / DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES)), //11 offset
-                        IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //12 average type
-                        IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //13 source of values
-                        IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //14 operators
-                        IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)) //15 is sell configuration active
+
+                        IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_COMPARATORS)), //9 sell thresholds
+                        IntegerChromosome.of(1, 480, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //10 duration of the averaging
+                        IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //11 below/above for sell
+                        IntegerChromosome.of(1, (1440 - 480 - OFFSET_SAFETY_MARGIN) / DATAPOINTS_PER_SERIES, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //12 offset in minutes
+                        IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //13 average type
+                        IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //14 source of values
+                        IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //15 operators
+                        IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //16 is sell configuration active
+                        IntegerChromosome.of(0, 200, IntRange.of(NUMBER_OF_COMPARATORS)) //17 second value for comparison
+
                 );
 
 
@@ -275,7 +307,7 @@ public class TrainingTimer implements Runnable {
         Engine<IntegerGene, Double> baseEngine = Engine
                 .builder(this::eval, gtf)
                 .populationSize(populationSize)
-                .mapping(EvolutionResult.toUniquePopulation())
+                .mapping(toUniquePopulation())
                 .executor(Executors.newFixedThreadPool(20))
                 .survivorsFraction(0.3)
                 .survivorsSelector(new TruncationSelector<>())
@@ -287,7 +319,7 @@ public class TrainingTimer implements Runnable {
 
         final Engine<IntegerGene, Double> diversityEngine = Engine.builder(this::eval, gtf)
                 .populationSize(populationSize)
-                .mapping(EvolutionResult.toUniquePopulation())
+                .mapping(toUniquePopulation())
                 .executor(Executors.newFixedThreadPool(20))
                 .survivorsFraction(0.3)
                 .survivorsSelector(new TruncationSelector<>())

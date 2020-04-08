@@ -27,20 +27,20 @@ public class DefaultOracle implements Oracle {
 
     private Predicate<OracleInput> buildDecider(List<TradeConfiguration> buyConfigurations, List<Operator> buyOperators, Function<Account, Double> currencyAmountGetter) {
         Predicate<OracleInput> decider;
-        List<TradeDecider> buyDecidersChildren = buyConfigurations
+        List<TradeDecider> decidersChildren = buyConfigurations
                 .stream().map(config -> new TradeDecider(config, currencyAmountGetter)).collect(Collectors.toList());
 
         if (!buyOperators.isEmpty()) {
-            Predicate<OracleInput> rootBuyDecider = buyOperators.get(0).getCombinationFunction()
-                    .apply(buyDecidersChildren.get(0), buyDecidersChildren.get(1));
+            Predicate<OracleInput> rootDecider = buyOperators.get(0).getCombinationFunction()
+                    .apply(decidersChildren.get(0), decidersChildren.get(1));
             for (int i = 1; i < buyOperators.size(); i++) {
-                rootBuyDecider = buyOperators.get(i).getCombinationFunction().apply(rootBuyDecider, buyDecidersChildren.get(i + 1));
+                rootDecider = buyOperators.get(i).getCombinationFunction().apply(rootDecider, decidersChildren.get(i + 1));
             }
-            decider = rootBuyDecider;
+            decider = rootDecider;
 
         } else {
-            if (!buyDecidersChildren.isEmpty()) {
-                decider = (x) -> buyDecidersChildren.get(0).test(x);
+            if (!decidersChildren.isEmpty()) {
+                decider = (x) -> decidersChildren.get(0).test(x);
             } else {
                 decider = (x) -> false;
             }
@@ -50,22 +50,10 @@ public class DefaultOracle implements Oracle {
 
     @Override
     public TradingDecision nextAction(OracleInput input) {
-        boolean canSell = input.getStateEdge().getAccount().getBtc() > 0;
-        boolean canBuy = input.getStateEdge().getAccount().getEur() > 0;
-
-        double currentPrice;
-        currentPrice = input.getStateEdge().getAllStateParts().get(input.getStateEdge().getPartsEndIndex()).getChartEntry().getClose();
-
-
-        if (canBuy) {
-            logger.debug("checking BUY");
-            if (buyDecider.test(input)) {
-                logger.debug("decision BUY");
-                return new TradingDecision(ActionVertexType.BUY, DecisionReason.TRADE);
-            } else {
-                logger.debug("decision: DO NOTHING");
-                return new TradingDecision(ActionVertexType.SELL, DecisionReason.TRADE); // do nothing
-            }
+        logger.debug("checking BUY");
+        if (buyDecider.test(input)) {
+            logger.debug("decision BUY");
+            return new TradingDecision(ActionVertexType.BUY, DecisionReason.TRADE);
         } else {
             logger.debug("checking SELL");
             if (sellDecider.test(input)) {
@@ -73,7 +61,7 @@ public class DefaultOracle implements Oracle {
                 return new TradingDecision(ActionVertexType.SELL, DecisionReason.TRADE);
             } else {
                 logger.debug("decision: DO NOTHING");
-                return new TradingDecision(ActionVertexType.BUY, DecisionReason.TRADE); // do nothing
+                return new TradingDecision(ActionVertexType.NOTHING, DecisionReason.TRADE); // do nothing
             }
         }
     }

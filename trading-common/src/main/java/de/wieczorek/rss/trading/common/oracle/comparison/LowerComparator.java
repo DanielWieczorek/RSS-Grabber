@@ -8,16 +8,16 @@ import java.util.function.Predicate;
 public class LowerComparator implements Predicate<ComparatorInput> {
     private static final Logger logger = LoggerFactory.getLogger(LowerComparator.class);
 
-    private int threshold;
+    private ComparatorConfiguration config;
 
-    public LowerComparator(int threshold) {
-        this.threshold = threshold;
+    public LowerComparator(ComparatorConfiguration config) {
+        this.config = config;
     }
 
     @Override
     public boolean test(ComparatorInput aDouble) {
-        boolean result = aDouble.first < aDouble.second - threshold;
-        logger.debug(aDouble.first + " < " + aDouble.second + " - " + threshold + " = " + result);
+        boolean result = aDouble.first < aDouble.second - config.threshold;
+        logger.debug(aDouble.first + " < " + aDouble.second + " - " + config.threshold + " = " + result);
 
         return result;
     }

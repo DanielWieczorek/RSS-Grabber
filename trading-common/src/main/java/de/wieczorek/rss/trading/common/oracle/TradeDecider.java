@@ -1,6 +1,7 @@
 package de.wieczorek.rss.trading.common.oracle;
 
 import de.wieczorek.rss.trading.common.oracle.average.AverageCalculator;
+import de.wieczorek.rss.trading.common.oracle.comparison.ComparatorConfiguration;
 import de.wieczorek.rss.trading.common.oracle.comparison.ComparatorInput;
 import de.wieczorek.rss.trading.common.oracle.comparison.Comparison;
 import de.wieczorek.rss.trading.types.Account;
@@ -27,10 +28,11 @@ public class TradeDecider implements Predicate<OracleInput> {
 
     private List<ValuePoint> valuePoints;
 
-    private List<Function<Integer, Predicate<ComparatorInput>>> comparatorBuilders;
+    private List<Function<ComparatorConfiguration, Predicate<ComparatorInput>>> comparatorBuilders;
 
     private List<Integer> margins;
 
+    private List<Integer> ranges;
 
     TradeDecider(TradeConfiguration configuration, Function<Account, Double> currencyAmountGetter) {
         this.configuration = configuration;
@@ -41,10 +43,11 @@ public class TradeDecider implements Predicate<OracleInput> {
         this.valuePoints.get(this.valuePoints.size() - 1).setOffset(0);
         this.comparatorBuilders = configuration.getComparisons().stream().map(Comparison::getComparatorBuilder).collect(Collectors.toList());
         this.margins = configuration.getMargins();
+        this.ranges = configuration.getRanges();
     }
 
     public boolean test(OracleInput input) {
-        if (currencyAmountGetter.apply(input.getStateEdge().getAccount()) == 0) {
+        if (currencyAmountGetter.apply(input.getStateEdge().getAccount()) < input.getMinOrder()) {
             logger.debug("insufficient funds");
             return false;
         }
@@ -53,13 +56,20 @@ public class TradeDecider implements Predicate<OracleInput> {
             return false;
         }
 
-
         for (int i = 0; i < comparatorBuilders.size(); i++) {
-            if (!comparatorBuilders.get(i).apply(margins.get(i)).test(buildInput(input, i, i + 1))) {
+            if (!comparatorBuilders.get(i).apply(buildComparatorConfig(margins.get(i), ranges.get(i)))
+                    .test(buildInput(input, i, i + 1))) {
                 return false;
             }
         }
         return true;
+    }
+
+    private ComparatorConfiguration buildComparatorConfig(int threshold, int range) {
+        ComparatorConfiguration config = new ComparatorConfiguration();
+        config.threshold = threshold;
+        config.range = range;
+        return config;
     }
 
     private ComparatorInput buildInput(OracleInput input, int point1Index, int point2Index) {

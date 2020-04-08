@@ -6,13 +6,13 @@ import java.util.function.Predicate;
 public enum Comparison {
     GREATER(0, GreaterComparator::new),
     LOWER(1, LowerComparator::new),
-    ALWAYS_MATCH(2, (threshold) -> new AlwaysMatchComparator());
+    ALWAYS_MATCH(2, (threshold) -> new AlwaysMatchComparator()),
+    RANGE(3, RangeComparator::new);
 
     private final int index;
+    private final Function<ComparatorConfiguration, Predicate<ComparatorInput>> comparatorBuilder;
 
-    private final Function<Integer, Predicate<ComparatorInput>> comparatorBuilder;
-
-    Comparison(int index, Function<Integer, Predicate<ComparatorInput>> comparatorBuilder) {
+    Comparison(int index, Function<ComparatorConfiguration, Predicate<ComparatorInput>> comparatorBuilder) {
         this.index = index;
         this.comparatorBuilder = comparatorBuilder;
     }
@@ -26,7 +26,11 @@ public enum Comparison {
         throw new RuntimeException("invalid index " + index);
     }
 
-    public Function<Integer, Predicate<ComparatorInput>> getComparatorBuilder() {
+    public int getIndex() {
+        return index;
+    }
+
+    public Function<ComparatorConfiguration, Predicate<ComparatorInput>> getComparatorBuilder() {
         return comparatorBuilder;
     }
 }
