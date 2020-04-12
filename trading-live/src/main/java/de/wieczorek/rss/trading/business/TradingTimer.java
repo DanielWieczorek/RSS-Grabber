@@ -2,6 +2,7 @@ package de.wieczorek.rss.trading.business;
 
 import de.wieczorek.core.persistence.EntityManagerContext;
 import de.wieczorek.core.timer.RecurrentTask;
+import de.wieczorek.rss.trading.common.oracle.AveragesCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,7 @@ public class TradingTimer implements Runnable {
     @Override
     public void run() {
         try {
+            AveragesCache.INSTANCE.invalidate();
             logger.debug("Triggering trading.");
             controller.triggerTrading();
         } catch (Exception e) {

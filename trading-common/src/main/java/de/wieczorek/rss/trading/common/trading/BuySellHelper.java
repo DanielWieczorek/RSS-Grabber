@@ -7,7 +7,6 @@ public final class BuySellHelper {
     public static final double SELL_OFFSET_ABSOLUTE = 10.0;
     public static final double BUY_OFFSET_ABSOLUTE = 5.0;
     private static final double FEES_PERCENT = 0.3;
-    private static final double DESIRED_MARGIN_PERCENT = 1;
 
     private BuySellHelper() {
 
@@ -31,8 +30,7 @@ public final class BuySellHelper {
         Account newAcc = new Account();
 
         newAcc.setBtc(0);
-        newAcc.setEur(acc.getBtc() * (currentPrice - SELL_OFFSET_ABSOLUTE) * remainingPercent(FEES_PERCENT)
-                * remainingPercent(DESIRED_MARGIN_PERCENT));
+        newAcc.setEur(acc.getBtc() * (currentPrice - SELL_OFFSET_ABSOLUTE) * remainingPercent(FEES_PERCENT));
         newAcc.setEurEquivalent(newAcc.getEur());
 
         return newAcc;

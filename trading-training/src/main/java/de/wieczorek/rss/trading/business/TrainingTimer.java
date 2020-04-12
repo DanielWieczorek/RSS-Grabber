@@ -38,8 +38,8 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 1;
-    private static final int DATAPOINTS_PER_SERIES = 4;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 10;
+    private static final int DATAPOINTS_PER_SERIES = 5;
     private static final int NUMBER_OF_COMPARATORS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int TOTAL_NUMBER_OF_DATAPOINTS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int OFFSET_SAFETY_MARGIN = 10;
@@ -63,25 +63,7 @@ public class TrainingTimer implements Runnable {
 
         TradingSimulationResult simulationResult = simulator.simulate(generator, oracle);
         List<Trade> trades = simulationResult.getTrades();
-        double tradeProfit = 0;
-        int buySellPairs = 0;
-        int positiveTrades = 0;
-        if (trades.size() >= 1) {
-
-            for (int i = 0; i < trades.size() - 1; i += 2) {
-                Trade buy = trades.get(i);
-                Trade sell = trades.get(i + 1);
-
-                tradeProfit += sell.getAfter().getEurEquivalent() - buy.getBefore().getEurEquivalent();
-                positiveTrades += tradeProfit > 0 ? 1 : 0;
-                buySellPairs++;
-            }
-        }
-
-
         if (trades.size() > 0) { //generator.getMaxIndex() / 1440 * 2) {
-            Trade lastTrade = trades.get(trades.size() - 1);
-
             return simulationResult.getFinalBalance().getEurEquivalent();
         }
         return Integer.MIN_VALUE;

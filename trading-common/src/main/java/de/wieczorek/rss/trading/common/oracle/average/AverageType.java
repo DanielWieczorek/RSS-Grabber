@@ -8,7 +8,6 @@ public enum AverageType {
     AVERAGE(1, SimpleAverageCalculator::new);
 
     private final int index;
-
     private final Supplier<AverageCalculator> averageCalculatorBuilder;
 
     AverageType(int index, Supplier<AverageCalculator> averageCalculatorBuilder) {
@@ -24,6 +23,10 @@ public enum AverageType {
             }
         }
         throw new RuntimeException("invalid index " + index);
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public Supplier<AverageCalculator> getAverageCalculatorBuilder() {
