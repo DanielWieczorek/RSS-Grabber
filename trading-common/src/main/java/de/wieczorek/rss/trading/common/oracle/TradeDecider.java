@@ -9,6 +9,7 @@ import de.wieczorek.rss.trading.types.StateEdge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -23,7 +24,7 @@ public class TradeDecider implements Predicate<OracleInput> {
 
     private AverageType averageType;
 
-    private Function<OracleInput, List<Double>> valueExtractor;
+    private ValuesSource valuesSource;
 
     private List<ValuePoint> valuePoints;
 
@@ -37,7 +38,7 @@ public class TradeDecider implements Predicate<OracleInput> {
         this.configuration = configuration;
         this.currencyAmountGetter = currencyAmountGetter;
         this.averageType = configuration.getAverageType();
-        this.valueExtractor = configuration.getValuesSource().getValueExtractor();
+        this.valuesSource = configuration.getValuesSource();
         this.valuePoints = configuration.getComparisonPoints();
         this.valuePoints.get(this.valuePoints.size() - 1).setOffset(0);
         this.comparatorBuilders = configuration.getComparisons().stream().map(Comparison::getComparatorBuilder).collect(Collectors.toList());
@@ -73,8 +74,8 @@ public class TradeDecider implements Predicate<OracleInput> {
 
     private ComparatorInput buildInput(OracleInput input, int point1Index, int point2Index) {
         ComparatorInput result = new ComparatorInput();
-        result.first = calculateAverage(valueExtractor, input, valuePoints.get(point1Index).getAverageTime(), calculateOffset(point1Index));
-        result.second = calculateAverage(valueExtractor, input, valuePoints.get(point2Index).getAverageTime(), calculateOffset(point2Index));
+        result.first = calculateAverage(input, valuePoints.get(point1Index).getAverageTime(), calculateOffset(point1Index));
+        result.second = calculateAverage(input, valuePoints.get(point2Index).getAverageTime(), calculateOffset(point2Index));
         return result;
     }
 
@@ -102,35 +103,25 @@ public class TradeDecider implements Predicate<OracleInput> {
     }
 
 
-    private double calculateAverage(Function<OracleInput, List<Double>> valueExtractor,
-                                    OracleInput input,
+    private double calculateAverage(OracleInput input,
                                     int averageDuration,
                                     int negativeOffset) {
         int end = input.getStateEdge().getPartsEndIndex() - negativeOffset;
 
         int start = Math.max(0, end - averageDuration);
 
-        OracleInput updatedInput = new OracleInput();
-        updatedInput.setState(input.getState());
-        StateEdge edge = new StateEdge();
-        edge.setAllStateParts(input.getStateEdge().getAllStateParts().subList(start, end));
+        List<Double> values = new ArrayList<>();
+        for (int i = start; i < end; i++) {
+            Double value = valuesSource.getValueExtractor().apply(input.getStateEdge().getAllStateParts().get(i));
+            if (value != null) {
+                values.add(value);
+            }
+        }
 
-        edge.setAccount(input.getStateEdge().getAccount());
-        edge.setPartsStartIndex(input.getStateEdge().getPartsStartIndex());
-        edge.setPartsEndIndex(input.getStateEdge().getPartsEndIndex());
+        double result = averageType.getAverageCalculatorBuilder().get().calculate(values);
+        //AveragesCache.INSTANCE.put(start, end, valuesSource.getIndex(), averageType.getIndex(), result);
+        return result;
 
-        updatedInput.setStateEdge(edge);
-        updatedInput.getStateEdge().setAllStateParts(input.getStateEdge().getAllStateParts().subList(start, end));
 
-        return AveragesCache.INSTANCE.get(edge.getAllStateParts().get(0).getChartEntry().getDate(),
-                edge.getAllStateParts().get(edge.getAllStateParts().size() - 1).getChartEntry().getDate(),
-                averageType).orElseGet(() -> {
-            List<Double> predictions = valueExtractor.apply(updatedInput);
-            double result = averageType.getAverageCalculatorBuilder().get().calculate(predictions);
-            AveragesCache.INSTANCE.put(edge.getAllStateParts().get(0).getChartEntry().getDate(),
-                    edge.getAllStateParts().get(edge.getAllStateParts().size() - 1).getChartEntry().getDate(),
-                    averageType, result);
-            return result;
-        });
     }
 }

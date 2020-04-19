@@ -5,10 +5,7 @@ import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.rss.advisor.types.DeltaChartEntry;
 import de.wieczorek.rss.trading.types.StateEdgePart;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public enum ValuesSource {
     // RSS_SENTIMENT(0, ValuesSource::processRssSentiment),
@@ -18,37 +15,36 @@ public enum ValuesSource {
 
 
     private int index;
-    private Function<OracleInput, List<Double>> valueExtractor;
+    private Function<StateEdgePart, Double> valueExtractor;
 
-    ValuesSource(int index, Function<OracleInput, List<Double>> valueExtractor) {
+    ValuesSource(int index, Function<StateEdgePart, Double> valueExtractor) {
         this.index = index;
         this.valueExtractor = valueExtractor;
     }
 
-    public static List<Double> processChartMetric(OracleInput input) {
-        return input.getStateEdge().getAllStateParts().stream()
-                .map(StateEdgePart::getMetricsSentiment)
-                .filter(Objects::nonNull)
-                .map(TradingEvaluationResult::getPrediction)
-                .collect(Collectors.toList());
+    public static Double processChartMetric(StateEdgePart input) {
+        TradingEvaluationResult eval = input.getMetricsSentiment();
+        if (eval == null) {
+            return null;
+        }
+        return eval.getPrediction();
     }
 
-    public static List<Double> processChartDelta(OracleInput input) {
-        return input.getStateEdge().getAllStateParts().stream()
-                .map(StateEdgePart::getDeltaChartEntry)
-                .filter(Objects::nonNull)
-                .map(DeltaChartEntry::getClose)
-                .collect(Collectors.toList());
+    public static Double processChartDelta(StateEdgePart input) {
+        DeltaChartEntry eval = input.getDeltaChartEntry();
+        if (eval == null) {
+            return null;
+        }
+        return eval.getClose();
     }
 
-    public static List<Double> processChartAbsolute(OracleInput input) {
-        return input.getStateEdge().getAllStateParts().stream()
-                .map(StateEdgePart::getChartEntry)
-                .filter(Objects::nonNull)
-                .map(ChartEntry::getClose)
-                .collect(Collectors.toList());
+    public static Double processChartAbsolute(StateEdgePart input) {
+        ChartEntry eval = input.getChartEntry();
+        if (eval == null) {
+            return null;
+        }
+        return eval.getClose();
     }
-
 
     public static ValuesSource getValueForIndex(int index) {
         for (ValuesSource src : values()) {
@@ -59,7 +55,11 @@ public enum ValuesSource {
         throw new RuntimeException("invalid index " + index);
     }
 
-    public Function<OracleInput, List<Double>> getValueExtractor() {
+    public int getIndex() {
+        return index;
+    }
+
+    public Function<StateEdgePart, Double> getValueExtractor() {
         return valueExtractor;
     }
 

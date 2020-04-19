@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,11 +70,11 @@ public class TradingSimulator {
         newTrade.setAfter(newAccount);
         newTrade.setCurrentRate(getCurrentPrice(input.getStateEdge()));
 
-        if (action == ActionVertexType.SELL) { // Sell
+        if (action == ActionVertexType.SELL) {
             newTrade.setAction(ActionVertexType.SELL);
             trades.add(newTrade);
             input.setState(new TraderState());
-        } else if (action == ActionVertexType.BUY) { // Buy
+        } else if (action == ActionVertexType.BUY) {
             newTrade.setAction(ActionVertexType.BUY);
             trades.add(newTrade);
             TraderState newState = new TraderState();
@@ -91,10 +90,6 @@ public class TradingSimulator {
 
     private double getCurrentPrice(StateEdge snapshot) {
         return snapshot.getAllStateParts().get(snapshot.getPartsStartIndex()).getChartEntry().getClose();
-    }
-
-    private LocalDateTime getCurrentDateTime(StateEdge snapshot) {
-        return snapshot.getAllStateParts().get(snapshot.getPartsStartIndex()).getChartEntry().getDate();
     }
 
 }

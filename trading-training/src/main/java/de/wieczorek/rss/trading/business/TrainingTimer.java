@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.google.common.collect.Sets;
 import de.wieczorek.core.timer.RecurrentTask;
 import de.wieczorek.rss.trading.common.io.DataGenerator;
 import de.wieczorek.rss.trading.common.io.DataGeneratorBuilder;
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
@@ -38,8 +40,8 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 10;
-    private static final int DATAPOINTS_PER_SERIES = 5;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 4;
+    private static final int DATAPOINTS_PER_SERIES = 48;
     private static final int NUMBER_OF_COMPARATORS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int TOTAL_NUMBER_OF_DATAPOINTS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int OFFSET_SAFETY_MARGIN = 10;
@@ -56,17 +58,25 @@ public class TrainingTimer implements Runnable {
 
     private DataGenerator generator;
 
+    private Map<OracleConfiguration, Double> cache = new ConcurrentHashMap<>();
+
+
     private double eval(Genotype<IntegerGene> genes) {
         OracleConfiguration configuration = buildOracleConfiguration(genes);
+        if (cache.containsKey(configuration)) {
+            return cache.get(configuration);
+        }
 
         Oracle oracle = new DefaultOracle(configuration);
 
         TradingSimulationResult simulationResult = simulator.simulate(generator, oracle);
         List<Trade> trades = simulationResult.getTrades();
+        double result = Integer.MIN_VALUE;
         if (trades.size() > 0) { //generator.getMaxIndex() / 1440 * 2) {
-            return simulationResult.getFinalBalance().getEurEquivalent();
+            result = simulationResult.getFinalBalance().getEurEquivalent();
         }
-        return Integer.MIN_VALUE;
+        cache.put(configuration, result);
+        return result;
 
     }
 
@@ -74,7 +84,7 @@ public class TrainingTimer implements Runnable {
         OracleConfiguration configuration = new OracleConfiguration();
 
         final int buyConfigStartIndex = 0;
-        final int sellConfigStartIndex = 9;
+        final int sellConfigStartIndex = 10;
 
         List<TradeConfiguration> buyConfigurations = buildTradeConfigurations(genes, buyConfigStartIndex);
         configuration.setBuyConfigurations(buyConfigurations);
@@ -101,17 +111,17 @@ public class TrainingTimer implements Runnable {
             if (genes.get(startingGene + 7).getGene(i).intValue() == 1) {
                 TradeConfiguration buyConfig = new TradeConfiguration();
 
-                for (int j = 0; j < DATAPOINTS_PER_SERIES; j++) {
+                int numberOfComparators = genes.get(startingGene + 9).getGene(i).intValue();
+                for (int j = 0; j < numberOfComparators; j++) {
                     ValuePoint point = new ValuePoint();
                     int index = i * DATAPOINTS_PER_SERIES + j;
-
 
                     point.setAverageTime(genes.get(startingGene + 1).getGene(index).intValue());
                     point.setOffset(genes.get(startingGene + 3).getGene(index).intValue());
 
                     buyConfig.getComparisonPoints().add(point);
 
-                    if (j < DATAPOINTS_PER_SERIES - 1) {
+                    if (j < numberOfComparators - 1) {
                         buyConfig.getComparisons().add(Comparison.getValueForIndex(genes.get(startingGene + 2).getGene(index).intValue()));
 
                         if (genes.get(startingGene).getGene(index).intValue() != Comparison.ALWAYS_MATCH.getIndex()) { // TODO make more generic
@@ -139,6 +149,10 @@ public class TrainingTimer implements Runnable {
     }
 
     private void update(final EvolutionResult<IntegerGene, Double> result) {
+        Sets.difference(cache.keySet(), result.getPopulation().stream()
+                .map(Phenotype::getGenotype)
+                .map(this::buildOracleConfiguration).collect(Collectors.toSet())).forEach(cache::remove);
+
         if (best == null || best.compareTo(result.getBestPhenotype()) < 0) {
             best = result.getBestPhenotype();
 
@@ -259,38 +273,40 @@ public class TrainingTimer implements Runnable {
 
     private EvolutionStreamable<IntegerGene, Double> buildNewEngine() {
 
-
+//(1440 - 480 - OFFSET_SAFETY_MARGIN) / DATAPOINTS_PER_SERIES
+        // 480
         Factory<Genotype<IntegerGene>> gtf =
                 Genotype.of(IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_COMPARATORS)), //0 buy thresholds
-                        IntegerChromosome.of(1, 480, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //1 duration of the averaging
+                        IntegerChromosome.of(5, 5, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //1 duration of the averaging
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //2 below/above for buy
-                        IntegerChromosome.of(1, (1440 - 480 - OFFSET_SAFETY_MARGIN) / DATAPOINTS_PER_SERIES, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //3 offset in minutes
+                        IntegerChromosome.of(5, 5, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //3 offset in minutes
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //4 average type
                         IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //5 source of values
                         IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //6 operators
                         IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //7 is buy configuration active
                         IntegerChromosome.of(0, 200, IntRange.of(NUMBER_OF_COMPARATORS)), //8 second value for comparison
+                        IntegerChromosome.of(1, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //9 length of the series
 
 
-                        IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_COMPARATORS)), //9 sell thresholds
-                        IntegerChromosome.of(1, 480, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //10 duration of the averaging
-                        IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //11 below/above for sell
-                        IntegerChromosome.of(1, (1440 - 480 - OFFSET_SAFETY_MARGIN) / DATAPOINTS_PER_SERIES, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //12 offset in minutes
-                        IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //13 average type
-                        IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //14 source of values
-                        IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //15 operators
-                        IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //16 is sell configuration active
-                        IntegerChromosome.of(0, 200, IntRange.of(NUMBER_OF_COMPARATORS)) //17 second value for comparison
-
+                        IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_COMPARATORS)), //10 sell thresholds
+                        IntegerChromosome.of(5, 5, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //11 duration of the averaging
+                        IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //12 below/above for sell
+                        IntegerChromosome.of(5, 5, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //13 offset in minutes
+                        IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //14 average type
+                        IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //15 source of values
+                        IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //16 operators
+                        IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //17 is sell configuration active
+                        IntegerChromosome.of(0, 200, IntRange.of(NUMBER_OF_COMPARATORS)), //18 second value for comparison
+                        IntegerChromosome.of(1, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)) //19 length of the series
                 );
 
 
-        int populationSize = 50 * gtf.newInstance().geneCount();
+        int populationSize = 25 * gtf.newInstance().geneCount();
         Engine<IntegerGene, Double> baseEngine = Engine
                 .builder(this::eval, gtf)
                 .populationSize(populationSize)
                 .mapping(toUniquePopulation())
-                .executor(Executors.newFixedThreadPool(20))
+                .executor(Executors.newFixedThreadPool(16))
                 .survivorsFraction(0.3)
                 .survivorsSelector(new TruncationSelector<>())
                 .alterers(new Mutator(), new GaussianMutator<>(), new MeanAlterer<>()) // new SingleBuySellCrossover<>(0.1), new AllBuySellCrossover<>(0.05), new BuySellMeanAlterer(0.1)
@@ -302,7 +318,7 @@ public class TrainingTimer implements Runnable {
         final Engine<IntegerGene, Double> diversityEngine = Engine.builder(this::eval, gtf)
                 .populationSize(populationSize)
                 .mapping(toUniquePopulation())
-                .executor(Executors.newFixedThreadPool(20))
+                .executor(Executors.newFixedThreadPool(16))
                 .survivorsFraction(0.3)
                 .survivorsSelector(new TruncationSelector<>())
                 .offspringSelector(new TournamentSelector())
