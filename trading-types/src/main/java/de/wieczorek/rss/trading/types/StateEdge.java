@@ -9,6 +9,8 @@ public class StateEdge implements IStateHistoryHolder {
     private Account account;
     private List<StateEdgePart> allStateParts;
 
+    private StateEdgeChainMetaInfo metaInfo;
+
     public Account getAccount() {
         return account;
     }
@@ -52,4 +54,11 @@ public class StateEdge implements IStateHistoryHolder {
         this.allStateParts = allStateParts;
     }
 
+    public StateEdgeChainMetaInfo getMetaInfo() {
+        return metaInfo;
+    }
+
+    public void setMetaInfo(StateEdgeChainMetaInfo metaInfo) {
+        this.metaInfo = metaInfo;
+    }
 }

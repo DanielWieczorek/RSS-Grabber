@@ -14,6 +14,7 @@ import de.wieczorek.rss.trading.common.oracle.comparison.Comparison;
 import de.wieczorek.rss.trading.common.trading.Trade;
 import de.wieczorek.rss.trading.common.trading.TradingSimulationResult;
 import de.wieczorek.rss.trading.common.trading.TradingSimulator;
+import de.wieczorek.rss.trading.types.StateEdgeChainMetaInfo;
 import io.jenetics.*;
 import io.jenetics.engine.*;
 import io.jenetics.ext.engine.CyclicEngine;
@@ -40,8 +41,8 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 4;
-    private static final int DATAPOINTS_PER_SERIES = 48;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 2;
+    private static final int DATAPOINTS_PER_SERIES = 5;
     private static final int NUMBER_OF_COMPARATORS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int TOTAL_NUMBER_OF_DATAPOINTS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int OFFSET_SAFETY_MARGIN = 10;
@@ -57,9 +58,7 @@ public class TrainingTimer implements Runnable {
     private EvolutionProgressDao progressDao;
 
     private DataGenerator generator;
-
     private Map<OracleConfiguration, Double> cache = new ConcurrentHashMap<>();
-
 
     private double eval(Genotype<IntegerGene> genes) {
         OracleConfiguration configuration = buildOracleConfiguration(genes);
@@ -69,15 +68,42 @@ public class TrainingTimer implements Runnable {
 
         Oracle oracle = new DefaultOracle(configuration);
 
-        TradingSimulationResult simulationResult = simulator.simulate(generator, oracle);
+        StateEdgeChainMetaInfo metadata = buildStateEdgeChainMetaInfo();
+
+        TradingSimulationResult simulationResult = simulator.simulate(metadata, generator, oracle);
         List<Trade> trades = simulationResult.getTrades();
         double result = Integer.MIN_VALUE;
-        if (trades.size() > 0) { //generator.getMaxIndex() / 1440 * 2) {
-            result = simulationResult.getFinalBalance().getEurEquivalent();
+
+        if (trades.size() > 1) {
+            double tradeProfitPct = 0;
+            int buySellPairs = 0;
+            for (int i = 0; i < trades.size() - 1; i += 2) {
+                Trade buy = trades.get(i);
+                Trade sell = trades.get(i + 1);
+
+                double tradeProfitAbsolute = sell.getAfter().getEurEquivalent() - buy.getBefore().getEurEquivalent();
+                tradeProfitPct += tradeProfitAbsolute / buy.getBefore().getEurEquivalent() * 100;
+                //  buySellPairs++;
+            }
+            result = tradeProfitPct;// / ((double) buySellPairs);
         }
+
+
+//        if (trades.size() > 0) { //generator.getMaxIndex() / 1440 * 2) {
+//            result = simulationResult.getFinalBalance().getEurEquivalent();
+//        }
         cache.put(configuration, result);
         return result;
 
+    }
+
+    private StateEdgeChainMetaInfo buildStateEdgeChainMetaInfo() {
+        StateEdgeChainMetaInfo metadata = new StateEdgeChainMetaInfo();
+        metadata.setStepping(1);
+        metadata.setDepth(generator.getMaxIndex()); // week
+        metadata.setWidth(60); // week
+        metadata.setOffset(0);
+        return metadata;
     }
 
     private OracleConfiguration buildOracleConfiguration(Genotype<IntegerGene> genes) {
@@ -97,7 +123,8 @@ public class TrainingTimer implements Runnable {
         return configuration;
     }
 
-    private List<Operator> buildOperatorList(Genotype<IntegerGene> genes, int startIndex, List<TradeConfiguration> configurations) {
+    private List<Operator> buildOperatorList(Genotype<IntegerGene> genes, int startIndex, List<
+            TradeConfiguration> configurations) {
         return genes.get(startIndex + 6).
                 stream()
                 .map(gene -> Operator.getValueForIndex(gene.intValue()))
@@ -116,8 +143,8 @@ public class TrainingTimer implements Runnable {
                     ValuePoint point = new ValuePoint();
                     int index = i * DATAPOINTS_PER_SERIES + j;
 
-                    point.setAverageTime(genes.get(startingGene + 1).getGene(index).intValue());
-                    point.setOffset(genes.get(startingGene + 3).getGene(index).intValue());
+                    point.setAverageTime(genes.get(startingGene + 1).getGene(i).intValue());
+                    point.setOffset(genes.get(startingGene + 3).getGene(i).intValue());
 
                     buyConfig.getComparisonPoints().add(point);
 
@@ -163,7 +190,8 @@ public class TrainingTimer implements Runnable {
 
         Oracle oracle = new DefaultOracle(configuration);
 
-        TradingSimulationResult simulationResult = simulator.simulate(generator, oracle);
+        StateEdgeChainMetaInfo metadata = buildStateEdgeChainMetaInfo();
+        TradingSimulationResult simulationResult = simulator.simulate(metadata, generator, oracle);
         List<Trade> trades = simulationResult.getTrades();
         double tradeProfit = 0;
         int buySellPairs = 0;
@@ -191,14 +219,14 @@ public class TrainingTimer implements Runnable {
         mapper.registerModule(new Jdk8Module());
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
-            System.out.println("best phenotype of generation " + result.getGeneration() + ": " + mapper.writeValueAsString(buildOracleConfiguration(result.getBestPhenotype().getGenotype())) + " -> " + result.getBestPhenotype().getFitness());
+            System.out.println("best phenotype: " + mapper.writeValueAsString(buildOracleConfiguration(result.getBestPhenotype().getGenotype())) + " -> " + result.getBestPhenotype().getFitness());
             System.out.println("number of trades: " + trades.size());
             System.out.println("winning trade pairs: " + positiveTrades);
             System.out.println("losing trade pairs: " + (buySellPairs - positiveTrades));
             System.out.println("average profit per trade pair (buy, sell): " + tradeProfit / buySellPairs);
             System.out.println("min value Eur EQ: " + minEuroEquivalent);
             System.out.println("max value Eur EQ: " + maxEuroEquivalent);
-
+            System.out.println("generation: " + result.getGeneration());
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -275,11 +303,13 @@ public class TrainingTimer implements Runnable {
 
 //(1440 - 480 - OFFSET_SAFETY_MARGIN) / DATAPOINTS_PER_SERIES
         // 480
+        final int AVERAGING_DURATION = 1;
+        final int DATAPOINT_OFFSET = 10;
         Factory<Genotype<IntegerGene>> gtf =
                 Genotype.of(IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_COMPARATORS)), //0 buy thresholds
-                        IntegerChromosome.of(5, 5, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //1 duration of the averaging
+                        IntegerChromosome.of(1, 10, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //1 duration of the averaging
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //2 below/above for buy
-                        IntegerChromosome.of(5, 5, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //3 offset in minutes
+                        IntegerChromosome.of(1, 60, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset in minutes
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //4 average type
                         IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //5 source of values
                         IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //6 operators
@@ -289,9 +319,9 @@ public class TrainingTimer implements Runnable {
 
 
                         IntegerChromosome.of(-200, 200, IntRange.of(NUMBER_OF_COMPARATORS)), //10 sell thresholds
-                        IntegerChromosome.of(5, 5, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //11 duration of the averaging
+                        IntegerChromosome.of(1, 10, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //11 duration of the averaging
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //12 below/above for sell
-                        IntegerChromosome.of(5, 5, IntRange.of(TOTAL_NUMBER_OF_DATAPOINTS)), //13 offset in minutes
+                        IntegerChromosome.of(1, 60, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset in minutes
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //14 average type
                         IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //15 source of values
                         IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //16 operators

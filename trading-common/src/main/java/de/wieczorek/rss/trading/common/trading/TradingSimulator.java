@@ -9,6 +9,7 @@ import de.wieczorek.rss.trading.common.oracle.TraderState;
 import de.wieczorek.rss.trading.types.Account;
 import de.wieczorek.rss.trading.types.ActionVertexType;
 import de.wieczorek.rss.trading.types.StateEdge;
+import de.wieczorek.rss.trading.types.StateEdgeChainMetaInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,14 +30,24 @@ public class TradingSimulator {
     private DataGeneratorBuilder dataGeneratorBuilder;
 
     public List<Trade> simulate(Oracle oracle) {
-
         DataGenerator generator = dataGeneratorBuilder.produceGenerator();
         return simulate(generator, oracle).getTrades();
     }
 
-    public TradingSimulationResult simulate(DataGenerator generator, Oracle oracle) {
 
-        StateEdge current = generator.buildNewStartState(0);
+    public TradingSimulationResult simulate(StateEdgeChainMetaInfo metaInfo, DataGenerator generator, Oracle oracle) {
+        StateEdge startState = generator.buildNewStartState(metaInfo);
+        return simulate(startState, generator, oracle);
+    }
+
+    public TradingSimulationResult simulate(DataGenerator generator, Oracle oracle) {
+        StateEdge startState = generator.buildNewStartState(0);
+        return simulate(startState, generator, oracle);
+    }
+
+    public TradingSimulationResult simulate(StateEdge startState, DataGenerator generator, Oracle oracle) {
+
+        StateEdge current = startState;
         List<Trade> trades = new ArrayList<>();
 
         OracleInput input = new OracleInput();
