@@ -8,12 +8,14 @@ import org.ta4j.core.indicators.RSIIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 @ApplicationScoped
 public class RsiMetricCalculator implements MetricCalculator {
 
     @Override
-    public ChartMetricRecord calculate(TimeSeries timeSeries) {
+    public ChartMetricRecord calculate(TimeSeries timeSeries, Map<Integer, BiConsumer<ChartMetricRecord, Double>> config) {
         ClosePriceIndicator closePrice = new ClosePriceIndicator(timeSeries);
         int lastIndex = timeSeries.getEndIndex();
         ChartMetricRecord result = new ChartMetricRecord();
@@ -22,11 +24,9 @@ public class RsiMetricCalculator implements MetricCalculator {
         id.setIndicator("rsi");
         result.setId(id);
 
-        result.setValue1min(new RSIIndicator(closePrice, 14).getValue(lastIndex).doubleValue());
-        result.setValue5min(new RSIIndicator(closePrice, 14 * 5).getValue(lastIndex).doubleValue());
-        result.setValue15min(new RSIIndicator(closePrice, 14 * 15).getValue(lastIndex).doubleValue());
-        result.setValue30min(new RSIIndicator(closePrice, 14 * 30).getValue(lastIndex).doubleValue());
-        result.setValue60min(new RSIIndicator(closePrice, 14 * 60).getValue(lastIndex).doubleValue());
+        for (Map.Entry<Integer, BiConsumer<ChartMetricRecord, Double>> entry : config.entrySet()) {
+            entry.getValue().accept(result, new RSIIndicator(closePrice, 14 * entry.getKey()).getValue(lastIndex).doubleValue());
+        }
 
         return result;
     }

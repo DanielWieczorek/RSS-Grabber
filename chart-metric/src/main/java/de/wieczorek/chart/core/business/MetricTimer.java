@@ -54,10 +54,11 @@ public class MetricTimer implements Runnable {
             series.addBar(b);
         });
 
+
         List<ChartMetricRecord> records = new ArrayList<>();
 
         metricCalculators.forEach(calculator ->
-                records.add(calculator.calculate(series))
+                records.add(calculator.calculate(series, DurationFieldMappingHolder.configs))
         );
 
         dao.upsert(records);

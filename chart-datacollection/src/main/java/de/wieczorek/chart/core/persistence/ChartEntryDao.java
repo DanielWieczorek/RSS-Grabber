@@ -1,9 +1,9 @@
 package de.wieczorek.chart.core.persistence;
 
 import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.importexport.db.ImportExportDao;
 import de.wieczorek.core.persistence.EntityManagerHelper;
 import de.wieczorek.core.persistence.EntityManagerProvider;
+import de.wieczorek.importexport.db.ImportExportDao;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
@@ -44,8 +44,8 @@ public class ChartEntryDao extends ImportExportDao<ChartEntry> {
         return allQuery.getResultList();
     }
 
-    public List<ChartEntry> find24h() {
-        LocalDateTime date = LocalDateTime.now().withSecond(0).withNano(0).minusHours(24);
+    public List<ChartEntry> findAfter(LocalDateTime time) {
+        LocalDateTime date = time.withSecond(0).withNano(0).minusHours(24);
         TypedQuery<ChartEntry> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM ChartEntry s WHERE s.date >= :time", ChartEntry.class)
                 .setParameter("time", date);

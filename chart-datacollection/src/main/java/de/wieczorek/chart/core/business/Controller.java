@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @ApplicationScoped
@@ -37,9 +38,8 @@ public class Controller extends ControllerBase {
         return dao.findAll();
     }
 
-    public List<ChartEntry> get24h() {
 
-        return dao.find24h();
+    public List<ChartEntry> getStartingFrom(LocalDateTime startDate) {
+        return dao.findAfter(startDate);
     }
-
 }

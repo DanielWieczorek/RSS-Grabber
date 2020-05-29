@@ -7,12 +7,14 @@ import org.ta4j.core.TimeSeries;
 import org.ta4j.core.indicators.AroonOscillatorIndicator;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 @ApplicationScoped
 public class AroonMetricCalculator implements MetricCalculator {
 
     @Override
-    public ChartMetricRecord calculate(TimeSeries timeSeries) {
+    public ChartMetricRecord calculate(TimeSeries timeSeries, Map<Integer, BiConsumer<ChartMetricRecord, Double>> config) {
         int lastIndex = timeSeries.getBarCount() - 1;
         ChartMetricRecord result = new ChartMetricRecord();
 
@@ -21,11 +23,9 @@ public class AroonMetricCalculator implements MetricCalculator {
         id.setIndicator("aroon");
         result.setId(id);
 
-        result.setValue1min(new AroonOscillatorIndicator(timeSeries, 25).getValue(lastIndex).doubleValue());
-        result.setValue5min(new AroonOscillatorIndicator(timeSeries, 25 * 5).getValue(lastIndex).doubleValue());
-        result.setValue15min(new AroonOscillatorIndicator(timeSeries, 25 * 15).getValue(lastIndex).doubleValue());
-        result.setValue30min(new AroonOscillatorIndicator(timeSeries, 25 * 30).getValue(lastIndex).doubleValue());
-        result.setValue60min(new AroonOscillatorIndicator(timeSeries, 25 * 60).getValue(lastIndex).doubleValue());
+        for (Map.Entry<Integer, BiConsumer<ChartMetricRecord, Double>> entry : config.entrySet()) {
+            entry.getValue().accept(result, new AroonOscillatorIndicator(timeSeries, 25 * entry.getKey()).getValue(lastIndex).doubleValue());
+        }
 
         return result;
     }

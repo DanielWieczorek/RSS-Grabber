@@ -8,12 +8,14 @@ import org.ta4j.core.indicators.StochasticOscillatorDIndicator;
 import org.ta4j.core.indicators.StochasticOscillatorKIndicator;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 @ApplicationScoped
 public class StochasticDMetricCalculator implements MetricCalculator {
 
     @Override
-    public ChartMetricRecord calculate(TimeSeries timeSeries) {
+    public ChartMetricRecord calculate(TimeSeries timeSeries, Map<Integer, BiConsumer<ChartMetricRecord, Double>> config) {
         ChartMetricRecord result = new ChartMetricRecord();
         int lastIndex = timeSeries.getEndIndex();
 
@@ -22,20 +24,11 @@ public class StochasticDMetricCalculator implements MetricCalculator {
         id.setIndicator("stochasticD");
         result.setId(id);
 
-        StochasticOscillatorKIndicator stochasticK = new StochasticOscillatorKIndicator(timeSeries, 14);
-        result.setValue1min(new StochasticOscillatorDIndicator(stochasticK).getValue(lastIndex).doubleValue());
+        for (Map.Entry<Integer, BiConsumer<ChartMetricRecord, Double>> entry : config.entrySet()) {
+            StochasticOscillatorKIndicator stochasticK = new StochasticOscillatorKIndicator(timeSeries, 14 * entry.getKey());
 
-        stochasticK = new StochasticOscillatorKIndicator(timeSeries, 14 * 5);
-        result.setValue5min(new StochasticOscillatorDIndicator(stochasticK).getValue(lastIndex).doubleValue());
-
-        stochasticK = new StochasticOscillatorKIndicator(timeSeries, 14 * 15);
-        result.setValue15min(new StochasticOscillatorDIndicator(stochasticK).getValue(lastIndex).doubleValue());
-
-        stochasticK = new StochasticOscillatorKIndicator(timeSeries, 14 * 30);
-        result.setValue30min(new StochasticOscillatorDIndicator(stochasticK).getValue(lastIndex).doubleValue());
-
-        stochasticK = new StochasticOscillatorKIndicator(timeSeries, 14 * 60);
-        result.setValue60min(new StochasticOscillatorDIndicator(stochasticK).getValue(lastIndex).doubleValue());
+            entry.getValue().accept(result, new StochasticOscillatorDIndicator(stochasticK).getValue(lastIndex).doubleValue());
+        }
         return result;
     }
 

@@ -8,12 +8,14 @@ import org.ta4j.core.indicators.MACDIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 @ApplicationScoped
 public class MacdMetricCalculator implements MetricCalculator {
 
     @Override
-    public ChartMetricRecord calculate(TimeSeries timeSeries) {
+    public ChartMetricRecord calculate(TimeSeries timeSeries, Map<Integer, BiConsumer<ChartMetricRecord, Double>> config) {
         ClosePriceIndicator closePrice = new ClosePriceIndicator(timeSeries);
         int lastIndex = timeSeries.getEndIndex();
 
@@ -23,11 +25,9 @@ public class MacdMetricCalculator implements MetricCalculator {
         id.setIndicator("macd");
         result.setId(id);
 
-        result.setValue1min(new MACDIndicator(closePrice, 12, 26).getValue(lastIndex).doubleValue());
-        result.setValue5min(new MACDIndicator(closePrice, 12 * 5, 26 * 5).getValue(lastIndex).doubleValue());
-        result.setValue15min(new MACDIndicator(closePrice, 12 * 15, 26 * 15).getValue(lastIndex).doubleValue());
-        result.setValue30min(new MACDIndicator(closePrice, 12 * 30, 26 * 30).getValue(lastIndex).doubleValue());
-        result.setValue60min(new MACDIndicator(closePrice, 12 * 60, 26 * 60).getValue(lastIndex).doubleValue());
+        for (Map.Entry<Integer, BiConsumer<ChartMetricRecord, Double>> entry : config.entrySet()) {
+            entry.getValue().accept(result, new MACDIndicator(closePrice, 12 * entry.getKey(), 26 * entry.getKey()).getValue(lastIndex).doubleValue());
+        }
 
         return result;
     }

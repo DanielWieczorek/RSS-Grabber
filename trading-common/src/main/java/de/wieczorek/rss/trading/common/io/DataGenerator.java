@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 public class DataGenerator {
     private static final int STEPPING = 1;
     private static final int DEPTH = 1440;
-    private static final int WIDTH = 1440;
+    private static final int WIDTH = 60;
     private List<StateEdgePart> stateParts;
     private List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> currentSentiment;
     private List<TradingEvaluationResult> currentMetricSentiment;

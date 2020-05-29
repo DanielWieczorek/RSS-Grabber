@@ -72,8 +72,9 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
                     DoubleNum.valueOf(0).function());
             series.addBar(b);
 
+
             metricCalculators.forEach(calculator -> {
-                records.add(calculator.calculate(series));
+                records.add(calculator.calculate(series, DurationFieldMappingHolder.configs));
 
 
             });
