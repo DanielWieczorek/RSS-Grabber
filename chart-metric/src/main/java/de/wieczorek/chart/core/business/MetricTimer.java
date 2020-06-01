@@ -39,7 +39,7 @@ public class MetricTimer implements Runnable {
 
     @Override
     public void run() {
-        List<ChartEntry> chartEntries = caller.ohlcv24h();
+        List<ChartEntry> chartEntries = caller.ohlcv24d();
         chartEntries.sort(Comparator.comparing(ChartEntry::getDate));
 
         BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());

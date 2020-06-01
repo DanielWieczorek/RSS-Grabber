@@ -14,26 +14,34 @@ import java.time.LocalDateTime;
 public class TradingEvaluationResult {
 
     @Column(name = "predictedDelta")
-    private double prediction;
-
+    private double predictedDelta;
+    @Column(name = "absolutePrediction")
+    private double absolutePrediction;
     @Id
     @Column(name = "targetTime")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime targetTime;
-
     @Id
     @Column(name = "currentTime")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime currentTime;
 
-    public double getPrediction() {
-        return prediction;
+    public double getAbsolutePrediction() {
+        return absolutePrediction;
     }
 
-    public void setPrediction(double prediction) {
-        this.prediction = prediction;
+    public void setAbsolutePrediction(double absolutePrediction) {
+        this.absolutePrediction = absolutePrediction;
+    }
+
+    public double getPredictedDelta() {
+        return predictedDelta;
+    }
+
+    public void setPredictedDelta(double predictedDelta) {
+        this.predictedDelta = predictedDelta;
     }
 
     public LocalDateTime getTargetTime() {

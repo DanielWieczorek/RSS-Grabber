@@ -60,7 +60,10 @@ public class TradingNeuralNetworkPredictor
     @Override
     protected TradingEvaluationResult buildPredictionResult(NetInputItem input, INDArray output) {
         TradingEvaluationResult result = new TradingEvaluationResult();
-        result.setPrediction(output.getDouble(0));
+        result.setPredictedDelta(output.getDouble(0));
+        result.setAbsolutePrediction(input.getChartEntries().get(input.getChartEntries().size() - 1).getClose()
+                + result.getPredictedDelta());
+
         return result;
     }
 

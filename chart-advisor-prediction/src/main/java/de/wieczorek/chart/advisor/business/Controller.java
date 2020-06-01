@@ -60,14 +60,14 @@ public class Controller extends ControllerBase {
                 TradingEvaluationResult result = nn.predict(item);
                 result.setCurrentTime(currentTime);
                 result.setTargetTime(currentTime.plusMinutes(preparator.getOffsetMinutes()));
-
+                result.setAbsolutePrediction(item.getChartEntries().get(item.getChartEntries().size() - 1).getClose()
+                );
                 return result;
             } else {
                 logger.error("could not generate training data");
             }
         }
         return null;
-
     }
 
     public void recompute() {
@@ -110,7 +110,6 @@ public class Controller extends ControllerBase {
             TradingEvaluationResult result = new TradingEvaluationResult();
             result.setCurrentTime(item.getCurrentTime());
             result.setTargetTime(item.getTargetTime());
-            result.setPrediction(item.getPrediction() + timeToChartEntry.get(item.getTargetTime()));
             return result;
         }).collect(Collectors.toList());
 
@@ -123,7 +122,7 @@ public class Controller extends ControllerBase {
 
             TradingEvaluationResult current = rawPredictions.get(i - 1);
 
-            current.setPrediction((before1.getPrediction() + before2.getPrediction() + current.getPrediction()) / 3.0);
+            current.setPredictedDelta((before1.getPredictedDelta() + before2.getPredictedDelta() + current.getPredictedDelta()) / 3.0);
             finalResult.add(current);
         }
 

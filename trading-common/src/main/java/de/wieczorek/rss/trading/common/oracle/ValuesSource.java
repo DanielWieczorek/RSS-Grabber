@@ -27,7 +27,7 @@ public enum ValuesSource {
         if (eval == null) {
             return null;
         }
-        return eval.getPrediction();
+        return eval.getPredictedDelta();
     }
 
     public static Double processChartDelta(StateEdgePart input) {

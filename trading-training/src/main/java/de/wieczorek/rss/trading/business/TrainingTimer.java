@@ -104,6 +104,7 @@ public class TrainingTimer implements Runnable {
         metadata.setDepth(generator.getMaxIndex());
         metadata.setWidth(60);
         metadata.setOffset(0);
+
         return metadata;
     }
 

@@ -42,42 +42,45 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
 
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
-        BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());
 
         List<ChartEntry> chartEntries = caller.ohlcv();
         chartEntries = chartEntries.stream().distinct().sorted(Comparator.comparing(ChartEntry::getDate))
                 .collect(Collectors.toList());
 
-        int index = 0;
+        int seriesEndIndex = 0;
         for (int i = 0; i < chartEntries.size(); i++) {
-            index = i;
+            seriesEndIndex = i;
             if (chartEntries.get(i).getDate().isAfter(startDate)) {
                 break;
             }
         }
 
+        int seriesStartIndex = 0;
+        for (int i = 0; i < chartEntries.size(); i++) {
+            seriesStartIndex = i;
+            if (chartEntries.get(i).getDate().isAfter(startDate.minusDays(24))) {
+                break;
+            }
+        }
+
+
         int lastIndex = 0;
-
-
         List<ChartMetricRecord> records = new ArrayList<>();
-        for (int i = index; i < (1440 + index) && i < chartEntries.size(); i++) {
-            ChartEntry entry = chartEntries.get(i);
+        for (int i = 0; i < 300; i++) {
+            BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());
 
-            Bar b = new BaseBar(ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
-                    entry.getOpen(), //
-                    entry.getHigh(), //
-                    entry.getLow(), //
-                    entry.getClose(), //
-                    entry.getVolume(), //
-                    DoubleNum.valueOf(0).function());
-            series.addBar(b);
-
-
-            metricCalculators.forEach(calculator -> {
-                records.add(calculator.calculate(series, DurationFieldMappingHolder.configs));
-
-
+            List<ChartEntry> entries = chartEntries.subList(seriesStartIndex + i, seriesEndIndex + i);
+            entries.forEach(entry -> {
+                Bar b = new BaseBar(ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
+                        entry.getOpen(), //
+                        entry.getHigh(), //
+                        entry.getLow(), //
+                        entry.getClose(), //
+                        entry.getVolume(), //
+                        DoubleNum.valueOf(0).function());
+                series.addBar(b);
             });
+            metricCalculators.forEach(calculator -> records.add(calculator.calculate(series, DurationFieldMappingHolder.configs)));
             lastIndex = i;
         }
 

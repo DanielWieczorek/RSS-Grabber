@@ -27,6 +27,18 @@ public class ChartMetricRecord {
     @Column(name = "value_60_min")
     private double value60min;
 
+    @Column(name = "value_2_hour")
+    private double value2hour;
+
+    @Column(name = "value_6_hour")
+    private double value6hour;
+
+    @Column(name = "value_12_hour")
+    private double value12hour;
+
+    @Column(name = "value_24_hour")
+    private double value24hour;
+
     public double getValue1min() {
         return value1min;
     }
@@ -65,6 +77,38 @@ public class ChartMetricRecord {
 
     public void setValue60min(double value60min) {
         this.value60min = value60min;
+    }
+
+    public double getValue2hour() {
+        return value2hour;
+    }
+
+    public void setValue2hour(double value2hour) {
+        this.value2hour = value2hour;
+    }
+
+    public double getValue6hour() {
+        return value6hour;
+    }
+
+    public void setValue6hour(double value6hour) {
+        this.value6hour = value6hour;
+    }
+
+    public double getValue12hour() {
+        return value12hour;
+    }
+
+    public void setValue12hour(double value12hour) {
+        this.value12hour = value12hour;
+    }
+
+    public double getValue24hour() {
+        return value24hour;
+    }
+
+    public void setValue24hour(double value24hour) {
+        this.value24hour = value24hour;
     }
 
     public ChartMetricId getId() {

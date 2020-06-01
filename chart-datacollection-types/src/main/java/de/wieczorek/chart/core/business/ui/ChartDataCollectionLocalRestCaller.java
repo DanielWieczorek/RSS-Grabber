@@ -30,4 +30,11 @@ public class ChartDataCollectionLocalRestCaller implements CallableResource {
         return target.path("/ohlcv/24h").request(MediaType.APPLICATION_JSON).get(new GenericType<List<ChartEntry>>() {
         });
     }
+
+    @Override
+    public List<ChartEntry> ohlcv24d() {
+        return target.path("/ohlcv/24d").request(MediaType.APPLICATION_JSON).get(new GenericType<List<ChartEntry>>() {
+        });
+    }
 }
+

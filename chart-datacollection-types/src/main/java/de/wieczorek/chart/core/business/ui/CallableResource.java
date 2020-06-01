@@ -10,4 +10,6 @@ public interface CallableResource {
 
 
     List<ChartEntry> ohlcv24h();
+
+    List<ChartEntry> ohlcv24d();
 }
