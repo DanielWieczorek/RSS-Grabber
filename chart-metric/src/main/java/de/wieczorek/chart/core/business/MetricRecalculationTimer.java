@@ -43,9 +43,17 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
 
+
         List<ChartEntry> chartEntries = caller.ohlcv();
         chartEntries = chartEntries.stream().distinct().sorted(Comparator.comparing(ChartEntry::getDate))
                 .collect(Collectors.toList());
+
+        LocalDateTime minimumStartDate = chartEntries.get(0).getDate().plusHours(24);
+
+        if (startDate.isBefore(minimumStartDate)) {
+            startDate = minimumStartDate;
+        }
+
 
         int seriesEndIndex = 0;
         for (int i = 0; i < chartEntries.size(); i++) {
@@ -87,7 +95,7 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
         dao.upsert(records);
 
         if (lastIndex < chartEntries.size() - 1) {
-            return chartEntries.get(lastIndex).getDate();
+            return chartEntries.get(seriesEndIndex + lastIndex).getDate();
         } else {
             return null;
 

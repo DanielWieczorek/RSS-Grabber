@@ -1,5 +1,6 @@
 package de.wieczorek.chart.core.business;
 
+import com.google.common.base.Stopwatch;
 import de.wieczorek.chart.core.business.ui.ChartDataCollectionLocalRestCaller;
 import de.wieczorek.chart.core.persistence.ChartMetricDao;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
@@ -42,6 +43,7 @@ public class MetricTimer implements Runnable {
         List<ChartEntry> chartEntries = caller.ohlcv24d();
         chartEntries.sort(Comparator.comparing(ChartEntry::getDate));
 
+        Stopwatch sw1 = Stopwatch.createStarted();
         BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());
         chartEntries.forEach(entry -> {
             Bar b = new BaseBar(ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
@@ -53,15 +55,20 @@ public class MetricTimer implements Runnable {
                     DoubleNum.valueOf(0).function());
             series.addBar(b);
         });
-
+        logger.debug("creating the time series: " + sw1.elapsed().toSeconds());
 
         List<ChartMetricRecord> records = new ArrayList<>();
 
+        sw1 = Stopwatch.createStarted();
         metricCalculators.forEach(calculator ->
                 records.add(calculator.calculate(series, DurationFieldMappingHolder.configs))
         );
+        logger.debug("calculating metrics took: " + sw1.elapsed().toSeconds());
 
+
+        sw1 = Stopwatch.createStarted();
         dao.upsert(records);
+        logger.debug("persisting took: " + sw1.elapsed().toSeconds());
 
     }
 }
