@@ -1,4 +1,4 @@
-exportclassChartMetricId {
+export class ChartMetricId {
   indicator:string;
 }
 
