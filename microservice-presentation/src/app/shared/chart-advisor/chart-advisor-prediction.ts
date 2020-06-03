@@ -1,11 +1,12 @@
-export class ChartMetricId {
-    indicator: string;
+exportclassChartMetricId {
+  indicator:string;
 }
 
 export class ChartAdvisorPrediction {
 
-      prediction: number;
-      targetTime: Date;
-      currentTime: Date;
+absolutePrediction: number;
+predictedDelta: number;
+targetTime: Date;
+currentTime: Date;
 
 }

@@ -1,33 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { ChartMetricRecord } from '../shared/chart-metric/chart-metric-record';
-import { ChartMetricService } from '../shared/chart-metric/chart-metric.service';
-import { ChartAdvisorService } from '../shared/chart-advisor/chart-advisor.service';
-import { ChartAdvisorPrediction } from '../shared/chart-advisor/chart-advisor-prediction';
-import { Chart } from 'chart.js';
+import{Component, OnInit}from '@angular/core';
+import {ChartMetricRecord}from '../shared/chart-metric/chart-metric-record';
+import { ChartMetricService}from '../shared/chart-metric/chart-metric.service';
+import {ChartAdvisorService }from '../shared/chart-advisor/chart-advisor.service';
+import {ChartAdvisorPrediction} from '../shared/chart-advisor/chart-advisor-prediction';
+import {Chart}from 'chart.js';
 
-import { ChartEntry } from '../shared/chart-reader/chart-entry';
-import { ChartReaderService } from '../shared/chart-reader/chart-reader.service'
+import {ChartEntry} from '../shared/chart-reader/chart-entry';
+import {ChartReaderService}from '../shared/chart-reader/chart-reader.service'
 
 
 @Component({
-  selector: 'app-chart-metric',
-  templateUrl: './chart-metric.component.html',
-  styleUrls: ['./chart-metric.component.css']
+selector: 'app-chart-metric',
+templateUrl: './chart-metric.component.html',
+styleUrls: ['./chart-metric.component.css']
 })
 export class ChartMetricComponent implements OnInit {
 
-  title = 'app';
-  data : ChartMetricRecord[];
-  error: string;
-  chart = []; // This will hold our chart info
-  chartData: ChartEntry[];
-  trades: ChartAdvisorPrediction[];
+title = 'app';
+data : ChartMetricRecord[];
+error: string;
+chart = []; // This will hold our chart info
+chartData: ChartEntry[];
+trades: ChartAdvisorPrediction[];
 
 
-  constructor(private chartMetric: ChartMetricService, private chartAdvisor: ChartAdvisorService,
+constructor(private chartMetric: ChartMetricService, private chartAdvisor: ChartAdvisorService,
   private chartReader : ChartReaderService){
   }
-  
+
   requestCurrentHourSentiment() : void {
       this.chartMetric.getNow().subscribe(data => {
           console.log("test",data);
@@ -35,7 +35,7 @@ export class ChartMetricComponent implements OnInit {
       },
       err => this.error = err);
   }
-  
+
   ngOnInit(): void {
       this.requestCurrentHourSentiment();
   }
@@ -69,7 +69,7 @@ export class ChartMetricComponent implements OnInit {
                       } )
 
                       if ( sellFound[0] !== undefined ) {
-                          sellData.push( sellFound[0].prediction )
+                          sellData.push( sellFound[0].absolutePrediction )
                       } else {
                           sellData.push( NaN )
                       }
