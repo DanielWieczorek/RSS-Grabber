@@ -45,10 +45,9 @@ public class ChartEntryDao extends ImportExportDao<ChartEntry> {
     }
 
     public List<ChartEntry> findAfter(LocalDateTime time) {
-        LocalDateTime date = time.withSecond(0).withNano(0).minusHours(24);
         TypedQuery<ChartEntry> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM ChartEntry s WHERE s.date >= :time", ChartEntry.class)
-                .setParameter("time", date);
+                .setParameter("time", time);
         return query.getResultList();
     }
 
