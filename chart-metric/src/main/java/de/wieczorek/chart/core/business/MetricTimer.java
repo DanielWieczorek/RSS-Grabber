@@ -9,13 +9,15 @@ import de.wieczorek.core.timer.RecurrentTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ta4j.core.Bar;
+import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseBar;
-import org.ta4j.core.BaseTimeSeries;
+import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.num.DoubleNum;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -44,17 +46,18 @@ public class MetricTimer implements Runnable {
         chartEntries.sort(Comparator.comparing(ChartEntry::getDate));
 
         Stopwatch sw1 = Stopwatch.createStarted();
-        BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());
+        BarSeries series = new BaseBarSeries("foo", DoubleNum.valueOf(0).function());
         chartEntries.forEach(entry -> {
-            Bar b = new BaseBar(ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
+            Bar b = new BaseBar(Duration.ofMinutes(1), ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
                     entry.getOpen(), //
                     entry.getHigh(), //
                     entry.getLow(), //
                     entry.getClose(), //
-                    entry.getVolume(), //
-                    DoubleNum.valueOf(0).function());
+                    entry.getVolume());
             series.addBar(b);
         });
+
+
         logger.debug("creating the time series: " + sw1.elapsed().toSeconds());
 
         List<ChartMetricRecord> records = new ArrayList<>();

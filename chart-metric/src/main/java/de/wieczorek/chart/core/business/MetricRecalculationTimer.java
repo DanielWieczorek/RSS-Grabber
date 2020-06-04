@@ -10,12 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BaseBar;
-import org.ta4j.core.BaseTimeSeries;
+import org.ta4j.core.BaseBarSeries;
 import org.ta4j.core.num.DoubleNum;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -75,17 +76,16 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
         int lastIndex = 0;
         List<ChartMetricRecord> records = new ArrayList<>();
         for (int i = 0; i < 300; i++) {
-            BaseTimeSeries series = new BaseTimeSeries("foo", DoubleNum.valueOf(0).function());
+            BaseBarSeries series = new BaseBarSeries("foo", DoubleNum.valueOf(0).function());
 
             List<ChartEntry> entries = chartEntries.subList(seriesStartIndex + i, seriesEndIndex + i);
             entries.forEach(entry -> {
-                Bar b = new BaseBar(ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
+                Bar b = new BaseBar(Duration.ofMinutes(1), ZonedDateTime.of(entry.getDate(), ZoneId.of("UTC")), //
                         entry.getOpen(), //
                         entry.getHigh(), //
                         entry.getLow(), //
                         entry.getClose(), //
-                        entry.getVolume(), //
-                        DoubleNum.valueOf(0).function());
+                        entry.getVolume());
                 series.addBar(b);
             });
             metricCalculators.forEach(calculator -> records.add(calculator.calculate(series, DurationFieldMappingHolder.configs)));

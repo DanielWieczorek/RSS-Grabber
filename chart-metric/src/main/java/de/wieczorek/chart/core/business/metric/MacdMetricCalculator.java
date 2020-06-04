@@ -3,11 +3,14 @@ package de.wieczorek.chart.core.business.metric;
 import de.wieczorek.chart.core.business.MetricCalculator;
 import de.wieczorek.chart.core.persistence.ChartMetricId;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import org.ta4j.core.TimeSeries;
+import org.ta4j.core.BarSeries;
+import org.ta4j.core.aggregator.BaseBarSeriesAggregator;
+import org.ta4j.core.aggregator.DurationBarAggregator;
 import org.ta4j.core.indicators.MACDIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.time.Duration;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -15,7 +18,7 @@ import java.util.function.BiConsumer;
 public class MacdMetricCalculator implements MetricCalculator {
 
     @Override
-    public ChartMetricRecord calculate(TimeSeries timeSeries, Map<Integer, BiConsumer<ChartMetricRecord, Double>> config) {
+    public ChartMetricRecord calculate(BarSeries timeSeries, Map<Integer, BiConsumer<ChartMetricRecord, Double>> config) {
         ClosePriceIndicator closePrice = new ClosePriceIndicator(timeSeries);
         int lastIndex = timeSeries.getEndIndex();
 
@@ -26,7 +29,9 @@ public class MacdMetricCalculator implements MetricCalculator {
         result.setId(id);
 
         for (Map.Entry<Integer, BiConsumer<ChartMetricRecord, Double>> entry : config.entrySet()) {
-            entry.getValue().accept(result, new MACDIndicator(closePrice, 12 * entry.getKey(), 26 * entry.getKey()).getValue(lastIndex).doubleValue());
+            BaseBarSeriesAggregator aggregator = new BaseBarSeriesAggregator(new DurationBarAggregator(Duration.ofMinutes(entry.getKey()), false));
+            BarSeries series = aggregator.aggregate(timeSeries);
+            entry.getValue().accept(result, new MACDIndicator(closePrice, 12, 26).getValue(series.getEndIndex()).doubleValue());
         }
 
         return result;
