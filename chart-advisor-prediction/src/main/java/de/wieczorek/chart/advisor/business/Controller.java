@@ -19,10 +19,7 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {
@@ -95,41 +92,4 @@ public class Controller extends ControllerBase {
         return dao.findAll();
     }
 
-    public List<TradingEvaluationResult> get24hAbsolutePrediction() {
-        List<ChartEntry> chartEntries = chartDataCollectionCaller.ohlcv24h();
-
-        Map<LocalDateTime, Double> timeToChartEntry = chartEntries
-                .stream()
-                .collect(Collectors.toMap(entry -> entry.getDate(), entry -> entry.getClose(), (y, x) -> y));
-
-        List<TradingEvaluationResult> data = get24hPrediction();
-
-
-        List<TradingEvaluationResult> rawPredictions = data.stream().filter(item -> timeToChartEntry.containsKey(item.getTargetTime())).map(item -> {
-            TradingEvaluationResult result = new TradingEvaluationResult();
-            result.setCurrentTime(item.getCurrentTime());
-            result.setTargetTime(item.getTargetTime());
-            result.setPredictedDelta(item.getPredictedDelta());
-            result.setAbsolutePrediction(item.getAbsolutePrediction());
-            return result;
-        }).collect(Collectors.toList());
-
-        List<TradingEvaluationResult> finalResult = new ArrayList<>();
-
-
-        for (int i = 2; i < rawPredictions.size(); i++) {
-            TradingEvaluationResult before1 = rawPredictions.get(i - 2);
-            TradingEvaluationResult before2 = rawPredictions.get(i - 1);
-
-            TradingEvaluationResult current = rawPredictions.get(i - 1);
-
-            current.setPredictedDelta((before1.getPredictedDelta() + before2.getPredictedDelta() + current.getPredictedDelta()) / 3.0);
-            current.setAbsolutePrediction((before1.getAbsolutePrediction() + before2.getAbsolutePrediction() + current.getAbsolutePrediction()) / 3.0);
-
-            finalResult.add(current);
-        }
-
-        return finalResult;
-
-    }
 }

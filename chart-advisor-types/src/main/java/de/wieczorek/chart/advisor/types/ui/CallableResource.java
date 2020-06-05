@@ -10,7 +10,6 @@ public interface CallableResource {
 
     List<TradingEvaluationResult> predict24h();
 
-    List<TradingEvaluationResult> predict24hAbsolute();
 
     List<TradingEvaluationResult> getAllSentiments();
 

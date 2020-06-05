@@ -13,7 +13,7 @@ export class ChartAdvisorService {
     constructor( private http: HttpClient, private helper: HttpHelperService) { }
 
     get24hAbsolute(): Observable<ChartAdvisorPrediction[]> {
-        return this.http.get<ChartAdvisorPrediction[]>( this.helper.buildPath( 'routing/chart-advisor/sentiment/24hAbsolute') )
+        return this.http.get<ChartAdvisorPrediction[]>( this.helper.buildPath( 'routing/chart-advisor/sentiment/24h') )
         .pipe(catchError(this.helper.handleError));
 
     }

@@ -39,14 +39,6 @@ public class ChartAdvisorRemoteRestCaller implements CallableResource {
     }
 
     @GET
-    @Path("sentiment/24hAbsolute")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<TradingEvaluationResult> predict24hAbsolute() {
-        return target.path("/sentiment/24hAbsolute").request(MediaType.APPLICATION_JSON).get(new GenericType<List<TradingEvaluationResult>>() {
-        });
-    }
-
-    @GET
     @Path("sentiment/all")
     @Produces(MediaType.APPLICATION_JSON)
     public List<TradingEvaluationResult> getAllSentiments() {
