@@ -95,7 +95,7 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
 
         dao.upsert(records);
 
-        if (lastIndex < 300) {
+        if (iterations == 300) {
             return chartEntries.get(seriesEndIndex + lastIndex).getDate();
         } else {
             return null;
