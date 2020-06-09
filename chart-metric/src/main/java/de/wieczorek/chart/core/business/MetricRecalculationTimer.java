@@ -49,7 +49,7 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
         chartEntries = chartEntries.stream().distinct().sorted(Comparator.comparing(ChartEntry::getDate))
                 .collect(Collectors.toList());
 
-        LocalDateTime minimumStartDate = chartEntries.get(0).getDate().plusHours(24);
+        LocalDateTime minimumStartDate = chartEntries.get(0).getDate().plusDays(24);
 
         if (startDate.isBefore(minimumStartDate)) {
             startDate = minimumStartDate;
@@ -72,10 +72,11 @@ public class MetricRecalculationTimer extends AbstractRecalculationTimer {
             }
         }
 
+        int iterations = Math.min(300, chartEntries.size() - seriesEndIndex);
 
         int lastIndex = 0;
         List<ChartMetricRecord> records = new ArrayList<>();
-        for (int i = 0; i < 300; i++) {
+        for (int i = 0; i < iterations; i++) {
             BaseBarSeries series = new BaseBarSeries("foo", DoubleNum.valueOf(0).function());
 
             List<ChartEntry> entries = chartEntries.subList(seriesStartIndex + i, seriesEndIndex + i);
