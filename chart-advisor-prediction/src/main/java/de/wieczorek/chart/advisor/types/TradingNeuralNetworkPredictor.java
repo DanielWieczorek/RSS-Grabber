@@ -40,16 +40,24 @@ public class TradingNeuralNetworkPredictor
 
             }
             for (int j = 0; j < record.size(); j++) {
-                itemVectors[j * 5 + 0][index] = Double.isNaN(record.get(j).getValue1min()) ? 0.0
+                itemVectors[j * 9 + 0][index] = Double.isNaN(record.get(j).getValue1min()) ? 0.0
                         : record.get(j).getValue1min();
-                itemVectors[j * 5 + 1][index] = Double.isNaN(record.get(j).getValue5min()) ? 0.0
+                itemVectors[j * 9 + 1][index] = Double.isNaN(record.get(j).getValue5min()) ? 0.0
                         : record.get(j).getValue5min();
-                itemVectors[j * 5 + 2][index] = Double.isNaN(record.get(j).getValue15min()) ? 0.0
+                itemVectors[j * 9 + 2][index] = Double.isNaN(record.get(j).getValue15min()) ? 0.0
                         : record.get(j).getValue15min();
-                itemVectors[j * 5 + 3][index] = Double.isNaN(record.get(j).getValue30min()) ? 0.0
+                itemVectors[j * 9 + 3][index] = Double.isNaN(record.get(j).getValue30min()) ? 0.0
                         : record.get(j).getValue30min();
-                itemVectors[j * 5 + 4][index] = Double.isNaN(record.get(j).getValue60min()) ? 0.0
+                itemVectors[j * 9 + 4][index] = Double.isNaN(record.get(j).getValue60min()) ? 0.0
                         : record.get(j).getValue60min();
+                itemVectors[j * 9 + 5][index] = Double.isNaN(record.get(j).getValue2hour()) ? 0.0
+                        : record.get(j).getValue2hour();
+                itemVectors[j * 9 + 6][index] = Double.isNaN(record.get(j).getValue6hour()) ? 0.0
+                        : record.get(j).getValue6hour();
+                itemVectors[j * 9 + 7][index] = Double.isNaN(record.get(j).getValue12hour()) ? 0.0
+                        : record.get(j).getValue12hour();
+                itemVectors[j * 9 + 8][index] = Double.isNaN(record.get(j).getValue24hour()) ? 0.0
+                        : record.get(j).getValue24hour();
             }
             index++;
         }
