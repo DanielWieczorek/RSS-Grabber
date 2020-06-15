@@ -21,8 +21,8 @@ public class TradingNeuralNetworkPredictor
     @Override
     protected INDArray buildPredictionFeatures(NetInputItem item) {
         int maxLength = 4 * 60 + 1;
-        int vectorSize = 20;
-
+        int vectorSize = 4 * 9;
+        
         double[][] itemVectors = new double[vectorSize][maxLength];
         int index = 0;
         INDArray features = Nd4j.create(new int[]{1, vectorSize, maxLength}, 'f');
