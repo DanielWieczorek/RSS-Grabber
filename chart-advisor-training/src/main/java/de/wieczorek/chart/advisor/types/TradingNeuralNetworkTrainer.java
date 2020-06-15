@@ -33,27 +33,26 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Tr
     @Override
     protected MultiLayerNetwork buildNetwork() {
 
-        int vectorSize = 20;
+        int vectorSize = 4 * 9;
+        int secondaryLevelSize = vectorSize * 3;
         final int seed = 0;
 
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed).updater(new Adam(2e-4)).l2(1e-5)
                 .weightInit(WeightInit.XAVIER).gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
                 .gradientNormalizationThreshold(1.0).trainingWorkspaceMode(WorkspaceMode.ENABLED).list()
-                .layer(0, new LSTM.Builder().nIn(vectorSize).nOut(120).activation(Activation.TANH).build())
-                .layer(1, new LSTM.Builder().nOut(120).activation(Activation.TANH).build())
-                .layer(2, new LSTM.Builder().nOut(120).activation(Activation.TANH).build())
-                .layer(3, new LSTM.Builder().nOut(120).activation(Activation.TANH).build())
-                .layer(4, new DenseLayer.Builder().nOut(120).activation(Activation.RELU).build())
-                .layer(5, new DropoutLayer.Builder().nOut(120).build())
+                .layer(0, new LSTM.Builder().nIn(vectorSize).nOut(secondaryLevelSize).activation(Activation.TANH).build())
+                .layer(1, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
+                .layer(2, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
+                .layer(3, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
+                .layer(4, new DenseLayer.Builder().nOut(secondaryLevelSize).activation(Activation.RELU).build())
+                .layer(5, new DropoutLayer.Builder().nOut(secondaryLevelSize).build())
                 .layer(6,
                         new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(Activation.IDENTITY)
-                                .l2(0.0001).weightInit(WeightInit.XAVIER).nOut(1).build())
+                                .l2(0.001).weightInit(WeightInit.XAVIER).nOut(1).build())
 
-                .backpropType(BackpropType.Standard)
-
-                .build();
-        conf.setIterationCount(10);
-
+                .backpropType(BackpropType.Standard).build();
+        conf.setIterationCount(1);
+        //Nd4j.getExecutioner().setProfilingConfig(ProfilerConfig.builder().checkForNAN(true).build());
         return new MultiLayerNetwork(conf);
     }
 

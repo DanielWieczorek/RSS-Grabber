@@ -12,16 +12,9 @@ import java.util.stream.Collectors;
 
 public class DataPreparator {
     private static final Logger logger = LoggerFactory.getLogger(DataPreparator.class);
-
-
     private List<ChartMetricRecord> sentiments;
-
     private List<ChartEntry> chartEntries;
-
     private int offsetMinutes = 60;
-
-    private static Map<LocalDateTime, ChartEntry> chartEntryMappings;
-    private static Map<LocalDateTime, ChartMetricRecord> sentimentDateMappings;
 
     public int getOffsetMinutes() {
         return offsetMinutes;
@@ -56,79 +49,45 @@ public class DataPreparator {
                         x.getDate().isEqual(date))
                 .collect(Collectors.toMap(ChartEntry::getDate, Function.identity(), (v1, v2) -> v2));
 
+        interpolate(sentimentDateMappings, chartEntryMappings);
 
-        ChartEntry inputChartEntry = chartEntryMappings.get(time.minusMinutes(1));
-        List<ChartMetricRecord> inputSentiment = sentimentDateMappings.get(time.minusMinutes(1));
+        List<LocalDateTime> dates = chartEntryMappings.keySet().stream().sorted().collect(Collectors.toList());
 
-        return buildNetworkInputItem(time, sentimentDateMappings, chartEntryMappings, inputChartEntry, inputSentiment, true);
+        Map<LocalDateTime, Integer> dateIndexMapping = new HashMap<>();
+        for (int i = 0; i < dates.size(); i++) {
+            dateIndexMapping.put(dates.get(i), i);
+        }
+
+        return buildNetworkInputItem(time, sentimentDateMappings, chartEntryMappings, dateIndexMapping, dates);
 
     }
 
-    private NetInputItem buildNetworkInputItem(LocalDateTime time, Map<LocalDateTime, List<ChartMetricRecord>> sentimentDateMappings, Map<LocalDateTime, ChartEntry> chartEntryMappings, ChartEntry inputChartEntry, List<ChartMetricRecord> inputSentiment, boolean sampleSentiments) {
-        if (inputChartEntry != null && inputSentiment != null) {
-            inputSentiment.sort(Comparator.comparing(metricRecord -> metricRecord.getId().getIndicator()));
+    private NetInputItem buildNetworkInputItem(LocalDateTime time, Map<LocalDateTime, List<ChartMetricRecord>> sentimentDateMappings, Map<LocalDateTime, ChartEntry> chartEntryMappings, Map<LocalDateTime, Integer> dateIndexMapping, List<LocalDateTime> times) {
+        LocalDateTime startDate = time.minusHours(24).plusMinutes(1);
 
+        Integer startIndex = dateIndexMapping.get(startDate);
+        Integer endIndex = dateIndexMapping.get(time);
 
-            Map<ChartEntry, List<ChartMetricRecord>> entries = new HashMap<>();
-            List<ChartEntry> chartEntries = new ArrayList<>();
-            LocalDateTime currentDate = time.minusHours(24).plusMinutes(1);
-
-            List<ChartMetricRecord> lastSentiment = null;
-            ChartEntry lastEntry = null;
-            while (currentDate.isBefore(inputChartEntry.getDate())) {
-
-
-                List<ChartMetricRecord> currentSentiment = sentimentDateMappings.get(currentDate);
-
-                if (currentSentiment != null) {
-                    currentSentiment.sort(Comparator.comparing(metricRecord -> metricRecord.getId().getIndicator()));
-                } else if (lastSentiment != null && sampleSentiments) {
-                    currentSentiment = lastSentiment;
-                } else if (sampleSentiments) {
-                    currentSentiment = new ArrayList<>();
-                    currentSentiment.add(new ChartMetricRecord());
-                    currentSentiment.add(new ChartMetricRecord());
-                    currentSentiment.add(new ChartMetricRecord());
-                    currentSentiment.add(new ChartMetricRecord());
-
-                }
-                if (currentSentiment == null) {
-                    return null;
-                }
-
-                ChartEntry entry = chartEntryMappings.get(currentDate);
-                if (entry != null) {
-                    lastEntry = entry;
-                } else {
-                    entry = lastEntry;
-                }
-
-                entries.put(entry, currentSentiment);
-                chartEntries.add(entry);
-
-                currentDate = currentDate.plusMinutes(1);
-                lastSentiment = currentSentiment;
-            }
-            entries.put(inputChartEntry, sentimentDateMappings.get(currentDate));
-            chartEntries.add(inputChartEntry);
-
+        if (startIndex != null && endIndex != null) {
             NetInputItem result = new NetInputItem();
-            result.setInputChartMetrics(entries);
-            result.setChartEntries(chartEntries);
+            result.setInputChartMetrics(sentimentDateMappings);
+            result.setChartEntries(chartEntryMappings);
+            result.setDates(times);
             result.setDate(time);
-            if (entries.keySet().stream().filter(x -> x == null).count() > 0) {
-                return null;
-            }
+            result.setStartIndex(startIndex);
+            result.setEndIndex(endIndex);
 
             return result;
         }
-        return null;
 
+        return null;
     }
 
 
     public List<NetInputItem> getData() {
         Map<LocalDateTime, List<ChartMetricRecord>> sentimentDateMappings = new HashMap<>();
+
+
         sentiments.forEach(metric ->
                 sentimentDateMappings.merge(metric.getId().getDate(), Arrays.asList(metric), (newMetric, oldMetric) -> {
                     List result = new ArrayList<>();
@@ -138,19 +97,27 @@ public class DataPreparator {
                 })
         );
 
+        Map<LocalDateTime, ChartEntry> chartEntryMappings = new HashMap<>();
+        chartEntries.forEach(entry -> chartEntryMappings.put(entry.getDate(), entry));
 
-        Map<LocalDateTime, ChartEntry> chartEntryMappings = chartEntries.stream()
-                .collect(Collectors.toMap(ChartEntry::getDate, Function.identity(), (v1, v2) -> v2));
+        List<LocalDateTime> dates = chartEntryMappings.keySet().stream().sorted().collect(Collectors.toList());
 
         List<NetInputItem> result = new ArrayList<>();
         LocalDateTime lastDate = chartEntryMappings.keySet().stream().reduce((x, y) -> x.isAfter(y) ? x : y).get();
+
+        Map<LocalDateTime, Integer> dateIndexMapping = new HashMap<>();
+        for (int i = 0; i < dates.size(); i++) {
+            dateIndexMapping.put(dates.get(i), i);
+        }
 
         chartEntryMappings.keySet().stream().filter(entry -> entry.isBefore(lastDate.minusHours(50))).forEach(date -> {
             ChartEntry inputChartEntry = chartEntryMappings.get(date);
             List<ChartMetricRecord> inputSentiment = sentimentDateMappings.get(date);
 
+
             ChartEntry outputChartEntry = chartEntryMappings.get(date.plusMinutes(offsetMinutes));
-            NetInputItem item = buildNetworkInputItem(date, sentimentDateMappings, chartEntryMappings, inputChartEntry, inputSentiment, false);
+            NetInputItem item = buildNetworkInputItem(date, sentimentDateMappings, chartEntryMappings, dateIndexMapping, dates);
+
 
             if (item != null && inputChartEntry != null && inputSentiment != null && outputChartEntry != null) {
                 item.setOutputDelta(outputChartEntry.getClose() - inputChartEntry.getClose());
@@ -159,6 +126,41 @@ public class DataPreparator {
         });
 
         return result;
+    }
+
+    private void interpolate(Map<LocalDateTime, List<ChartMetricRecord>> sentimentDateMappings, Map<LocalDateTime, ChartEntry> chartEntryMappings) {
+        LocalDateTime currentDate = chartEntries.stream().map(ChartEntry::getDate).reduce((a, b) -> a.isBefore(b) ? a : b).get();
+        LocalDateTime maxDate = chartEntries.stream().map(ChartEntry::getDate).reduce((a, b) -> a.isAfter(b) ? a : b).get();
+        List<ChartMetricRecord> lastSentiment = null;
+        ChartEntry lastEntry = null;
+        while (currentDate.isBefore(maxDate)) {
+            List<ChartMetricRecord> currentSentiment = sentimentDateMappings.get(currentDate);
+
+            if (currentSentiment != null) {
+                currentSentiment.sort(Comparator.comparing(metricRecord -> metricRecord.getId().getIndicator()));
+            } else if (lastSentiment != null) {
+                currentSentiment = lastSentiment;
+            } else {
+                currentSentiment = new ArrayList<>();
+                currentSentiment.add(new ChartMetricRecord());
+                currentSentiment.add(new ChartMetricRecord());
+                currentSentiment.add(new ChartMetricRecord());
+                currentSentiment.add(new ChartMetricRecord());
+            }
+
+            ChartEntry entry = chartEntryMappings.get(currentDate);
+            if (entry != null) {
+                lastEntry = entry;
+            } else {
+                entry = lastEntry;
+            }
+
+            sentimentDateMappings.put(currentDate, currentSentiment);
+            chartEntryMappings.put(currentDate, entry);
+
+            currentDate = currentDate.plusMinutes(1);
+            lastSentiment = currentSentiment;
+        }
     }
 
 }

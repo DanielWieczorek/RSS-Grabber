@@ -22,9 +22,8 @@ public class SentimentExampleIterator implements DataSetIterator {
     private static final long serialVersionUID = 1L;
 
     private final int batchSize;
-
-    private int cursor = 0;
     private final List<TrainingNetInputItem> files;
+    private int cursor = 0;
 
     public SentimentExampleIterator(List<TrainingNetInputItem> entries, int batchSize, boolean train) {
         this.batchSize = batchSize;
@@ -52,7 +51,7 @@ public class SentimentExampleIterator implements DataSetIterator {
         if (cursor >= files.size())
             throw new NoSuchElementException();
 
-            return nextDataSet(num);
+        return nextDataSet(num);
     }
 
     private DataSet nextDataSet(int num) {
@@ -67,7 +66,7 @@ public class SentimentExampleIterator implements DataSetIterator {
         }
 
         int maxLength = 24 * 4 + 1;
-        int vectorSize = 20;
+        int vectorSize = 4 * 9;
 
         // Create data for training
         // Here: we have reviews.size() examples of varying lengths
@@ -146,11 +145,6 @@ public class SentimentExampleIterator implements DataSetIterator {
     }
 
     @Override
-    public void setPreProcessor(DataSetPreProcessor preProcessor) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public List<String> getLabels() {
         return Arrays.asList("diff");
     }
@@ -173,6 +167,11 @@ public class SentimentExampleIterator implements DataSetIterator {
     @Override
     public DataSetPreProcessor getPreProcessor() {
         throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @Override
+    public void setPreProcessor(DataSetPreProcessor preProcessor) {
+        throw new UnsupportedOperationException();
     }
 
 }

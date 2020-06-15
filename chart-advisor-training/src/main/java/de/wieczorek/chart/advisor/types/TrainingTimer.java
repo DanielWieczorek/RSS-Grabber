@@ -22,7 +22,7 @@ public class TrainingTimer implements Runnable {
     @Override
     public void run() {
         try {
-            network.train(generator, 200);
+            network.train(generator, 10);
         } catch (Exception e) {
             logger.error("error while training network: ", e);
         }

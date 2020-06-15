@@ -8,37 +8,59 @@ import java.util.List;
 import java.util.Map;
 
 public class NetInputItem {
-    private Map<ChartEntry, List<ChartMetricRecord>> inputChartMetrics;
+    private Map<LocalDateTime, List<ChartMetricRecord>> inputChartMetrics;
 
-    public List<ChartEntry> getChartEntries() {
-        return chartEntries;
-    }
+    private Map<LocalDateTime, ChartEntry> chartEntries;
 
-    public void setChartEntries(List<ChartEntry> chartEntries) {
-        this.chartEntries = chartEntries;
-    }
+    private List<LocalDateTime> dates;
 
-    private List<ChartEntry> chartEntries;
+    private int startIndex;
+
+    private int endIndex;
 
     private double outputDelta;
 
     private LocalDateTime date;
 
 
-    public double getOutputDelta() {
-        return outputDelta;
-    }
-
-    public void setOutputDelta(double outputDelta) {
-        this.outputDelta = outputDelta;
-    }
-
-    public Map<ChartEntry, List<ChartMetricRecord>> getInputChartMetrics() {
+    public Map<LocalDateTime, List<ChartMetricRecord>> getInputChartMetrics() {
         return inputChartMetrics;
     }
 
-    public void setInputChartMetrics(Map<ChartEntry, List<ChartMetricRecord>> inputChartMetrics) {
+    public void setInputChartMetrics(Map<LocalDateTime, List<ChartMetricRecord>> inputChartMetrics) {
         this.inputChartMetrics = inputChartMetrics;
+    }
+
+    public Map<LocalDateTime, ChartEntry> getChartEntries() {
+        return chartEntries;
+    }
+
+    public void setChartEntries(Map<LocalDateTime, ChartEntry> chartEntries) {
+        this.chartEntries = chartEntries;
+    }
+
+    public List<LocalDateTime> getDates() {
+        return dates;
+    }
+
+    public void setDates(List<LocalDateTime> dates) {
+        this.dates = dates;
+    }
+
+    public int getStartIndex() {
+        return startIndex;
+    }
+
+    public void setStartIndex(int startIndex) {
+        this.startIndex = startIndex;
+    }
+
+    public int getEndIndex() {
+        return endIndex;
+    }
+
+    public void setEndIndex(int endIndex) {
+        this.endIndex = endIndex;
     }
 
     public LocalDateTime getDate() {
@@ -48,4 +70,13 @@ public class NetInputItem {
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
+
+    public double getOutputDelta() {
+        return outputDelta;
+    }
+
+    public void setOutputDelta(double outputDelta) {
+        this.outputDelta = outputDelta;
+    }
+
 }
