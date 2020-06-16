@@ -31,7 +31,7 @@ public class DataPreparator {
     }
 
     public NetInputItem getDataAtTime(LocalDateTime time) {
-        LocalDateTime date = time.minusHours(24);
+        LocalDateTime date = time.minusHours(24).minusMinutes(1);
 
         Map<LocalDateTime, List<ChartMetricRecord>> sentimentDateMappings = new HashMap<>();
         sentiments.stream().filter(x -> x.getId().getDate().isAfter(date) ||

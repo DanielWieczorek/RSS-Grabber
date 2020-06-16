@@ -72,7 +72,7 @@ public class TradingNeuralNetworkPredictor
     protected TradingEvaluationResult buildPredictionResult(NetInputItem input, INDArray output) {
         TradingEvaluationResult result = new TradingEvaluationResult();
         result.setPredictedDelta(output.getDouble(0));
-        result.setAbsolutePrediction(input.getChartEntries().get(input.getChartEntries().size() - 1).getClose()
+        result.setAbsolutePrediction(input.getChartEntries().get(input.getDates().get(input.getEndIndex())).getClose()
                 + result.getPredictedDelta());
 
         return result;
