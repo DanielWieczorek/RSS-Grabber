@@ -2,6 +2,7 @@ package de.wieczorek.nn;
 
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.listeners.CheckpointListener;
+import org.deeplearning4j.parallelism.ParallelInference;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.NDArrayIndex;
@@ -11,6 +12,7 @@ import java.io.File;
 
 public abstract class AbstractNeuralNetworkPredictor<T, R> {
 
+    ParallelInference wrapped;
     @Inject
     private NeuralNetworkPathBuilder pathBuilder;
 
@@ -20,6 +22,12 @@ public abstract class AbstractNeuralNetworkPredictor<T, R> {
         if (net == null) {
             throw new RuntimeException(); // TODO
         }
+        if (wrapped == null) {
+            wrapped = new ParallelInference.Builder(net).build();
+        } else {
+            wrapped.updateModel(net);
+        }
+
         net.setCacheMode(null);
         Nd4j.getMemoryManager().setAutoGcWindow(500);
         INDArray outputRaw = net.output(buildPredictionFeatures(item));
