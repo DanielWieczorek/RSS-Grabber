@@ -1,11 +1,11 @@
 package de.wieczorek.nn;
 
-import org.deeplearning4j.datasets.iterator.AsyncDataSetIterator;
 import org.deeplearning4j.nn.conf.CacheMode;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.listeners.CheckpointListener;
 import org.deeplearning4j.optimize.listeners.PerformanceListener;
 import org.nd4j.evaluation.BaseEvaluation;
+import org.nd4j.linalg.dataset.AsyncDataSetIterator;
 import org.nd4j.linalg.dataset.ExistingMiniBatchDataSetIterator;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ public abstract class AbstractNeuralNetworkTrainer<T> {
                 .deleteExisting(true)
                 .saveEveryEpoch()
                 .build();
-        net.setListeners(new PerformanceListener(1, true), checkpointListener);
+        net.setListeners(new PerformanceListener(10, true), checkpointListener);
         net.setCacheMode(CacheMode.DEVICE);
 
         net.init();

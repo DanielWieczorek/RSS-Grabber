@@ -6,9 +6,9 @@ import de.wieczorek.chart.advisor.types.NetInputItem;
 import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
 import de.wieczorek.chart.advisor.types.TradingNeuralNetworkPredictor;
 import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.chart.core.business.ui.ChartDataCollectionLocalRestCaller;
+import de.wieczorek.chart.core.business.ui.ChartDataCollectionRemoteRestCaller;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
-import de.wieczorek.chart.core.persistence.ui.ChartMetricLocalRestCaller;
+import de.wieczorek.chart.core.persistence.ui.ChartMetricRemoteRestCaller;
 import de.wieczorek.core.recalculation.Recalculation;
 import de.wieczorek.core.recalculation.RecalculationStatusDao;
 import de.wieczorek.core.timer.RecurrentTaskManager;
@@ -38,10 +38,10 @@ public class Controller extends ControllerBase {
     private RecalculationStatusDao recalculationDao;
 
     @Inject
-    private ChartMetricLocalRestCaller chartMetricCaller;
+    private ChartMetricRemoteRestCaller chartMetricCaller;
 
     @Inject
-    private ChartDataCollectionLocalRestCaller chartDataCollectionCaller;
+    private ChartDataCollectionRemoteRestCaller chartDataCollectionCaller;
 
     public TradingEvaluationResult predict() {
         LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);

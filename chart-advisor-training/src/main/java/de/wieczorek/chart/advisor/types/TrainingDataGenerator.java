@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -27,6 +24,7 @@ public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputIte
 
     @Inject
     private ChartDataCollectionRemoteRestCaller chartDataCollectionCaller;
+
 
     public List<TrainingNetInputItem> generate() {
         List<ChartMetricRecord> metrics = chartMetricCaller.metricAll();
@@ -41,7 +39,7 @@ public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputIte
             List<NetInputItem> negative = data.stream().filter(item -> item.getOutputDelta() < 0).collect(Collectors.toList());
 
             int sizePerList = Math.min(positive.size(), negative.size());
-            sizePerList = Math.min(sizePerList, 100000);
+            //sizePerList = Math.min(sizePerList, 100000);
 
             Collections.shuffle(positive);
             Collections.shuffle(negative);
@@ -57,7 +55,6 @@ public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputIte
 
             logger.debug("removed " + (sizeBefore - trainingData.size()) + " outliers");
 
-
             for (int i = 0; i < trainingData.size(); i++) {
                 NetInputItem item = trainingData.get(i);
 
@@ -70,37 +67,42 @@ public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputIte
                 for (int k = 0; k < dates.size(); k += 15) {
 
                     List<ChartMetricRecord> record = item.getInputChartMetrics().get(dates.get(k));
+
+
+                    if (record == null) {
+                        itemVectors = null;
+                        break;
+                    }
                     if (record.size() != 4) {
                         record = Arrays.asList(new ChartMetricRecord(), new ChartMetricRecord(), new ChartMetricRecord(),
                                 new ChartMetricRecord());
-
                     }
+
+                    record.sort(Comparator.comparing(x -> x.getId().getIndicator()));
                     for (int j = 0; j < record.size(); j++) {
-                        itemVectors[j * 9 + 0][index] = Double.isNaN(record.get(j).getValue1min()) ? 0.0
-                                : record.get(j).getValue1min();
-                        itemVectors[j * 9 + 1][index] = Double.isNaN(record.get(j).getValue5min()) ? 0.0
-                                : record.get(j).getValue5min();
-                        itemVectors[j * 9 + 2][index] = Double.isNaN(record.get(j).getValue15min()) ? 0.0
-                                : record.get(j).getValue15min();
-                        itemVectors[j * 9 + 3][index] = Double.isNaN(record.get(j).getValue30min()) ? 0.0
-                                : record.get(j).getValue30min();
-                        itemVectors[j * 9 + 4][index] = Double.isNaN(record.get(j).getValue60min()) ? 0.0
-                                : record.get(j).getValue60min();
-                        itemVectors[j * 9 + 5][index] = Double.isNaN(record.get(j).getValue2hour()) ? 0.0
-                                : record.get(j).getValue2hour();
-                        itemVectors[j * 9 + 6][index] = Double.isNaN(record.get(j).getValue6hour()) ? 0.0
-                                : record.get(j).getValue6hour();
-                        itemVectors[j * 9 + 7][index] = Double.isNaN(record.get(j).getValue12hour()) ? 0.0
-                                : record.get(j).getValue12hour();
-                        itemVectors[j * 9 + 8][index] = Double.isNaN(record.get(j).getValue24hour()) ? 0.0
-                                : record.get(j).getValue24hour();
+                        Normalizer.Boundaries b = new Normalizer.Boundaries(-1, 1);
+                        if (record.get(j).getId() != null) {
+                            b = Normalizer.getInputBoundaries(record.get(j).getId().getIndicator());
+                        }
+
+                        itemVectors[j * 9 + 0][index] = Normalizer.normalize(record.get(j).getValue1min(), b);
+                        itemVectors[j * 9 + 1][index] = Normalizer.normalize(record.get(j).getValue5min(), b);
+                        itemVectors[j * 9 + 2][index] = Normalizer.normalize(record.get(j).getValue15min(), b);
+                        itemVectors[j * 9 + 3][index] = Normalizer.normalize(record.get(j).getValue30min(), b);
+                        itemVectors[j * 9 + 4][index] = Normalizer.normalize(record.get(j).getValue60min(), b);
+                        itemVectors[j * 9 + 5][index] = Normalizer.normalize(record.get(j).getValue2hour(), b);
+                        itemVectors[j * 9 + 6][index] = Normalizer.normalize(record.get(j).getValue6hour(), b);
+                        itemVectors[j * 9 + 7][index] = Normalizer.normalize(record.get(j).getValue12hour(), b);
+                        itemVectors[j * 9 + 8][index] = Normalizer.normalize(record.get(j).getValue24hour(), b);
                     }
                     index++;
 
                 }
 
 
-                netInput.add(new TrainingNetInputItem(Nd4j.create(itemVectors), item.getOutputDelta()));
+                if (itemVectors != null) {
+                    netInput.add(new TrainingNetInputItem(Nd4j.create(itemVectors), Normalizer.normalize(item.getOutputDelta(), Normalizer.getOutputBoundaries())));
+                }
                 logger.debug("preparing data " + i);
 
 
@@ -109,6 +111,7 @@ public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputIte
         }
         return null;
     }
+
 
     private double calculateStandardDeviation(List<Double> sd) {
 
@@ -128,4 +131,6 @@ public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputIte
 
         return (Math.sqrt(squaredDiffMean));
     }
+
+
 }

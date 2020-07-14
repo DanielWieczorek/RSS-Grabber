@@ -39,25 +39,22 @@ public class TradingNeuralNetworkPredictor
                         new ChartMetricRecord());
 
             }
+            
             for (int j = 0; j < record.size(); j++) {
-                itemVectors[j * 9 + 0][index] = Double.isNaN(record.get(j).getValue1min()) ? 0.0
-                        : record.get(j).getValue1min();
-                itemVectors[j * 9 + 1][index] = Double.isNaN(record.get(j).getValue5min()) ? 0.0
-                        : record.get(j).getValue5min();
-                itemVectors[j * 9 + 2][index] = Double.isNaN(record.get(j).getValue15min()) ? 0.0
-                        : record.get(j).getValue15min();
-                itemVectors[j * 9 + 3][index] = Double.isNaN(record.get(j).getValue30min()) ? 0.0
-                        : record.get(j).getValue30min();
-                itemVectors[j * 9 + 4][index] = Double.isNaN(record.get(j).getValue60min()) ? 0.0
-                        : record.get(j).getValue60min();
-                itemVectors[j * 9 + 5][index] = Double.isNaN(record.get(j).getValue2hour()) ? 0.0
-                        : record.get(j).getValue2hour();
-                itemVectors[j * 9 + 6][index] = Double.isNaN(record.get(j).getValue6hour()) ? 0.0
-                        : record.get(j).getValue6hour();
-                itemVectors[j * 9 + 7][index] = Double.isNaN(record.get(j).getValue12hour()) ? 0.0
-                        : record.get(j).getValue12hour();
-                itemVectors[j * 9 + 8][index] = Double.isNaN(record.get(j).getValue24hour()) ? 0.0
-                        : record.get(j).getValue24hour();
+                Normalizer.Boundaries b = new Normalizer.Boundaries(-1, 1);
+                if (record.get(j).getId() != null) {
+                    b = Normalizer.getInputBoundaries(record.get(j).getId().getIndicator());
+                }
+
+                itemVectors[j * 9 + 0][index] = Normalizer.normalize(record.get(j).getValue1min(), b);
+                itemVectors[j * 9 + 1][index] = Normalizer.normalize(record.get(j).getValue5min(), b);
+                itemVectors[j * 9 + 2][index] = Normalizer.normalize(record.get(j).getValue15min(), b);
+                itemVectors[j * 9 + 3][index] = Normalizer.normalize(record.get(j).getValue30min(), b);
+                itemVectors[j * 9 + 4][index] = Normalizer.normalize(record.get(j).getValue60min(), b);
+                itemVectors[j * 9 + 5][index] = Normalizer.normalize(record.get(j).getValue2hour(), b);
+                itemVectors[j * 9 + 6][index] = Normalizer.normalize(record.get(j).getValue6hour(), b);
+                itemVectors[j * 9 + 7][index] = Normalizer.normalize(record.get(j).getValue12hour(), b);
+                itemVectors[j * 9 + 8][index] = Normalizer.normalize(record.get(j).getValue24hour(), b);
             }
             index++;
         }

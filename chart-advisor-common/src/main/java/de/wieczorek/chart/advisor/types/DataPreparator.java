@@ -110,20 +110,22 @@ public class DataPreparator {
             dateIndexMapping.put(dates.get(i), i);
         }
 
-        chartEntryMappings.keySet().stream().filter(entry -> entry.isBefore(lastDate.minusHours(50))).forEach(date -> {
-            ChartEntry inputChartEntry = chartEntryMappings.get(date);
-            List<ChartMetricRecord> inputSentiment = sentimentDateMappings.get(date);
+        chartEntryMappings.keySet().stream()
+                //.filter(entry -> entry.isBefore(lastDate.minusHours(50)))
+                .forEach(date -> {
+                    ChartEntry inputChartEntry = chartEntryMappings.get(date);
+                    List<ChartMetricRecord> inputSentiment = sentimentDateMappings.get(date);
 
 
-            ChartEntry outputChartEntry = chartEntryMappings.get(date.plusMinutes(offsetMinutes));
-            NetInputItem item = buildNetworkInputItem(date, sentimentDateMappings, chartEntryMappings, dateIndexMapping, dates);
+                    ChartEntry outputChartEntry = chartEntryMappings.get(date.plusMinutes(offsetMinutes));
+                    NetInputItem item = buildNetworkInputItem(date, sentimentDateMappings, chartEntryMappings, dateIndexMapping, dates);
 
 
-            if (item != null && inputChartEntry != null && inputSentiment != null && outputChartEntry != null) {
-                item.setOutputDelta(outputChartEntry.getClose() - inputChartEntry.getClose());
-                result.add(item);
-            }
-        });
+                    if (item != null && inputChartEntry != null && inputSentiment != null && outputChartEntry != null) {
+                        item.setOutputDelta(outputChartEntry.getClose() - inputChartEntry.getClose());
+                        result.add(item);
+                    }
+                });
 
         return result;
     }

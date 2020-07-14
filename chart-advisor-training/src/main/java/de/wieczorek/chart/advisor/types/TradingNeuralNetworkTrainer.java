@@ -34,31 +34,41 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Tr
     protected MultiLayerNetwork buildNetwork() {
 
         int vectorSize = 4 * 9;
-        int secondaryLevelSize = vectorSize * 3;
+        int secondaryLevelSize = vectorSize * 2;
         final int seed = 0;
 
-        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed).updater(new Adam(2e-4)).l2(1e-5)
-                .weightInit(WeightInit.XAVIER).gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
-                .gradientNormalizationThreshold(1.0).trainingWorkspaceMode(WorkspaceMode.ENABLED).list()
+        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+                .seed(seed)
+                .updater(new Adam(2e-5))
+                .l2(1e-5)
+                .weightInit(WeightInit.XAVIER)
+                .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
+                .gradientNormalizationThreshold(1.0)
+                .trainingWorkspaceMode(WorkspaceMode.ENABLED).list()
                 .layer(0, new LSTM.Builder().nIn(vectorSize).nOut(secondaryLevelSize).activation(Activation.TANH).build())
                 .layer(1, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
                 .layer(2, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
                 .layer(3, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
-                .layer(4, new DenseLayer.Builder().nOut(secondaryLevelSize).activation(Activation.RELU).build())
-                .layer(5, new DropoutLayer.Builder().nOut(secondaryLevelSize).build())
-                .layer(6,
+                .layer(4, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
+                .layer(5, new DenseLayer.Builder().nOut(secondaryLevelSize).activation(Activation.RELU).build())
+                .layer(6, new DenseLayer.Builder().nOut(secondaryLevelSize).activation(Activation.RELU).build())
+                .layer(7, new DropoutLayer.Builder().nOut(secondaryLevelSize).build())
+                .layer(8,
                         new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(Activation.IDENTITY)
                                 .l2(0.001).weightInit(WeightInit.XAVIER).nOut(1).build())
-
-                .backpropType(BackpropType.Standard).build();
+                .backpropType(BackpropType.Standard)
+                //.tBPTTLength(64)
+                .build();
         conf.setIterationCount(1);
+        conf.setCacheMode(CacheMode.DEVICE);
+        //conf.setDataType(DataType.HALF);
         //Nd4j.getExecutioner().setProfilingConfig(ProfilerConfig.builder().checkForNAN(true).build());
         return new MultiLayerNetwork(conf);
     }
 
     @Override
     protected int getBatchSize() {
-        return 64;
+        return 96;
     }
 
     @Override
