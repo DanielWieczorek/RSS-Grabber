@@ -39,7 +39,7 @@ public class TradingNeuralNetworkPredictor
                         new ChartMetricRecord());
 
             }
-            
+
             for (int j = 0; j < record.size(); j++) {
                 Normalizer.Boundaries b = new Normalizer.Boundaries(-1, 1);
                 if (record.get(j).getId() != null) {
@@ -68,7 +68,7 @@ public class TradingNeuralNetworkPredictor
     @Override
     protected TradingEvaluationResult buildPredictionResult(NetInputItem input, INDArray output) {
         TradingEvaluationResult result = new TradingEvaluationResult();
-        result.setPredictedDelta(output.getDouble(0));
+        result.setPredictedDelta(Normalizer.denormalize(output.getDouble(0), Normalizer.getOutputBoundaries()));
         result.setAbsolutePrediction(input.getChartEntries().get(input.getDates().get(input.getEndIndex())).getClose()
                 + result.getPredictedDelta());
 

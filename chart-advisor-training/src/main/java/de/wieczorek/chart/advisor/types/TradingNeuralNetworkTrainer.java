@@ -68,7 +68,7 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Tr
 
     @Override
     protected int getBatchSize() {
-        return 96;
+        return 512;
     }
 
     @Override

@@ -13,11 +13,44 @@
         <module>common-neuralnetwork-prediction</module>
         <module>common-neuralnetwork-training</module>
 
+        <module>rss-datacollection-types</module>
+        <module>rss-datacollection-core</module>
+        <module>rss-datacollection</module>
+
+        <module>rss-classification-types</module>
+        <module>rss-classification</module>
+
+        <module>chart-datacollection-types</module>
+        <module>chart-datacollection</module>
+        <module>chart-metric-types</module>
+        <module>chart-metric</module>
+
+        <module>chart-advisor-types</module>
+        <module>chart-advisor-common</module>
+        <module>chart-advisor-prediction</module>
+        <module>chart-advisor-training</module>
+
+
+        <module>rss-insight-types</module>
+        <module>rss-insight-common</module>
+        <module>rss-insight-prediction</module>
+        <module>rss-insight-training</module>
+
+        <module>rss-advisor-types</module>
+        <module>rss-advisor-common</module>
+        <module>rss-advisor-prediction</module>
+        <module>rss-advisor-training</module>
+
+        <module>trading-types</module>
+        <module>trading-common</module>
+        <module>trading-simulation</module>
+        <module>trading-training</module>
+        <module>trading-live</module>
+
 
         <module>microservice-status</module>
         <module>microservice-authentication</module>
 
-        <module>hibernate-test</module>
     </modules>
 </project>
  
