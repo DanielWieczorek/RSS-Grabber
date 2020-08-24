@@ -16,8 +16,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>trading-training</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	
-	
+
+
 			<build>
 		<plugins>
 
@@ -60,7 +60,7 @@
 									<mainClass>de.wieczorek.core.MicroserviceMain</mainClass>
 								</transformer>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-								
+
 							</transformers>
 							 <filters>
 						        <filter>
@@ -79,11 +79,11 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-	
-	
+
+
+
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>de.wieczorek</groupId>
 			<artifactId>common-neuralnetwork-prediction</artifactId>

@@ -2,16 +2,14 @@ package de.wieczorek.rss.trading.common.oracle;
 
 import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
 import de.wieczorek.chart.core.business.ChartEntry;
-import de.wieczorek.rss.advisor.types.DeltaChartEntry;
 import de.wieczorek.rss.trading.types.StateEdgePart;
 
 import java.util.function.Function;
 
 public enum ValuesSource {
     // RSS_SENTIMENT(0, ValuesSource::processRssSentiment),
-    CHART_METRIC__CHART_METRIC(0, ValuesSource::processChartMetric),
-    CHART_DELTA(1, ValuesSource::processChartDelta),
-    CHART_ABSOLUTE(2, ValuesSource::processChartAbsolute);
+    CHART_METRIC_ABSOLUTE(0, ValuesSource::processChartMetricAbsolute),
+    CHART_ABSOLUTE(1, ValuesSource::processChartAbsolute);
 
 
     private int index;
@@ -22,20 +20,12 @@ public enum ValuesSource {
         this.valueExtractor = valueExtractor;
     }
 
-    public static Double processChartMetric(StateEdgePart input) {
+    public static Double processChartMetricAbsolute(StateEdgePart input) {
         TradingEvaluationResult eval = input.getMetricsSentiment();
         if (eval == null) {
             return null;
         }
-        return eval.getPredictedDelta();
-    }
-
-    public static Double processChartDelta(StateEdgePart input) {
-        DeltaChartEntry eval = input.getDeltaChartEntry();
-        if (eval == null) {
-            return null;
-        }
-        return eval.getClose();
+        return eval.getAbsolutePrediction();
     }
 
     public static Double processChartAbsolute(StateEdgePart input) {

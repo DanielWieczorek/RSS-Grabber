@@ -1,6 +1,7 @@
 package de.wieczorek.chart.advisor.types;
 
 import de.wieczorek.core.timer.RecurrentTask;
+import de.wieczorek.nn.NeuralNetworkPathBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,10 +20,15 @@ public class TrainingTimer implements Runnable {
     @Inject
     private TrainingDataGenerator generator;
 
+    @Inject
+    private NeuralNetworkPathBuilder pathBuilder;
+
     @Override
     public void run() {
+
+
         try {
-            network.train(generator, 10);
+            network.train(generator, 150);
         } catch (Exception e) {
             logger.error("error while training network: ", e);
         }

@@ -16,7 +16,7 @@ public class TradeConfiguration {
     private List<Integer> margins = new ArrayList<>();
     private List<Integer> ranges = new ArrayList<>();
     private AverageType averageType = AverageType.EMA;
-    private ValuesSource valuesSource = ValuesSource.CHART_METRIC__CHART_METRIC;
+    private ValuesSource valuesSource = ValuesSource.CHART_METRIC_ABSOLUTE;
 
     public List<Integer> getRanges() {
         return ranges;

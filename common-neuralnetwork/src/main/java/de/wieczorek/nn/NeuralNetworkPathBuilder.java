@@ -24,6 +24,10 @@ public class NeuralNetworkPathBuilder {
         return Paths.get(buildBasePath(), "test-data").toFile();
     }
 
+    public File getStatsFile() {
+        return Paths.get(buildBasePath(), "stats.dl4j").toFile();
+    }
+
     private String buildBasePath() {
         return Paths.get(System.getProperty("user.home"), "neural-networks", fileName).toString();
     }

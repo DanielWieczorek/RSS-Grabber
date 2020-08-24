@@ -39,8 +39,8 @@ import java.util.stream.Stream;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 3;
-    private static final int DATAPOINTS_PER_SERIES = 5;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 10;
+    private static final int DATAPOINTS_PER_SERIES = 10;
     private static final int NUMBER_OF_COMPARATORS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int TOTAL_NUMBER_OF_DATAPOINTS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int OFFSET_SAFETY_MARGIN = 10;
@@ -84,7 +84,7 @@ public class TrainingTimer implements Runnable {
                 buySellPairs++;
             }
             result = tradeProfitPct;// / ((double) buySellPairs);
-            result *= buySellPairs;
+            //result *= buySellPairs;
         }
 
 
@@ -313,7 +313,7 @@ public class TrainingTimer implements Runnable {
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //2 below/above for buy
                         IntegerChromosome.of(1, 120, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset in minutes
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //4 average type
-                        IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //5 source of values
+                        IntegerChromosome.of(1, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //5 source of values
                         IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //6 operators
                         IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //7 is buy configuration active
                         IntegerChromosome.of(0, 500, IntRange.of(NUMBER_OF_COMPARATORS)), //8 second value for comparison
@@ -325,7 +325,7 @@ public class TrainingTimer implements Runnable {
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //12 below/above for sell
                         IntegerChromosome.of(1, 110, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset in minutes
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //14 average type
-                        IntegerChromosome.of(0, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //15 source of values
+                        IntegerChromosome.of(1, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //15 source of values
                         IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //16 operators
                         IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //17 is sell configuration active
                         IntegerChromosome.of(0, 500, IntRange.of(NUMBER_OF_COMPARATORS)), //18 second value for comparison

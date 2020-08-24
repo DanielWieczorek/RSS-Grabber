@@ -1,9 +1,14 @@
 package de.wieczorek.nn;
 
+import org.deeplearning4j.api.storage.StatsStorage;
 import org.deeplearning4j.nn.conf.CacheMode;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.listeners.CheckpointListener;
 import org.deeplearning4j.optimize.listeners.PerformanceListener;
+import org.deeplearning4j.ui.api.UIServer;
+import org.deeplearning4j.ui.stats.StatsListener;
+import org.deeplearning4j.ui.storage.FileStatsStorage;
+import org.deeplearning4j.ui.storage.InMemoryStatsStorage;
 import org.nd4j.evaluation.BaseEvaluation;
 import org.nd4j.linalg.dataset.AsyncDataSetIterator;
 import org.nd4j.linalg.dataset.ExistingMiniBatchDataSetIterator;
@@ -48,8 +53,16 @@ public abstract class AbstractNeuralNetworkTrainer<T> {
                 .deleteExisting(true)
                 .saveEveryEpoch()
                 .build();
-        net.setListeners(new PerformanceListener(10, true), checkpointListener);
+
+
+        UIServer uiServer = UIServer.getInstance();
+        StatsStorage statsStorage = new InMemoryStatsStorage();
+        uiServer.attach(statsStorage);
+
+        StatsStorage ss = new FileStatsStorage(pathBuilder.getStatsFile());
+        net.setListeners(new PerformanceListener(10, true), checkpointListener, new StatsListener(statsStorage));
         net.setCacheMode(CacheMode.DEVICE);
+
 
         net.init();
 
@@ -66,6 +79,7 @@ public abstract class AbstractNeuralNetworkTrainer<T> {
 
         BaseEvaluation<?> evaluation = buildEvaluation(loadedTest, net);
         logger.info(evaluation.stats());
+        uiServer.detach(statsStorage);
 
     }
 
@@ -129,6 +143,7 @@ public abstract class AbstractNeuralNetworkTrainer<T> {
         logger.info("Saving train data to " + trainFolder.getAbsolutePath() + " and test data to " + testFolder.getAbsolutePath());
         //Track the indexes of the files being saved.
         //These batch indexes are used for indexing which minibatch is being saved by the iterator.
+
         int trainDataSaved = 0;
         int testDataSaved = 0;
         while (train.hasNext()) {
