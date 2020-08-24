@@ -48,6 +48,8 @@
         <module>trading-live</module>
 
 
+        <module>skinbaron-live</module>
+
         <module>microservice-status</module>
         <module>microservice-authentication</module>
 
