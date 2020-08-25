@@ -12,8 +12,8 @@ public class MicroserviceMain {
         MicroserviceServer server = CdiContext.INSTANCE.getBean(MicroserviceServer.class);
 
         CdiContext.INSTANCE.getBean(DatabaseMigrator.class).migrate();
-        server.start();
         CdiContext.INSTANCE.getBean(RestInfoSender.class).init();
+        server.start();
 
     }
 
