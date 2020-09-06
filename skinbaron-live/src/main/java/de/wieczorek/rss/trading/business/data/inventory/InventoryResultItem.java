@@ -15,6 +15,15 @@ public class InventoryResultItem {
     private double steamMarketPrice;
     private String tradeLockedUntil;
     private long variantId;
+    private String userOfferLimitReached;
+
+    public String getUserOfferLimitReached() {
+        return userOfferLimitReached;
+    }
+
+    public void setUserOfferLimitReached(String userOfferLimitReached) {
+        this.userOfferLimitReached = userOfferLimitReached;
+    }
 
     public boolean getIsStackable() {
         return isStackable;

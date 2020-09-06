@@ -2,7 +2,10 @@ package de.wieczorek.rss.trading.business;
 
 import de.wieczorek.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.trading.config.ServiceConfiguration;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -13,8 +16,16 @@ import java.util.Map;
 
 @ApplicationScoped
 public class InvocationBuilderCreator {
+    private ClientConfig configuration;
+    private Client client;
 
-    private Client client = ClientBuilder.newClient().register(new ObjectMapperContextResolver());
+    @PostConstruct
+    private void init() {
+        ClientConfig configuration = new ClientConfig();
+        configuration = configuration.property(ClientProperties.CONNECT_TIMEOUT, 5 * 60 * 1000);
+        configuration = configuration.property(ClientProperties.READ_TIMEOUT, 5 * 60 * 1000);
+        client = ClientBuilder.newClient(configuration).register(new ObjectMapperContextResolver());
+    }
 
     public Invocation.Builder createV1(String path, ServiceConfiguration config) {
         return client.target("https://api.skinbaron.de")

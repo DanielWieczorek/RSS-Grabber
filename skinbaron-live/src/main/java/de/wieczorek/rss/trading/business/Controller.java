@@ -62,38 +62,23 @@ public class Controller extends ControllerBase {
     }
 
     public List<Offer> getOffers(String productName, double maxPrice) {
-        final int PAGE_SIZE = 50;
+        final int PAGE_SIZE = 5;
         SearchQueryData data = new SearchQueryData();
         data.setApikey(config.getApiKey());
         data.setAppid(730);
         data.setSearch_item(productName);
         data.setMax(maxPrice);
+        data.setMin(0.01);
+        data.setItems_per_page(PAGE_SIZE);
 
-        List<Offer> offers = new ArrayList<>();
-        String lastOfferId = null;
+        SearchResult result = invocationBuilderCreator.createV1("/Search", config)
+                .post(Entity.json(data), SearchResult.class);
 
-        while (true) {
-            if (lastOfferId != null) {
-                data.setAfter_saleid(lastOfferId);
-            }
-
-            SearchResult result = invocationBuilderCreator.createV1("/Search", config)
-                    .post(Entity.json(data), SearchResult.class);
-
-            if (result.getMessage() != null) {
-                throw new RuntimeException(result.getMessage());
-            }
-
-            if (result.getSales().size() < PAGE_SIZE) {
-                offers.addAll(result.getSales());
-                return offers;
-            }
-
-            offers.addAll(result.getSales());
-            lastOfferId = result.getSales().get(result.getSales().size() - 1).getId();
+        if (result.getMessage() != null) {
+            throw new RuntimeException(result.getMessage());
         }
 
-
+        return result.getSales();
     }
 
     public List<InventoryResultItem> getInventory() {
@@ -145,8 +130,15 @@ public class Controller extends ControllerBase {
         List<String> offerIds = new ArrayList<>();
 
         for (Offer item : items) {
+            if (balance < total + item.getPrice()) {
+                logger.debug("stopping after " + offerIds.size() + " items");
+                break;
+            }
             total += item.getPrice();
             offerIds.add(item.getId());
+        }
+        if (offerIds.isEmpty()) {
+            return;
         }
 
         if (total > balance) {
@@ -246,20 +238,18 @@ public class Controller extends ControllerBase {
 
     }
 
+    public double determineBuyPrice(BuyConfiguration buyConf) {
+        final double minMarketPrice = getMinMarketPrice(buyConf.getMetaOfferId()) - 0.01;
+        final double fees = Math.max(0.01, Math.ceil(minMarketPrice * 0.15 * 100) / 100.0);
+        final double absoluteMargin = Math.max(0.01, Math.ceil(minMarketPrice * 0.1 * 100) / 100.0);
+
+        return Math.min(buyConf.getMaxPrice(), minMarketPrice - fees - absoluteMargin);
+
+    }
+
 
     public double determineSellPrice(BuyConfiguration buyConf) {
-        final double minEffectiveSellPrice = buyConf.getMaxPrice() + 0.01;
-        final double minMarketPrice = getMinMarketPrice(buyConf.getMetaOfferId()) - 0.01;
-        double minSellPrice = minMarketPrice;
-
-        double effectiveSellPrice = minSellPrice - Math.min(0.01, minSellPrice * 0.15);
-        while (effectiveSellPrice <= minEffectiveSellPrice) {
-            minSellPrice += 0.01;
-            effectiveSellPrice = minSellPrice - Math.min(0.01, minSellPrice * 0.15);
-
-        }
-        return minSellPrice;
-
+        return getMinReasonableMarketPrice(buyConf.getMetaOfferId()) - 0.01;
     }
 
     private double getMinMarketPrice(long metaOfferId) {
@@ -268,22 +258,27 @@ public class Controller extends ControllerBase {
                 , Map.of("metaOfferId", metaOfferId))
                 .get(StackableAvailaiblityTableResult.class);
 
-        double price = result.getRows().stream().map(StackableAvailaiblityTableResultItem::getPrice).min(Comparator.comparingDouble(Double::valueOf)).orElse(0.0);
+        double price = result.getRows().stream()
+                .map(StackableAvailaiblityTableResultItem::getPrice)
+                .min(Comparator.comparingDouble(Double::valueOf)).orElse(0.0);
         logger.debug("price is " + price);
         return price;
     }
 
-    public double getMaxMarketPrice(long metaOfferId) {
+
+    private double getMinReasonableMarketPrice(long metaOfferId) {
         logger.debug("getting min price for " + metaOfferId);
         StackableAvailaiblityTableResult result = invocationBuilderCreator.createV2Browse("/api/v2/Browsing/StackableAvailabilityTable", config
                 , Map.of("metaOfferId", metaOfferId))
                 .get(StackableAvailaiblityTableResult.class);
 
-        double price = Math.min(result.getRows().stream().map(StackableAvailaiblityTableResultItem::getPrice).max(Comparator.comparingDouble(Double::valueOf)).orElse(999.0), 999.0);
+        double price = result.getRows().stream()
+                .filter(item -> item.getAmount() > 1)
+                .map(StackableAvailaiblityTableResultItem::getPrice)
+                .min(Comparator.comparingDouble(Double::valueOf)).orElse(0.0);
         logger.debug("price is " + price);
         return price;
     }
-
 
     public List<ActiveOfferResultItem> getOwnActiveOffers() {
         logger.debug("retrieving own active offers");

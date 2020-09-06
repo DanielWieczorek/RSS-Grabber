@@ -7,7 +7,24 @@ public class SearchQueryData {
 
     private String after_saleid;
     private double max;
+    private double min;
+    private int items_per_page;
 
+    public double getMin() {
+        return min;
+    }
+
+    public void setMin(double min) {
+        this.min = min;
+    }
+
+    public int getItems_per_page() {
+        return items_per_page;
+    }
+
+    public void setItems_per_page(int items_per_page) {
+        this.items_per_page = items_per_page;
+    }
 
     public double getMax() {
         return max;

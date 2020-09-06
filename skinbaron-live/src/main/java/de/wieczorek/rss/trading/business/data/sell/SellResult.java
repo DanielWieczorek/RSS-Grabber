@@ -9,6 +9,15 @@ public class SellResult {
     private String message;
     private List<SellError> errors;
     private String flashErrorMessage;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getFlashErrorMessage() {
         return flashErrorMessage;
