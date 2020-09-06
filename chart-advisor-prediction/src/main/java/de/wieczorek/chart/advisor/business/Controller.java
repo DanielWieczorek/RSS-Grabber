@@ -53,6 +53,7 @@ public class Controller extends ControllerBase {
 
             DataPreparator preparator = new DataPreparator().withChartData(chartEntries).withMetrics(metrics);
             NetInputItem item = preparator.getDataAtTime(currentTime);
+            List<NetInputItem> item2 = preparator.getData();
             if (item != null) {
                 TradingEvaluationResult result = nn.predict(item);
                 result.setCurrentTime(currentTime);

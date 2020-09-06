@@ -7,7 +7,6 @@ import org.deeplearning4j.optimize.listeners.CheckpointListener;
 import org.deeplearning4j.optimize.listeners.PerformanceListener;
 import org.deeplearning4j.ui.api.UIServer;
 import org.deeplearning4j.ui.stats.StatsListener;
-import org.deeplearning4j.ui.storage.FileStatsStorage;
 import org.deeplearning4j.ui.storage.InMemoryStatsStorage;
 import org.nd4j.evaluation.BaseEvaluation;
 import org.nd4j.linalg.dataset.AsyncDataSetIterator;
@@ -18,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,6 +50,7 @@ public abstract class AbstractNeuralNetworkTrainer<T> {
         logger.debug("finalizing network");
         CheckpointListener checkpointListener = new CheckpointListener.Builder(checkpointTarget)
                 .logSaving(true)
+                .keepLast(3)
                 .deleteExisting(true)
                 .saveEveryEpoch()
                 .build();
@@ -59,7 +60,6 @@ public abstract class AbstractNeuralNetworkTrainer<T> {
         StatsStorage statsStorage = new InMemoryStatsStorage();
         uiServer.attach(statsStorage);
 
-        StatsStorage ss = new FileStatsStorage(pathBuilder.getStatsFile());
         net.setListeners(new PerformanceListener(10, true), checkpointListener, new StatsListener(statsStorage));
         net.setCacheMode(CacheMode.DEVICE);
 
@@ -80,6 +80,11 @@ public abstract class AbstractNeuralNetworkTrainer<T> {
         BaseEvaluation<?> evaluation = buildEvaluation(loadedTest, net);
         logger.info(evaluation.stats());
         uiServer.detach(statsStorage);
+        try {
+            statsStorage.close();
+        } catch (IOException e) {
+            logger.info("Error while closing stats storage " + statsStorage);
+        }
 
     }
 

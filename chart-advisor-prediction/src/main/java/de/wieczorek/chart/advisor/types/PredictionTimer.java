@@ -33,7 +33,6 @@ public class PredictionTimer implements Runnable {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("error while generating prediction: ", e);
 
         }

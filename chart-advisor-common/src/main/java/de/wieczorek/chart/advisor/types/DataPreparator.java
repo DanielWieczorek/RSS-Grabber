@@ -15,6 +15,7 @@ public class DataPreparator {
     private List<ChartMetricRecord> sentiments;
     private List<ChartEntry> chartEntries;
     private int offsetMinutes = 60;
+    private int hoursOfData = 8;
 
     public int getOffsetMinutes() {
         return offsetMinutes;
@@ -31,7 +32,7 @@ public class DataPreparator {
     }
 
     public NetInputItem getDataAtTime(LocalDateTime time) {
-        LocalDateTime date = time.minusHours(24).minusMinutes(1);
+        LocalDateTime date = time.minusHours(hoursOfData).minusMinutes(1);
 
         Map<LocalDateTime, List<ChartMetricRecord>> sentimentDateMappings = new HashMap<>();
         sentiments.stream().filter(x -> x.getId().getDate().isAfter(date) ||
@@ -63,7 +64,7 @@ public class DataPreparator {
     }
 
     private NetInputItem buildNetworkInputItem(LocalDateTime time, Map<LocalDateTime, List<ChartMetricRecord>> sentimentDateMappings, Map<LocalDateTime, ChartEntry> chartEntryMappings, Map<LocalDateTime, Integer> dateIndexMapping, List<LocalDateTime> times) {
-        LocalDateTime startDate = time.minusHours(24).plusMinutes(1);
+        LocalDateTime startDate = time.minusHours(hoursOfData).plusMinutes(1);
 
         Integer startIndex = dateIndexMapping.get(startDate);
         Integer endIndex = dateIndexMapping.get(time);
