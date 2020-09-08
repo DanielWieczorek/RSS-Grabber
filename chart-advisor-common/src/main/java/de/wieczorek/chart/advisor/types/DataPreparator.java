@@ -15,7 +15,7 @@ public class DataPreparator {
     private List<ChartMetricRecord> sentiments;
     private List<ChartEntry> chartEntries;
     private int offsetMinutes = 60;
-    private int hoursOfData = 8;
+    private int hoursOfData = 1;
 
     public int getOffsetMinutes() {
         return offsetMinutes;

@@ -44,7 +44,7 @@ public class Controller extends ControllerBase {
     private ChartDataCollectionRemoteRestCaller chartDataCollectionCaller;
 
     public TradingEvaluationResult predict() {
-        LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
+        LocalDateTime currentTime = LocalDateTime.now().minusMinutes(60).withSecond(0).withNano(0);
         List<ChartMetricRecord> metrics = chartMetricCaller.metric24h();
 
         List<ChartEntry> chartEntries = chartDataCollectionCaller.ohlcv24h();
@@ -53,7 +53,6 @@ public class Controller extends ControllerBase {
 
             DataPreparator preparator = new DataPreparator().withChartData(chartEntries).withMetrics(metrics);
             NetInputItem item = preparator.getDataAtTime(currentTime);
-            List<NetInputItem> item2 = preparator.getData();
             if (item != null) {
                 TradingEvaluationResult result = nn.predict(item);
                 result.setCurrentTime(currentTime);
