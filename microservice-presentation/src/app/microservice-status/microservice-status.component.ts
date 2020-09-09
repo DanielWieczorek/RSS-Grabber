@@ -1,41 +1,57 @@
-import { Component, OnInit } from '@angular/core';
-import { MicroserviceStatusService } from '../shared/microservice-status/microservice-status.service'
-import { MicroserviceStatus } from '../shared/microservice-status/microservice-status'
+import{Component, OnInit}from '@angular/core';
+import {MicroserviceStatusService}from '../shared/microservice-status/microservice-status.service'
+import {MicroserviceStatus}from '../shared/microservice-status/microservice-status'
 
 
 
 @Component({
-  selector: 'app-microservice-status',
-  templateUrl: './microservice-status.component.html',
-  styleUrls: ['./microservice-status.component.css']
+selector: 'app-microservice-status',
+templateUrl: './microservice-status.component.html',
+styleUrls: ['./microservice-status.component.css']
 })
 export class MicroserviceStatusComponent implements OnInit {
 
-    title = 'app';
-    data : MicroserviceStatus[];
-    error: string;
+title = 'app';
+dataRss : MicroserviceStatus[];
+dataChart : MicroserviceStatus[];
+dataMicroservice : MicroserviceStatus[];
+dataMisc : MicroserviceStatus[];
 
-    constructor(private microserviceStatus: MicroserviceStatusService){
+error: string;
+
+constructor(private microserviceStatus: MicroserviceStatusService){
     }
-    
-    start(name : string){    
+
+    start(name : string){
       this.microserviceStatus.start(name).subscribe(data => {
-        this.data = data;
+      this.saveData(data);
+
+
+
       });
     }
-    
+
     stop(name : string){
         this.microserviceStatus.stop(name).subscribe(data => {
             console.log(data);
-        this.data = data;
+        this.saveData(data);
       });
     }
 
     ngOnInit(): void {
         this.microserviceStatus.status().subscribe(data => {
             console.log("data arrived",data)
-        this.data = data;
+        this.saveData(data);
       },
       err => {console.log(err);this.error = err;});
+    }
+
+    saveData(data : MicroserviceStatus[]):void{
+      this.dataRss =  data.filter(item => item.name.lastIndexOf('rss',0) == 0);
+      this.dataChart =  data.filter(item => item.name.lastIndexOf('chart',0) == 0);
+      this.dataMicroservice =  data.filter(item => item.name.lastIndexOf('microservice',0) == 0);
+      this.dataMisc =  data.filter(item => item.name.lastIndexOf('microservice',0) == -1 &&
+            item.name.lastIndexOf('chart',0) == -1 && 
+            item.name.lastIndexOf('rss',0) == -1);
     }
 }
