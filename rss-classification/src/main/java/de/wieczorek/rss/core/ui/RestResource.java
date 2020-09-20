@@ -13,7 +13,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("/")
+@Path("rss")
 @Resource
 @EntityManagerContext
 @ApplicationScoped
@@ -23,8 +23,8 @@ public class RestResource implements CallableResource {
 
     @Produces(MediaType.APPLICATION_JSON)
     @GET
-    @Path("find")
-    public List<ClassifiedRssEntry> find() {
+    @Path("unclassified")
+    public List<ClassifiedRssEntry> unclassified() {
         return controller.readUnclassifiedEntries();
 
     }

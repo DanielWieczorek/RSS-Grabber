@@ -97,7 +97,7 @@
 
         <dependency>
             <groupId>de.wieczorek</groupId>
-            <artifactId>common-webservice-importexport-feature</artifactId>
+            <artifactId>common-webservice-recalculation-feature</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

@@ -11,5 +11,4 @@ public interface CallableResource {
 
     List<TradingEvaluationResult> getAllSentiments();
 
-    void recompute();
 }

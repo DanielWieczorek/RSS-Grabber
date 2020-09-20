@@ -1,7 +1,5 @@
 package de.wieczorek.rss.insight.business;
 
-import de.wieczorek.core.recalculation.Recalculation;
-import de.wieczorek.core.recalculation.RecalculationStatusDao;
 import de.wieczorek.core.timer.RecurrentTaskManager;
 import de.wieczorek.core.ui.ControllerBase;
 import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
@@ -16,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,9 +29,6 @@ public class Controller extends ControllerBase {
 
     @Inject
     private SentimentAtTimeDao dao;
-
-    @Inject
-    private RecalculationStatusDao recalculationDao;
 
     @Inject
     private RssDataCollectionLocalRestCaller rssDataCollectionCaller;
@@ -70,13 +64,6 @@ public class Controller extends ControllerBase {
             newEntry.setURI(entry.getURI());
             return newEntry;
         }).collect(Collectors.toList());
-    }
-
-    public void recalculate() {
-        Recalculation recalculation = new Recalculation();
-        recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
-        recalculationDao.deleteAll();
-        recalculationDao.create(recalculation);
     }
 
     @Override

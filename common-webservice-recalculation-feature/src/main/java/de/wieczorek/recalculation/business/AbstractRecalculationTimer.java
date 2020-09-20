@@ -1,5 +1,7 @@
-package de.wieczorek.core.recalculation;
+package de.wieczorek.recalculation.business;
 
+import de.wieczorek.recalculation.db.Recalculation;
+import de.wieczorek.recalculation.type.RecalculationStatusDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

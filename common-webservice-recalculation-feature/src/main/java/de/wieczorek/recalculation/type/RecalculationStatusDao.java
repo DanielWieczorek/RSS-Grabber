@@ -1,7 +1,8 @@
-package de.wieczorek.core.recalculation;
+package de.wieczorek.recalculation.type;
 
 import de.wieczorek.core.persistence.EntityManagerHelper;
 import de.wieczorek.core.persistence.EntityManagerProvider;
+import de.wieczorek.recalculation.db.Recalculation;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.Query;

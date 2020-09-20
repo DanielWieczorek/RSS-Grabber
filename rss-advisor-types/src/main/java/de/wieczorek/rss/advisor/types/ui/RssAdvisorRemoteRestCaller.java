@@ -1,8 +1,8 @@
 package de.wieczorek.rss.advisor.types.ui;
 
-import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.core.ui.Target;
 import de.wieczorek.core.ui.TargetType;
+import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,7 +19,7 @@ public class RssAdvisorRemoteRestCaller implements CallableResource {
     private WebTarget target;
 
     public TradingEvaluationResult predict() {
-        return target.path("/sentiment").request(MediaType.APPLICATION_JSON).get(TradingEvaluationResult.class);
+        return target.path("/sentiment/now").request(MediaType.APPLICATION_JSON).get(TradingEvaluationResult.class);
     }
 
     public List<TradingEvaluationResult> predict24h() {
@@ -32,7 +32,4 @@ public class RssAdvisorRemoteRestCaller implements CallableResource {
         });
     }
 
-    public void recompute() {
-        target.path("/metric/recompute").request(MediaType.APPLICATION_JSON).get();
-    }
 }

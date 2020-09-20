@@ -5,11 +5,9 @@ import de.wieczorek.chart.advisor.types.DataPreparator;
 import de.wieczorek.chart.advisor.types.TradingNeuralNetworkPredictor;
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.business.ui.ChartDataCollectionLocalRestCaller;
-import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
-import de.wieczorek.core.recalculation.Recalculation;
-import de.wieczorek.core.recalculation.RecalculationStatusDao;
 import de.wieczorek.core.timer.RecurrentTaskManager;
 import de.wieczorek.core.ui.ControllerBase;
+import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
 import de.wieczorek.rss.insight.types.ui.RssInsightLocalRestCaller;
@@ -35,9 +33,6 @@ public class Controller extends ControllerBase {
     private TradingEvaluationResultDao dao;
 
     @Inject
-    private RecalculationStatusDao recalculationDao;
-
-    @Inject
     private RssInsightLocalRestCaller rssInsightCaller;
 
     @Inject
@@ -45,7 +40,7 @@ public class Controller extends ControllerBase {
 
     public TradingEvaluationResult predict() {
         LocalDateTime currentTime = LocalDateTime.now().withSecond(0).withNano(0);
-        SentimentEvaluationResult currentSentiment = rssInsightCaller.sentiment();
+        SentimentEvaluationResult currentSentiment = rssInsightCaller.now();
 
         List<ChartEntry> chartEntries = chartDataCollectionCaller.ohlcv24h();
 
@@ -65,14 +60,6 @@ public class Controller extends ControllerBase {
 
     }
 
-    public void recompute() {
-
-        Recalculation recalculation = new Recalculation();
-        recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
-        recalculationDao.deleteAll();
-        recalculationDao.create(recalculation);
-    }
-
     @Override
     protected void start() {
         timer.start();
@@ -84,7 +71,6 @@ public class Controller extends ControllerBase {
     }
 
     public List<TradingEvaluationResult> get24hPrediction() {
-        LocalDateTime.now().minusHours(24);
         return dao.findAfterDate(LocalDateTime.now().minusHours(24));
     }
 

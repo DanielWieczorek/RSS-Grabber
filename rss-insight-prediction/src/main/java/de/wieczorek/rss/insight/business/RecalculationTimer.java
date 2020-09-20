@@ -1,8 +1,8 @@
 package de.wieczorek.rss.insight.business;
 
 import de.wieczorek.core.persistence.EntityManagerContext;
-import de.wieczorek.core.recalculation.AbstractRecalculationTimer;
 import de.wieczorek.core.timer.RecurrentTask;
+import de.wieczorek.recalculation.business.AbstractRecalculationTimer;
 import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
 import de.wieczorek.rss.insight.persistence.SentimentAtTimeDao;
 import de.wieczorek.rss.insight.types.RssEntrySentiment;

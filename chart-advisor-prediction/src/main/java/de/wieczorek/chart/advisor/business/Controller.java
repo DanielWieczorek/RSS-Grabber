@@ -9,8 +9,6 @@ import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.business.ui.ChartDataCollectionRemoteRestCaller;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.chart.core.persistence.ui.ChartMetricRemoteRestCaller;
-import de.wieczorek.core.recalculation.Recalculation;
-import de.wieczorek.core.recalculation.RecalculationStatusDao;
 import de.wieczorek.core.timer.RecurrentTaskManager;
 import de.wieczorek.core.ui.ControllerBase;
 import org.slf4j.Logger;
@@ -33,9 +31,6 @@ public class Controller extends ControllerBase {
 
     @Inject
     private TradingEvaluationResultDao dao;
-
-    @Inject
-    private RecalculationStatusDao recalculationDao;
 
     @Inject
     private ChartMetricRemoteRestCaller chartMetricCaller;
@@ -64,14 +59,6 @@ public class Controller extends ControllerBase {
             }
         }
         return null;
-    }
-
-    public void recompute() {
-
-        Recalculation recalculation = new Recalculation();
-        recalculation.setLastDate(LocalDateTime.of(1900, 1, 1, 1, 1));
-        recalculationDao.deleteAll();
-        recalculationDao.create(recalculation);
     }
 
     @Override

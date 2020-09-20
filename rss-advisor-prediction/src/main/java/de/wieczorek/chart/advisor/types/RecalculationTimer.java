@@ -3,11 +3,11 @@ package de.wieczorek.chart.advisor.types;
 import de.wieczorek.chart.advisor.persistence.TradingEvaluationResultDao;
 import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.business.ui.ChartDataCollectionLocalRestCaller;
+import de.wieczorek.core.persistence.EntityManagerContext;
+import de.wieczorek.core.timer.RecurrentTask;
+import de.wieczorek.recalculation.business.AbstractRecalculationTimer;
 import de.wieczorek.rss.advisor.types.NetInputItem;
 import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
-import de.wieczorek.core.persistence.EntityManagerContext;
-import de.wieczorek.core.recalculation.AbstractRecalculationTimer;
-import de.wieczorek.core.timer.RecurrentTask;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.ui.RssInsightLocalRestCaller;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public class RecalculationTimer extends AbstractRecalculationTimer {
     @Override
     protected LocalDateTime performRecalculation(LocalDateTime startDate) {
 
-        List<SentimentAtTime> sentiments = rssInsightCaller.allSentiments();
+        List<SentimentAtTime> sentiments = rssInsightCaller.all();
 
         List<ChartEntry> chartEntries = chartDataCollectionCaller.ohlcv();
 

@@ -10,6 +10,4 @@ public interface CallableResource {
     List<ChartMetricRecord> metric24h();
 
     List<ChartMetricRecord> metricNow();
-
-    void recompute();
 }

@@ -6,7 +6,7 @@ import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
 import java.util.List;
 
 public interface CallableResource {
-    List<ClassifiedRssEntry> find();
+    List<ClassifiedRssEntry> unclassified();
 
     List<ClassifiedRssEntry> classified();
 

@@ -5,6 +5,7 @@ import de.wieczorek.core.ui.Resource;
 import de.wieczorek.rss.insight.business.Controller;
 import de.wieczorek.rss.insight.types.SentimentAtTime;
 import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
+import de.wieczorek.rss.insight.types.ui.CallableResource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -16,32 +17,24 @@ import java.util.List;
 
 @Resource
 @EntityManagerContext
-@Path("/")
+@Path("sentiment")
 @ApplicationScoped
-public class RestResource {
+public class RestResource implements CallableResource {
 
     @Inject
     private Controller controller;
 
     @GET
-    @Path("sentiment")
+    @Path("now")
     @Produces(MediaType.APPLICATION_JSON)
-    public SentimentEvaluationResult sentiment() {
+    public SentimentEvaluationResult now() {
         return controller.predict();
     }
 
     @GET
-    @Path("sentiment-at-time")
+    @Path("all")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<SentimentAtTime> allSentiments() {
+    public List<SentimentAtTime> all() {
         return controller.getAllSentimentAtTime();
     }
-
-    @GET
-    @Path("recompute")
-    @Produces(MediaType.APPLICATION_JSON)
-    public void recalculate() {
-        controller.recalculate();
-    }
-
 }

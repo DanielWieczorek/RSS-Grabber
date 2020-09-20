@@ -44,9 +44,4 @@ public class MetricsResource implements CallableResource {
         return controller.getNow();
     }
 
-    @GET
-    @Path("recompute")
-    public void recompute() {
-        controller.recompute();
-    }
 }

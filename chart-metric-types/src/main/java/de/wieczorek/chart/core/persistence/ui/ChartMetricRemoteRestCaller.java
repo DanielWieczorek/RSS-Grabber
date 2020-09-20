@@ -33,7 +33,4 @@ public class ChartMetricRemoteRestCaller implements CallableResource {
         });
     }
 
-    public void recompute() {
-        target.path("/metric/recompute").request(MediaType.APPLICATION_JSON).get();
-    }
 }

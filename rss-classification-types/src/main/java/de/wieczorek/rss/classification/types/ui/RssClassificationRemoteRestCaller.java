@@ -13,20 +13,20 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @ApplicationScoped
-public class RssAdvisorRemoteRestCaller implements CallableResource {
+public class RssClassificationRemoteRestCaller implements CallableResource {
 
     @Inject
-    @Target(type = TargetType.REMOTE, port = 10020)
+    @Target(type = TargetType.REMOTE, port = 12020)
     private WebTarget target;
 
 
-    public List<ClassifiedRssEntry> find() {
-        return target.path("/find").request(MediaType.APPLICATION_JSON).get(new GenericType<List<ClassifiedRssEntry>>() {
+    public List<ClassifiedRssEntry> unclassified() {
+        return target.path("/rss/unclassified").request(MediaType.APPLICATION_JSON).get(new GenericType<List<ClassifiedRssEntry>>() {
         });
     }
 
     public List<ClassifiedRssEntry> classified() {
-        return target.path("/classified").request(MediaType.APPLICATION_JSON).get(new GenericType<List<ClassifiedRssEntry>>() {
+        return target.path("/rss/classified").request(MediaType.APPLICATION_JSON).get(new GenericType<List<ClassifiedRssEntry>>() {
         });
     }
 

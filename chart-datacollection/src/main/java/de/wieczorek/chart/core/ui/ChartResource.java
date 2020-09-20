@@ -27,7 +27,7 @@ public class ChartResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/")
+    @Path("all")
     public List<ChartEntry> ohlcv() {
         return controller.getAll();
     }
@@ -35,7 +35,7 @@ public class ChartResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{offset}")
-    public List<ChartEntry> ohlcv24h(@PathParam("offset") String offset) {
+    public List<ChartEntry> ohlcvOffset(@PathParam("offset") String offset) {
         return controller.getStartingFrom(LocalDateTime.now().minus(DateStringParser.parseDuration(offset)));
     }
 

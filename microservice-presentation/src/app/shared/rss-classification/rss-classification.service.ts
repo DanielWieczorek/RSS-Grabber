@@ -17,17 +17,17 @@ export class RssClassificationService {
     constructor( private http: HttpClient, private helper: HttpHelperService) { }
 
     find(): Observable<RssEntry[]> {
-        return this.http.get<RssEntry[]>( this.helper.buildPath( 'routing/rss-classification/find') )
+        return this.http.get<RssEntry[]>( this.helper.buildPath( 'routing/rss-classification/rss/unclassified') )
                  .pipe(catchError(this.helper.handleError));
     }
 
     statistics(): Observable<ClassificationStatistics> {
-        return this.http.get<ClassificationStatistics>( this.helper.buildPath( 'routing/rss-classification/statistics') )
+        return this.http.get<ClassificationStatistics>( this.helper.buildPath( 'routing/rss-classification/rss/statistics') )
                  .pipe(catchError(this.helper.handleError));
     }
 
     classify( entry: RssEntry ): Observable<RssEntry> {
-        return this.http.post<RssEntry>( this.helper.buildPath( 'routing/rss-classification/classify'), entry )
+        return this.http.post<RssEntry>( this.helper.buildPath( 'routing/rss-classification/rss/classify'), entry )
                  .pipe(catchError(this.helper.handleError));
     }
 }

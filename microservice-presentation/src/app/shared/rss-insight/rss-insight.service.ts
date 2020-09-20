@@ -13,7 +13,7 @@ export class RssInsightService {
     constructor( private http: HttpClient, private helper: HttpHelperService) { }
 
     sentiment(): Observable<SentimentEvaluationResult> {
-        return this.http.get<SentimentEvaluationResult>( this.helper.buildPath( 'routing/rss-insight/sentiment') )
+        return this.http.get<SentimentEvaluationResult>( this.helper.buildPath( 'routing/rss-insight/sentiment/now') )
         .pipe(catchError(this.helper.handleError));
 
     }

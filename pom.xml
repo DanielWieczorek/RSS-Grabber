@@ -9,6 +9,7 @@
     <modules>
         <module>common-webservice-base</module>
         <module>common-webservice-importexport-feature</module>
+        <module>common-webservice-recalculation-feature</module>
         <module>common-neuralnetwork</module>
         <module>common-neuralnetwork-prediction</module>
         <module>common-neuralnetwork-training</module>

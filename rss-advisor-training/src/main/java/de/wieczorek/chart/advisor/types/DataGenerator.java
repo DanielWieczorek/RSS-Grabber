@@ -22,7 +22,7 @@ public class DataGenerator implements IDataGenerator<NetInputItem> {
 
     @Override
     public List<NetInputItem> generate() {
-        List<SentimentAtTime> sentiments = rssInsightCaller.allSentiments();
+        List<SentimentAtTime> sentiments = rssInsightCaller.all();
 
         List<ChartEntry> chartEntries = chartDataCollectionCaller.ohlcv();
 
