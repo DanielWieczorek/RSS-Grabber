@@ -1,25 +1,21 @@
-<persistence xmlns="http://java.sun.com/xml/ns/persistence"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns="http://java.sun.com/xml/ns/persistence"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
     http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
-	version="2.0">
-	<persistence-unit name="rss" transaction-type="RESOURCE_LOCAL">
-		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+             version="2.0">
+    <persistence-unit name="rss" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
-		<class>de.wieczorek.chart.core.persistence.ChartMetricRecord</class>		
-		<class>de.wieczorek.chart.core.persistence.ChatMetricId</class>
-        <class>de.wieczorek.core.recalculation.Recalculation</class>
-	
+        <properties>
 
-		<properties>
-		
-			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" /> <!-- DB Driver -->
-			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/CHART_METRIC" /> <!-- BD Mane -->
-			<property name="javax.persistence.jdbc.user" value="postgres" /> <!-- DB User -->
-			<property name="javax.persistence.jdbc.password" value="admin" /> <!-- DB Password -->
-		</properties>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/> <!-- DB Driver -->
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:postgresql://localhost/CHART_METRIC"/> <!-- BD Mane -->
+            <property name="javax.persistence.jdbc.user" value="postgres"/> <!-- DB User -->
+            <property name="javax.persistence.jdbc.password" value="admin"/> <!-- DB Password -->
+        </properties>
 
-		<shared-cache-mode>NONE</shared-cache-mode>
-	</persistence-unit>
+        <shared-cache-mode>NONE</shared-cache-mode>
+    </persistence-unit>
 </persistence>
