@@ -3,7 +3,7 @@ package de.wieczorek.rss.insight.business;
 import de.wieczorek.core.timer.RecurrentTaskManager;
 import de.wieczorek.core.ui.ControllerBase;
 import de.wieczorek.rss.classification.types.ClassifiedRssEntry;
-import de.wieczorek.rss.classification.types.ui.RssAdvisorRemoteRestCaller;
+import de.wieczorek.rss.classification.types.ui.RssClassificationRemoteRestCaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class Controller extends ControllerBase {
     private DataGenerator generator;
 
     @Inject
-    private RssAdvisorRemoteRestCaller rssAdvisorCaller;
+    private RssClassificationRemoteRestCaller rssAdvisorCaller;
 
     public void trainNeuralNetwork() {
         logger.info("get all classified");

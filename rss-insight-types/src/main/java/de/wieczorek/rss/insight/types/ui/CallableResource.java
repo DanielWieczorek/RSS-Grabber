@@ -6,9 +6,8 @@ import de.wieczorek.rss.insight.types.SentimentEvaluationResult;
 import java.util.List;
 
 public interface CallableResource {
-    SentimentEvaluationResult sentiment();
+    SentimentEvaluationResult now();
 
-    List<SentimentAtTime> allSentiments();
+    List<SentimentAtTime> all();
 
-    void recalculate();
 }

@@ -19,16 +19,12 @@ public class RssInsightLocalRestCaller implements CallableResource {
     @Target(type = TargetType.LOCAL, port = 11020)
     private WebTarget target;
 
-    public SentimentEvaluationResult sentiment() {
-        return target.path("/sentiment").request(MediaType.APPLICATION_JSON).get(SentimentEvaluationResult.class);
+    public SentimentEvaluationResult now() {
+        return target.path("/sentiment/now").request(MediaType.APPLICATION_JSON).get(SentimentEvaluationResult.class);
     }
 
-    public List<SentimentAtTime> allSentiments() {
-        return target.path("/sentiment-at-time").request(MediaType.APPLICATION_JSON).get(new GenericType<List<SentimentAtTime>>() {
+    public List<SentimentAtTime> all() {
+        return target.path("/sentiment/all").request(MediaType.APPLICATION_JSON).get(new GenericType<List<SentimentAtTime>>() {
         });
-    }
-
-    public void recalculate() {
-        target.path("/recompute").request(MediaType.APPLICATION_JSON).get();
     }
 }
