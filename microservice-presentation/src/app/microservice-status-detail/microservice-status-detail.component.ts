@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { MicroserviceStatusService } from '../shared/microservice-status/microservice-status.service'
 import { MicroserviceStatusDetailService } from '../shared/microservice-status-detail/microservice-status-detail.service'
+import { RecalculationStatus } from '../shared/microservice-status-detail/recalculation-status'
+
 import { MicroserviceStatus } from '../shared/microservice-status/microservice-status'
 import 'rxjs/Rx';
 
@@ -15,6 +17,7 @@ import 'rxjs/Rx';
 export class MicroserviceStatusDetailComponent implements OnInit {
 
     data: MicroserviceStatus;
+    recalculation: RecalculationStatus;
 
     constructor( private microserviceStatus: MicroserviceStatusService,
         private microserviceStatusDetail: MicroserviceStatusDetailService,
@@ -23,7 +26,13 @@ export class MicroserviceStatusDetailComponent implements OnInit {
     ngOnInit() {
         this.route.params
             .subscribe( params => this.microserviceStatus.getCachedData()
-                .subscribe( data => { this.data = data.find( item => item.name === params['name'] ); console.log( this.data ) } ) );
+                .subscribe( data => { 
+                    this.data = data.find( item => item.name === params['name'] );
+                 console.log( this.data );
+                 if(this.data.features.some(x => x.type == 'RECALCULATION')) {
+                    this.recalculationStatus();
+                 }
+                } ) );
     }
 
 
@@ -58,6 +67,32 @@ export class MicroserviceStatusDetailComponent implements OnInit {
         console.log( files[0] );
         fileReader.readAsText( files[0] );
 
+    }
+
+    startRecalculation() {
+        this.microserviceStatusDetail.performGetAction( `routing/${this.data.name}/recalculation/start`)
+                .subscribe( x => {
+                    this.recalculationStatus();
+                } );
+    }
+
+    stopRecalculation() {
+        this.microserviceStatusDetail.performGetAction( `routing/${this.data.name}/recalculation/stop`)
+                .subscribe( x => {
+                    this.recalculationStatus();
+                } );
+    }
+
+    recalculationStatus() {
+        this.microserviceStatusDetail.performGetAction( `routing/${this.data.name}/recalculation/status`)
+                .subscribe( x => {
+                   this.recalculation = x;
+                } );
+    }
+
+    getDateString () : string{
+         let jsdate = new Date( this.recalculation.lastDate[0], this.recalculation.lastDate[1], this.recalculation.lastDate[2], this.recalculation.lastDate[3], this.recalculation.lastDate[4] );
+        return  jsdate.toLocaleTimeString( 'en', { year: 'numeric', month: 'short', day: 'numeric' } );
     }
 
 

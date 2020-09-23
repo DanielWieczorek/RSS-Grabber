@@ -1,5 +1,5 @@
 export class MicroserviceStatus {
-    
+
     bindHostname: string;
     bindPort: number;
     name: string;

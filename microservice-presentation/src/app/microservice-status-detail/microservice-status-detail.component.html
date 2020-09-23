@@ -105,6 +105,33 @@
 							</div>
 						</div>
 					</div>
+
+	               <div *ngIf="feature.type === 'RECALCULATION'">
+						<div class=" col l3">
+							<div class="card small">
+								<div class="card-content">
+									<span class="card-title  grey-text text-darken-4">Recalculation</span>
+									{{feature.description}}
+								<br><br>
+								<p>Current status:</p>
+								  <div *ngIf="recalculation; else notInProgress" class="progress">
+     								<div class="indeterminate"></div>
+  								  </div>
+								<span *ngIf="recalculation">Current timestamp: {{getDateString()}}</span>
+								<ng-template #notInProgress>
+								no calculation in progress
+								</ng-template>
+								</div>
+								<div class="card-action center">
+									<a class="waves-effect waves-teal btn-flat teal-text"
+										(click)="startRecalculation()">Start</a>
+									<a class="waves-effect waves-red btn-flat red-text"
+										(click)="stopRecalculation()">Stop</a>
+								</div>
+
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

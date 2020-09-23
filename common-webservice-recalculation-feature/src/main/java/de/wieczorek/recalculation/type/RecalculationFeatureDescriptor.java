@@ -16,8 +16,8 @@ public class RecalculationFeatureDescriptor extends FeatureDescriptor {
 
         List<FeatureAction> actions = new ArrayList<>();
 
-        actions.add(new FeatureAction("start", "/recalculation/import", HttpMethod.GET));
-        actions.add(new FeatureAction("stop", "/recalculation/export", HttpMethod.GET));
+        actions.add(new FeatureAction("start", "/recalculation/start", HttpMethod.GET));
+        actions.add(new FeatureAction("stop", "/recalculation/stop", HttpMethod.GET));
 
         setActions(actions);
         setType(FeatureType.RECALCULATION);
