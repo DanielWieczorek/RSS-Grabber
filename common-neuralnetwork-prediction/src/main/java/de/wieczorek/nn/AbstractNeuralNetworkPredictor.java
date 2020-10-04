@@ -28,13 +28,13 @@ public abstract class AbstractNeuralNetworkPredictor<T, R> {
             wrapped.updateModel(net);
         }
 
-        net.setCacheMode(null);
         Nd4j.getMemoryManager().setAutoGcWindow(500);
         INDArray outputRaw = net.output(buildPredictionFeatures(item));
         long timeSeriesLength = outputRaw.size(2); // TODO
         INDArray probabilitiesAtLastWord = outputRaw.get(NDArrayIndex.point(0), NDArrayIndex.all(),
                 NDArrayIndex.point(timeSeriesLength - 1));
         Nd4j.getWorkspaceManager().destroyAllWorkspacesForCurrentThread();
+        net.clear();
         return buildPredictionResult(item, probabilitiesAtLastWord);
 
     }
