@@ -39,8 +39,8 @@ import java.util.stream.Stream;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 10;
-    private static final int DATAPOINTS_PER_SERIES = 10;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 3;
+    private static final int DATAPOINTS_PER_SERIES = 3;
     private static final int NUMBER_OF_COMPARATORS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int TOTAL_NUMBER_OF_DATAPOINTS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int OFFSET_SAFETY_MARGIN = 10;

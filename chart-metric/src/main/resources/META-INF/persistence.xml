@@ -5,8 +5,11 @@
              version="2.0">
     <persistence-unit name="rss" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <class>de.wieczorek.chart.core.persistence.ChartMetricRecord</class>
+        <class>de.wieczorek.chart.core.persistence.ChatMetricId</class>
         <class>de.wieczorek.recalculation.db.Recalculation</class>
+
 
         <properties>
 
