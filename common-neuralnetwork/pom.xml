@@ -23,31 +23,31 @@
 		<dependency>
 			<groupId>org.deeplearning4j</groupId>
 			<artifactId>deeplearning4j-core</artifactId>
-			<version>1.0.0-beta5</version>
+			<version>1.0.0-beta7</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.deeplearning4j</groupId>
 			<artifactId>deeplearning4j-nlp</artifactId>
-			<version>1.0.0-beta5</version>
+			<version>1.0.0-beta7</version>
 		</dependency>
 
 	<dependency>
 		<groupId>org.deeplearning4j</groupId>
 		<artifactId>rl4j-core</artifactId>
-		<version>1.0.0-beta5</version>
+		<version>1.0.0-beta7</version>
 	</dependency>
 
 		<dependency>
 			<groupId>org.apache.opennlp</groupId>
 			<artifactId>opennlp-tools</artifactId>
-			<version>1.9.0</version>
+			<version>1.9.3</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.deeplearning4j</groupId>
 			<artifactId>deeplearning4j-parallel-wrapper</artifactId>
-			<version>1.0.0-beta5</version>
+			<version>1.0.0-beta7</version>
 		</dependency>
 		
 		<dependency>
