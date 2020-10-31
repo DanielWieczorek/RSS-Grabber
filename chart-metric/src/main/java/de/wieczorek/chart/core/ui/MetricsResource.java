@@ -29,13 +29,6 @@ public class MetricsResource implements CallableResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/all")
-    public List<ChartMetricRecord> metricAll() {
-        return controller.getAll();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("/between/{start}/{end}")
     public List<ChartMetricRecord> metricBetween(@PathParam("start") long start,
                                                  @PathParam("end") long end) {

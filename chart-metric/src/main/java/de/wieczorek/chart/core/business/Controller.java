@@ -35,10 +35,6 @@ public class Controller extends ControllerBase {
         timer.stop();
     }
 
-    public List<ChartMetricRecord> getAll() {
-        return dao.findAll();
-    }
-
     public List<ChartMetricRecord> get24h() {
         return dao.find24h();
     }
