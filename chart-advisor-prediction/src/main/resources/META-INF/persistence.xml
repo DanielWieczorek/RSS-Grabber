@@ -7,6 +7,7 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <class>de.wieczorek.recalculation.db.Recalculation</class>
+        <class>de.wieczorek.chart.advisor.types.TradingEvaluationResult</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/> <!-- DB Driver -->

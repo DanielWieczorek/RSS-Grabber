@@ -10,8 +10,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Resource
@@ -28,6 +32,16 @@ public class MetricsResource implements CallableResource {
     @Path("/all")
     public List<ChartMetricRecord> metricAll() {
         return controller.getAll();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/between/{start}/{end}")
+    public List<ChartMetricRecord> metricBetween(@PathParam("start") long start,
+                                                 @PathParam("end") long end) {
+        var startDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(start), ZoneId.of("UTC"));
+        var endDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(end), ZoneId.of("UTC"));
+        return controller.getBetween(startDate, endDate);
     }
 
     @GET

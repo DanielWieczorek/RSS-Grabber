@@ -121,32 +121,19 @@ public class SentimentExampleIterator implements DataSetIterator {
 
         for (int i = 0; i < reviews.size(); i++) {
             List<String> tokens = allTokens.get(i);
-
-            // Get the truncated sequence length of document (i)
             int seqLength = Math.min(tokens.size(), maxLength);
 
-            // Get all wordvectors for the current document and transpose them to fit the
-            // 2nd and 3rd feature shape
             final INDArray vectors = wordVectors.getWordVectors(tokens.subList(0, seqLength)).transpose();
-
-            // Put wordvectors into features array at the following indices:
-            // 1) Document (i)
-            // 2) All vector elements which is equal to NDArrayIndex.interval(0, vectorSize)
-            // 3) All elements between 0 and the length of the current sequence
             features.put(new INDArrayIndex[]{NDArrayIndex.point(i), NDArrayIndex.all(),
                     NDArrayIndex.interval(0, seqLength)}, vectors);
 
-            // Assign "1" to each position where a feature is present, that is, in the
-            // interval of [0, seqLength)
             featuresMask.get(new INDArrayIndex[]{NDArrayIndex.point(i), NDArrayIndex.interval(0, seqLength)})
                     .assign(1);
 
             int idx = (positive[i] ? 0 : 1);
             int lastIdx = Math.min(tokens.size(), maxLength);
-            labels.putScalar(new int[]{i, idx, lastIdx - 1}, 1.0); // Set label: [0,1] for negative, [1,0] for
-            // positive
-            labelsMask.putScalar(new int[]{i, lastIdx - 1}, 1.0); // Specify that an output exists at the final time
-            // step for this example
+            labels.putScalar(new int[]{i, idx, lastIdx - 1}, 1.0);
+            labelsMask.putScalar(new int[]{i, lastIdx - 1}, 1.0);
         }
 
         return new DataSet(features, labels, featuresMask, labelsMask);

@@ -1,7 +1,7 @@
 package de.wieczorek.chart.core.persistence;
 
-import de.wieczorek.importexport.db.ImportExportDao;
 import de.wieczorek.core.persistence.EntityManagerProvider;
+import de.wieczorek.importexport.db.ImportExportDao;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
@@ -69,4 +69,11 @@ public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
         return ChartMetricRecord.class;
     }
 
+    public List<ChartMetricRecord> findBetween(LocalDateTime startDate, LocalDateTime endDate) {
+        TypedQuery<ChartMetricRecord> query = EntityManagerProvider.getEntityManager()
+                .createQuery("SELECT s FROM ChartMetricRecord s WHERE s.id.date > :start AND s.id.date <= :end", ChartMetricRecord.class)
+                .setParameter("start", startDate)
+                .setParameter("end", endDate);
+        return query.getResultList();
+    }
 }

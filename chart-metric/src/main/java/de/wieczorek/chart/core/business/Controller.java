@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @ApplicationScoped
@@ -44,5 +45,9 @@ public class Controller extends ControllerBase {
 
     public List<ChartMetricRecord> getNow() {
         return dao.findNow();
+    }
+
+    public List<ChartMetricRecord> getBetween(LocalDateTime startDate, LocalDateTime endDate) {
+        return dao.findBetween(startDate, endDate);
     }
 }
