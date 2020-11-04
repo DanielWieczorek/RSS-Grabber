@@ -5,7 +5,6 @@ import de.wieczorek.chart.core.business.ui.ChartDataCollectionRemoteRestCaller;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.chart.core.persistence.ui.ChartMetricRemoteRestCaller;
 import de.wieczorek.nn.IDataGenerator;
-import org.nd4j.linalg.factory.Nd4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +61,7 @@ public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputIte
                 double[][] itemVectors = NetworkInputBuilder.getVectors(item);
 
                 if (itemVectors != null) {
-                    netInput.add(new TrainingNetInputItem(Nd4j.create(itemVectors), Normalizer.normalize(item.getOutputDelta(), Normalizer.getOutputBoundaries())));
+                    netInput.add(new TrainingNetInputItem(itemVectors, Normalizer.normalize(item.getOutputDelta(), Normalizer.getOutputBoundaries())));
                 }
                 logger.debug("preparing data " + i);
 
