@@ -11,7 +11,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.concurrent.TimeUnit;
 
-@RecurrentTask(interval = 30, unit = TimeUnit.SECONDS)
+@RecurrentTask(interval = 15, unit = TimeUnit.SECONDS)
 @EntityManagerContext
 @ApplicationScoped
 public class PredictionTimer implements Runnable {
