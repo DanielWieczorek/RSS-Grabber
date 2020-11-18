@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 
 public class DataPreparator {
     private static final Logger logger = LoggerFactory.getLogger(DataPreparator.class);
+    public static int HOURS_OF_DATA = 1;
     private List<ChartMetricRecord> sentiments;
     private List<ChartEntry> chartEntries;
     private int offsetMinutes = 60;
-    private int hoursOfData = 1;
 
     public int getOffsetMinutes() {
         return offsetMinutes;
@@ -32,7 +32,7 @@ public class DataPreparator {
     }
 
     public NetInputItem getDataAtTime(LocalDateTime time) {
-        LocalDateTime date = time.minusHours(hoursOfData).minusMinutes(1);
+        LocalDateTime date = time.minusHours(HOURS_OF_DATA).minusMinutes(1);
 
         Map<LocalDateTime, List<ChartMetricRecord>> sentimentDateMappings = new HashMap<>();
         sentiments.stream().filter(x -> x.getId().getDate().isAfter(date) ||
@@ -64,7 +64,7 @@ public class DataPreparator {
     }
 
     private NetInputItem buildNetworkInputItem(LocalDateTime time, Map<LocalDateTime, List<ChartMetricRecord>> sentimentDateMappings, Map<LocalDateTime, ChartEntry> chartEntryMappings, Map<LocalDateTime, Integer> dateIndexMapping, List<LocalDateTime> times) {
-        LocalDateTime startDate = time.minusHours(hoursOfData).plusMinutes(1);
+        LocalDateTime startDate = time.minusHours(HOURS_OF_DATA).plusMinutes(1);
 
         Integer startIndex = dateIndexMapping.get(startDate);
         Integer endIndex = dateIndexMapping.get(time);
@@ -132,8 +132,8 @@ public class DataPreparator {
     }
 
     private void interpolate(Map<LocalDateTime, List<ChartMetricRecord>> sentimentDateMappings, Map<LocalDateTime, ChartEntry> chartEntryMappings) {
-        LocalDateTime currentDate = chartEntries.stream().map(ChartEntry::getDate).reduce((a, b) -> a.isBefore(b) ? a : b).get();
-        LocalDateTime maxDate = chartEntries.stream().map(ChartEntry::getDate).reduce((a, b) -> a.isAfter(b) ? a : b).get();
+        LocalDateTime currentDate = chartEntryMappings.values().stream().map(ChartEntry::getDate).reduce((a, b) -> a.isBefore(b) ? a : b).get();
+        LocalDateTime maxDate = chartEntryMappings.values().stream().map(ChartEntry::getDate).reduce((a, b) -> a.isAfter(b) ? a : b).get();
         List<ChartMetricRecord> lastSentiment = null;
         ChartEntry lastEntry = null;
         while (currentDate.isBefore(maxDate)) {

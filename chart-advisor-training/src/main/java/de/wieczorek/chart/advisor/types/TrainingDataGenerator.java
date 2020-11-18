@@ -33,23 +33,29 @@ public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputIte
 
         if (metrics != null && chartEntries != null) {
 
+            metrics = metrics.stream().filter(entry ->
+                    !(entry.getValue24hour() == 0.0
+                            && entry.getValue12hour() == 0.0
+                            && entry.getValue6hour() == 0.0
+                            && entry.getValue2hour() == 0.0)).collect(Collectors.toList());
+
 
             List<NetInputItem> data = new DataPreparator().withChartData(chartEntries).withMetrics(metrics).getData();
+            data.forEach(item -> item.setOutputDelta(Math.round(item.getOutputDelta())));
             List<NetInputItem> positive = data.stream().filter(item -> item.getOutputDelta() > 0).collect(Collectors.toList());
             List<NetInputItem> negative = data.stream().filter(item -> item.getOutputDelta() < 0).collect(Collectors.toList());
 
             int sizePerList = Math.min(positive.size(), negative.size());
-            //sizePerList = Math.min(sizePerList, 100000);
 
             Collections.shuffle(positive);
             Collections.shuffle(negative);
-            List<NetInputItem> trainingData = new ArrayList<>(positive.stream().limit(sizePerList).collect(Collectors.toList()));
+            List<NetInputItem> trainingData = positive.stream().limit(sizePerList).collect(Collectors.toList());
             trainingData.addAll(negative.stream().limit(sizePerList).collect(Collectors.toList()));
             Collections.shuffle(trainingData);
 
             List<TrainingNetInputItem> netInput = new ArrayList<>();
 
-            double stdDev = calculateStandardDeviation(trainingData.stream().map(item -> item.getOutputDelta()).collect(Collectors.toList()));
+            double stdDev = calculateStandardDeviation(trainingData.stream().map(NetInputItem::getOutputDelta).collect(Collectors.toList()));
             int sizeBefore = trainingData.size();
             trainingData = trainingData.stream().filter(item -> Math.abs(item.getOutputDelta()) < 2.0 * stdDev).collect(Collectors.toList());
 
@@ -60,12 +66,9 @@ public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputIte
 
                 double[][] itemVectors = NetworkInputBuilder.getVectors(item);
 
-                if (itemVectors != null) {
-                    netInput.add(new TrainingNetInputItem(itemVectors, Normalizer.normalize(item.getOutputDelta(), Normalizer.getOutputBoundaries())));
-                }
+                netInput.add(new TrainingNetInputItem(itemVectors, Normalizer.normalize(item.getOutputDelta(), Normalizer.getOutputBoundaries())));
+
                 logger.debug("preparing data " + i);
-
-
             }
             return netInput;
         }

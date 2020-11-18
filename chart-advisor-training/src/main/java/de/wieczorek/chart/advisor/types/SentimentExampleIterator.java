@@ -65,8 +65,8 @@ public class SentimentExampleIterator implements DataSetIterator {
             cursor++;
         }
 
-        int maxLength = 24 * 4 + 1;
-        int vectorSize = 4 * 9;
+        int maxLength = NetworkInputBuilder.MAX_LENGTH;
+        int vectorSize = NetworkInputBuilder.VECTOR_SIZE;
 
         // Create data for training
         // Here: we have reviews.size() examples of varying lengths

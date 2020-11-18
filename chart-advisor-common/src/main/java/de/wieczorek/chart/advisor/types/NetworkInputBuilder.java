@@ -7,8 +7,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class NetworkInputBuilder {
+    public static final int STEPPING_MINUTES = 15;
 
-    public static final int MAX_LENGTH = 24 * 4 + 1;
+    public static final int MAX_LENGTH = DataPreparator.HOURS_OF_DATA * (60 / STEPPING_MINUTES);
     public static final int VECTOR_SIZE = 4 * 9;
 
     public static double[][] getVectors(NetInputItem item) {
