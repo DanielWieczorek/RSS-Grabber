@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class DataPreparator {
     private static final Logger logger = LoggerFactory.getLogger(DataPreparator.class);
-    public static int HOURS_OF_DATA = 1;
+    public static int HOURS_OF_DATA = 4;
     private List<ChartMetricRecord> sentiments;
     private List<ChartEntry> chartEntries;
     private int offsetMinutes = 60;

@@ -97,7 +97,7 @@ public class SentimentExampleIterator implements DataSetIterator {
 
     @Override
     public int inputColumns() {
-        return 24 * 60;
+        return NetworkInputBuilder.MAX_LENGTH;
     }
 
     @Override

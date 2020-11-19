@@ -68,16 +68,28 @@ public class NetworkInputBuilder {
         for (List<ChartMetricRecord> record : foo) {
             for (int i = 0; i < result.size(); i++) {
                 result.get(i).setId(record.get(i).getId());
-                result.get(i).setValue1min(result.get(i).getValue1min() + record.get(i).getValue1min() / record.size());
-                result.get(i).setValue5min(result.get(i).getValue5min() + record.get(i).getValue5min() / record.size());
-                result.get(i).setValue15min(result.get(i).getValue15min() + record.get(i).getValue15min() / record.size());
-                result.get(i).setValue30min(result.get(i).getValue30min() + record.get(i).getValue30min() / record.size());
-                result.get(i).setValue60min(result.get(i).getValue60min() + record.get(i).getValue60min() / record.size());
-                result.get(i).setValue2hour(result.get(i).getValue2hour() + record.get(i).getValue2hour() / record.size());
-                result.get(i).setValue6hour(result.get(i).getValue6hour() + record.get(i).getValue6hour() / record.size());
-                result.get(i).setValue12hour(result.get(i).getValue12hour() + record.get(i).getValue12hour() / record.size());
-                result.get(i).setValue24hour(result.get(i).getValue24hour() + record.get(i).getValue24hour() / record.size());
+                result.get(i).setValue1min(result.get(i).getValue1min() + record.get(i).getValue1min());
+                result.get(i).setValue5min(result.get(i).getValue5min() + record.get(i).getValue5min());
+                result.get(i).setValue15min(result.get(i).getValue15min() + record.get(i).getValue15min());
+                result.get(i).setValue30min(result.get(i).getValue30min() + record.get(i).getValue30min());
+                result.get(i).setValue60min(result.get(i).getValue60min() + record.get(i).getValue60min());
+                result.get(i).setValue2hour(result.get(i).getValue2hour() + record.get(i).getValue2hour());
+                result.get(i).setValue6hour(result.get(i).getValue6hour() + record.get(i).getValue6hour());
+                result.get(i).setValue12hour(result.get(i).getValue12hour() + record.get(i).getValue12hour());
+                result.get(i).setValue24hour(result.get(i).getValue24hour() + record.get(i).getValue24hour());
             }
+        }
+
+        for (ChartMetricRecord chartMetricRecord : result) {
+            chartMetricRecord.setValue1min(chartMetricRecord.getValue1min() / records.size());
+            chartMetricRecord.setValue5min(chartMetricRecord.getValue5min() / records.size());
+            chartMetricRecord.setValue15min(chartMetricRecord.getValue15min() / records.size());
+            chartMetricRecord.setValue30min(chartMetricRecord.getValue30min() / records.size());
+            chartMetricRecord.setValue60min(chartMetricRecord.getValue60min() / records.size());
+            chartMetricRecord.setValue2hour(chartMetricRecord.getValue2hour() / records.size());
+            chartMetricRecord.setValue6hour(chartMetricRecord.getValue6hour() / records.size());
+            chartMetricRecord.setValue12hour(chartMetricRecord.getValue12hour() / records.size());
+            chartMetricRecord.setValue24hour(chartMetricRecord.getValue24hour() / records.size());
         }
 
         return result;
