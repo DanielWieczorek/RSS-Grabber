@@ -176,20 +176,6 @@ public class Trader {
         }
     }
 
-    private boolean isNoOperation(StateEdge current, ActionVertexType nextAction) {
-        if (nextAction == ActionVertexType.BUY &&
-                helper.amountUnderMinimum(BigDecimal.valueOf(current.getAccount().getEur()))) {
-            return true;
-        }
-
-        if (nextAction == ActionVertexType.SELL &&
-                helper.amountUnderMinimum(BigDecimal.valueOf(current.getAccount().getBtc()))) {
-            return true;
-        }
-
-        return false;
-    }
-
     private double getCurrentPrice(StateEdge snapshot) {
         return snapshot.getAllStateParts().get(snapshot.getPartsStartIndex()).getChartEntry().getClose();
     }

@@ -32,6 +32,13 @@ public class PerformedTradeDao {
         return query.getResultList();
     }
 
+    public PerformedTrade findLastTrade() {
+        TypedQuery<PerformedTrade> query = EntityManagerProvider.getEntityManager()
+                .createQuery("SELECT s FROM PerformedTrade s WHERE order by s.time", PerformedTrade.class)
+                .setMaxResults(1);
+        return EntityManagerHelper.getSingleResultOrNull(query);
+    }
+
     public void update(PerformedTrade trade) {
         EntityManagerProvider.getEntityManager().merge(trade);
     }

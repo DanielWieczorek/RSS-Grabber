@@ -2,6 +2,7 @@ package de.wieczorek.rss.trading.common.io;
 
 import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.rss.advisor.types.DeltaChartEntry;
 import de.wieczorek.rss.trading.types.StateEdgePart;
 
@@ -18,13 +19,17 @@ public final class StatePartBuilder {
     }
 
     public static List<StateEdgePart> buildStateParts(List<ChartEntry> chartEntries,
-                                                      List<TradingEvaluationResult> chartMetrics,
-                                                      List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> sentiments) {
-        Map<LocalDateTime, de.wieczorek.rss.advisor.types.TradingEvaluationResult> sentimentDateMappings = sentiments.stream().collect(
-                Collectors.toMap(de.wieczorek.rss.advisor.types.TradingEvaluationResult::getCurrentTime, Function.identity(), (v1, v2) -> v2));
+                                                      List<TradingEvaluationResult> chartMetricSentiments,
+                                                      List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> sentiments,
+                                                      List<ChartMetricRecord> chartMetrics) {
+        Map<LocalDateTime, de.wieczorek.rss.advisor.types.TradingEvaluationResult> sentimentDateMappings = sentiments.stream()
+                .collect(Collectors.toMap(de.wieczorek.rss.advisor.types.TradingEvaluationResult::getCurrentTime, Function.identity(), (v1, v2) -> v2));
 
-        Map<LocalDateTime, TradingEvaluationResult> chartMetricMappings = chartMetrics.stream().collect(
-                Collectors.toMap(TradingEvaluationResult::getCurrentTime, Function.identity(), (v1, v2) -> v2));
+        Map<LocalDateTime, TradingEvaluationResult> chartMetricSentimentMappings = chartMetricSentiments.stream()
+                .collect(Collectors.toMap(TradingEvaluationResult::getCurrentTime, Function.identity(), (v1, v2) -> v2));
+
+        Map<LocalDateTime, List<ChartMetricRecord>> chartMetricMappings = chartMetrics.stream()
+                .collect(Collectors.groupingBy(metric -> metric.getId().getDate()));
 
         List<StateEdgePart> stateParts = new ArrayList<>();
 
@@ -47,7 +52,8 @@ public final class StatePartBuilder {
             part.setDeltaChartEntry(entry);
             part.setChartEntry(currentEntry);
             part.setSentiment(sentimentDateMappings.get(currentEntry.getDate()));
-            part.setMetricsSentiment(chartMetricMappings.get(currentEntry.getDate()));
+            part.setMetricsSentiment(chartMetricSentimentMappings.get(currentEntry.getDate()));
+            part.setMetrics(chartMetricMappings.get(currentEntry.getDate()));
 
             stateParts.add(part);
         }

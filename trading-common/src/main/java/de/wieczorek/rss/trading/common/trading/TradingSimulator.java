@@ -1,8 +1,6 @@
 package de.wieczorek.rss.trading.common.trading;
 
-import de.wieczorek.rss.trading.common.io.DataGenerator;
-import de.wieczorek.rss.trading.common.io.DataGeneratorBuilder;
-import de.wieczorek.rss.trading.common.io.DataLoader;
+import de.wieczorek.rss.trading.common.io.*;
 import de.wieczorek.rss.trading.common.oracle.Oracle;
 import de.wieczorek.rss.trading.common.oracle.OracleInput;
 import de.wieczorek.rss.trading.common.oracle.TraderState;
@@ -15,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,21 +27,32 @@ public class TradingSimulator {
 
     @Inject
     private DataGeneratorBuilder dataGeneratorBuilder;
+    @Inject
+    private SimulationContextProvider contextProvider;
 
     public List<Trade> simulate(Oracle oracle) {
+        contextProvider.createContext();
         DataGenerator generator = dataGeneratorBuilder.produceGenerator();
-        return simulate(generator, oracle).getTrades();
+        List<Trade> result = simulate(generator, oracle).getTrades();
+        contextProvider.destroyContext();
+        return result;
     }
 
 
     public TradingSimulationResult simulate(StateEdgeChainMetaInfo metaInfo, DataGenerator generator, Oracle oracle) {
         StateEdge startState = generator.buildNewStartState(metaInfo);
-        return simulate(startState, generator, oracle);
+        contextProvider.createContext();
+        TradingSimulationResult result = simulate(startState, generator, oracle);
+        contextProvider.destroyContext();
+        return result;
     }
 
     public TradingSimulationResult simulate(DataGenerator generator, Oracle oracle) {
         StateEdge startState = generator.buildNewStartState(0);
-        return simulate(startState, generator, oracle);
+        contextProvider.createContext();
+        TradingSimulationResult result = simulate(startState, generator, oracle);
+        contextProvider.destroyContext();
+        return result;
     }
 
     public TradingSimulationResult simulate(StateEdge startState, DataGenerator generator, Oracle oracle) {
@@ -60,9 +70,18 @@ public class TradingSimulator {
             if (next == null) {
                 break;
             }
+
+            SimulationContext context = contextProvider.getContext();
+            if (nextAction == ActionVertexType.BUY) {
+                context.setLastBuyTime(getCurrentTime(current));
+            } else {
+                context.setLastBuyTime(null);
+            }
+
             addTrade(trades, current.getAccount(), next.getAccount(), input, nextAction);
             current = next;
             input.setStateEdge(current);
+
         }
 
         TradingSimulationResult result = new TradingSimulationResult();
@@ -101,6 +120,10 @@ public class TradingSimulator {
 
     private double getCurrentPrice(StateEdge snapshot) {
         return snapshot.getAllStateParts().get(snapshot.getPartsStartIndex()).getChartEntry().getClose();
+    }
+
+    private LocalDateTime getCurrentTime(StateEdge snapshot) {
+        return snapshot.getAllStateParts().get(snapshot.getPartsStartIndex()).getChartEntry().getDate();
     }
 
 }

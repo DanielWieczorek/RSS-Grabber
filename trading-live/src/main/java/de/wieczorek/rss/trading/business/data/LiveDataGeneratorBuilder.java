@@ -9,15 +9,20 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 public class LiveDataGeneratorBuilder implements DataGeneratorBuilder {
+
     @Inject
     private DataLoader dataLoader;
 
+    @Inject
+    private TradingContextProvider contextProvider;
 
     public DataGenerator produceGenerator() {
         return new DataGenerator(
                 dataLoader::loadSentiments24h,
                 dataLoader::loadChartEntries24h,
-                dataLoader::loadMetricSentiments24h
+                dataLoader::loadMetricSentiments24h,
+                dataLoader::loadMetrics24h,
+                contextProvider
         );
     }
 

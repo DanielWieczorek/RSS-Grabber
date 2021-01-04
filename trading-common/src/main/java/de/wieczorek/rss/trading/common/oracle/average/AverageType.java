@@ -5,7 +5,9 @@ import java.util.function.Supplier;
 public enum AverageType {
 
     EMA(0, ExponentialMovingAverageCalculator::new),
-    AVERAGE(1, SimpleAverageCalculator::new);
+    AVERAGE(1, SimpleAverageCalculator::new),
+    MIN(2, ExponentialMovingAverageCalculator::new),
+    MAX(3, SimpleAverageCalculator::new);
 
     private final int index;
     private final Supplier<AverageCalculator> averageCalculatorBuilder;

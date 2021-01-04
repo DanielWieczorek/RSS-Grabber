@@ -20,32 +20,27 @@ public class DefaultOracle implements Oracle {
 
 
     public DefaultOracle(OracleConfiguration configuration) {
-        buyDecider = buildDecider(configuration.getBuyConfigurations(), configuration.getBuyOperators(), Account::getEur);
-        sellDecider = buildDecider(configuration.getSellConfigurations(), configuration.getSellOperators(), Account::getBtc);
+        buyDecider = buildDecider(configuration.getBuyConfigurations(), configuration.getBuyRatioPercent(), configuration.getBuyThresholdAbsolute(), Account::getEur);
+        sellDecider = buildDecider(configuration.getSellConfigurations(), configuration.getSellRatioPercent(), configuration.getSellThresholdAbsolute(), Account::getBtc);
     }
 
 
-    private Predicate<OracleInput> buildDecider(List<TradeConfiguration> buyConfigurations, List<Operator> buyOperators, Function<Account, Double> currencyAmountGetter) {
-        Predicate<OracleInput> decider;
+    private Predicate<OracleInput> buildDecider(List<TradeConfiguration> buyConfigurations, List<Integer> buyOperators, int buyThresholdAbsolute, Function<Account, Double> currencyAmountGetter) {
         List<TradeDecider> decidersChildren = buyConfigurations
                 .stream().map(config -> new TradeDecider(config, currencyAmountGetter)).collect(Collectors.toList());
+        int sumTotal = buyOperators.stream().reduce(0, Integer::sum);
 
-        if (!buyOperators.isEmpty()) {
-            Predicate<OracleInput> rootDecider = buyOperators.get(0).getCombinationFunction()
-                    .apply(decidersChildren.get(0), decidersChildren.get(1));
-            for (int i = 1; i < buyOperators.size(); i++) {
-                rootDecider = buyOperators.get(i).getCombinationFunction().apply(rootDecider, decidersChildren.get(i + 1));
+        return (input) -> {
+            int sumPositive = 0;
+            for (int i = 0; i < buyOperators.size(); i++) {
+                sumPositive += decidersChildren.get(i).test(input) ? buyOperators.get(i) : 0;
+                if (sumPositive >= buyThresholdAbsolute) {
+                    return true;
+                }
             }
-            decider = rootDecider;
+            return false;
+        };
 
-        } else {
-            if (!decidersChildren.isEmpty()) {
-                decider = (x) -> decidersChildren.get(0).test(x);
-            } else {
-                decider = (x) -> false;
-            }
-        }
-        return decider;
     }
 
     @Override

@@ -3,6 +3,7 @@ package de.wieczorek.rss.trading.common.io;
 
 import de.wieczorek.chart.advisor.types.TradingEvaluationResult;
 import de.wieczorek.chart.core.business.ChartEntry;
+import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.rss.trading.common.trading.BuySellHelper;
 import de.wieczorek.rss.trading.types.*;
 
@@ -17,22 +18,27 @@ public class DataGenerator {
     private List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> currentSentiment;
     private List<TradingEvaluationResult> currentMetricSentiment;
     private List<ChartEntry> chartEntries;
+    private List<ChartMetricRecord> chartMetrics;
 
 
     public DataGenerator(Supplier<List<de.wieczorek.rss.advisor.types.TradingEvaluationResult>> sentimentSupplier,
                          Supplier<List<ChartEntry>> chartEntrySupplier,
-                         Supplier<List<TradingEvaluationResult>> metricSupplier) {
+                         Supplier<List<TradingEvaluationResult>> metricSentimentSupplier,
+                         Supplier<List<ChartMetricRecord>> metricSupplier,
+                         ContextProvider contextProvider) {
 
         currentSentiment = sentimentSupplier.get();
         chartEntries = chartEntrySupplier.get();
-        currentMetricSentiment = metricSupplier.get();
-        stateParts = StatePartBuilder.buildStateParts(chartEntries, currentMetricSentiment, currentSentiment);
+        currentMetricSentiment = metricSentimentSupplier.get();
+        chartMetrics = metricSupplier.get();
+        stateParts = StatePartBuilder.buildStateParts(chartEntries, currentMetricSentiment, currentSentiment, chartMetrics);
+        stateParts.stream().forEach(part -> part.setContextProvider(contextProvider));
     }
 
     public StateEdge buildNewStartState(int offset) {
         StateEdgeChainMetaInfo metaInfo = new StateEdgeChainMetaInfo();
         metaInfo.setOffset(offset);
-        metaInfo.setDepth(DEPTH);
+        metaInfo.setDepth(getMaxIndex());
         metaInfo.setStepping(STEPPING);
         metaInfo.setWidth(WIDTH);
 

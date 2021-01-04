@@ -6,10 +6,27 @@ import java.util.Objects;
 public class OracleConfiguration {
 
     private List<TradeConfiguration> buyConfigurations;
-    private List<Operator> buyOperators;
+    private List<Integer> buyRatioPercent;
     private List<TradeConfiguration> sellConfigurations;
-    private List<Operator> sellOperators;
+    private List<Integer> sellRatioPercent;
+    private int buyThresholdAbsolute;
+    private int sellThresholdAbsolute;
 
+    public int getBuyThresholdAbsolute() {
+        return buyThresholdAbsolute;
+    }
+
+    public void setBuyThresholdAbsolute(int buyThresholdAbsolute) {
+        this.buyThresholdAbsolute = buyThresholdAbsolute;
+    }
+
+    public int getSellThresholdAbsolute() {
+        return sellThresholdAbsolute;
+    }
+
+    public void setSellThresholdAbsolute(int sellThresholdAbsolute) {
+        this.sellThresholdAbsolute = sellThresholdAbsolute;
+    }
 
     public List<TradeConfiguration> getBuyConfigurations() {
         return buyConfigurations;
@@ -27,20 +44,20 @@ public class OracleConfiguration {
         this.sellConfigurations = sellConfigurations;
     }
 
-    public List<Operator> getBuyOperators() {
-        return buyOperators;
+    public List<Integer> getBuyRatioPercent() {
+        return buyRatioPercent;
     }
 
-    public void setBuyOperators(List<Operator> buyOperators) {
-        this.buyOperators = buyOperators;
+    public void setBuyRatioPercent(List<Integer> buyRatioPercent) {
+        this.buyRatioPercent = buyRatioPercent;
     }
 
-    public List<Operator> getSellOperators() {
-        return sellOperators;
+    public List<Integer> getSellRatioPercent() {
+        return sellRatioPercent;
     }
 
-    public void setSellOperators(List<Operator> sellOperators) {
-        this.sellOperators = sellOperators;
+    public void setSellRatioPercent(List<Integer> sellRatioPercent) {
+        this.sellRatioPercent = sellRatioPercent;
     }
 
     @Override
@@ -49,13 +66,13 @@ public class OracleConfiguration {
         if (o == null || getClass() != o.getClass()) return false;
         OracleConfiguration that = (OracleConfiguration) o;
         return Objects.equals(buyConfigurations, that.buyConfigurations) &&
-                Objects.equals(buyOperators, that.buyOperators) &&
+                Objects.equals(buyRatioPercent, that.buyRatioPercent) &&
                 Objects.equals(sellConfigurations, that.sellConfigurations) &&
-                Objects.equals(sellOperators, that.sellOperators);
+                Objects.equals(sellRatioPercent, that.sellRatioPercent);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(buyConfigurations, buyOperators, sellConfigurations, sellOperators);
+        return Objects.hash(buyConfigurations, buyRatioPercent, sellConfigurations, sellRatioPercent);
     }
 }

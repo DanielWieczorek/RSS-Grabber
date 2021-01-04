@@ -61,4 +61,5 @@ public class StateEdge implements IStateHistoryHolder {
     public void setMetaInfo(StateEdgeChainMetaInfo metaInfo) {
         this.metaInfo = metaInfo;
     }
+
 }

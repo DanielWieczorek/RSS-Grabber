@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -39,7 +40,7 @@ import java.util.stream.Stream;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 3;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 5;
     private static final int DATAPOINTS_PER_SERIES = 3;
     private static final int NUMBER_OF_COMPARATORS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int TOTAL_NUMBER_OF_DATAPOINTS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
@@ -70,7 +71,8 @@ public class TrainingTimer implements Runnable {
 
         TradingSimulationResult simulationResult = simulator.simulate(metadata, generator, oracle);
         List<Trade> trades = simulationResult.getTrades();
-        double result = Integer.MIN_VALUE;
+        double result = Double.MIN_VALUE;
+        double missedOpportunityPct = Double.MIN_VALUE;
 
         if (trades.size() > 1) {
             double tradeProfitPct = 0;
@@ -79,19 +81,29 @@ public class TrainingTimer implements Runnable {
                 Trade buy = trades.get(i);
                 Trade sell = trades.get(i + 1);
 
+
                 double tradeProfitAbsolute = sell.getAfter().getEur() - buy.getBefore().getEur();
                 tradeProfitPct += tradeProfitAbsolute / buy.getBefore().getEur() * 100;
                 buySellPairs++;
+
+                if (trades.size() > i + 2) {
+                    Trade nextBuy = trades.get(i + 2);
+                    double missedOpportunityAbsolute = nextBuy.getBefore().getEurEquivalent() - sell.getAfter().getEurEquivalent();
+                    missedOpportunityPct += missedOpportunityAbsolute / sell.getAfter().getEurEquivalent();
+                }
             }
-            result = tradeProfitPct;// / ((double) buySellPairs);
+            result = tradeProfitPct - missedOpportunityPct;// / ((double) buySellPairs);
             //result *= buySellPairs;
         }
 
 
-//        if (trades.size() > 0) { //generator.getMaxIndex() / 1440 * 2) {
-//            result = simulationResult.getFinalBalance().getEurEquivalent();
-//        }
+        //   if (trades.size() > 0) { //generator.getMaxIndex() / 1440 * 2) {
+        //       result = simulationResult.getFinalBalance().getEurEquivalent();
+        //   }
 
+        if (Double.isNaN(result)) {
+            result = Double.MIN_VALUE;
+        }
 
         cache.put(configuration, result);
         return result;
@@ -100,7 +112,7 @@ public class TrainingTimer implements Runnable {
 
     private StateEdgeChainMetaInfo buildStateEdgeChainMetaInfo() {
         StateEdgeChainMetaInfo metadata = new StateEdgeChainMetaInfo();
-        metadata.setStepping(2);
+        metadata.setStepping(1);
         metadata.setDepth(generator.getMaxIndex());
         metadata.setWidth(60);
         metadata.setOffset(0);
@@ -116,21 +128,81 @@ public class TrainingTimer implements Runnable {
 
         List<TradeConfiguration> buyConfigurations = buildTradeConfigurations(genes, buyConfigStartIndex);
         configuration.setBuyConfigurations(buyConfigurations);
-        configuration.setBuyOperators(buildOperatorList(genes, buyConfigStartIndex, buyConfigurations));
+        configuration.setBuyRatioPercent(normalize(buildOperatorList(genes, buyConfigStartIndex, buyConfigurations)));
+        int buyRatio = configuration.getBuyRatioPercent().stream().reduce(0, Integer::sum);
+        configuration.setBuyThresholdAbsolute(buyRatio * genes.get(20).getGene(0).intValue() / 100);
 
         List<TradeConfiguration> sellConfigurations = buildTradeConfigurations(genes, sellConfigStartIndex);
         configuration.setSellConfigurations(sellConfigurations);
-        configuration.setSellOperators(buildOperatorList(genes, sellConfigStartIndex, sellConfigurations));
+        configuration.setSellRatioPercent(normalize(buildOperatorList(genes, sellConfigStartIndex, sellConfigurations)));
+        int sellRatio = configuration.getSellRatioPercent().stream().reduce(0, Integer::sum);
+        configuration.setSellThresholdAbsolute(sellRatio * genes.get(21).getGene(0).intValue() / 100);
+
+        if (genes.get(22).getGene(0).intValue() == 1) {
+            TradeConfiguration stopLoss = new TradeConfiguration();
+            stopLoss.setValuesSource(ValuesSource.LAST_MAX_SINCE_BUY);
+            stopLoss.setAverageType(AverageType.MAX);
+
+            ValuePoint comp1 = new ValuePoint();
+            comp1.setOffset(1);
+            comp1.setAverageTime(1440);
+
+            ValuePoint comp2 = new ValuePoint();
+            comp2.setOffset(0);
+            comp2.setAverageTime(1);
+
+            stopLoss.setComparisonPoints(List.of(comp1, comp2));
+            stopLoss.setMargins(Collections.singletonList(100));
+            stopLoss.setComparisons(Collections.singletonList(Comparison.GREATER));
+            stopLoss.setRanges(Collections.singletonList(0));
+
+            sellConfigurations.add(stopLoss);
+            configuration.getSellRatioPercent().add(sellRatio);
+        }
 
         return configuration;
     }
 
-    private List<Operator> buildOperatorList(Genotype<IntegerGene> genes, int startIndex, List<
+    private List<Integer> normalize(List<Integer> values) {
+        List<Integer> workingCopy = new ArrayList<>(values);
+        int divisor = determineGcd(workingCopy);
+
+        while (divisor > 1) {
+            final int divisorTemp = divisor;
+            workingCopy = workingCopy.stream().map(item -> item / divisorTemp).collect(Collectors.toList());
+            divisor = determineGcd(workingCopy);
+        }
+
+        return workingCopy;
+    }
+
+
+    private int determineGcd(List<Integer> values) {
+        BigInteger result = BigInteger.ONE;
+
+        if (values.size() == 1) {
+            return values.get(0);
+        }
+
+        for (Integer value : values) {
+            result = BigInteger.valueOf(value).gcd(result);
+        }
+
+        return result.intValue();
+    }
+
+    private List<Integer> buildOperatorList(Genotype<IntegerGene> genes, int startIndex, List<
             TradeConfiguration> configurations) {
+
+        int sum = genes.get(startIndex + 6).
+                stream()
+                .map(IntegerGene::intValue)
+                .limit(Math.max(configurations.size(), 0))
+                .reduce(1, Integer::sum);
         return genes.get(startIndex + 6).
                 stream()
-                .map(gene -> Operator.getValueForIndex(gene.intValue()))
-                .limit(Math.max(configurations.size() - 1, 0))
+                .map(gene -> ((gene.intValue() * 100 / sum)))
+                .limit(Math.max(configurations.size(), 0))
                 .collect(Collectors.toList());
     }
 
@@ -149,18 +221,29 @@ public class TrainingTimer implements Runnable {
                     point.setOffset(genes.get(startingGene + 3).getGene(i).intValue());
 
                     buyConfig.getComparisonPoints().add(point);
+                    buyConfig.setAverageType(AverageType.getValueForIndex(genes.get(startingGene + 4).getGene(i).intValue()));
+                    buyConfig.setValuesSource(ValuesSource.getValueForIndex(genes.get(startingGene + 5).getGene(i).intValue()));
 
                     if (j < numberOfComparators - 1) {
                         buyConfig.getComparisons().add(Comparison.getValueForIndex(genes.get(startingGene + 2).getGene(index).intValue()));
 
                         if (genes.get(startingGene).getGene(index).intValue() != Comparison.ALWAYS_MATCH.getIndex()) { // TODO make more generic
-                            buyConfig.getMargins().add(genes.get(startingGene).getGene(index).intValue());
+
+                            int margin = genes.get(startingGene).getGene(index).intValue();
+                            if (buyConfig.getValuesSource() != ValuesSource.CHART_ABSOLUTE) {
+                                margin = (margin + 500) / 10; // TODO make more generic
+                            }
+                            buyConfig.getMargins().add(margin);
                         } else {
                             buyConfig.getMargins().add(0);
                         }
 
                         if (genes.get(startingGene + 2).getGene(index).intValue() == Comparison.RANGE.getIndex()) { // TODO make more generic
-                            buyConfig.getRanges().add(genes.get(startingGene + 8).getGene(index).intValue());
+                            int margin = genes.get(startingGene + 8).getGene(index).intValue();
+                            if (buyConfig.getValuesSource() != ValuesSource.CHART_ABSOLUTE) {
+                                margin = (margin + 500) / 10; // TODO make more generic
+                            }
+                            buyConfig.getRanges().add(margin);
                         } else {
                             buyConfig.getRanges().add(0);
                         }
@@ -168,8 +251,6 @@ public class TrainingTimer implements Runnable {
                 }
 
 
-                buyConfig.setAverageType(AverageType.getValueForIndex(genes.get(startingGene + 4).getGene(i).intValue()));
-                buyConfig.setValuesSource(ValuesSource.getValueForIndex(genes.get(startingGene + 5).getGene(i).intValue()));
                 buyConfigurations.add(buyConfig);
             }
 
@@ -313,8 +394,8 @@ public class TrainingTimer implements Runnable {
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //2 below/above for buy
                         IntegerChromosome.of(1, 120, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset in minutes
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //4 average type
-                        IntegerChromosome.of(1, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //5 source of values
-                        IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //6 operators
+                        IntegerChromosome.of(1, ValuesSource.values().length - 2, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //5 source of values
+                        IntegerChromosome.of(1, 100, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //6 operators - weight %
                         IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //7 is buy configuration active
                         IntegerChromosome.of(0, 500, IntRange.of(NUMBER_OF_COMPARATORS)), //8 second value for comparison
                         IntegerChromosome.of(1, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //9 length of the series
@@ -325,11 +406,17 @@ public class TrainingTimer implements Runnable {
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //12 below/above for sell
                         IntegerChromosome.of(1, 110, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset in minutes
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //14 average type
-                        IntegerChromosome.of(1, ValuesSource.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //15 source of values
-                        IntegerChromosome.of(0, Operator.values().length - 1, IntRange.of(Math.max(NUMBER_OF_BUYSELL_CONFIGURATIONS - 1, 1))), //16 operators
+                        IntegerChromosome.of(1, ValuesSource.values().length - 2, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //15 source of values
+                        IntegerChromosome.of(1, 100, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //16 operators - weight %
                         IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //17 is sell configuration active
                         IntegerChromosome.of(0, 500, IntRange.of(NUMBER_OF_COMPARATORS)), //18 second value for comparison
-                        IntegerChromosome.of(1, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)) //19 length of the series
+                        IntegerChromosome.of(1, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //19 length of the series
+
+                        IntegerChromosome.of(1, 100, 1), //20 buy vote threshold percent
+                        IntegerChromosome.of(1, 100, 1), //21 sell vote threshold percent
+
+                        IntegerChromosome.of(0, 1, 1) //22 Has Stoploss
+
                 );
 
 
