@@ -6,13 +6,12 @@
     <persistence-unit name="rss" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
-
+        <class>de.wieczorek.rss.trading.db.Price</class>
         <properties>
 
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/> <!-- DB Driver -->
             <property name="javax.persistence.jdbc.url"
-                      value="jdbc:postgresql://localhost/CHART_DATACOLLECTION"/> <!-- BD Mane -->
+                      value="jdbc:postgresql://localhost/SKINBARON_LIVE"/> <!-- BD Mane -->
             <property name="javax.persistence.jdbc.user" value="postgres"/> <!-- DB User -->
             <property name="javax.persistence.jdbc.password" value="admin"/> <!-- DB Password -->
 

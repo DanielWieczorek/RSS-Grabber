@@ -23,6 +23,7 @@ import de.wieczorek.rss.trading.business.data.sell.SellResult;
 import de.wieczorek.rss.trading.business.data.updateprice.PriceUpdateQueryData;
 import de.wieczorek.rss.trading.config.BuyConfiguration;
 import de.wieczorek.rss.trading.config.ServiceConfiguration;
+import de.wieczorek.rss.trading.db.PriceDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,9 @@ public class Controller extends ControllerBase {
 
     @Inject
     private InvocationBuilderCreator invocationBuilderCreator;
+
+    @Inject
+    private PriceDao dao;
 
     @Override
     public void start() {
@@ -239,20 +243,20 @@ public class Controller extends ControllerBase {
     }
 
     public double determineBuyPrice(BuyConfiguration buyConf) {
-        final double minMarketPrice = getMinMarketPrice(buyConf.getMetaOfferId()) - 0.01;
+        final double minMarketPrice = Optional.ofNullable(dao.findMinOfLastWeek(buyConf.getMetaOfferId()))
+                .orElse(getMinMarketPrice(buyConf.getMetaOfferId()));
         final double fees = Math.max(0.01, Math.ceil(minMarketPrice * 0.15 * 100) / 100.0);
-        final double absoluteMargin = Math.max(0.01, Math.ceil(minMarketPrice * 0.1 * 100) / 100.0);
 
-        return Math.min(buyConf.getMaxPrice(), minMarketPrice - fees - absoluteMargin);
-
+        return Math.round((minMarketPrice - fees - 0.01) * 100.0) / 100.0;
     }
 
 
     public double determineSellPrice(BuyConfiguration buyConf) {
-        return getMinReasonableMarketPrice(buyConf.getMetaOfferId()) - 0.01;
+        return Math.max(Math.round((dao.findAvgOfLastWeek(buyConf.getMetaOfferId())) * 100.0) / 100.0,
+                Math.round((getMinReasonableMarketPrice(buyConf.getMetaOfferId())) * 100.0) / 100.0);
     }
 
-    private double getMinMarketPrice(long metaOfferId) {
+    public double getMinMarketPrice(long metaOfferId) {
         logger.debug("getting min price for " + metaOfferId);
         StackableAvailaiblityTableResult result = invocationBuilderCreator.createV2Browse("/api/v2/Browsing/StackableAvailabilityTable", config
                 , Map.of("metaOfferId", metaOfferId))

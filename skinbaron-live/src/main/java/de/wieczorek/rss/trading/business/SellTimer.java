@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@RecurrentTask(interval = 1, unit = TimeUnit.HOURS)
+@RecurrentTask(interval = 15, unit = TimeUnit.MINUTES)
 @EntityManagerContext
 @ApplicationScoped
 public class SellTimer implements Runnable {

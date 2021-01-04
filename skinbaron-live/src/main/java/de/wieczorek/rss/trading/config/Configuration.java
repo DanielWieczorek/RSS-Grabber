@@ -4,12 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.wieczorek.core.config.ServiceName;
 import de.wieczorek.core.config.port.JGroupsPort;
 import de.wieczorek.core.config.port.RestPort;
+import de.wieczorek.core.db.migration.MigrationConfiguration;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class Configuration {
@@ -24,7 +28,14 @@ public class Configuration {
     @Produces
     @ServiceName
     private String serviceName = "skinbaron-live";
-
+    @Produces
+    @MigrationConfiguration
+    private Map<String, String> migrationConfig = Stream.of(new String[][]{ //
+            {"flyway.url", "jdbc:postgresql://localhost/SKINBARON_LIVE"}, //
+            {"flyway.user", "postgres"}, //
+            {"flyway.password", "admin"}, //
+            {"flyway.locations", "classpath:db/migration"} //
+    }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
 
     @Produces
     private ServiceConfiguration getServiceConfiguration() throws IOException {

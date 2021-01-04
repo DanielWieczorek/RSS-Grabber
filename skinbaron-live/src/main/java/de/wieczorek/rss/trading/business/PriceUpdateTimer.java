@@ -35,21 +35,6 @@ public class PriceUpdateTimer implements Runnable {
             List<ActiveOfferResultItem> activeOffers = controller.getOwnActiveOffers();
             logger.debug("found " + activeOffers.size() + " to check prices for");
 
-
-            logger.debug("setting prices 0.02 higher");
-            activeOffers
-                    .forEach(item -> {
-                        double targetPrice = item.getPrice() + 0.02;
-                        logger.debug("Setting price of " + item.getName() + " from " + item.getPrice() + " to " + targetPrice);
-                        try {
-                            controller.updatePrice(item, targetPrice);
-                            logger.debug("successfully set price to " + targetPrice + " for offer " + item.getMetaOfferId());
-                        } catch (Exception e) {
-                            logger.error("error while setting price to max: ", e);
-                        }
-                    });
-
-
             Map<Long, Double> prices = config.getBuyConfigurations().stream()
                     .collect(Collectors.toMap(BuyConfiguration::getMetaOfferId, item -> controller.determineSellPrice(item), (a, b) -> a));
             activeOffers = controller.getOwnActiveOffers();

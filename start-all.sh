@@ -11,3 +11,4 @@ java -XX:+UseSerialGC -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -XX:+HeapD
 java -XX:+UseSerialGC -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -XX:+HeapDumpOnOutOfMemoryError -jar chart-metric/target/chart-metric* > ~/logs/chart-metric 2>&1 &
 java -XX:+UseSerialGC -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -XX:+HeapDumpOnOutOfMemoryError -jar chart-advisor-prediction/target/chart-advisor-prediction* > ~/logs/chart-advisor-prediction 2>&1 &
 java -XX:+UseSerialGC -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -XX:+HeapDumpOnOutOfMemoryError -jar trading-live/target/trading-live* > ~/logs/trading-live 2>&1 &
+java -XX:+UseSerialGC -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -XX:+HeapDumpOnOutOfMemoryError -jar skinbaron-live/target/skinbaron-live* > ~/logs/skinbaron-live 2>&1 &

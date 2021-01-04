@@ -39,7 +39,7 @@ public class BuyTimer implements Runnable {
                 List<Offer> items;
                 logger.debug("checking offers for " + buyConfig.getProductName());
                 try {
-                    double marketPrice = controller.determineSellPrice(buyConfig);
+                    double marketPrice = controller.determineSellPrice(buyConfig) - 0.01;
                     double maxBuyPrice = controller.determineBuyPrice(buyConfig);
                     logger.debug("determined max buy price for '" + buyConfig.getProductName() + "'to be: " + maxBuyPrice);
                     items = controller.getOffers(buyConfig.getProductName(), maxBuyPrice);
