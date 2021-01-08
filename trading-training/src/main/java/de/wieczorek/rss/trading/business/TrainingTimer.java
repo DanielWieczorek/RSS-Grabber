@@ -130,13 +130,13 @@ public class TrainingTimer implements Runnable {
         configuration.setBuyConfigurations(buyConfigurations);
         configuration.setBuyRatioPercent(normalize(buildOperatorList(genes, buyConfigStartIndex, buyConfigurations)));
         int buyRatio = configuration.getBuyRatioPercent().stream().reduce(0, Integer::sum);
-        configuration.setBuyThresholdAbsolute(buyRatio * genes.get(20).getGene(0).intValue() / 100);
+        configuration.setBuyThresholdAbsolute(Math.max(buyRatio * genes.get(20).getGene(0).intValue() / 100, 1));
 
         List<TradeConfiguration> sellConfigurations = buildTradeConfigurations(genes, sellConfigStartIndex);
         configuration.setSellConfigurations(sellConfigurations);
         configuration.setSellRatioPercent(normalize(buildOperatorList(genes, sellConfigStartIndex, sellConfigurations)));
         int sellRatio = configuration.getSellRatioPercent().stream().reduce(0, Integer::sum);
-        configuration.setSellThresholdAbsolute(sellRatio * genes.get(21).getGene(0).intValue() / 100);
+        configuration.setSellThresholdAbsolute(Math.max(sellRatio * genes.get(21).getGene(0).intValue() / 100, 1));
 
         if (genes.get(22).getGene(0).intValue() == 1) {
             TradeConfiguration stopLoss = new TradeConfiguration();

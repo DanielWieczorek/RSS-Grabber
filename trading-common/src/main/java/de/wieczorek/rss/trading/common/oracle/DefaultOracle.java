@@ -28,9 +28,9 @@ public class DefaultOracle implements Oracle {
     private Predicate<OracleInput> buildDecider(List<TradeConfiguration> buyConfigurations, List<Integer> buyOperators, int buyThresholdAbsolute, Function<Account, Double> currencyAmountGetter) {
         List<TradeDecider> decidersChildren = buyConfigurations
                 .stream().map(config -> new TradeDecider(config, currencyAmountGetter)).collect(Collectors.toList());
-        int sumTotal = buyOperators.stream().reduce(0, Integer::sum);
 
         return (input) -> {
+
             int sumPositive = 0;
             for (int i = 0; i < buyOperators.size(); i++) {
                 sumPositive += decidersChildren.get(i).test(input) ? buyOperators.get(i) : 0;

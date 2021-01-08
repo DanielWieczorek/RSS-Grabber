@@ -72,9 +72,9 @@ public class TradingSimulator {
             }
 
             SimulationContext context = contextProvider.getContext();
-            if (nextAction == ActionVertexType.BUY) {
+            if (context.getLastBuyTime() == null && nextAction == ActionVertexType.BUY) {
                 context.setLastBuyTime(getCurrentTime(current));
-            } else {
+            } else if (context.getLastBuyTime() != null && nextAction == ActionVertexType.SELL) {
                 context.setLastBuyTime(null);
             }
 

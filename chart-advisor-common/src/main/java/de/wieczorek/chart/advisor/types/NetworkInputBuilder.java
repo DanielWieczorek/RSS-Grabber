@@ -51,13 +51,7 @@ public class NetworkInputBuilder {
     private static List<ChartMetricRecord> generateAveragedRecord(List<List<ChartMetricRecord>> records) {
         List<List<ChartMetricRecord>> foo = records.stream()
                 .filter(Objects::nonNull)
-                .map(record -> {
-                    if (record.size() != 4) {
-                        return Arrays.asList(new ChartMetricRecord(), new ChartMetricRecord(), new ChartMetricRecord(),
-                                new ChartMetricRecord());
-                    }
-                    return record;
-                })
+                .filter(record -> record.size() == 4)
                 .peek(record -> record.sort(Comparator.comparing(x -> x.getId().getIndicator())))
                 .collect(Collectors.toList());
 
@@ -81,15 +75,15 @@ public class NetworkInputBuilder {
         }
 
         for (ChartMetricRecord chartMetricRecord : result) {
-            chartMetricRecord.setValue1min(chartMetricRecord.getValue1min() / records.size());
-            chartMetricRecord.setValue5min(chartMetricRecord.getValue5min() / records.size());
-            chartMetricRecord.setValue15min(chartMetricRecord.getValue15min() / records.size());
-            chartMetricRecord.setValue30min(chartMetricRecord.getValue30min() / records.size());
-            chartMetricRecord.setValue60min(chartMetricRecord.getValue60min() / records.size());
-            chartMetricRecord.setValue2hour(chartMetricRecord.getValue2hour() / records.size());
-            chartMetricRecord.setValue6hour(chartMetricRecord.getValue6hour() / records.size());
-            chartMetricRecord.setValue12hour(chartMetricRecord.getValue12hour() / records.size());
-            chartMetricRecord.setValue24hour(chartMetricRecord.getValue24hour() / records.size());
+            chartMetricRecord.setValue1min(chartMetricRecord.getValue1min() / foo.size());
+            chartMetricRecord.setValue5min(chartMetricRecord.getValue5min() / foo.size());
+            chartMetricRecord.setValue15min(chartMetricRecord.getValue15min() / foo.size());
+            chartMetricRecord.setValue30min(chartMetricRecord.getValue30min() / foo.size());
+            chartMetricRecord.setValue60min(chartMetricRecord.getValue60min() / foo.size());
+            chartMetricRecord.setValue2hour(chartMetricRecord.getValue2hour() / foo.size());
+            chartMetricRecord.setValue6hour(chartMetricRecord.getValue6hour() / foo.size());
+            chartMetricRecord.setValue12hour(chartMetricRecord.getValue12hour() / foo.size());
+            chartMetricRecord.setValue24hour(chartMetricRecord.getValue24hour() / foo.size());
         }
 
         return result;
