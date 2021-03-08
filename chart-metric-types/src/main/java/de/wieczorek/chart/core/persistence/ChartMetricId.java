@@ -67,4 +67,8 @@ public class ChartMetricId implements Serializable {
         } else return indicator.equals(other.indicator);
     }
 
+    @Override
+    public String toString() {
+        return date + "-" + indicator;
+    }
 }

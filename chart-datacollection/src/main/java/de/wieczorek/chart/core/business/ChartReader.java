@@ -1,6 +1,9 @@
 package de.wieczorek.chart.core.business;
 
+import de.wieczorek.chart.core.business.kafka.ChartEntryTopicConfiguration;
 import de.wieczorek.chart.core.persistence.ChartEntryDao;
+import de.wieczorek.core.kafka.KafkaSender;
+import de.wieczorek.core.kafka.WithTopicConfiguration;
 import de.wieczorek.core.persistence.EntityManagerContext;
 import de.wieczorek.core.timer.RecurrentTask;
 import org.slf4j.Logger;
@@ -30,12 +33,18 @@ public class ChartReader implements Runnable {
     @Inject
     private ChartEntryDao dao;
 
+
+    @Inject
+    @WithTopicConfiguration(configName = ChartEntryTopicConfiguration.class)
+    private KafkaSender<Object> sender;
+
     public ChartReader() {
 
     }
 
     @Override
     public void run() {
+        ChartEntry lastEntry = null;
         try {
             logger.debug("triggered reading chart entries at " + LocalDateTime.now());
             OhlcApiRequestResult result = ClientBuilder.newClient()
@@ -50,12 +59,12 @@ public class ChartReader implements Runnable {
                     entry.setDate(LocalDateTime
                             .ofInstant(Instant.ofEpochSecond((Integer) item.get(0)), ZoneId.systemDefault())
                             .withSecond(0).withNano(0));
-                    entry.setOpen(Double.valueOf((String) item.get(1)));
-                    entry.setHigh(Double.valueOf((String) item.get(2)));
-                    entry.setLow(Double.valueOf((String) item.get(3)));
-                    entry.setClose(Double.valueOf((String) item.get(4)));
-                    entry.setVolumeWeightedAverage(Double.valueOf((String) item.get(5)));
-                    entry.setVolume(Double.valueOf((String) item.get(6)));
+                    entry.setOpen(Double.parseDouble((String) item.get(1)));
+                    entry.setHigh(Double.parseDouble((String) item.get(2)));
+                    entry.setLow(Double.parseDouble((String) item.get(3)));
+                    entry.setClose(Double.parseDouble((String) item.get(4)));
+                    entry.setVolumeWeightedAverage(Double.parseDouble((String) item.get(5)));
+                    entry.setVolume(Double.parseDouble((String) item.get(6)));
                     entry.setTransactions((Integer) item.get(7));
 
                     entries.add(entry);
@@ -71,12 +80,16 @@ public class ChartReader implements Runnable {
             entries.forEach(item -> map.put(item.getDate(), item));
 
             dao.persistAll(map.values());
-
+            lastEntry = entries.isEmpty() ? null : entries.get(entries.size() - 1);
+            sender.send(lastEntry.getDate().toString(), lastEntry);
         } catch (ResponseProcessingException e) {
             logger.error("error while retrieving chart data: ", e.getResponse().readEntity(String.class));
         } catch (Exception e) {
             logger.error("error while retrieving chart data: ", e);
-
         }
+        if (lastEntry != null) {
+            sender.send(lastEntry.getDate().toString(), lastEntry);
+        }
+
     }
 }

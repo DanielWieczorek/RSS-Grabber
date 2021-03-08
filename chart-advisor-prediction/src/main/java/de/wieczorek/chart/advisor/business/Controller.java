@@ -9,6 +9,7 @@ import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.business.ui.ChartDataCollectionRemoteRestCaller;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.chart.core.persistence.ui.ChartMetricRemoteRestCaller;
+import de.wieczorek.core.kafka.KafkaTopicSubscriberManager;
 import de.wieczorek.core.timer.RecurrentTaskManager;
 import de.wieczorek.core.ui.ControllerBase;
 import org.slf4j.Logger;
@@ -38,6 +39,9 @@ public class Controller extends ControllerBase {
     @Inject
     private ChartDataCollectionRemoteRestCaller chartDataCollectionCaller;
 
+    @Inject
+    private KafkaTopicSubscriberManager kafkaManager;
+
     public TradingEvaluationResult predict() {
         LocalDateTime currentTime = LocalDateTime.now().minusMinutes(1).withSecond(0).withNano(0);
         List<ChartMetricRecord> metrics = chartMetricCaller.metric24h();
@@ -64,11 +68,13 @@ public class Controller extends ControllerBase {
     @Override
     protected void start() {
         timer.start();
+        kafkaManager.start();
     }
 
     @Override
     protected void stop() {
         timer.stop();
+        kafkaManager.stop();
     }
 
     public List<TradingEvaluationResult> get24hPrediction() {

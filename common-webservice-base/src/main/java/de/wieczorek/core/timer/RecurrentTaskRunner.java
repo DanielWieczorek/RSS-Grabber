@@ -23,7 +23,7 @@ public class RecurrentTaskRunner {
 
     private ScheduledFuture<?> nextInvocation;
 
-    RecurrentTaskRunner(Runnable task, int interval, TimeUnit unit) {
+    public RecurrentTaskRunner(Runnable task, int interval, TimeUnit unit) {
         this.task = task;
         this.interval = interval;
         this.unit = unit;

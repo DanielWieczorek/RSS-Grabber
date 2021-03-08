@@ -3,9 +3,12 @@ package de.wieczorek.rss.core.business;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
+import de.wieczorek.core.kafka.KafkaSender;
+import de.wieczorek.core.kafka.WithTopicConfiguration;
 import de.wieczorek.rss.core.config.RssConfig;
 import de.wieczorek.rss.core.persistence.RssEntryDao;
 import de.wieczorek.rss.types.RssEntry;
+import de.wieczorek.rss.types.RssEntryTopicConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -27,6 +30,11 @@ public abstract class RssReader implements Runnable {
 
     @Inject
     private RssEntryDao dao;
+
+
+    @Inject
+    @WithTopicConfiguration(configName = RssEntryTopicConfiguration.class)
+    private KafkaSender<Object> sender;
 
     protected abstract RssConfig getRssConfig();
 
@@ -50,6 +58,10 @@ public abstract class RssReader implements Runnable {
                         .collect(Collectors.toList()));
                 logger.info("persisting " + newEntries.size() + " entries");
                 dao.persist(newEntries);
+
+                var lastEntry = newEntries.isEmpty() ? null : newEntries.get(newEntries.size() - 1);
+
+                sender.send(lastEntry.getURI(), lastEntry);
             }
 
         } catch (Exception e) {

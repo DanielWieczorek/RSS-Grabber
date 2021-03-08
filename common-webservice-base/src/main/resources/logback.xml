@@ -1,25 +1,26 @@
 <configuration>
-	<appender name="json"
-		class="ch.qos.logback.core.ConsoleAppender">
-		<layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-			<jsonFormatter
-				class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+    <appender name="json"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+            <jsonFormatter
+                    class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
 
-			</jsonFormatter>
-			<timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
-			<appendLineSeparator>true</appendLineSeparator>
+            </jsonFormatter>
+            <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
+            <appendLineSeparator>true</appendLineSeparator>
 
-		</layout>
+        </layout>
 
-	</appender>
+    </appender>
 
-	<root level="DEBUG">
-		<appender-ref ref="json" />
-		
-	</root>
-	
-	<logger name="org.jgroups" level="OFF"/>
-	<logger name="org.eclipse.jetty" level="OFF"/>
+    <root level="DEBUG">
+        <appender-ref ref="json"/>
+
+    </root>
+
+    <logger name="org.jgroups" level="OFF"/>
+    <logger name="org.eclipse.jetty" level="OFF"/>
+    <logger name="org.apache.kafka" level="INFO"/>
 
 
 </configuration>
