@@ -24,6 +24,8 @@ import de.wieczorek.rss.trading.business.data.updateprice.PriceUpdateQueryData;
 import de.wieczorek.rss.trading.config.BuyConfiguration;
 import de.wieczorek.rss.trading.config.ServiceConfiguration;
 import de.wieczorek.rss.trading.db.PriceDao;
+import de.wieczorek.rss.trading.db.Stock;
+import de.wieczorek.rss.trading.db.StockDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +35,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,10 +54,14 @@ public class Controller extends ControllerBase {
     private InvocationBuilderCreator invocationBuilderCreator;
 
     @Inject
-    private PriceDao dao;
+    private PriceDao priceDao;
+
+    @Inject
+    private StockDao stockDao;
 
     @Override
     public void start() {
+        System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
         logger.info("started");
         timer.start();
     }
@@ -243,7 +250,7 @@ public class Controller extends ControllerBase {
     }
 
     public double determineBuyPrice(BuyConfiguration buyConf) {
-        final double minMarketPrice = Optional.ofNullable(dao.findMinOfLastWeek(buyConf.getMetaOfferId()))
+        final double minMarketPrice = Optional.ofNullable(priceDao.findMinOfLastWeek(buyConf.getMetaOfferId()))
                 .orElse(getMinMarketPrice(buyConf.getMetaOfferId()));
         final double fees = Math.max(0.01, Math.ceil(minMarketPrice * 0.15 * 100) / 100.0);
 
@@ -252,7 +259,8 @@ public class Controller extends ControllerBase {
 
 
     public double determineSellPrice(BuyConfiguration buyConf) {
-        return Math.max(Math.round((dao.findAvgOfLastWeek(buyConf.getMetaOfferId())) * 100.0) / 100.0,
+        var averageOfLastWeek = priceDao.findAvgOfLastWeek(buyConf.getMetaOfferId());
+        return Math.max(Math.round((averageOfLastWeek == null ? 0.0 : averageOfLastWeek) * 100.0) / 100.0,
                 Math.round((getMinReasonableMarketPrice(buyConf.getMetaOfferId())) * 100.0) / 100.0);
     }
 
@@ -303,7 +311,6 @@ public class Controller extends ControllerBase {
         }
 
         return resultItems.stream().filter(item -> item.getState().equals("AVAILABLE")).collect(Collectors.toList());
-
     }
 
     public void updatePrice(ActiveOfferResultItem item, double price) {
@@ -321,5 +328,20 @@ public class Controller extends ControllerBase {
         if (response.getStatus() != 200) {
             throw new RuntimeException(response.readEntity(String.class));
         }
+    }
+
+    public List<Stock> getStock() {
+        var groupedStocks = stockDao.getAll().stream().collect(Collectors.groupingBy(Stock::getMetaofferid));
+        var result = new ArrayList<Stock>();
+
+        for (Map.Entry<Long, List<Stock>> stocks : groupedStocks.entrySet()) {
+            Stock aggregated = new Stock();
+            aggregated.setMetaofferid(stocks.getKey());
+            aggregated.setTime(stocks.getValue().stream().map(Stock::getTime).max(LocalDateTime::compareTo).get());
+            aggregated.setAmount(stocks.getValue().stream().map(Stock::getAmount).reduce(Integer::sum).orElse(0));
+            aggregated.setName(stocks.getValue().get(0).getName());
+            result.add(aggregated);
+        }
+        return result;
     }
 }

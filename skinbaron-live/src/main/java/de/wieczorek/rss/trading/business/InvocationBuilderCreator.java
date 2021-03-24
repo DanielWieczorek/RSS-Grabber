@@ -64,15 +64,19 @@ public class InvocationBuilderCreator {
 
     public Invocation.Builder createV2Browse(String path, ServiceConfiguration config, Map<String, Object> queryParams) {
         WebTarget target = client.target("https://skinbaron.de")
+
                 .path(path);
         for (Map.Entry<String, Object> entry : queryParams.entrySet()) {
             target = target.queryParam(entry.getKey(), entry.getValue());
         }
         return target
-                //  .queryParam("apikey", config.getApiKey())
                 .queryParam("")
-                .request();
-        //    .header("Cookie", "AUTHID=\"" + config.getAuthCookie() + "\"");
+                .request()
+                .header("Referer", "https://skinbaron.de/")
+                .header("Host", "skinbaron.de")
+                .header("content-type", MediaType.APPLICATION_JSON);
+
+
     }
 
 }
