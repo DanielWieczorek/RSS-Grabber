@@ -7,6 +7,7 @@ import { RssInsightComponent } from './rss-insight/rss-insight.component';
 import { MicroserviceStatusComponent } from './microservice-status/microservice-status.component';
 import { TradingSimulationComponent } from './trading-simulation/trading-simulation.component';
 import { TradingLiveComponent } from './trading-live/trading-live.component';
+import { SkinbaronLiveComponent } from './skinbaron-live/skinbaron-live.component';
 
 import { ChartMetricComponent } from './chart-metric/chart-metric.component';
 import { RouterModule, Routes } from '@angular/router';
@@ -17,6 +18,7 @@ import { ChartAdvisorService } from './shared/chart-advisor/chart-advisor.servic
 
 import { TraderSimulationService } from './shared/trader-simulation/trader-simulation.service'
 import { TraderLiveService } from './shared/trader-live/trader-live.service'
+import { SkinbaronLiveService } from './shared/skinbaron-live/skinbaron-live.service'
 
 import { RssInsightService } from './shared/rss-insight/rss-insight.service'
 import { RssClassificationService } from './shared/rss-classification/rss-classification.service'
@@ -40,6 +42,7 @@ const appRoutes: Routes = [
                            { path: 'rss-insight', component: RssInsightComponent,canActivate: [AuthenticationGuard]},
                            { path: 'trading-simulation', component: TradingSimulationComponent,canActivate: [AuthenticationGuard]},
                            { path: 'trading-live', component: TradingLiveComponent,canActivate: [AuthenticationGuard]},
+                           { path: 'skinbaron-live', component: SkinbaronLiveComponent,canActivate: [AuthenticationGuard]},
                            { path: 'chart-metric', component: ChartMetricComponent,canActivate: [AuthenticationGuard]},
                            { path: 'introduction', component: IntroductionComponent,canActivate: [AuthenticationGuard]},
                            { path: 'login', component: LoginComponent}
@@ -57,7 +60,8 @@ const appRoutes: Routes = [
     IntroductionComponent,
     LoginComponent,
     MicroserviceStatusDetailComponent,
-    TradingLiveComponent
+    TradingLiveComponent,
+    SkinbaronLiveComponent
   ],
   imports: [
     BrowserModule,
@@ -72,6 +76,7 @@ const appRoutes: Routes = [
       ChartReaderService,
       TraderSimulationService,
       TraderLiveService,
+      SkinbaronLiveService,
       RssInsightService,
       RssClassificationService,
       MicroserviceStatusService,

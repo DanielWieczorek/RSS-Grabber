@@ -35,7 +35,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -331,17 +330,6 @@ public class Controller extends ControllerBase {
     }
 
     public List<Stock> getStock() {
-        var groupedStocks = stockDao.getAll().stream().collect(Collectors.groupingBy(Stock::getMetaofferid));
-        var result = new ArrayList<Stock>();
-
-        for (Map.Entry<Long, List<Stock>> stocks : groupedStocks.entrySet()) {
-            Stock aggregated = new Stock();
-            aggregated.setMetaofferid(stocks.getKey());
-            aggregated.setTime(stocks.getValue().stream().map(Stock::getTime).max(LocalDateTime::compareTo).get());
-            aggregated.setAmount(stocks.getValue().stream().map(Stock::getAmount).reduce(Integer::sum).orElse(0));
-            aggregated.setName(stocks.getValue().get(0).getName());
-            result.add(aggregated);
-        }
-        return result;
+        return stockDao.findAllCurrent();
     }
 }
