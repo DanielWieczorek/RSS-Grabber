@@ -7,7 +7,7 @@ public class OracleInput {
     private StateEdge stateEdge;
     private TraderState state;
 
-    private double minOrder = 0.1;
+    private double minOrder = 0.0001;
 
     public double getMinOrder() {
         return minOrder;

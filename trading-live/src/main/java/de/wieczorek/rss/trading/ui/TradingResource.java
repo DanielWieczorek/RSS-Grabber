@@ -1,5 +1,6 @@
 package de.wieczorek.rss.trading.ui;
 
+import de.wieczorek.core.date.DateStringParser;
 import de.wieczorek.core.persistence.EntityManagerContext;
 import de.wieczorek.core.ui.Resource;
 import de.wieczorek.rss.trading.business.Controller;
@@ -9,8 +10,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Resource
@@ -24,9 +27,9 @@ public class TradingResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("24h")
-    public List<PerformedTrade> get24h() {
-        return controller.getTrades24h();
+    @Path("{offset}")
+    public List<PerformedTrade> getTrades(@PathParam("offset") String offset) {
+        return controller.getTradesAfter(LocalDateTime.now().minus(DateStringParser.parseDuration(offset)));
     }
 
     @GET

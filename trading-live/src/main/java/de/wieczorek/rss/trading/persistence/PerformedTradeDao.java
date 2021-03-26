@@ -24,11 +24,10 @@ public class PerformedTradeDao {
 
     }
 
-    public List<PerformedTrade> find24h() {
-        LocalDateTime time = LocalDateTime.now().withSecond(0).withNano(0).minusHours(24);
+    public List<PerformedTrade> findAfter(LocalDateTime startTime) {
         TypedQuery<PerformedTrade> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM PerformedTrade s WHERE s.time >= :time", PerformedTrade.class)
-                .setParameter("time", time);
+                .setParameter("time", startTime);
         return query.getResultList();
     }
 

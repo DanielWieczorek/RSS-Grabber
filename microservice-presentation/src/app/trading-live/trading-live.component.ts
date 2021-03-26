@@ -34,7 +34,11 @@ export class TradingLiveComponent implements AfterViewInit {
 
 
     ngOnInit(): void {
-        this.traderLive.getAccount24h().subscribe(res => {
+         this.initAccountData(TraderLiveService.prototype.getAccount24h);
+    }
+
+    initAccountData(accountFunc: () => Observable<LiveAccount[]>):void{
+         accountFunc.apply(this.traderLive).subscribe(res => {
             if(res.length > 0){
                 this.accountBefore = res[0];
                 this.accountAfter = res[res.length-1]
@@ -42,16 +46,25 @@ export class TradingLiveComponent implements AfterViewInit {
         });
     }
 
+    set30DayTimeframe() {
+        this.initAccountData(TraderLiveService.prototype.getAccount30d);
+        this.buildChart(ChartReaderService.prototype.get30dOhlcv,TraderLiveService.prototype.getTrades30d);
+    }
+
     reloadConfig(): void {
         this.traderLive.reloadConfiguration();
     }
 
     ngAfterViewInit(): void {
-        this.chartReader.get24hOhlcv().subscribe(res => {
+        this.buildChart(ChartReaderService.prototype.get24hOhlcv,TraderLiveService.prototype.getTrades24h);
+    }
+
+    buildChart(chartFunc: () => Observable<ChartEntry[]>,tradesFunc: () => Observable<LiveTrade[]>) : void {
+        chartFunc.apply(this.chartReader).subscribe(res => {
             console.log(res)
             this.data = res as ChartEntry[];
 
-            this.traderLive.getTrades24h().subscribe(trades => {
+            tradesFunc.apply(this.traderLive).subscribe(trades => {
                 this.trades = trades as LiveTrade[];
 
                 this.trades.forEach((t) => t.time  = new Date(t.time[0], t.time[1], t.time[2], t.time[3], t.time[4]));

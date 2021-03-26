@@ -17,4 +17,10 @@ export class ChartReaderService {
         .pipe(catchError(this.helper.handleError));
 
     }
+
+    get30dOhlcv(): Observable<ChartEntry[]> {
+        return this.http.get<ChartEntry[]>( this.helper.buildPath( 'routing/chart-datacollection/ohlcv/30d') )
+        .pipe(catchError(this.helper.handleError));
+
+    }
 }

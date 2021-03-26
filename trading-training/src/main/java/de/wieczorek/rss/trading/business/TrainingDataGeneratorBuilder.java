@@ -19,7 +19,7 @@ public class TrainingDataGeneratorBuilder implements DataGeneratorBuilder {
     @Inject
     private SimulationContextProvider contextProvider;
 
-    private LocalDateTime startDate = LocalDateTime.now().minusMonths(12);
+    private LocalDateTime startDate = LocalDateTime.now().minusDays(45);
 
     public DataGenerator produceGenerator() {
         return new DataGenerator(

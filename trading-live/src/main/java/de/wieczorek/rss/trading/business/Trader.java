@@ -85,7 +85,7 @@ public class Trader {
     }
 
     private TraderState buildState() {
-        List<PerformedTrade> trades = tradeDao.find24h();
+        List<PerformedTrade> trades = tradeDao.findAfter(LocalDateTime.now().withSecond(0).withNano(0).minusHours(24));
         Optional<PerformedTrade> lastBuy = trades.stream()
                 .filter(trade -> trade.getType() == ActionVertexType.BUY)
                 .reduce((trade1, trade2) -> trade1.getTime().isAfter(trade2.getTime()) ? trade1 : trade2);

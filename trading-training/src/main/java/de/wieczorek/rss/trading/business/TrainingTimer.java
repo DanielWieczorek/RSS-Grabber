@@ -40,8 +40,8 @@ import java.util.stream.Stream;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 5;
-    private static final int DATAPOINTS_PER_SERIES = 3;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 3;
+    private static final int DATAPOINTS_PER_SERIES = 2;
     private static final int NUMBER_OF_COMPARATORS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int TOTAL_NUMBER_OF_DATAPOINTS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int OFFSET_SAFETY_MARGIN = 10;
@@ -83,16 +83,16 @@ public class TrainingTimer implements Runnable {
 
 
                 double tradeProfitAbsolute = sell.getAfter().getEur() - buy.getBefore().getEur();
-                tradeProfitPct += tradeProfitAbsolute / buy.getBefore().getEur() * 100;
+                tradeProfitPct += Math.log(1 + (tradeProfitAbsolute / buy.getBefore().getEur() * 100));
                 buySellPairs++;
 
                 if (trades.size() > i + 2) {
                     Trade nextBuy = trades.get(i + 2);
                     double missedOpportunityAbsolute = nextBuy.getBefore().getEurEquivalent() - sell.getAfter().getEurEquivalent();
-                    missedOpportunityPct += missedOpportunityAbsolute / sell.getAfter().getEurEquivalent();
+                    missedOpportunityPct += Math.log(1 + (missedOpportunityAbsolute / sell.getAfter().getEurEquivalent() * 100));
                 }
             }
-            result = tradeProfitPct - missedOpportunityPct;// / ((double) buySellPairs);
+            result = tradeProfitPct;// - missedOpportunityPct;// / ((double) buySellPairs);
             //result *= buySellPairs;
         }
 
@@ -102,7 +102,7 @@ public class TrainingTimer implements Runnable {
         //   }
 
         if (Double.isNaN(result)) {
-            result = Double.MIN_VALUE;
+            result = Double.NEGATIVE_INFINITY;
         }
 
         cache.put(configuration, result);
@@ -114,7 +114,7 @@ public class TrainingTimer implements Runnable {
         StateEdgeChainMetaInfo metadata = new StateEdgeChainMetaInfo();
         metadata.setStepping(1);
         metadata.setDepth(generator.getMaxIndex());
-        metadata.setWidth(60);
+        metadata.setWidth(1440);
         metadata.setOffset(0);
 
         return metadata;
@@ -152,7 +152,7 @@ public class TrainingTimer implements Runnable {
             comp2.setAverageTime(1);
 
             stopLoss.setComparisonPoints(List.of(comp1, comp2));
-            stopLoss.setMargins(Collections.singletonList(100));
+            stopLoss.setMargins(Collections.singletonList(300 * (genes.get(23).getGene(0).intValue() / 10)));
             stopLoss.setComparisons(Collections.singletonList(Comparison.GREATER));
             stopLoss.setRanges(Collections.singletonList(0));
 
@@ -389,10 +389,10 @@ public class TrainingTimer implements Runnable {
         final int AVERAGING_DURATION = 1;
         final int DATAPOINT_OFFSET = 10;
         Factory<Genotype<IntegerGene>> gtf =
-                Genotype.of(IntegerChromosome.of(-500, 500, IntRange.of(NUMBER_OF_COMPARATORS)), //0 buy thresholds
+                Genotype.of(IntegerChromosome.of(-5000, 5000, IntRange.of(NUMBER_OF_COMPARATORS)), //0 buy thresholds
                         IntegerChromosome.of(1, 10, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //1 duration of the averaging
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //2 below/above for buy
-                        IntegerChromosome.of(1, 120, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset in minutes
+                        IntegerChromosome.of(1, 1440 / NUMBER_OF_COMPARATORS, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset in minutes
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //4 average type
                         IntegerChromosome.of(1, ValuesSource.values().length - 2, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //5 source of values
                         IntegerChromosome.of(1, 100, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //6 operators - weight %
@@ -401,21 +401,22 @@ public class TrainingTimer implements Runnable {
                         IntegerChromosome.of(1, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //9 length of the series
 
 
-                        IntegerChromosome.of(-500, 500, IntRange.of(NUMBER_OF_COMPARATORS)), //10 sell thresholds
+                        IntegerChromosome.of(-5000, 5000, IntRange.of(NUMBER_OF_COMPARATORS)), //10 sell thresholds
                         IntegerChromosome.of(1, 10, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //11 duration of the averaging
                         IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //12 below/above for sell
-                        IntegerChromosome.of(1, 110, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset in minutes
+                        IntegerChromosome.of(1, 1440 / NUMBER_OF_COMPARATORS, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset in minutes
                         IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //14 average type
                         IntegerChromosome.of(1, ValuesSource.values().length - 2, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //15 source of values
                         IntegerChromosome.of(1, 100, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //16 operators - weight %
                         IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //17 is sell configuration active
-                        IntegerChromosome.of(0, 500, IntRange.of(NUMBER_OF_COMPARATORS)), //18 second value for comparison
+                        IntegerChromosome.of(0, 5000, IntRange.of(NUMBER_OF_COMPARATORS)), //18 second value for comparison
                         IntegerChromosome.of(1, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //19 length of the series
 
                         IntegerChromosome.of(1, 100, 1), //20 buy vote threshold percent
                         IntegerChromosome.of(1, 100, 1), //21 sell vote threshold percent
 
-                        IntegerChromosome.of(0, 1, 1) //22 Has Stoploss
+                        IntegerChromosome.of(0, 1, 1), //22 Has Stoploss
+                        IntegerChromosome.of(0, 500, 1) //22 stoploss % max drop
 
                 );
 

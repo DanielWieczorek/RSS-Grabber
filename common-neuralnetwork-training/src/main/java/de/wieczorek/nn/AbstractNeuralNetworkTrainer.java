@@ -86,6 +86,7 @@ public abstract class AbstractNeuralNetworkTrainer<T> {
             logger.info("Error while closing stats storage " + statsStorage);
         }
 
+
     }
 
     private void buildTrainingDataIfNotPresent(IDataGenerator<T> dataGenerator) {

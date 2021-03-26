@@ -6,6 +6,7 @@ import de.wieczorek.chart.core.business.kafka.ChartMetricTopicConfiguration;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.core.kafka.KafkaSender;
 import de.wieczorek.core.kafka.WithTopicConfiguration;
+import de.wieczorek.core.persistence.EntityManagerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 import java.util.function.Consumer;
 
 @ApplicationScoped
+@EntityManagerContext
 @WithTopicConfiguration(configName = ChartMetricTopicConfiguration.class)
 public class KafkaReceiver implements Consumer<ChartMetricRecord> {
     private static final Logger logger = LoggerFactory.getLogger(KafkaReceiver.class);

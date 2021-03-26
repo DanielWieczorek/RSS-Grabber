@@ -17,8 +17,18 @@ export class TraderLiveService {
         .pipe(catchError(this.helper.handleError));
     }
 
+    getTrades30d(): Observable<LiveTrade[]> {
+        return this.http.get<LiveTrade[]>( this.helper.buildPath( 'routing/trader-live/trading/30d') )
+        .pipe(catchError(this.helper.handleError));
+    }
+
     getAccount24h(): Observable<LiveAccount[]> {
         return this.http.get<LiveAccount[]>( this.helper.buildPath( 'routing/trader-live/account/24h') )
+        .pipe(catchError(this.helper.handleError));
+    }
+
+    getAccount30d(): Observable<LiveAccount[]> {
+        return this.http.get<LiveAccount[]>( this.helper.buildPath( 'routing/trader-live/account/30d') )
         .pipe(catchError(this.helper.handleError));
     }
 

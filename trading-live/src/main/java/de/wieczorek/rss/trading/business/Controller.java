@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @ApplicationScoped
@@ -56,16 +57,14 @@ public class Controller extends ControllerBase {
         if (oracle != null) {
             trader.trade(oracle);
         }
-
     }
 
-
-    public List<PerformedTrade> getTrades24h() {
-        return tradeDao.find24h();
+    public List<PerformedTrade> getTradesAfter(LocalDateTime time) {
+        return tradeDao.findAfter(time);
     }
 
-    public List<LiveAccount> getAccount24h() {
-        return liveAccountDao.find24h();
+    public List<LiveAccount> getAccountsAfter(LocalDateTime time) {
+        return liveAccountDao.findAfter(time);
     }
 
     public void replaceOracle() {
