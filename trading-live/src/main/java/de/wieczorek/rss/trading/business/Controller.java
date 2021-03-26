@@ -1,5 +1,6 @@
 package de.wieczorek.rss.trading.business;
 
+import de.wieczorek.core.kafka.KafkaTopicSubscriberManager;
 import de.wieczorek.core.timer.RecurrentTaskManager;
 import de.wieczorek.core.ui.ControllerBase;
 import de.wieczorek.rss.trading.common.oracle.DefaultOracle;
@@ -38,11 +39,15 @@ public class Controller extends ControllerBase {
     @Inject
     private LiveAccountDao liveAccountDao;
 
+    @Inject
+    private KafkaTopicSubscriberManager kafkaManager;
+
     @Override
     public void start() {
         oracle = new DefaultOracle(oracleConfigurationDao.read());
         logger.info("started");
         timer.start();
+        kafkaManager.start();
     }
 
     @Override
@@ -50,6 +55,7 @@ public class Controller extends ControllerBase {
         oracle = null;
         logger.info("stopped");
         timer.stop();
+        kafkaManager.stop();
     }
 
 
