@@ -7,7 +7,7 @@ public final class SeriesHelper {
 
     public static <T> List<T> thinOutSeries(List<T> input, int maxLength) {
         List<T> result = new ArrayList<>();
-        int stepping = input.size() / maxLength;
+        int stepping = Math.max(input.size() / maxLength, 1);
 
         int counter = 0;
         for (T item : input) {

@@ -1,8 +1,8 @@
 package de.wieczorek.rss.core.ui;
 
+import de.wieczorek.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.core.ui.Resource;
 import de.wieczorek.rss.core.business.Controller;
-import de.wieczorek.core.jackson.ObjectMapperContextResolver;
 import de.wieczorek.rss.core.jgroups.MicroserviceDirectory;
 import de.wieczorek.rss.core.jgroups.ServiceMetadata;
 
@@ -12,15 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 @Resource
 @ApplicationScoped
@@ -61,7 +59,7 @@ public class StatusResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("routing/{service}/{targetUri : .+}")
-    public String routingGet(@PathParam("service") String service, @PathParam("targetUri") String targetUri) {
+    public String routingGet(@PathParam("service") String service, @PathParam("targetUri") String targetUri, @Context UriInfo uriInfo) {
         ServiceMetadata metadata = directory.getMetadataForService(service);
 
         if (metadata == null) {
@@ -75,9 +73,17 @@ public class StatusResource {
             map.putSingle(headerName, request.getHeader(headerName));
         }
 
-        return ClientBuilder.newClient().register(new ObjectMapperContextResolver())
-                .target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort() + "/" + targetUri)
-                .request(request.getHeader("Accept").split(",")).headers(map).get(String.class);
+        var queryParameters = uriInfo.getQueryParameters();
+
+        var target = ClientBuilder.newClient().register(new ObjectMapperContextResolver())
+                .target("http://" + metadata.getBindHostname() + ":" + metadata.getBindPort() + "/" + targetUri);
+
+        for (Map.Entry<String, List<String>> entry : queryParameters.entrySet()) {
+            target = target.queryParam(entry.getKey(), entry.getValue().toArray());
+        }
+
+
+        return target.request(request.getHeader("Accept").split(",")).headers(map).get(String.class);
     }
 
     @POST
