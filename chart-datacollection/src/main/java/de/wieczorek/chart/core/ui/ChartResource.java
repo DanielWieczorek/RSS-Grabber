@@ -4,14 +4,12 @@ import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.business.Controller;
 import de.wieczorek.core.date.DateStringParser;
 import de.wieczorek.core.persistence.EntityManagerContext;
+import de.wieczorek.core.series.SeriesHelper;
 import de.wieczorek.core.ui.Resource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,8 +33,12 @@ public class ChartResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{offset}")
-    public List<ChartEntry> ohlcvOffset(@PathParam("offset") String offset) {
-        return controller.getStartingFrom(LocalDateTime.now().minus(DateStringParser.parseDuration(offset)));
+    public List<ChartEntry> ohlcvOffset(@PathParam("offset") String offset, @QueryParam("maxSize") int maxResultSize) {
+        var chartEntries = controller.getStartingFrom(LocalDateTime.now().minus(DateStringParser.parseDuration(offset)));
+        if (maxResultSize != 0) {
+            chartEntries = SeriesHelper.thinOutSeries(chartEntries, maxResultSize);
+        }
+        return chartEntries;
     }
 
 }
