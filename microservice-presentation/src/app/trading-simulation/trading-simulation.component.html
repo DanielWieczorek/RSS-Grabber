@@ -90,12 +90,19 @@
 				</div>
 			</div>
 		</div>
-		<div *ngIf="chart">
-			<p>The diagram below shows a trading simulation of the last 24 hours.
-			</p>
 
+		<div class="card-panel">
+			<h5>Chart</h5>
+			<div *ngIf="chart">
+				<p>The diagram below shows the transactions of the last 24 hours.
+				</p>
+		
+				<a class="waves-effect waves-teal btn-flat" (click)="set24HourTimeframe()">24 Hours</a>
+				<a class="waves-effect waves-teal btn-flat" (click)="set7DayTimeframe()">7 Days</a>
+				<a class="waves-effect waves-teal btn-flat" (click)="set30DayTimeframe()">30 Days</a>
+				<a class="waves-effect waves-teal btn-flat" (click)="set365DayTimeframe()">1 Year</a>
 			<div *ngIf="!error; else errorHappened">
-				<div class="z-depth-1" style="padding: 16px">
+				<div class="z-depth-0" style="padding: 16px">
 					<canvas id="canvas">{{ chart }}</canvas>
 				</div>
 			</div>
@@ -107,9 +114,10 @@
 		</div>
 	</div>
 
+
 		<div class="card-panel">
 			<h5>Transactions</h5>
-			Below is you can see the transactions of today:
+			Below you can see the transactions of today:
 			<div class="row" *ngIf="trades">
 
 				<table class="highlight responsive-table">

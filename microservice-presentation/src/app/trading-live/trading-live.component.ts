@@ -24,7 +24,7 @@ export class TradingLiveComponent implements AfterViewInit {
 
     }
 
-    chart = []; // This will hold our chart info
+    chart = {} as Chart; // This will hold our chart info
     data: ChartEntry[];
     trades: LiveTrade[];
     error: string;
@@ -51,6 +51,21 @@ export class TradingLiveComponent implements AfterViewInit {
         this.buildChart(ChartReaderService.prototype.get30dOhlcv,TraderLiveService.prototype.getTrades30d);
     }
 
+   set24HourTimeframe() {
+        this.initAccountData(TraderLiveService.prototype.getAccount24h);
+        this.buildChart(ChartReaderService.prototype.get24hOhlcv,TraderLiveService.prototype.getTrades24h);
+    }
+
+    set7DayTimeframe() {
+        this.initAccountData(TraderLiveService.prototype.getAccount7d);
+        this.buildChart(ChartReaderService.prototype.get7dOhlcv,TraderLiveService.prototype.getTrades7d);
+    }
+
+    set365DayTimeframe() {
+        this.initAccountData(TraderLiveService.prototype.getAccount365d);
+        this.buildChart(ChartReaderService.prototype.get365dOhlcv,TraderLiveService.prototype.getTrades365d);
+    }
+
     reloadConfig(): void {
         this.traderLive.reloadConfiguration();
     }
@@ -67,87 +82,42 @@ export class TradingLiveComponent implements AfterViewInit {
             tradesFunc.apply(this.traderLive).subscribe(trades => {
                 this.trades = trades as LiveTrade[];
 
-                this.trades.forEach((t) => t.time  = new Date(t.time[0], t.time[1], t.time[2], t.time[3], t.time[4]));
+                this.trades.forEach((t) => t.time  = new Date(t.time[0], t.time[1]-1, t.time[2], t.time[3], t.time[4]));
 
 
-                let close = this.data.map(item => item.close);
+                let labels = this.data.map(d => {  return new Date(d.date[0], d.date[1]-1, d.date[2], d.date[3], d.date[4]);});
+
+                    
+                  let close = this.data.map(d => {  
+                     let time =  new Date(d.date[0], d.date[1]-1, d.date[2], d.date[3], d.date[4]);
+                     return {x: time, y: d.close}});
                 let open = this.data.map(item => item.open);
                 let alldates = this.data.map(item => item.date)
                 let sells = this.trades.filter(x => x.type === 'SELL' && x.status === 'PLACED')
+                .map(d => {  return {x: d.time, y: d.price}});
                 let buys = this.trades.filter(x => x.type === 'BUY' && x.status === 'PLACED')
+                 .map(d => {  return {x: d.time, y: d.price}});
 
                 let cancelledSells = this.trades.filter(x => x.type === 'SELL' && x.status === 'CANCELLED')
+                 .map(d => {  return {x: d.time, y: d.price}});
                 let cancelledBuys = this.trades.filter(x => x.type === 'BUY' && x.status === 'CANCELLED')
+                 .map(d => {  return {x: d.time, y: d.price}});
 
-                let sellData = []
-                let buyData = []
-
-                let sellDataCancelled = []
-                let buyDataCancelled = []
-
+        
                 console.log(alldates)
 
-                let weatherDates = []
-                alldates.forEach((res) => {
-                    let jsdate = new Date(res[0], res[1], res[2], res[3], res[4])
-                    weatherDates.push(jsdate.toLocaleTimeString('en', { year: 'numeric', month: 'short', day: 'numeric' }))
+                var stepping = Math.max(Math.floor( alldates.length / 1440 ),1);
+                console.log("stepping: "+stepping)
+                var i = 0;
 
-                    let sellFound = sells.filter(sell => {
-                        return (sell.time.getTime() === jsdate.getTime())
-                    })
-
-                    if (sellFound[0] !== undefined) {
-                        sellData.push(sellFound[0].price)
-                    } else {
-                        sellData.push(NaN)
-                    }
-
-                    let cancelledSellFound = cancelledSells.filter(sell => {
-                        return (sell.time.getTime() === jsdate.getTime())
-                    })
-
-                    if (cancelledSellFound[0] !== undefined) {
-                        sellDataCancelled.push(cancelledSellFound[0].price)
-                    } else {
-                        sellDataCancelled.push(NaN)
-                    }
-
-                    let buyFound = buys.filter(buy => {
-                        return (buy.time.getTime() === jsdate.getTime())
-                    })
-
-                    if (buyFound[0] !== undefined) {
-                        buyData.push(buyFound[0].price)
-                    } else {
-                        buyData.push(NaN)
-                    }
-
-
-                    let cancelledBuyFound = cancelledBuys.filter(buy => {
-                        return (buy.time.getTime() === jsdate.getTime())
-                    })
-
-                    if (cancelledBuyFound[0] !== undefined) {
-                        buyDataCancelled.push(cancelledBuyFound[0].price)
-                    } else {
-                        buyDataCancelled.push(NaN)
-                    }
-                })
-
-                console.log('trades:', trades)
-                console.log('sells', sells)
-                console.log('buys', buys)
-                console.log('sellsData', sellData)
-                console.log('buyData', buyData)
-
-                this.chart = new Chart('canvas', {
+                let param = {
                     type: 'line',
                     data: {
-                        labels: weatherDates,
+                        labels: labels,
                         datasets: [
 
                             {
-                                data: sellData,
+                                data: sells,
                                 borderColor: "red",
                                 backgroundColor: "#ef5350",
                                 pointRadius: 5,
@@ -156,7 +126,7 @@ export class TradingLiveComponent implements AfterViewInit {
                                 showLine: false
                             },
                             {
-                                data: sellDataCancelled,
+                                data: cancelledSells,
                                 borderColor: "rgba(255, 0, 0, 0.35)",
                                 backgroundColor: "rgba(239, 83, 80, 0.35)",
                                 pointRadius: 5,
@@ -165,7 +135,7 @@ export class TradingLiveComponent implements AfterViewInit {
                                 showLine: false
                             },
                             {
-                                data: buyData,
+                                data: buys,
                                 borderColor: "teal",
                                 backgroundColor: "#26a69a",
                                 pointRadius: 5,
@@ -174,7 +144,7 @@ export class TradingLiveComponent implements AfterViewInit {
                                 showLine: false
                             },
                             {
-                                data: buyDataCancelled,
+                                data: cancelledBuys,
                                 borderColor: "rgba(0, 128, 128, 0,35)",
                                 backgroundColor: "rgba(38, 166, 154, 0.35)",
                                 pointRadius: 5,
@@ -198,14 +168,26 @@ export class TradingLiveComponent implements AfterViewInit {
                         },
                         scales: {
                             xAxes: [{
+                                type: 'time',
                                 display: true
                             }],
                             yAxes: [{
                                 display: true
                             }],
+                        },
+                        tick: {
+                            sampleSize: 1440
                         }
                     }
-                });
+                };
+
+                if(this.chart.data == undefined) {
+                  this.chart = new Chart('canvas', param);
+                } else {
+                  this.chart.data.labels = param.data.labels;
+                  this.chart.data.datasets = param.data.datasets;
+                  this.chart.update();
+                }
             },
                 err => this.error = err)
         },

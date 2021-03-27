@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CallableResource {
 
-    List<ChartMetricRecord> metric24h();
+    List<ChartMetricRecord> metric(String offset);
 
     List<ChartMetricRecord> metricNow();
 }

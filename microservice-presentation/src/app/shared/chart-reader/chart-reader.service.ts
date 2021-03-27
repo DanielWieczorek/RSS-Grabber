@@ -15,11 +15,20 @@ export class ChartReaderService {
     get24hOhlcv(): Observable<ChartEntry[]> {
         return this.http.get<ChartEntry[]>( this.helper.buildPath( 'routing/chart-datacollection/ohlcv/24h') )
         .pipe(catchError(this.helper.handleError));
+    }
 
+    get7dOhlcv(): Observable<ChartEntry[]> {
+        return this.http.get<ChartEntry[]>( this.helper.buildPath( 'routing/chart-datacollection/ohlcv/7d?maxSize=1440') )
+        .pipe(catchError(this.helper.handleError));
     }
 
     get30dOhlcv(): Observable<ChartEntry[]> {
-        return this.http.get<ChartEntry[]>( this.helper.buildPath( 'routing/chart-datacollection/ohlcv/30d') )
+        return this.http.get<ChartEntry[]>( this.helper.buildPath( 'routing/chart-datacollection/ohlcv/30d?maxSize=1440') )
+        .pipe(catchError(this.helper.handleError));
+    }
+
+    get365dOhlcv(): Observable<ChartEntry[]> {
+        return this.http.get<ChartEntry[]>( this.helper.buildPath( 'routing/chart-datacollection/ohlcv/365d?maxSize=1440') )
         .pipe(catchError(this.helper.handleError));
 
     }

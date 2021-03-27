@@ -17,8 +17,18 @@ export class TraderLiveService {
         .pipe(catchError(this.helper.handleError));
     }
 
+    getTrades7d(): Observable<LiveTrade[]> {
+        return this.http.get<LiveTrade[]>( this.helper.buildPath( 'routing/trader-live/trading/7d?maxSize=1440') )
+        .pipe(catchError(this.helper.handleError));
+    }
+
     getTrades30d(): Observable<LiveTrade[]> {
-        return this.http.get<LiveTrade[]>( this.helper.buildPath( 'routing/trader-live/trading/30d') )
+        return this.http.get<LiveTrade[]>( this.helper.buildPath( 'routing/trader-live/trading/30d?maxSize=1440') )
+        .pipe(catchError(this.helper.handleError));
+    }
+
+    getTrades365d(): Observable<LiveTrade[]> {
+        return this.http.get<LiveTrade[]>( this.helper.buildPath( 'routing/trader-live/trading/365d?maxSize=1440') )
         .pipe(catchError(this.helper.handleError));
     }
 
@@ -27,8 +37,18 @@ export class TraderLiveService {
         .pipe(catchError(this.helper.handleError));
     }
 
+    getAccount7d(): Observable<LiveAccount[]> {
+        return this.http.get<LiveAccount[]>( this.helper.buildPath( 'routing/trader-live/account/7d?maxSize=1440') )
+        .pipe(catchError(this.helper.handleError));
+    }
+
     getAccount30d(): Observable<LiveAccount[]> {
-        return this.http.get<LiveAccount[]>( this.helper.buildPath( 'routing/trader-live/account/30d') )
+        return this.http.get<LiveAccount[]>( this.helper.buildPath( 'routing/trader-live/account/30d?maxSize=1440') )
+        .pipe(catchError(this.helper.handleError));
+    }
+
+    getAccount365d(): Observable<LiveAccount[]> {
+        return this.http.get<LiveAccount[]>( this.helper.buildPath( 'routing/trader-live/account/365d?maxSize=1440') )
         .pipe(catchError(this.helper.handleError));
     }
 

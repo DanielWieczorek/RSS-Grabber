@@ -12,8 +12,23 @@ export class TraderSimulationService {
 
     constructor( private http: HttpClient, private helper: HttpHelperService) { }
 
-    simulate(): Observable<Trade[]> {
-        return this.http.get<Trade[]>( this.helper.buildPath( 'routing/trader-simulation/simulate') )
+    simulate24h(): Observable<Trade[]> {
+        return this.http.get<Trade[]>( this.helper.buildPath( 'routing/trader-simulation/simulate/24h') )
+        .pipe(catchError(this.helper.handleError));
+    }
+
+    simulate7d(): Observable<Trade[]> {
+        return this.http.get<Trade[]>( this.helper.buildPath( 'routing/trader-simulation/simulate/7d') )
+        .pipe(catchError(this.helper.handleError));
+    }
+
+    simulate30d(): Observable<Trade[]> {
+        return this.http.get<Trade[]>( this.helper.buildPath( 'routing/trader-simulation/simulate/30h') )
+        .pipe(catchError(this.helper.handleError));
+    }
+
+    simulate365d(): Observable<Trade[]> {
+        return this.http.get<Trade[]>( this.helper.buildPath( 'routing/trader-simulation/simulate/365d') )
         .pipe(catchError(this.helper.handleError));
     }
 }

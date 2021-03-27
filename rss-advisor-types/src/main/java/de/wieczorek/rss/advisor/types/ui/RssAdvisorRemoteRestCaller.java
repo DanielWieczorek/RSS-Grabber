@@ -18,8 +18,13 @@ public class RssAdvisorRemoteRestCaller implements CallableResource {
     @Target(type = TargetType.REMOTE, port = 12020)
     private WebTarget target;
 
-    public TradingEvaluationResult predict() {
+    public TradingEvaluationResult predictNow() {
         return target.path("/sentiment/now").request(MediaType.APPLICATION_JSON).get(TradingEvaluationResult.class);
+    }
+
+    public List<TradingEvaluationResult> predict(String offset) {
+        return target.path("/sentiment/" + offset).request(MediaType.APPLICATION_JSON).get(new GenericType<List<TradingEvaluationResult>>() {
+        });
     }
 
     public List<TradingEvaluationResult> predict24h() {

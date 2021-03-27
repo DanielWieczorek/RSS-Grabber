@@ -1,6 +1,7 @@
 package de.wieczorek.rss.trading.business;
 
 import de.wieczorek.core.ui.ControllerBase;
+import de.wieczorek.rss.trading.business.data.SimulationDataGeneratorBuilder;
 import de.wieczorek.rss.trading.common.oracle.DefaultOracle;
 import de.wieczorek.rss.trading.common.oracle.OracleConfigurationDao;
 import de.wieczorek.rss.trading.common.trading.Trade;
@@ -22,10 +23,10 @@ public class Controller extends ControllerBase {
     @Inject
     private TradingSimulator simulator;
 
+    @Inject
+    private SimulationDataGeneratorBuilder dataGeneratorBuilder;
 
-    public List<Trade> simulate() {
-        return simulator.simulate(new DefaultOracle(oracleConfigurationDao.read()));
+    public List<Trade> simulate(String offset) {
+        return simulator.simulate(new DefaultOracle(oracleConfigurationDao.read()), dataGeneratorBuilder.produceGenerator(offset));
     }
-
-
 }

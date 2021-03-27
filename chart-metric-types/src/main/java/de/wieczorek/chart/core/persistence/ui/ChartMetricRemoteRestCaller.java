@@ -42,6 +42,11 @@ public class ChartMetricRemoteRestCaller implements CallableResource {
         });
     }
 
+    public List<ChartMetricRecord> metric(String offset) {
+        return target.path("/metric/" + offset).request(MediaType.APPLICATION_JSON).get(new GenericType<List<ChartMetricRecord>>() {
+        });
+    }
+
     public List<ChartMetricRecord> metricNow() {
         return target.path("/metric/now").request(MediaType.APPLICATION_JSON).get(new GenericType<List<ChartMetricRecord>>() {
         });

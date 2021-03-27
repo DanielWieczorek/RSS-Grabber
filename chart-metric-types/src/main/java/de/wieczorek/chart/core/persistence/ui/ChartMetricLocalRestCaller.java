@@ -18,8 +18,8 @@ public class ChartMetricLocalRestCaller implements CallableResource {
     @Target(type = TargetType.LOCAL, port = 13000)
     private WebTarget target;
 
-    public List<ChartMetricRecord> metric24h() {
-        return target.path("/metric/24h").request(MediaType.APPLICATION_JSON).get(new GenericType<List<ChartMetricRecord>>() {
+    public List<ChartMetricRecord> metric(String offset) {
+        return target.path("/metric/" + offset).request(MediaType.APPLICATION_JSON).get(new GenericType<List<ChartMetricRecord>>() {
         });
     }
 

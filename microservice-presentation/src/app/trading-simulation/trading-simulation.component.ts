@@ -25,7 +25,7 @@ export class TradingSimulationComponent implements AfterViewInit {
     }
 
 
-    chart = []; // This will hold our chart info
+    chart = {} as Chart; // This will hold our chart info
     data: ChartEntry[];
     trades: Trade[];
     error: string;
@@ -39,84 +39,65 @@ export class TradingSimulationComponent implements AfterViewInit {
 
 
     ngAfterViewInit(): void {
-        this.chartReader.get24hOhlcv().subscribe(res => {
+        this.buildChart(ChartReaderService.prototype.get24hOhlcv,TraderSimulationService.prototype.simulate24h);
+
+    }
+
+    set30DayTimeframe() {
+        this.buildChart(ChartReaderService.prototype.get30dOhlcv,TraderSimulationService.prototype.simulate30d);
+    }
+
+   set24HourTimeframe() {
+        this.buildChart(ChartReaderService.prototype.get24hOhlcv,TraderSimulationService.prototype.simulate24h);
+    }
+
+    set7DayTimeframe() {
+        this.buildChart(ChartReaderService.prototype.get7dOhlcv,TraderSimulationService.prototype.simulate7d);
+    }
+
+    set365DayTimeframe() {
+        this.buildChart(ChartReaderService.prototype.get365dOhlcv,TraderSimulationService.prototype.simulate365d);
+    }
+
+
+    buildChart(chartFunc: () => Observable<ChartEntry[]>,tradesFunc: () => Observable<Trade[]>) : void {
+        chartFunc.apply(this.chartReader).subscribe(res => {
             console.log(res)
             this.data = res as ChartEntry[];
 
-            this.traderSimulation.simulate().subscribe(trades => {
+            tradesFunc.apply(this.traderSimulation).subscribe(trades => {
                 this.trades = trades as Trade[];
-                this.trades.forEach((res) => {
-                     res.date = new Date(res.date[0], res.date[1], res.date[2], res.date[3], res.date[4]);
-                     console.log('foo '+res.date);
-                });
 
-                let close = this.data.map(item => item.close);
+                this.trades.forEach((t) => t.date  = new Date(t.date[0], t.date[1]-1, t.date[2], t.date[3], t.date[4]));
+
+
+                let labels = this.data.map(d => {  return new Date(d.date[0], d.date[1]-1, d.date[2], d.date[3], d.date[4]);});
+
+                    
+                  let close = this.data.map(d => {  
+                     let time =  new Date(d.date[0], d.date[1]-1, d.date[2], d.date[3], d.date[4]);
+                     return {x: time, y: d.close}});
                 let open = this.data.map(item => item.open);
                 let alldates = this.data.map(item => item.date)
-                let sells = this.trades.filter(x => x.action === 'SELL')
-                let buys = this.trades.filter(x => x.action === 'BUY')
-
-                if (this.trades.length >= 1) {
-                    this.lastTradeBalance = this.trades[this.trades.length - 1].after;
-                    this.lastTradeBalance.eurEquivalent = this.lastTradeBalance.eur +  this.lastTradeBalance.btc * this.data[this.data.length-1].close;
-                    this.initialTradeBalance = this.trades[this.trades.length - 1].before;
-                    this.initialTradeBalance.eurEquivalent = this.initialTradeBalance.eur +  this.initialTradeBalance.btc * this.data[this.data.length-1].close;
-                    console.log('initial Trade Balance:', this.initialTradeBalance);
-                    console.log('last Trade Balance:', this.lastTradeBalance);
-
-                } else {
-                    this.lastTradeBalance = {btc: 0.0, eur: 1000.0, eurEquivalent : 1000} as Account;
-                    this.initialTradeBalance = {btc: 0.0, eur: 1000.0, eurEquivalent : 1000.0} as Account;
-
-                }
-
-                let sellData = []
-                let buyData = []
-
+                let sells = this.trades.filter(x => x.action === 'SELL' )
+                .map(d => {  return {x: d.date, y: d.currentRate}});
+                let buys = this.trades.filter(x => x.action === 'BUY' )
+                 .map(d => {  return {x: d.date, y: d.currentRate}});
+        
                 console.log(alldates)
 
-                let weatherDates = []
-                alldates.forEach((res) => {
-                    let jsdate = new Date(res[0], res[1], res[2], res[3], res[4])
-                    weatherDates.push(jsdate.toLocaleTimeString('en', { year: 'numeric', month: 'short', day: 'numeric' }))
+                var stepping = Math.max(Math.floor( alldates.length / 1440 ),1);
+                console.log("stepping: "+stepping)
+                var i = 0;
 
-                    let sellFound = sells.filter(sell => {
-                        let d = new Date(sell.date[0], sell.date[1], sell.date[2], sell.date[3], sell.date[4])
-                        return (d.getTime() === jsdate.getTime())
-                    })
-
-                    if (sellFound[0] !== undefined) {
-                        sellData.push(sellFound[0].currentRate)
-                    } else {
-                        sellData.push(NaN)
-                    }
-
-                    let buyFound = buys.filter(buy => {
-                        let d = new Date(buy.date[0], buy.date[1], buy.date[2], buy.date[3], buy.date[4])
-                        return (d.getTime() === jsdate.getTime())
-                    })
-
-                    if (buyFound[0] !== undefined) {
-                        buyData.push(buyFound[0].currentRate)
-                    } else {
-                        buyData.push(NaN)
-                    }
-                })
-
-                console.log('trades:', trades)
-                console.log('sells', sells)
-                console.log('buys', buys)
-                console.log('sellsData', sellData)
-                console.log('buyData', buyData)
-
-                this.chart = new Chart('canvas', {
+                let param = {
                     type: 'line',
                     data: {
-                        labels: weatherDates,
+                        labels: labels,
                         datasets: [
 
                             {
-                                data: sellData,
+                                data: sells,
                                 borderColor: "red",
                                 backgroundColor: "#ef5350",
                                 pointRadius: 5,
@@ -125,7 +106,7 @@ export class TradingSimulationComponent implements AfterViewInit {
                                 showLine: false
                             },
                             {
-                                data: buyData,
+                                data: buys,
                                 borderColor: "teal",
                                 backgroundColor: "#26a69a",
                                 pointRadius: 5,
@@ -149,18 +130,31 @@ export class TradingSimulationComponent implements AfterViewInit {
                         },
                         scales: {
                             xAxes: [{
+                                type: 'time',
                                 display: true
                             }],
                             yAxes: [{
                                 display: true
                             }],
+                        },
+                        tick: {
+                            sampleSize: 1440
                         }
                     }
-                });
+                };
+
+                if(this.chart.data == undefined) {
+                  this.chart = new Chart('canvas', param);
+                } else {
+                  this.chart.data.labels = param.data.labels;
+                  this.chart.data.datasets = param.data.datasets;
+                  this.chart.update();
+                }
             },
                 err => this.error = err)
         },
             err => this.error = err)
     }
+
 
 }

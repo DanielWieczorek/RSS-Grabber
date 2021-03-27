@@ -70,8 +70,8 @@ public class Controller extends ControllerBase {
         timer.stop();
     }
 
-    public List<TradingEvaluationResult> get24hPrediction() {
-        return dao.findAfterDate(LocalDateTime.now().minusHours(24));
+    public List<TradingEvaluationResult> getPrediction(LocalDateTime dateTime) {
+        return dao.findAfterDate(dateTime);
     }
 
     public List<TradingEvaluationResult> getAllPredictions() {

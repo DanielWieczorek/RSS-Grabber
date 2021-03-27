@@ -26,8 +26,7 @@ public class ChartMetricDao extends ImportExportDao<ChartMetricRecord> {
         entries.forEach(em::persist);
     }
 
-    public List<ChartMetricRecord> find24h() {
-        LocalDateTime date = LocalDateTime.now().withSecond(0).withNano(0).minusHours(24);
+    public List<ChartMetricRecord> findAfter(LocalDateTime date) {
         TypedQuery<ChartMetricRecord> query = EntityManagerProvider.getEntityManager()
                 .createQuery("SELECT s FROM ChartMetricRecord s WHERE s.id.date >= :time", ChartMetricRecord.class)
                 .setParameter("time", date);

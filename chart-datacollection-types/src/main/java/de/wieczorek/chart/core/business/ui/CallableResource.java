@@ -10,5 +10,7 @@ public interface CallableResource {
 
     List<ChartEntry> ohlcv24h();
 
+    List<ChartEntry> ohlcv(String offset);
+
     List<ChartEntry> ohlcv24d();
 }

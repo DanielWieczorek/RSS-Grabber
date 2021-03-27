@@ -41,8 +41,8 @@ public class Controller extends ControllerBase {
         kafkaManager.stop();
     }
 
-    public List<ChartMetricRecord> get24h() {
-        return dao.find24h();
+    public List<ChartMetricRecord> getAfter(LocalDateTime dateTime) {
+        return dao.findAfter(dateTime);
     }
 
     public List<ChartMetricRecord> getNow() {

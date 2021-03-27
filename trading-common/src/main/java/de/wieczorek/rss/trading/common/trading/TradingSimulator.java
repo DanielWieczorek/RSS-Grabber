@@ -1,6 +1,9 @@
 package de.wieczorek.rss.trading.common.trading;
 
-import de.wieczorek.rss.trading.common.io.*;
+import de.wieczorek.rss.trading.common.io.DataGenerator;
+import de.wieczorek.rss.trading.common.io.DataLoader;
+import de.wieczorek.rss.trading.common.io.SimulationContext;
+import de.wieczorek.rss.trading.common.io.SimulationContextProvider;
 import de.wieczorek.rss.trading.common.oracle.Oracle;
 import de.wieczorek.rss.trading.common.oracle.OracleInput;
 import de.wieczorek.rss.trading.common.oracle.TraderState;
@@ -26,13 +29,10 @@ public class TradingSimulator {
     private DataLoader dataLoader;
 
     @Inject
-    private DataGeneratorBuilder dataGeneratorBuilder;
-    @Inject
     private SimulationContextProvider contextProvider;
 
-    public List<Trade> simulate(Oracle oracle) {
+    public List<Trade> simulate(Oracle oracle, DataGenerator generator) {
         contextProvider.createContext();
-        DataGenerator generator = dataGeneratorBuilder.produceGenerator();
         List<Trade> result = simulate(generator, oracle).getTrades();
         contextProvider.destroyContext();
         return result;

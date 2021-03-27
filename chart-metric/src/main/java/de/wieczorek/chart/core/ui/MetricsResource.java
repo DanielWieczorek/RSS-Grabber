@@ -3,6 +3,7 @@ package de.wieczorek.chart.core.ui;
 import de.wieczorek.chart.core.business.Controller;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.chart.core.persistence.ui.CallableResource;
+import de.wieczorek.core.date.DateStringParser;
 import de.wieczorek.core.persistence.EntityManagerContext;
 import de.wieczorek.core.ui.Resource;
 
@@ -39,9 +40,9 @@ public class MetricsResource implements CallableResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/24h")
-    public List<ChartMetricRecord> metric24h() {
-        return controller.get24h();
+    @Path("/{offset}")
+    public List<ChartMetricRecord> metric(@PathParam("offset") String offset) {
+        return controller.getAfter(LocalDateTime.now().minus(DateStringParser.parseDuration(offset)));
     }
 
     @GET

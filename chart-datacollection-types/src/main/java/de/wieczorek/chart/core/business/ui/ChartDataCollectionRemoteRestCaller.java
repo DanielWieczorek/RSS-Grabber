@@ -26,6 +26,12 @@ public class ChartDataCollectionRemoteRestCaller implements CallableResource {
     }
 
     @Override
+    public List<ChartEntry> ohlcv(String offset) {
+        return target.path("/ohlcv/" + offset).request(MediaType.APPLICATION_JSON).get(new GenericType<List<ChartEntry>>() {
+        });
+    }
+
+    @Override
     public List<ChartEntry> ohlcv24h() {
         return target.path("/ohlcv/24h").request(MediaType.APPLICATION_JSON).get(new GenericType<List<ChartEntry>>() {
         });

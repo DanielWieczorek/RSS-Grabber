@@ -1,6 +1,6 @@
 <div class="container">
 
-	  <a class="waves-effect waves-teal btn-flat" (click)="set30DayTimeframe()">30 Days</a>
+	  
 	<div class="section">
 
 		
@@ -26,7 +26,7 @@
 								<tr>
 									<td>BTC</td>
 									<td>
-										{{accountBefore.btc|number:'1.0-2'}}
+										{{accountBefore.btc|number:'1.0-8'}}
 									</td>
 								</tr>
 
@@ -69,7 +69,7 @@
 								<tr>
 									<td>BTC</td>
 									<td>
-										{{accountAfter.btc|number:'1.0-2'}}
+										{{accountAfter.btc|number:'1.0-8'}}
 									</td>
 								</tr>
 
@@ -99,6 +99,12 @@
 			<div *ngIf="chart">
 				<p>The diagram below shows the transactions of the last 24 hours.
 				</p>
+		<a class="waves-effect waves-teal btn-flat" (click)="set24HourTimeframe()">24 Hours</a>
+		<a class="waves-effect waves-teal btn-flat" (click)="set7DayTimeframe()">7 Days</a>
+		<a class="waves-effect waves-teal btn-flat" (click)="set30DayTimeframe()">30 Days</a>
+		<a class="waves-effect waves-teal btn-flat" (click)="set365DayTimeframe()">1 Year</a>
+
+		
 
 				<div *ngIf="!error; else errorHappened">
 					<div class="z-depth-0" style="padding: 16px">

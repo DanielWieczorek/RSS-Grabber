@@ -5,9 +5,9 @@ import de.wieczorek.rss.advisor.types.TradingEvaluationResult;
 import java.util.List;
 
 public interface CallableResource {
-    TradingEvaluationResult predict();
+    TradingEvaluationResult predictNow();
 
-    List<TradingEvaluationResult> predict24h();
+    List<TradingEvaluationResult> predict(String offset);
 
     List<TradingEvaluationResult> getAllSentiments();
 

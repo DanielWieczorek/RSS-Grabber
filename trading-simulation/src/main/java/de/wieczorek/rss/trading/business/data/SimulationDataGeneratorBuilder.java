@@ -26,4 +26,13 @@ public class SimulationDataGeneratorBuilder implements DataGeneratorBuilder {
         );
     }
 
+    public DataGenerator produceGenerator(String offset) {
+        return new DataGenerator(
+                () -> dataLoader.loadSentiments(offset),
+                () -> dataLoader.loadChartEntries(offset),
+                () -> dataLoader.loadMetricSentiments(offset),
+                () -> dataLoader.loadMetrics(offset),
+                contextProvider
+        );
+    }
 }

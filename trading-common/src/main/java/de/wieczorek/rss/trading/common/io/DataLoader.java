@@ -31,16 +31,20 @@ public class DataLoader {
         return chartDataCollectionCaller.ohlcv24h();
     }
 
-    public List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> loadSentiments24h() {
-        return rssAdvisorCaller.predict24h();
+    public List<ChartEntry> loadChartEntries(String offset) {
+        return chartDataCollectionCaller.ohlcv(offset);
+    }
+
+    public List<ChartEntry> loadAllChartEntries() {
+        return chartDataCollectionCaller.ohlcv();
     }
 
     public List<ChartMetricRecord> loadMetrics24h() {
         return chartMetricCaller.metric24h();
     }
 
-    public List<ChartEntry> loadAllChartEntries() {
-        return chartDataCollectionCaller.ohlcv();
+    public List<ChartMetricRecord> loadMetrics(String offset) {
+        return chartMetricCaller.metric(offset);
     }
 
     public List<ChartMetricRecord> loadAllMetrics() {
@@ -51,6 +55,14 @@ public class DataLoader {
         return rssAdvisorCaller.getAllSentiments();
     }
 
+    public List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> loadSentiments24h() {
+        return rssAdvisorCaller.predict24h();
+    }
+
+    public List<de.wieczorek.rss.advisor.types.TradingEvaluationResult> loadSentiments(String offset) {
+        return rssAdvisorCaller.predict(offset);
+    }
+
     public List<TradingEvaluationResult> loadAllMetricSentiments() {
         return chartAdvisorCaller.getAllSentiments();
     }
@@ -58,4 +70,9 @@ public class DataLoader {
     public List<TradingEvaluationResult> loadMetricSentiments24h() {
         return chartAdvisorCaller.predict24h();
     }
+
+    public List<TradingEvaluationResult> loadMetricSentiments(String offset) {
+        return chartAdvisorCaller.predict(offset);
+    }
+
 }
