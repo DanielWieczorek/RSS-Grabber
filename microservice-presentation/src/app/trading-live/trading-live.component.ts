@@ -174,9 +174,6 @@ export class TradingLiveComponent implements AfterViewInit {
                             yAxes: [{
                                 display: true
                             }],
-                        },
-                        tick: {
-                            sampleSize: 1440
                         }
                     }
                 };

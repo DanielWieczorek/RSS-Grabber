@@ -23,7 +23,7 @@ export class TraderSimulationService {
     }
 
     simulate30d(): Observable<Trade[]> {
-        return this.http.get<Trade[]>( this.helper.buildPath( 'routing/trader-simulation/simulate/30h') )
+        return this.http.get<Trade[]>( this.helper.buildPath( 'routing/trader-simulation/simulate/30d') )
         .pipe(catchError(this.helper.handleError));
     }
 

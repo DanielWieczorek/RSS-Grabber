@@ -77,18 +77,22 @@ export class TradingSimulationComponent implements AfterViewInit {
                   let close = this.data.map(d => {  
                      let time =  new Date(d.date[0], d.date[1]-1, d.date[2], d.date[3], d.date[4]);
                      return {x: time, y: d.close}});
-                let open = this.data.map(item => item.open);
-                let alldates = this.data.map(item => item.date)
-                let sells = this.trades.filter(x => x.action === 'SELL' )
-                .map(d => {  return {x: d.date, y: d.currentRate}});
-                let buys = this.trades.filter(x => x.action === 'BUY' )
-                 .map(d => {  return {x: d.date, y: d.currentRate}});
-        
-                console.log(alldates)
+                let sells = this.trades.filter(x => x.action === 'SELL' ).map(d => {  return {x: d.date, y: d.currentRate}});
+                let buys = this.trades.filter(x => x.action === 'BUY' ).map(d => {  return {x: d.date, y: d.currentRate}});
 
-                var stepping = Math.max(Math.floor( alldates.length / 1440 ),1);
-                console.log("stepping: "+stepping)
-                var i = 0;
+                  if (this.trades.length >= 1) {
+                    this.lastTradeBalance = this.trades[this.trades.length - 1].after;
+                    this.lastTradeBalance.eurEquivalent = this.lastTradeBalance.eur +  this.lastTradeBalance.btc * this.data[this.data.length-1].close;
+                    this.initialTradeBalance = this.trades[this.trades.length - 1].before;
+                    this.initialTradeBalance.eurEquivalent = this.initialTradeBalance.eur +  this.initialTradeBalance.btc * this.data[this.data.length-1].close;
+                    console.log('initial Trade Balance:', this.initialTradeBalance);
+                    console.log('last Trade Balance:', this.lastTradeBalance);
+
+                } else {
+                    this.lastTradeBalance = {btc: 0.0, eur: 1000.0, eurEquivalent : 1000} as Account;
+                    this.initialTradeBalance = {btc: 0.0, eur: 1000.0, eurEquivalent : 1000.0} as Account;
+
+                }
 
                 let param = {
                     type: 'line',
@@ -136,9 +140,6 @@ export class TradingSimulationComponent implements AfterViewInit {
                             yAxes: [{
                                 display: true
                             }],
-                        },
-                        tick: {
-                            sampleSize: 1440
                         }
                     }
                 };
