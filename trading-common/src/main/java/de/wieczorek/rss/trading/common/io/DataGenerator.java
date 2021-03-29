@@ -23,15 +23,13 @@ public class DataGenerator {
     public DataGenerator(Supplier<List<de.wieczorek.rss.advisor.types.TradingEvaluationResult>> sentimentSupplier,
                          Supplier<List<ChartEntry>> chartEntrySupplier,
                          Supplier<List<TradingEvaluationResult>> metricSentimentSupplier,
-                         Supplier<List<ChartMetricRecord>> metricSupplier,
-                         ContextProvider contextProvider) {
+                         Supplier<List<ChartMetricRecord>> metricSupplier) {
 
         currentSentiment = sentimentSupplier.get();
         chartEntries = chartEntrySupplier.get();
         currentMetricSentiment = metricSentimentSupplier.get();
         chartMetrics = metricSupplier.get();
         stateParts = StatePartBuilder.buildStateParts(chartEntries, currentMetricSentiment, currentSentiment, chartMetrics);
-        stateParts.stream().forEach(part -> part.setContextProvider(contextProvider));
     }
 
     public StateEdge buildNewStartState(int offset) {

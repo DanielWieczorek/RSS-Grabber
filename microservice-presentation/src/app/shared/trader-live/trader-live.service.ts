@@ -18,17 +18,17 @@ export class TraderLiveService {
     }
 
     getTrades7d(): Observable<LiveTrade[]> {
-        return this.http.get<LiveTrade[]>( this.helper.buildPath( 'routing/trader-live/trading/7d?maxSize=1440') )
+        return this.http.get<LiveTrade[]>( this.helper.buildPath( 'routing/trader-live/trading/7d') )
         .pipe(catchError(this.helper.handleError));
     }
 
     getTrades30d(): Observable<LiveTrade[]> {
-        return this.http.get<LiveTrade[]>( this.helper.buildPath( 'routing/trader-live/trading/30d?maxSize=1440') )
+        return this.http.get<LiveTrade[]>( this.helper.buildPath( 'routing/trader-live/trading/30d') )
         .pipe(catchError(this.helper.handleError));
     }
 
     getTrades365d(): Observable<LiveTrade[]> {
-        return this.http.get<LiveTrade[]>( this.helper.buildPath( 'routing/trader-live/trading/365d?maxSize=1440') )
+        return this.http.get<LiveTrade[]>( this.helper.buildPath( 'routing/trader-live/trading/365d') )
         .pipe(catchError(this.helper.handleError));
     }
 

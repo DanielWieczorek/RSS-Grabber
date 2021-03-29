@@ -83,7 +83,7 @@ export class TradingSimulationComponent implements AfterViewInit {
                   if (this.trades.length >= 1) {
                     this.lastTradeBalance = this.trades[this.trades.length - 1].after;
                     this.lastTradeBalance.eurEquivalent = this.lastTradeBalance.eur +  this.lastTradeBalance.btc * this.data[this.data.length-1].close;
-                    this.initialTradeBalance = this.trades[this.trades.length - 1].before;
+                    this.initialTradeBalance = this.trades[0].before;
                     this.initialTradeBalance.eurEquivalent = this.initialTradeBalance.eur +  this.initialTradeBalance.btc * this.data[this.data.length-1].close;
                     console.log('initial Trade Balance:', this.initialTradeBalance);
                     console.log('last Trade Balance:', this.lastTradeBalance);

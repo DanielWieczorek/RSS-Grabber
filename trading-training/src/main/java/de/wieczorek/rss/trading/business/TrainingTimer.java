@@ -40,8 +40,8 @@ import java.util.stream.Stream;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 3;
-    private static final int DATAPOINTS_PER_SERIES = 2;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 2;
+    private static final int DATAPOINTS_PER_SERIES = 5;
     private static final int NUMBER_OF_COMPARATORS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int TOTAL_NUMBER_OF_DATAPOINTS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int OFFSET_SAFETY_MARGIN = 10;
@@ -69,7 +69,7 @@ public class TrainingTimer implements Runnable {
 
         StateEdgeChainMetaInfo metadata = buildStateEdgeChainMetaInfo();
 
-        TradingSimulationResult simulationResult = simulator.simulate(metadata, generator, oracle);
+        TradingSimulationResult simulationResult = simulator.simulate(generator, oracle);
         List<Trade> trades = simulationResult.getTrades();
         double result = Double.MIN_VALUE;
         double missedOpportunityPct = Double.MIN_VALUE;
@@ -88,11 +88,11 @@ public class TrainingTimer implements Runnable {
 
                 if (trades.size() > i + 2) {
                     Trade nextBuy = trades.get(i + 2);
-                    double missedOpportunityAbsolute = nextBuy.getBefore().getEurEquivalent() - sell.getAfter().getEurEquivalent();
-                    missedOpportunityPct += Math.log(1 + (missedOpportunityAbsolute / sell.getAfter().getEurEquivalent() * 100));
+                    double missedOpportunityAbsolute = sell.getCurrentRate() - nextBuy.getCurrentRate();
+                    missedOpportunityPct += Math.log(1 + (missedOpportunityAbsolute / nextBuy.getCurrentRate() * 100));
                 }
             }
-            result = tradeProfitPct;// - missedOpportunityPct;// / ((double) buySellPairs);
+            result = tradeProfitPct - missedOpportunityPct;// / ((double) buySellPairs);
             //result *= buySellPairs;
         }
 
@@ -137,29 +137,6 @@ public class TrainingTimer implements Runnable {
         configuration.setSellRatioPercent(normalize(buildOperatorList(genes, sellConfigStartIndex, sellConfigurations)));
         int sellRatio = configuration.getSellRatioPercent().stream().reduce(0, Integer::sum);
         configuration.setSellThresholdAbsolute(Math.max(sellRatio * genes.get(21).getGene(0).intValue() / 100, 1));
-
-        if (genes.get(22).getGene(0).intValue() == 1) {
-            TradeConfiguration stopLoss = new TradeConfiguration();
-            stopLoss.setValuesSource(ValuesSource.LAST_MAX_SINCE_BUY);
-            stopLoss.setAverageType(AverageType.MAX);
-
-            ValuePoint comp1 = new ValuePoint();
-            comp1.setOffset(1);
-            comp1.setAverageTime(1440);
-
-            ValuePoint comp2 = new ValuePoint();
-            comp2.setOffset(0);
-            comp2.setAverageTime(1);
-
-            stopLoss.setComparisonPoints(List.of(comp1, comp2));
-            stopLoss.setMargins(Collections.singletonList(300 * (genes.get(23).getGene(0).intValue() / 10)));
-            stopLoss.setComparisons(Collections.singletonList(Comparison.GREATER));
-            stopLoss.setRanges(Collections.singletonList(0));
-
-            sellConfigurations.add(stopLoss);
-            configuration.getSellRatioPercent().add(sellRatio);
-        }
-
         return configuration;
     }
 
@@ -289,10 +266,11 @@ public class TrainingTimer implements Runnable {
                 Trade buy = trades.get(i);
                 Trade sell = trades.get(i + 1);
 
-                tradeProfit += sell.getAfter().getEur() - buy.getBefore().getEur();
+                double tradeProfitCurrentTrade = sell.getAfter().getEur() - buy.getBefore().getEur();
+                tradeProfit += tradeProfitCurrentTrade;
                 minEuroEquivalent = Math.min(minEuroEquivalent, sell.getAfter().getEurEquivalent());
                 maxEuroEquivalent = Math.max(maxEuroEquivalent, sell.getAfter().getEurEquivalent());
-                positiveTrades += tradeProfit > 0 ? 1 : 0;
+                positiveTrades += tradeProfitCurrentTrade > 0 ? 1 : 0;
                 buySellPairs++;
             }
         }
@@ -413,10 +391,7 @@ public class TrainingTimer implements Runnable {
                         IntegerChromosome.of(1, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //19 length of the series
 
                         IntegerChromosome.of(1, 100, 1), //20 buy vote threshold percent
-                        IntegerChromosome.of(1, 100, 1), //21 sell vote threshold percent
-
-                        IntegerChromosome.of(0, 1, 1), //22 Has Stoploss
-                        IntegerChromosome.of(0, 500, 1) //22 stoploss % max drop
+                        IntegerChromosome.of(1, 100, 1) //21 sell vote threshold percent
 
                 );
 

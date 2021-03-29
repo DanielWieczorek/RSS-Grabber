@@ -21,8 +21,7 @@ public class LiveDataGeneratorBuilder implements DataGeneratorBuilder {
                 dataLoader::loadSentiments24h,
                 dataLoader::loadChartEntries24h,
                 dataLoader::loadMetricSentiments24h,
-                dataLoader::loadMetrics24h,
-                contextProvider
+                dataLoader::loadMetrics24h
         );
     }
 

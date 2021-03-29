@@ -2,8 +2,6 @@ package de.wieczorek.rss.trading.common.trading;
 
 import de.wieczorek.rss.trading.common.io.DataGenerator;
 import de.wieczorek.rss.trading.common.io.DataLoader;
-import de.wieczorek.rss.trading.common.io.SimulationContext;
-import de.wieczorek.rss.trading.common.io.SimulationContextProvider;
 import de.wieczorek.rss.trading.common.oracle.Oracle;
 import de.wieczorek.rss.trading.common.oracle.OracleInput;
 import de.wieczorek.rss.trading.common.oracle.TraderState;
@@ -16,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,31 +25,20 @@ public class TradingSimulator {
     @Inject
     private DataLoader dataLoader;
 
-    @Inject
-    private SimulationContextProvider contextProvider;
 
     public List<Trade> simulate(Oracle oracle, DataGenerator generator) {
-        contextProvider.createContext();
-        List<Trade> result = simulate(generator, oracle).getTrades();
-        contextProvider.destroyContext();
-        return result;
+        return simulate(generator, oracle).getTrades();
     }
 
 
     public TradingSimulationResult simulate(StateEdgeChainMetaInfo metaInfo, DataGenerator generator, Oracle oracle) {
         StateEdge startState = generator.buildNewStartState(metaInfo);
-        contextProvider.createContext();
-        TradingSimulationResult result = simulate(startState, generator, oracle);
-        contextProvider.destroyContext();
-        return result;
+        return simulate(startState, generator, oracle);
     }
 
     public TradingSimulationResult simulate(DataGenerator generator, Oracle oracle) {
         StateEdge startState = generator.buildNewStartState(0);
-        contextProvider.createContext();
-        TradingSimulationResult result = simulate(startState, generator, oracle);
-        contextProvider.destroyContext();
-        return result;
+        return simulate(startState, generator, oracle);
     }
 
     public TradingSimulationResult simulate(StateEdge startState, DataGenerator generator, Oracle oracle) {
@@ -61,7 +47,6 @@ public class TradingSimulator {
         List<Trade> trades = new ArrayList<>();
 
         OracleInput input = new OracleInput();
-        input.setState(new TraderState());
         input.setStateEdge(current);
         for (int i = 0; i < generator.getMaxIndex(); i += 1) {
 
@@ -69,13 +54,6 @@ public class TradingSimulator {
             StateEdge next = performTrade(input, generator, nextAction);
             if (next == null) {
                 break;
-            }
-
-            SimulationContext context = contextProvider.getContext();
-            if (context.getLastBuyTime() == null && nextAction == ActionVertexType.BUY) {
-                context.setLastBuyTime(getCurrentTime(current));
-            } else if (context.getLastBuyTime() != null && nextAction == ActionVertexType.SELL) {
-                context.setLastBuyTime(null);
             }
 
             addTrade(trades, current.getAccount(), next.getAccount(), input, nextAction);
@@ -103,14 +81,14 @@ public class TradingSimulator {
         if (action == ActionVertexType.SELL) {
             newTrade.setAction(ActionVertexType.SELL);
             trades.add(newTrade);
-            input.setState(new TraderState());
+
         } else if (action == ActionVertexType.BUY) {
             newTrade.setAction(ActionVertexType.BUY);
             trades.add(newTrade);
             TraderState newState = new TraderState();
             newState.setLastBuyTime(newTrade.getDate());
             newState.setLastBuyPrice(newTrade.getCurrentRate());
-            input.setState(newState);
+
         }
     }
 
@@ -119,11 +97,7 @@ public class TradingSimulator {
     }
 
     private double getCurrentPrice(StateEdge snapshot) {
-        return snapshot.getAllStateParts().get(snapshot.getPartsStartIndex()).getChartEntry().getClose();
-    }
-
-    private LocalDateTime getCurrentTime(StateEdge snapshot) {
-        return snapshot.getAllStateParts().get(snapshot.getPartsStartIndex()).getChartEntry().getDate();
+        return snapshot.getAllStateParts().get(snapshot.getPartsEndIndex()).getChartEntry().getClose();
     }
 
 }

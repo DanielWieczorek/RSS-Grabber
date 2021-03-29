@@ -67,7 +67,6 @@ public class Trader {
         StateEdge current = generator.BuildLastStateEdge(accountInfoService.getAccount());
         OracleInput input = new OracleInput();
         input.setStateEdge(current);
-        input.setState(buildState());
         input.setMinOrder(metadata.getMinimumAmount().doubleValue());
         TradingDecision lastAction = oracle.nextAction(input);
 

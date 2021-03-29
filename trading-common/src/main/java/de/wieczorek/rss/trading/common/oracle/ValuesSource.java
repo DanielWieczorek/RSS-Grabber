@@ -5,7 +5,6 @@ import de.wieczorek.chart.core.business.ChartEntry;
 import de.wieczorek.chart.core.persistence.ChartMetricRecord;
 import de.wieczorek.rss.trading.types.StateEdgePart;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -25,8 +24,7 @@ public enum ValuesSource {
     METRIC_RSS_ABSOLUTE_15M(10, ValuesSource::processChartMetricRssAbsolute15Minutes),
     METRIC_MACD_ABSOLUTE_15M(11, ValuesSource::processChartMetricMacdAbsolute15Minutes),
     METRIC_AROON_ABSOLUTE_15M(12, ValuesSource::processChartMetricAroonAbsolute15Minutes),
-    METRIC_STOCHASTIC_D_ABSOLUTE_15M(13, ValuesSource::processChartMetricStochasticDAbsolute15Minutes),
-    LAST_MAX_SINCE_BUY(14, ValuesSource::processLastMaxSinceBuy);
+    METRIC_STOCHASTIC_D_ABSOLUTE_15M(13, ValuesSource::processChartMetricStochasticDAbsolute15Minutes);
 
     private int index;
     private Function<StateEdgePart, Double> valueExtractor;
@@ -34,15 +32,6 @@ public enum ValuesSource {
     ValuesSource(int index, Function<StateEdgePart, Double> valueExtractor) {
         this.index = index;
         this.valueExtractor = valueExtractor;
-    }
-
-    private static Double processLastMaxSinceBuy(StateEdgePart stateEdgePart) {
-        LocalDateTime lastBuyTime = stateEdgePart.getContextProvider().getContext().getLastBuyTime();
-
-        if (lastBuyTime == null || lastBuyTime.isBefore(stateEdgePart.getChartEntry().getDate())) {
-            return 0.0;
-        }
-        return stateEdgePart.getChartEntry().getHigh();
     }
 
     public static Double processChartMetricSentimentAbsolute(StateEdgePart input) {
