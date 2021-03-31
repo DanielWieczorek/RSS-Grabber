@@ -29,7 +29,7 @@ public class KafkaSender<T> {
     }
 
 
-    public void send(String id, T obj) {
+    public synchronized void send(String id, T obj) {
         try {
             producer.beginTransaction();
             producer.send(new ProducerRecord<>(topic, id, mapper.apply(obj)));

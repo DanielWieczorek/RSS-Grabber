@@ -14,6 +14,7 @@ import de.wieczorek.rss.trading.common.oracle.comparison.Comparison;
 import de.wieczorek.rss.trading.common.trading.Trade;
 import de.wieczorek.rss.trading.common.trading.TradingSimulationResult;
 import de.wieczorek.rss.trading.common.trading.TradingSimulator;
+import de.wieczorek.rss.trading.types.StateEdge;
 import de.wieczorek.rss.trading.types.StateEdgeChainMetaInfo;
 import io.jenetics.*;
 import io.jenetics.engine.*;
@@ -40,12 +41,13 @@ import java.util.stream.Stream;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 2;
-    private static final int DATAPOINTS_PER_SERIES = 5;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 3;
+    private static final int DATAPOINTS_PER_SERIES = 3;
     private static final int NUMBER_OF_COMPARATORS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int TOTAL_NUMBER_OF_DATAPOINTS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int OFFSET_SAFETY_MARGIN = 10;
     private static int i = 0;
+    private double riskFreeTotal;
     private Phenotype<IntegerGene, Double> best = null;
     @Inject
     private TradingSimulator simulator;
@@ -55,7 +57,6 @@ public class TrainingTimer implements Runnable {
     private OracleConfigurationDao configurationDao;
     @Inject
     private EvolutionProgressDao progressDao;
-
     private DataGenerator generator;
     private Map<OracleConfiguration, Double> cache = new ConcurrentHashMap<>();
 
@@ -67,39 +68,14 @@ public class TrainingTimer implements Runnable {
 
         Oracle oracle = new DefaultOracle(configuration);
 
-        StateEdgeChainMetaInfo metadata = buildStateEdgeChainMetaInfo();
-
         TradingSimulationResult simulationResult = simulator.simulate(generator, oracle);
         List<Trade> trades = simulationResult.getTrades();
-        double result = Double.MIN_VALUE;
-        double missedOpportunityPct = Double.MIN_VALUE;
 
-        if (trades.size() > 1) {
-            double tradeProfitPct = 0;
-            int buySellPairs = 0;
-            for (int i = 0; i < trades.size() - 1; i += 2) {
-                Trade buy = trades.get(i);
-                Trade sell = trades.get(i + 1);
+        double result = Double.NEGATIVE_INFINITY;
 
-
-                double tradeProfitAbsolute = sell.getAfter().getEur() - buy.getBefore().getEur();
-                tradeProfitPct += Math.log(1 + (tradeProfitAbsolute / buy.getBefore().getEur() * 100));
-                buySellPairs++;
-
-                if (trades.size() > i + 2) {
-                    Trade nextBuy = trades.get(i + 2);
-                    double missedOpportunityAbsolute = sell.getCurrentRate() - nextBuy.getCurrentRate();
-                    missedOpportunityPct += Math.log(1 + (missedOpportunityAbsolute / nextBuy.getCurrentRate() * 100));
-                }
-            }
-            result = tradeProfitPct - missedOpportunityPct;// / ((double) buySellPairs);
-            //result *= buySellPairs;
+        if (trades.size() > 0) {
+            result = simulationResult.getFinalBalance().getEurEquivalent() - riskFreeTotal;
         }
-
-
-        //   if (trades.size() > 0) { //generator.getMaxIndex() / 1440 * 2) {
-        //       result = simulationResult.getFinalBalance().getEurEquivalent();
-        //   }
 
         if (Double.isNaN(result)) {
             result = Double.NEGATIVE_INFINITY;
@@ -301,6 +277,12 @@ public class TrainingTimer implements Runnable {
     public void run() {
         try {
             generator = generatorBuilder.produceGenerator();
+            StateEdge firstState = generator.buildNewStartState(0);
+            StateEdge lastState = generator.BuildLastStateEdge(null);
+            double initialRate = firstState.getAllStateParts().get(firstState.getPartsEndIndex()).getChartEntry().getClose();
+            double finalRate = lastState.getAllStateParts().get(lastState.getPartsEndIndex()).getChartEntry().getClose();
+
+            riskFreeTotal = (1000 / initialRate) * (finalRate);
 
             EvolutionStreamable<IntegerGene, Double> engine = buildNewEngine();
 
@@ -376,7 +358,7 @@ public class TrainingTimer implements Runnable {
                         IntegerChromosome.of(1, 100, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //6 operators - weight %
                         IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //7 is buy configuration active
                         IntegerChromosome.of(0, 500, IntRange.of(NUMBER_OF_COMPARATORS)), //8 second value for comparison
-                        IntegerChromosome.of(1, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //9 length of the series
+                        IntegerChromosome.of(2, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //9 length of the series
 
 
                         IntegerChromosome.of(-5000, 5000, IntRange.of(NUMBER_OF_COMPARATORS)), //10 sell thresholds
@@ -388,7 +370,7 @@ public class TrainingTimer implements Runnable {
                         IntegerChromosome.of(1, 100, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //16 operators - weight %
                         IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //17 is sell configuration active
                         IntegerChromosome.of(0, 5000, IntRange.of(NUMBER_OF_COMPARATORS)), //18 second value for comparison
-                        IntegerChromosome.of(1, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //19 length of the series
+                        IntegerChromosome.of(2, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //19 length of the series
 
                         IntegerChromosome.of(1, 100, 1), //20 buy vote threshold percent
                         IntegerChromosome.of(1, 100, 1) //21 sell vote threshold percent

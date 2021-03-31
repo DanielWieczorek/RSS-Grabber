@@ -17,7 +17,7 @@ public class BitcoincomMessageTransformer implements MessageTransformer {
         try {
 
             Pattern pattern = Pattern
-                    .compile(Pattern.quote("/>") + "(.*)" + Pattern.quote("</p>") + ".*" + Pattern.quote("</p>"));
+                    .compile(Pattern.quote("/>") + "(.*)" + ".*");
 
             Matcher matcher = pattern.matcher(description);
             matcher.find();

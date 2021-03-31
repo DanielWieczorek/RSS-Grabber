@@ -7,9 +7,13 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 @ApplicationScoped
 public class KafkaSenderProducer {
+
+    private final Map<Class<? extends KafkaTopicConfiguration>, KafkaSender> senders = new HashMap<>();
 
     @Inject
     @ServiceName
@@ -17,11 +21,11 @@ public class KafkaSenderProducer {
 
     @Produces
     @WithTopicConfiguration
-    private KafkaSender buildSender(InjectionPoint ip) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private synchronized KafkaSender buildSender(InjectionPoint ip) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Class<? extends KafkaTopicConfiguration> configClass = ip.getAnnotated().getAnnotation(WithTopicConfiguration.class).configName();
         KafkaTopicConfiguration<?> config = configClass.getConstructor().newInstance();
 
-        return new KafkaSender<>(config, serviceName);
+        return senders.computeIfAbsent(configClass, (x) -> new KafkaSender<>(config, serviceName));
     }
 
 }
