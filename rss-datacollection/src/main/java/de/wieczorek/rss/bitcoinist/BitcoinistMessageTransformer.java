@@ -17,7 +17,7 @@ public class BitcoinistMessageTransformer implements MessageTransformer {
         String description = t.getDescription().replaceAll("\n", "");
         try {
 
-            Pattern pattern = Pattern.compile("\\/>(.*?)<\\/p>");
+            Pattern pattern = Pattern.compile("\\/>(.*?)");
 
             Matcher matcher = pattern.matcher(description);
             matcher.find();
