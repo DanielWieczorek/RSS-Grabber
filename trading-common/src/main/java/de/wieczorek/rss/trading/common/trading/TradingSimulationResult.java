@@ -7,6 +7,15 @@ import java.util.List;
 public class TradingSimulationResult {
     private List<Trade> trades;
     private Account finalBalance;
+    private Account initialBalance;
+
+    public Account getInitialBalance() {
+        return initialBalance;
+    }
+
+    public void setInitialBalance(Account initialBalance) {
+        this.initialBalance = initialBalance;
+    }
 
     public List<Trade> getTrades() {
         return trades;

@@ -25,12 +25,6 @@ public class TradingSimulator {
     @Inject
     private DataLoader dataLoader;
 
-
-    public List<Trade> simulate(Oracle oracle, DataGenerator generator) {
-        return simulate(generator, oracle).getTrades();
-    }
-
-
     public TradingSimulationResult simulate(StateEdgeChainMetaInfo metaInfo, DataGenerator generator, Oracle oracle) {
         StateEdge startState = generator.buildNewStartState(metaInfo);
         return simulate(startState, generator, oracle);
@@ -41,7 +35,7 @@ public class TradingSimulator {
         return simulate(startState, generator, oracle);
     }
 
-    public TradingSimulationResult simulate(StateEdge startState, DataGenerator generator, Oracle oracle) {
+    private TradingSimulationResult simulate(StateEdge startState, DataGenerator generator, Oracle oracle) {
 
         StateEdge current = startState;
         List<Trade> trades = new ArrayList<>();
@@ -64,6 +58,7 @@ public class TradingSimulator {
 
         TradingSimulationResult result = new TradingSimulationResult();
         result.setTrades(trades);
+        result.setInitialBalance(startState.getAccount());
         result.setFinalBalance(current.getAccount());
 
 

@@ -4,14 +4,13 @@ import de.wieczorek.core.ui.ControllerBase;
 import de.wieczorek.rss.trading.business.data.SimulationDataGeneratorBuilder;
 import de.wieczorek.rss.trading.common.oracle.DefaultOracle;
 import de.wieczorek.rss.trading.common.oracle.OracleConfigurationDao;
-import de.wieczorek.rss.trading.common.trading.Trade;
+import de.wieczorek.rss.trading.common.trading.TradingSimulationResult;
 import de.wieczorek.rss.trading.common.trading.TradingSimulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.List;
 
 @ApplicationScoped
 public class Controller extends ControllerBase {
@@ -26,7 +25,7 @@ public class Controller extends ControllerBase {
     @Inject
     private SimulationDataGeneratorBuilder dataGeneratorBuilder;
 
-    public List<Trade> simulate(String offset) {
-        return simulator.simulate(new DefaultOracle(oracleConfigurationDao.read()), dataGeneratorBuilder.produceGenerator(offset));
+    public TradingSimulationResult simulate(String offset) {
+        return simulator.simulate(dataGeneratorBuilder.produceGenerator(offset), new DefaultOracle(oracleConfigurationDao.read()));
     }
 }
