@@ -7,7 +7,7 @@ import { Trade } from '../shared/trader-simulation/trade';
 import { Account } from '../shared/trader-simulation/account';
 import { ChartReaderService } from '../shared/chart-reader/chart-reader.service'
 import { TraderSimulationService } from '../shared/trader-simulation/trader-simulation.service'
-
+import { TradingSimulationResult } from '../shared/trader-simulation/trading-simulation-result'
 
 @Component({
     selector: 'app-trading-simulation',
@@ -60,13 +60,13 @@ export class TradingSimulationComponent implements AfterViewInit {
     }
 
 
-    buildChart(chartFunc: () => Observable<ChartEntry[]>,tradesFunc: () => Observable<Trade[]>) : void {
+    buildChart(chartFunc: () => Observable<ChartEntry[]>,tradesFunc: () => Observable<TradingSimulationResult>) : void {
         chartFunc.apply(this.chartReader).subscribe(res => {
             console.log(res)
             this.data = res as ChartEntry[];
 
-            tradesFunc.apply(this.traderSimulation).subscribe(trades => {
-                this.trades = trades as Trade[];
+            tradesFunc.apply(this.traderSimulation).subscribe(simulationResult => {
+                this.trades = simulationResult.trades as Trade[];
 
                 this.trades.forEach((t) => t.date  = new Date(t.date[0], t.date[1]-1, t.date[2], t.date[3], t.date[4]));
 
@@ -80,18 +80,12 @@ export class TradingSimulationComponent implements AfterViewInit {
                 let sells = this.trades.filter(x => x.action === 'SELL' ).map(d => {  return {x: d.date, y: d.currentRate}});
                 let buys = this.trades.filter(x => x.action === 'BUY' ).map(d => {  return {x: d.date, y: d.currentRate}});
 
-                  if (this.trades.length >= 1) {
-                    this.lastTradeBalance = this.trades[this.trades.length - 1].after;
-                    this.lastTradeBalance.eurEquivalent = this.lastTradeBalance.eur +  this.lastTradeBalance.btc * this.data[this.data.length-1].close;
-                    this.initialTradeBalance = this.trades[0].before;
-                    this.initialTradeBalance.eurEquivalent = this.initialTradeBalance.eur +  this.initialTradeBalance.btc * this.data[this.data.length-1].close;
-                    console.log('initial Trade Balance:', this.initialTradeBalance);
-                    console.log('last Trade Balance:', this.lastTradeBalance);
-
+                if (this.trades.length >= 1) {
+                    this.initialTradeBalance = simulationResult.initialBalance as Account;
+                    this.lastTradeBalance = simulationResult.finalBalance as Account;
                 } else {
-                    this.lastTradeBalance = {btc: 0.0, eur: 1000.0, eurEquivalent : 1000} as Account;
                     this.initialTradeBalance = {btc: 0.0, eur: 1000.0, eurEquivalent : 1000.0} as Account;
-
+                    this.lastTradeBalance = {btc: 0.0, eur: 1000.0, eurEquivalent : 1000} as Account;
                 }
 
                 let param = {
