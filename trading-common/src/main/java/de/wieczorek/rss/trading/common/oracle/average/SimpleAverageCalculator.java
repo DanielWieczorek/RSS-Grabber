@@ -1,11 +1,16 @@
 package de.wieczorek.rss.trading.common.oracle.average;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SimpleAverageCalculator implements AverageCalculator {
     @Override
     public double calculate(List<Double> values) {
-        return values.stream().collect(Collectors.averagingDouble(x -> x));
+        var average = 0.0;
+        int t = 1;
+        for (Double current : values) {
+            average += (current - average) / t;
+            ++t;
+        }
+        return average;
     }
 }

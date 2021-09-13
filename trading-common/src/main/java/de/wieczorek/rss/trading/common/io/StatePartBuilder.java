@@ -7,9 +7,7 @@ import de.wieczorek.rss.advisor.types.DeltaChartEntry;
 import de.wieczorek.rss.trading.types.StateEdgePart;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -53,7 +51,10 @@ public final class StatePartBuilder {
             part.setChartEntry(currentEntry);
             part.setSentiment(sentimentDateMappings.get(currentEntry.getDate()));
             part.setMetricsSentiment(chartMetricSentimentMappings.get(currentEntry.getDate()));
-            part.setMetrics(chartMetricMappings.get(currentEntry.getDate()));
+            part.setMetrics(chartMetricMappings.getOrDefault(currentEntry.getDate(), Collections.emptyList())
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toMap(x -> StateEdgePart.Metric.getValueForName(x.getId().getIndicator()), Function.identity())));
 
             stateParts.add(part);
         }

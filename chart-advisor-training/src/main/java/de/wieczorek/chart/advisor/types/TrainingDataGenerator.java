@@ -42,6 +42,7 @@ public class TrainingDataGenerator implements IDataGenerator<TrainingNetInputIte
 
             List<NetInputItem> data = new DataPreparator().withChartData(chartEntries).withMetrics(metrics).getData();
             data.forEach(item -> item.setOutputDelta(Math.round(item.getOutputDelta())));
+
             List<NetInputItem> positive = data.stream().filter(item -> item.getOutputDelta() > 0).collect(Collectors.toList());
             List<NetInputItem> negative = data.stream().filter(item -> item.getOutputDelta() < 0).collect(Collectors.toList());
 

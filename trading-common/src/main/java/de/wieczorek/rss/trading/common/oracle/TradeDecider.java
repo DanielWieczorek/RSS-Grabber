@@ -106,22 +106,24 @@ public class TradeDecider implements Predicate<OracleInput> {
     private double calculateAverage(OracleInput input,
                                     int averageDuration,
                                     int negativeOffset) {
+
+
         int end = input.getStateEdge().getPartsEndIndex() - negativeOffset;
 
         int start = Math.max(0, end - averageDuration);
 
+        var extractor = valuesSource.getValueExtractor();
+        var allParts = input.getStateEdge().getAllStateParts();
+
+
         List<Double> values = new ArrayList<>();
         for (int i = start; i < end; i++) {
-            Double value = valuesSource.getValueExtractor().apply(input.getStateEdge().getAllStateParts().get(i));
+            Double value = extractor.apply(allParts.get(i));
             if (value != null) {
                 values.add(value);
             }
         }
 
-        double result = averageType.getAverageCalculatorBuilder().get().calculate(values);
-        //AveragesCache.INSTANCE.put(start, end, valuesSource.getIndex(), averageType.getIndex(), result);
-        return result;
-
-
+        return averageType.getAverageCalculatorBuilder().get().calculate(values);
     }
 }

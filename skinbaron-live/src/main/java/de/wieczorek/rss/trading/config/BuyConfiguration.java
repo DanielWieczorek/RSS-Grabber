@@ -20,12 +20,4 @@ public class BuyConfiguration {
     public void setProductName(String productName) {
         this.productName = productName;
     }
-
-    public double getMaxPrice() {
-        return maxPrice;
-    }
-
-    public void setMaxPrice(double maxPrice) {
-        this.maxPrice = maxPrice;
-    }
 }

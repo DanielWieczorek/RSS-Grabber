@@ -41,8 +41,8 @@ import java.util.stream.Stream;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 3;
-    private static final int DATAPOINTS_PER_SERIES = 3;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 6;
+    private static final int DATAPOINTS_PER_SERIES = 9;
     private static final int NUMBER_OF_COMPARATORS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int TOTAL_NUMBER_OF_DATAPOINTS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int OFFSET_SAFETY_MARGIN = 10;
@@ -384,11 +384,11 @@ public class TrainingTimer implements Runnable {
                 .populationSize(populationSize)
                 .mapping(toUniquePopulation())
                 .executor(Executors.newFixedThreadPool(16))
-                .survivorsFraction(0.3)
-                .survivorsSelector(new TruncationSelector<>())
-                .alterers(new Mutator(0.1),
-                        new GaussianMutator<>(),
-                        new MeanAlterer<>()) // new SingleBuySellCrossover<>(0.1), new AllBuySellCrossover<>(0.05), new BuySellMeanAlterer(0.1)
+                .survivorsFraction(0.05)
+                .survivorsSelector(new ExponentialRankSelector<>())
+                .alterers(//new Mutator(0.1),
+                        //new GaussianMutator<>(),
+                        new MeanAlterer<>(0.5)) // new SingleBuySellCrossover<>(0.1), new AllBuySellCrossover<>(0.05), new BuySellMeanAlterer(0.1)
                 .offspringSelector(new TournamentSelector())
                 .optimize(Optimize.MAXIMUM)
                 .build();
@@ -398,7 +398,7 @@ public class TrainingTimer implements Runnable {
                 .populationSize(populationSize)
                 .mapping(toUniquePopulation())
                 .executor(Executors.newFixedThreadPool(16))
-                .survivorsFraction(0.3)
+                .survivorsFraction(0.1)
                 .survivorsSelector(new TruncationSelector<>())
                 .offspringSelector(new TournamentSelector())
                 .optimize(Optimize.MAXIMUM)
@@ -408,7 +408,7 @@ public class TrainingTimer implements Runnable {
         final EvolutionStreamable<IntegerGene, Double> engine = CyclicEngine.of(
                 baseEngine.limit(() -> Limits.bySteadyFitness(60)),
 
-                diversityEngine.limit(30)
+                diversityEngine.limit(10)
         );
 
         return engine;

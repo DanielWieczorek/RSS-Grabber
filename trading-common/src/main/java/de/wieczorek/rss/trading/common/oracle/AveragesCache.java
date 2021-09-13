@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AveragesCache {
 
     public static final AveragesCache INSTANCE = new AveragesCache();
-    private Map<AverageKey, Double> cache = new ConcurrentHashMap<>(Integer.MAX_VALUE, 0.1f, 8);
+    private Map<AverageKey, Double> cache = new ConcurrentHashMap<>(Integer.MAX_VALUE, 0.1f, 16);
 
     private AveragesCache() {
 

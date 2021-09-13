@@ -2,8 +2,6 @@ package de.wieczorek.chart.advisor.types;
 
 import de.wieczorek.nn.AbstractNeuralNetworkTrainer;
 import org.deeplearning4j.nn.conf.*;
-import org.deeplearning4j.nn.conf.layers.BatchNormalization;
-import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.LSTM;
 import org.deeplearning4j.nn.conf.layers.RnnOutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -34,33 +32,32 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Tr
     protected MultiLayerNetwork buildNetwork() {
 
         int vectorSize = NetworkInputBuilder.VECTOR_SIZE;
-        int secondaryLevelSize = vectorSize * 7;
+        int secondaryLevelSize = 50;// vectorSize * 7;
 
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(0)
-                .updater(new Adam(1e-4))
-//                .l2(1e-5)
+                .updater(new Adam(1e-3))
+                //          .l2(1e-5)
                 .weightInit(WeightInit.XAVIER)
-//                .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
-//                .gradientNormalizationThreshold(1.0)
+                //           .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
+                //            .gradientNormalizationThreshold(1.0)
                 .trainingWorkspaceMode(WorkspaceMode.ENABLED).list()
                 .layer(0, new LSTM.Builder().nIn(vectorSize).nOut(secondaryLevelSize).activation(Activation.TANH).build())
                 .layer(1, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
                 .layer(2, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
-                .layer(3, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
-                .layer(4, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
-                .layer(5, new DenseLayer.Builder().nOut(secondaryLevelSize).activation(Activation.LEAKYRELU).build())
-                .layer(6, new DenseLayer.Builder().nOut(secondaryLevelSize).activation(Activation.LEAKYRELU).build())
-                .layer(7, new BatchNormalization.Builder().nOut(secondaryLevelSize).build())
+                //               .layer(3, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
+                //               .layer(4, new LSTM.Builder().nOut(secondaryLevelSize).activation(Activation.TANH).build())
+                //               .layer(5, new DenseLayer.Builder().nOut(secondaryLevelSize).activation(Activation.LEAKYRELU).build())
+                //               .layer(6, new DenseLayer.Builder().nOut(secondaryLevelSize).activation(Activation.LEAKYRELU).build())
+                //               .layer(7, new BatchNormalization.Builder().nOut(secondaryLevelSize).build())
 
-                .layer(8
+                .layer(3
                         ,
                         new RnnOutputLayer.Builder(LossFunctions.LossFunction.MSE).activation(Activation.IDENTITY)
                                 .weightInit(WeightInit.XAVIER).nOut(1).build())
                 .backpropType(BackpropType.Standard)
                 //.tBPTTLength(64)
                 .build();
-        conf.setIterationCount(1);
         conf.setCacheMode(CacheMode.DEVICE);
         //conf.setDataType(DataType.HALF);
         //Nd4j.getExecutioner().setProfilingConfig(ProfilerConfig.builder().checkForNAN(true).build());
@@ -69,7 +66,7 @@ public class TradingNeuralNetworkTrainer extends AbstractNeuralNetworkTrainer<Tr
 
     @Override
     protected int getBatchSize() {
-        return 512;
+        return 4;
     }
 
     @Override
