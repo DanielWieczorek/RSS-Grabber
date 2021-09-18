@@ -10,7 +10,15 @@ public class OracleConfiguration {
     private List<TradeConfiguration> sellConfigurations;
     private List<Integer> sellRatioPercent;
     private int buyThresholdAbsolute;
-    private int sellThresholdAbsolute;
+    private int stopLossThreshold;
+
+    public int getStopLossThreshold() {
+        return stopLossThreshold;
+    }
+
+    public void setStopLossThreshold(int stopLossThreshold) {
+        this.stopLossThreshold = stopLossThreshold;
+    }
 
     public int getBuyThresholdAbsolute() {
         return buyThresholdAbsolute;
@@ -18,14 +26,6 @@ public class OracleConfiguration {
 
     public void setBuyThresholdAbsolute(int buyThresholdAbsolute) {
         this.buyThresholdAbsolute = buyThresholdAbsolute;
-    }
-
-    public int getSellThresholdAbsolute() {
-        return sellThresholdAbsolute;
-    }
-
-    public void setSellThresholdAbsolute(int sellThresholdAbsolute) {
-        this.sellThresholdAbsolute = sellThresholdAbsolute;
     }
 
     public List<TradeConfiguration> getBuyConfigurations() {

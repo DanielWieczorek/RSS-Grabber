@@ -13,8 +13,6 @@ public class LiveDataGeneratorBuilder implements DataGeneratorBuilder {
     @Inject
     private DataLoader dataLoader;
 
-    @Inject
-    private TradingContextProvider contextProvider;
 
     public DataGenerator produceGenerator() {
         return new DataGenerator(

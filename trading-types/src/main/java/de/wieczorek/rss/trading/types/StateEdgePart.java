@@ -14,15 +14,6 @@ public class StateEdgePart {
     private TradingEvaluationResult metricsSentiment;
     private DeltaChartEntry deltaChartEntry;
     private Map<Metric, ChartMetricRecord> metrics;
-    private ContextProvider contextProvider;
-
-    public ContextProvider getContextProvider() {
-        return contextProvider;
-    }
-
-    public void setContextProvider(ContextProvider context) {
-        this.contextProvider = context;
-    }
 
     public Map<Metric, ChartMetricRecord> getMetrics() {
         return metrics;

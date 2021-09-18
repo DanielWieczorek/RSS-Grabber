@@ -14,10 +14,10 @@ public class TrainingDataGeneratorBuilder implements DataGeneratorBuilder {
 
     public DataGenerator produceGenerator() {
         return new DataGenerator(
-                () -> dataLoader.loadSentiments("90d"),
-                () -> dataLoader.loadChartEntries("90d"),
-                () -> dataLoader.loadMetricSentiments("90d"),
-                () -> dataLoader.loadMetrics("90d")
+                () -> dataLoader.loadSentiments("300d"),
+                () -> dataLoader.loadChartEntries("300d"),
+                () -> dataLoader.loadMetricSentiments("300d"),
+                () -> dataLoader.loadMetrics("300d")
         );
     }
 }

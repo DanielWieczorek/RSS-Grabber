@@ -16,12 +16,14 @@ public class DefaultOracle implements Oracle {
 
 
     private final Predicate<OracleInput> buyDecider;
-    private final Predicate<OracleInput> sellDecider;
+    private final OracleState state;
+    private final double stopLossThresholdAbsolute;
 
 
     public DefaultOracle(OracleConfiguration configuration) {
         buyDecider = buildDecider(configuration.getBuyConfigurations(), configuration.getBuyRatioPercent(), configuration.getBuyThresholdAbsolute(), Account::getEur);
-        sellDecider = buildDecider(configuration.getSellConfigurations(), configuration.getSellRatioPercent(), configuration.getSellThresholdAbsolute(), Account::getBtc);
+        state = new OracleState();
+        stopLossThresholdAbsolute = configuration.getStopLossThreshold();
     }
 
 
@@ -45,16 +47,24 @@ public class DefaultOracle implements Oracle {
 
     @Override
     public TradingDecision nextAction(OracleInput input) {
+        double currentPrice = input.getStateEdge().getAllStateParts().get(input.getStateEdge().getPartsEndIndex()).getChartEntry().getClose();
+        boolean isInvested = input.getStateEdge().getAccount().getBtc() > input.getMinOrder();
+
         logger.debug("checking BUY");
         if (buyDecider.test(input)) {
             logger.debug("decision BUY");
+            state.setStopLoss(Math.max(state.getStopLoss(), currentPrice - stopLossThresholdAbsolute));
             return new TradingDecision(ActionVertexType.BUY, DecisionReason.TRADE);
         } else {
             logger.debug("checking SELL");
-            if (sellDecider.test(input)) {
+            if (currentPrice <= state.getStopLoss()) {
                 logger.debug("decision: SELL");
+                state.setStopLoss(0.0);
                 return new TradingDecision(ActionVertexType.SELL, DecisionReason.TRADE);
             } else {
+                if (isInvested) {
+                    state.setStopLoss(Math.max(state.getStopLoss(), currentPrice - stopLossThresholdAbsolute));
+                }
                 logger.debug("decision: DO NOTHING");
                 return new TradingDecision(ActionVertexType.NOTHING, DecisionReason.TRADE); // do nothing
             }

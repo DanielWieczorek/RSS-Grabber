@@ -41,8 +41,8 @@ import java.util.stream.Stream;
 public class TrainingTimer implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingTimer.class);
-    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 6;
-    private static final int DATAPOINTS_PER_SERIES = 9;
+    private static final int NUMBER_OF_BUYSELL_CONFIGURATIONS = 3;
+    private static final int DATAPOINTS_PER_SERIES = 6;
     private static final int NUMBER_OF_COMPARATORS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int TOTAL_NUMBER_OF_DATAPOINTS = NUMBER_OF_BUYSELL_CONFIGURATIONS * DATAPOINTS_PER_SERIES;
     private static final int OFFSET_SAFETY_MARGIN = 10;
@@ -74,7 +74,7 @@ public class TrainingTimer implements Runnable {
         double result = Double.NEGATIVE_INFINITY;
 
         if (trades.size() > 0) {
-            result = simulationResult.getFinalBalance().getEurEquivalent() - riskFreeTotal;
+            result = simulationResult.getFinalBalance().getEurEquivalent();// - riskFreeTotal;
         }
 
         if (Double.isNaN(result)) {
@@ -100,19 +100,13 @@ public class TrainingTimer implements Runnable {
         OracleConfiguration configuration = new OracleConfiguration();
 
         final int buyConfigStartIndex = 0;
-        final int sellConfigStartIndex = 10;
 
         List<TradeConfiguration> buyConfigurations = buildTradeConfigurations(genes, buyConfigStartIndex);
         configuration.setBuyConfigurations(buyConfigurations);
         configuration.setBuyRatioPercent(normalize(buildOperatorList(genes, buyConfigStartIndex, buyConfigurations)));
         int buyRatio = configuration.getBuyRatioPercent().stream().reduce(0, Integer::sum);
-        configuration.setBuyThresholdAbsolute(Math.max(buyRatio * genes.get(20).getGene(0).intValue() / 100, 1));
-
-        List<TradeConfiguration> sellConfigurations = buildTradeConfigurations(genes, sellConfigStartIndex);
-        configuration.setSellConfigurations(sellConfigurations);
-        configuration.setSellRatioPercent(normalize(buildOperatorList(genes, sellConfigStartIndex, sellConfigurations)));
-        int sellRatio = configuration.getSellRatioPercent().stream().reduce(0, Integer::sum);
-        configuration.setSellThresholdAbsolute(Math.max(sellRatio * genes.get(21).getGene(0).intValue() / 100, 1));
+        configuration.setBuyThresholdAbsolute(Math.max(buyRatio * genes.get(10).getGene(0).intValue() / 100, 1));
+        configuration.setStopLossThreshold(genes.get(11).getGene(0).intValue());
         return configuration;
     }
 
@@ -360,20 +354,8 @@ public class TrainingTimer implements Runnable {
                         IntegerChromosome.of(0, 500, IntRange.of(NUMBER_OF_COMPARATORS)), //8 second value for comparison
                         IntegerChromosome.of(2, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //9 length of the series
 
-
-                        IntegerChromosome.of(-5000, 5000, IntRange.of(NUMBER_OF_COMPARATORS)), //10 sell thresholds
-                        IntegerChromosome.of(1, 10, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //11 duration of the averaging
-                        IntegerChromosome.of(0, Comparison.values().length - 1, IntRange.of(NUMBER_OF_COMPARATORS)), //12 below/above for sell
-                        IntegerChromosome.of(1, 1440 / NUMBER_OF_COMPARATORS, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //3 offset in minutes
-                        IntegerChromosome.of(0, AverageType.values().length - 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //14 average type
-                        IntegerChromosome.of(1, ValuesSource.values().length - 2, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //15 source of values
-                        IntegerChromosome.of(1, 100, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //16 operators - weight %
-                        IntegerChromosome.of(0, 1, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //17 is sell configuration active
-                        IntegerChromosome.of(0, 5000, IntRange.of(NUMBER_OF_COMPARATORS)), //18 second value for comparison
-                        IntegerChromosome.of(2, DATAPOINTS_PER_SERIES, IntRange.of(NUMBER_OF_BUYSELL_CONFIGURATIONS)), //19 length of the series
-
-                        IntegerChromosome.of(1, 100, 1), //20 buy vote threshold percent
-                        IntegerChromosome.of(1, 100, 1) //21 sell vote threshold percent
+                        IntegerChromosome.of(1, 100, 1), //10 buy vote threshold percent
+                        IntegerChromosome.of(1, 2000, 1) //11 stop loss
 
                 );
 
